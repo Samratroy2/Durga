@@ -2526,3 +2526,108 @@
     }
 
 }
+
+
+.search-field {
+    position: relative;
+}
+
+.family-search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 9999;
+
+    display: none;
+
+    max-height: 320px;
+    overflow-y: auto;
+
+    background: #fff;
+
+    border: 1px solid #dfd3c5;
+    border-radius: 10px;
+
+    box-shadow:
+        0 12px 30px rgba(60, 40, 25, 0.15);
+}
+
+.family-search-result {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 4px;
+
+    padding: 14px 16px;
+
+    border: none;
+    border-bottom: 1px solid #eee5dc;
+
+    background: #fff;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-family: inherit;
+}
+
+.family-search-result:last-child {
+    border-bottom: none;
+}
+
+.family-search-result:hover {
+    background: #f7f0e8;
+}
+
+.family-search-result:focus {
+    outline: none;
+    background: #f2e7dc;
+}
+
+.family-search-result-name {
+    display: block;
+
+    color: #4b3427;
+
+    font-family:
+        "Tiro Bangla",
+        Georgia,
+        serif;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.family-search-result-father {
+    display: block;
+
+    color: #8b7767;
+
+    font-family:
+        "Mukta",
+        sans-serif;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.family-search-result-father strong {
+    color: #6f4d32;
+    font-weight: 700;
+}
+
+.family-search-no-result {
+    padding: 16px;
+
+    color: #8b7767;
+
+    text-align: center;
+
+    font-size: 13px;
+}
