@@ -2645,3 +2645,76 @@ input {
     }
 
 }
+
+
+/* =====================================================
+   FATHER SEARCH
+   ===================================================== */
+
+.father-search-wrapper {
+    position: relative;
+}
+
+#fatherSearch {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.father-suggestions {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+
+    background: #fff;
+
+    border: 1px solid #ddd1c6;
+    border-radius: 8px;
+
+    box-shadow: 0 8px 25px rgba(70, 45, 25, 0.12);
+
+    max-height: 260px;
+    overflow-y: auto;
+
+    z-index: 1000;
+
+    display: none;
+}
+
+.father-suggestion {
+    padding: 11px 13px;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid #eee5dc;
+}
+
+.father-suggestion:last-child {
+    border-bottom: none;
+}
+
+.father-suggestion:hover {
+    background: #f4ece4;
+}
+
+.father-suggestion strong {
+    display: block;
+
+    color: #4f3828;
+
+    margin-bottom: 3px;
+}
+
+.father-suggestion small {
+    color: #8b7b6d;
+}
+
+.father-no-result {
+    padding: 14px;
+
+    color: #8b7b6d;
+
+    text-align: center;
+
+    font-size: 12px;
+}

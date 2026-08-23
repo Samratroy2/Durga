@@ -785,13 +785,26 @@
                         </label>
 
 
-                        <select id="fatherId">
+                        <div class="father-search-wrapper">
 
-                            <option value="">
-                                Select Father
-                            </option>
+    <input
+        type="text"
+        id="fatherSearch"
+        placeholder="Search father by ID or name..."
+        autocomplete="off"
+    >
 
-                        </select>
+    <input
+        type="hidden"
+        id="fatherId"
+    >
+
+    <div
+        id="fatherSuggestions"
+        class="father-suggestions"
+    ></div>
+
+</div>
 
 
                     </div>

@@ -19,6 +19,11 @@
    ├── 121
    └── 122
 
+   FATHER SEARCH:
+   - Search by Family ID
+   - Search by Name
+   - Select member from suggestions
+
    IMPORTANT:
 
    Only fields containing data are stored.
@@ -104,11 +109,31 @@ const relationInput =
     );
 
 
-const fatherSelect =
+/* =========================================================
+   FATHER SEARCH
+   ========================================================= */
+
+const fatherSearch =
+    document.getElementById(
+        "fatherSearch"
+    );
+
+
+const fatherIdInput =
     document.getElementById(
         "fatherId"
     );
 
+
+const fatherSuggestions =
+    document.getElementById(
+        "fatherSuggestions"
+    );
+
+
+/* =========================================================
+   OTHER RELATIONSHIPS
+   ========================================================= */
 
 const motherSelect =
     document.getElementById(
@@ -121,6 +146,10 @@ const spouseSelect =
         "spouseId"
     );
 
+
+/* =========================================================
+   AUTOMATIC FIELDS
+   ========================================================= */
 
 const generationInput =
     document.getElementById(
@@ -152,6 +181,10 @@ const biographyInput =
     );
 
 
+/* =========================================================
+   LIST
+   ========================================================= */
+
 const familyList =
     document.getElementById(
         "familyList"
@@ -163,6 +196,10 @@ const memberCount =
         "memberCount"
     );
 
+
+/* =========================================================
+   FORM CONTROLS
+   ========================================================= */
 
 const formTitle =
     document.getElementById(
@@ -187,6 +224,10 @@ const message =
         "familyMessage"
     );
 
+
+/* =========================================================
+   ADMIN
+   ========================================================= */
 
 const logoutButton =
     document.getElementById(
@@ -225,7 +266,6 @@ let members = [];
 
    familyMembers/13
 */
-
 
 let originalId = "";
 
@@ -384,14 +424,13 @@ async function loadMembers() {
 
 
 /* =========================================================
-   POPULATE RELATIONSHIP SELECTS
+   POPULATE MOTHER / SPOUSE SELECTS
    ========================================================= */
 
 function populateRelationshipSelects() {
 
     const selects = [
 
-        fatherSelect,
         motherSelect,
         spouseSelect
 
@@ -448,6 +487,434 @@ function populateRelationshipSelects() {
     );
 
 }
+
+
+/* =========================================================
+   FATHER SEARCH
+   =========================================================
+
+   Search works with:
+
+   11
+   Haridas
+   Roy
+   Haridas Roy
+
+   ========================================================= */
+
+function searchFatherMembers() {
+
+    if (!fatherSearch || !fatherSuggestions) {
+
+        return;
+
+    }
+
+
+    const query =
+        fatherSearch.value
+            .trim()
+            .toLowerCase();
+
+
+    fatherSuggestions.innerHTML = "";
+
+
+    if (!query) {
+
+        fatherSuggestions.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    /*
+       Search by:
+
+       1. Family ID
+       2. Name
+       3. Full combined text
+    */
+
+    const results =
+        members.filter(
+            member => {
+
+                /*
+                   Do not allow the member
+                   to select himself as father
+                   while editing.
+                */
+
+                if (
+                    originalId &&
+                    member.id ===
+                        originalId
+                ) {
+
+                    return false;
+
+                }
+
+
+                const id =
+                    String(
+                        member.id || ""
+                    ).toLowerCase();
+
+
+                const name =
+                    String(
+                        member.name || ""
+                    ).toLowerCase();
+
+
+                return (
+                    id.includes(query) ||
+                    name.includes(query) ||
+                    `${id} ${name}`.includes(
+                        query
+                    )
+                );
+
+            }
+        );
+
+
+    /*
+       No result
+    */
+
+    if (
+        results.length === 0
+    ) {
+
+        fatherSuggestions.innerHTML = `
+
+            <div class="father-no-result">
+
+                No family member found.
+
+            </div>
+
+        `;
+
+
+        fatherSuggestions.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    /*
+       Display results
+    */
+
+    results.forEach(
+        member => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "father-suggestion";
+
+
+            item.innerHTML = `
+
+                <strong>
+
+                    ${escapeHtml(
+                        member.name ||
+                        "Unnamed"
+                    )}
+
+                </strong>
+
+                <small>
+
+                    Family ID:
+                    ${escapeHtml(
+                        String(
+                            member.id
+                        )
+                    )}
+
+                    ${
+                        member.generation !==
+                            undefined
+                            ? ` • Generation ${
+                                escapeHtml(
+                                    String(
+                                        member.generation
+                                    )
+                                )
+                            }`
+                            : ""
+                    }
+
+                </small>
+
+            `;
+
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    selectFather(
+                        member
+                    );
+
+                }
+            );
+
+
+            fatherSuggestions.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    fatherSuggestions.style.display =
+        "block";
+
+}
+
+
+/* =========================================================
+   SELECT FATHER
+   ========================================================= */
+
+function selectFather(
+    member
+) {
+
+    if (
+        !member ||
+        !fatherIdInput ||
+        !fatherSearch
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       Store the actual ID
+       in hidden input.
+    */
+
+    fatherIdInput.value =
+        member.id;
+
+
+    /*
+       Display name + ID
+       to administrator.
+    */
+
+    fatherSearch.value =
+        `${member.name || "Unnamed"} (${member.id})`;
+
+
+    /*
+       Hide suggestions.
+    */
+
+    if (fatherSuggestions) {
+
+        fatherSuggestions.innerHTML =
+            "";
+
+        fatherSuggestions.style.display =
+            "none";
+
+    }
+
+
+    /*
+       Do not automatically change
+       Family ID while editing.
+    */
+
+    if (originalId) {
+
+        return;
+
+    }
+
+
+    /*
+       Generate child ID.
+    */
+
+    const nextId =
+        generateNextChildId(
+            member.id
+        );
+
+
+    memberIdInput.value =
+        nextId;
+
+
+    /*
+       Calculate generation.
+
+       Father generation 1
+       Child generation 2
+    */
+
+    if (
+        member.generation !==
+        undefined &&
+        member.generation !==
+        null
+    ) {
+
+        generationInput.value =
+            Number(
+                member.generation
+            ) + 1;
+
+    }
+    else {
+
+        /*
+           If father has no generation,
+           assume child is generation 2
+           only when appropriate.
+        */
+
+        generationInput.value =
+            "";
+
+    }
+
+}
+
+
+/* =========================================================
+   FATHER SEARCH EVENTS
+   ========================================================= */
+
+if (fatherSearch) {
+
+    fatherSearch.addEventListener(
+        "input",
+        () => {
+
+            /*
+               If user changes the search text
+               after selecting a father, clear
+               the actual father ID.
+
+               This prevents accidentally saving
+               an old father ID.
+            */
+
+            fatherIdInput.value =
+                "";
+
+            /*
+               For a new member, typing a new
+               father search should clear the
+               automatically generated ID.
+            */
+
+            if (!originalId) {
+
+                memberIdInput.value =
+                    "";
+
+                generationInput.value =
+                    "";
+
+            }
+
+
+            searchFatherMembers();
+
+        }
+    );
+
+
+    fatherSearch.addEventListener(
+        "focus",
+        () => {
+
+            if (
+                fatherSearch.value.trim()
+            ) {
+
+                searchFatherMembers();
+
+            }
+
+        }
+    );
+
+
+    fatherSearch.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                if (fatherSuggestions) {
+
+                    fatherSuggestions.style.display =
+                        "none";
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE FATHER SEARCH WHEN CLICKING OUTSIDE
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (
+            !event.target.closest(
+                ".father-search-wrapper"
+            )
+        ) {
+
+            if (fatherSuggestions) {
+
+                fatherSuggestions.style.display =
+                    "none";
+
+            }
+
+        }
+
+    }
+);
 
 
 /* =========================================================
@@ -561,103 +1028,6 @@ function generateNextChildId(
 
 
 /* =========================================================
-   AUTO GENERATE FAMILY ID
-   ========================================================= */
-
-if (fatherSelect) {
-
-    fatherSelect.addEventListener(
-        "change",
-        () => {
-
-            /*
-               Do not change ID automatically
-               when editing an existing member.
-            */
-
-            if (originalId) {
-
-                return;
-
-            }
-
-
-            const fatherId =
-                fatherSelect.value;
-
-
-            /*
-               No father:
-
-               Root member.
-
-               Example:
-
-               1
-               2
-               3
-
-               Root ID can be entered manually.
-            */
-
-            if (!fatherId) {
-
-                memberIdInput.value =
-                    "";
-
-                generationInput.value =
-                    "";
-
-                return;
-
-            }
-
-
-            const nextId =
-                generateNextChildId(
-                    fatherId
-                );
-
-
-            memberIdInput.value =
-                nextId;
-
-
-            /*
-               Generation:
-
-               Father generation 1
-               Child generation 2
-            */
-
-            const father =
-                members.find(
-                    member =>
-                        member.id ===
-                        fatherId
-                );
-
-
-            if (
-                father &&
-                father.generation !==
-                    undefined
-            ) {
-
-                generationInput.value =
-                    Number(
-                        father.generation
-                    ) + 1;
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
    BUILD CLEAN DATA FOR NEW MEMBER
    ========================================================= */
 
@@ -702,12 +1072,16 @@ function buildNewMemberData() {
        FATHER
     */
 
-    if (
-        fatherSelect.value
-    ) {
+    const selectedFatherId =
+        fatherIdInput
+            ? fatherIdInput.value.trim()
+            : "";
+
+
+    if (selectedFatherId) {
 
         data.fatherId =
-            fatherSelect.value;
+            selectedFatherId;
 
     }
 
@@ -717,6 +1091,7 @@ function buildNewMemberData() {
     */
 
     if (
+        motherSelect &&
         motherSelect.value
     ) {
 
@@ -731,6 +1106,7 @@ function buildNewMemberData() {
     */
 
     if (
+        spouseSelect &&
         spouseSelect.value
     ) {
 
@@ -839,20 +1215,6 @@ function buildNewMemberData() {
 
 /* =========================================================
    BUILD UPDATE DATA
-   =========================================================
-
-   If a field is cleared:
-
-   Firestore field is deleted.
-
-   Example:
-
-   biography: "Old text"
-
-   User removes it.
-
-   biography field is completely removed.
-
    ========================================================= */
 
 function buildUpdateData() {
@@ -908,12 +1270,16 @@ function buildUpdateData() {
        FATHER
     */
 
-    if (
-        fatherSelect.value
-    ) {
+    const selectedFatherId =
+        fatherIdInput
+            ? fatherIdInput.value.trim()
+            : "";
+
+
+    if (selectedFatherId) {
 
         data.fatherId =
-            fatherSelect.value;
+            selectedFatherId;
 
     }
     else {
@@ -929,6 +1295,7 @@ function buildUpdateData() {
     */
 
     if (
+        motherSelect &&
         motherSelect.value
     ) {
 
@@ -949,6 +1316,7 @@ function buildUpdateData() {
     */
 
     if (
+        spouseSelect &&
         spouseSelect.value
     ) {
 
@@ -1076,8 +1444,6 @@ function buildUpdateData() {
 
     /*
        CREATED AT IS NOT TOUCHED.
-
-       Only updatedAt changes.
     */
 
     data.updatedAt =
@@ -1136,6 +1502,31 @@ if (form) {
 
                 showMessage(
                     "Please enter the member name.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Validate Father selection.
+
+               If the administrator typed
+               something but did not select
+               a real father, prevent saving.
+            */
+
+            if (
+                fatherSearch &&
+                fatherSearch.value.trim() &&
+                fatherIdInput &&
+                !fatherIdInput.value
+            ) {
+
+                showMessage(
+                    "Please select a father from the search results.",
                     "error"
                 );
 
@@ -1364,18 +1755,15 @@ if (form) {
 
                         /*
                            Build clean new document.
-
-                           IMPORTANT:
-
-                           Do NOT create a new createdAt.
-
-                           We preserve the original
-                           createdAt.
                         */
 
                         const newData =
                             buildNewMemberData();
 
+
+                        /*
+                           Preserve original createdAt.
+                        */
 
                         if (
                             existingMember.createdAt
@@ -1388,8 +1776,7 @@ if (form) {
 
 
                         /*
-                           New ID means this is effectively
-                           a migrated document.
+                           Create new document.
                         */
 
                         await setDoc(
@@ -1591,46 +1978,63 @@ function getCurrentFieldValue(
     switch (field) {
 
         case "name":
+
             return nameInput.value.trim();
 
 
         case "relation":
+
             return relationInput.value.trim();
 
 
         case "fatherId":
-            return fatherSelect.value;
+
+            return fatherIdInput
+                ? fatherIdInput.value
+                : "";
 
 
         case "motherId":
-            return motherSelect.value;
+
+            return motherSelect
+                ? motherSelect.value
+                : "";
 
 
         case "spouseId":
-            return spouseSelect.value;
+
+            return spouseSelect
+                ? spouseSelect.value
+                : "";
 
 
         case "generation":
+
             return generationInput.value.trim();
 
 
         case "birthYear":
+
             return birthYearInput.value.trim();
 
 
         case "deathYear":
+
             return deathYearInput.value.trim();
 
 
         case "image":
+
             return imageInput.value.trim();
 
 
         case "biography":
+
             return biographyInput.value.trim();
 
 
         default:
+
             return "";
 
     }
@@ -1657,8 +2061,16 @@ function buildCreatedMemberDetails(
 
     if (data.fatherId) {
 
+        const father =
+            getMemberById(
+                data.fatherId
+            );
+
+
         details.push(
-            `Father ID: ${data.fatherId}`
+            father
+                ? `Father: ${father.name} (ID ${data.fatherId})`
+                : `Father ID: ${data.fatherId}`
         );
 
     }
@@ -2029,6 +2441,24 @@ function renderMembers() {
             }
 
 
+            const father =
+                getMemberById(
+                    member.fatherId
+                );
+
+
+            const mother =
+                getMemberById(
+                    member.motherId
+                );
+
+
+            const spouse =
+                getMemberById(
+                    member.spouseId
+                );
+
+
             card.innerHTML = `
 
                 <div
@@ -2081,26 +2511,32 @@ function renderMembers() {
                         <small>
 
                             ${
-                                member.fatherId
+                                father
                                     ? `Father: ${escapeHtml(
-                                        member.fatherId
-                                    )}`
+                                        father.name
+                                    )} (${escapeHtml(
+                                        father.id
+                                    )})`
                                     : ""
                             }
 
                             ${
-                                member.motherId
+                                mother
                                     ? ` · Mother: ${escapeHtml(
-                                        member.motherId
-                                    )}`
+                                        mother.name
+                                    )} (${escapeHtml(
+                                        mother.id
+                                    )})`
                                     : ""
                             }
 
                             ${
-                                member.spouseId
+                                spouse
                                     ? ` · Spouse: ${escapeHtml(
-                                        member.spouseId
-                                    )}`
+                                        spouse.name
+                                    )} (${escapeHtml(
+                                        spouse.id
+                                    )})`
                                     : ""
                             }
 
@@ -2154,6 +2590,30 @@ function renderMembers() {
 
 
     attachMemberButtons();
+
+}
+
+
+/* =========================================================
+   GET MEMBER BY ID
+   ========================================================= */
+
+function getMemberById(
+    id
+) {
+
+    if (!id) {
+
+        return null;
+
+    }
+
+
+    return members.find(
+        member =>
+            String(member.id) ===
+            String(id)
+    ) || null;
 
 }
 
@@ -2251,40 +2711,134 @@ function editMember(
         "";
 
 
-    fatherSelect.value =
-        member.fatherId ||
-        "";
+    /*
+       FATHER
+
+       Store actual ID in hidden input.
+
+       Display:
+       Name (ID)
+    */
+
+    if (fatherIdInput) {
+
+        fatherIdInput.value =
+            member.fatherId ||
+            "";
+
+    }
 
 
-    motherSelect.value =
-        member.motherId ||
-        "";
+    if (fatherSearch) {
+
+        if (member.fatherId) {
+
+            const father =
+                getMemberById(
+                    member.fatherId
+                );
 
 
-    spouseSelect.value =
-        member.spouseId ||
-        "";
+            if (father) {
 
+                fatherSearch.value =
+                    `${father.name || "Unnamed"} (${father.id})`;
+
+            }
+            else {
+
+                fatherSearch.value =
+                    `Unknown Member (${member.fatherId})`;
+
+            }
+
+        }
+        else {
+
+            fatherSearch.value =
+                "";
+
+        }
+
+    }
+
+
+    if (fatherSuggestions) {
+
+        fatherSuggestions.innerHTML =
+            "";
+
+        fatherSuggestions.style.display =
+            "none";
+
+    }
+
+
+    /*
+       MOTHER
+    */
+
+    if (motherSelect) {
+
+        motherSelect.value =
+            member.motherId ||
+            "";
+
+    }
+
+
+    /*
+       SPOUSE
+    */
+
+    if (spouseSelect) {
+
+        spouseSelect.value =
+            member.spouseId ||
+            "";
+
+    }
+
+
+    /*
+       GENERATION
+    */
 
     generationInput.value =
         member.generation ??
         "";
 
 
+    /*
+       BIRTH YEAR
+    */
+
     birthYearInput.value =
         member.birthYear ??
         "";
 
+
+    /*
+       DEATH YEAR
+    */
 
     deathYearInput.value =
         member.deathYear ??
         "";
 
 
+    /*
+       IMAGE
+    */
+
     imageInput.value =
         member.image ||
         "";
 
+
+    /*
+       BIOGRAPHY
+    */
 
     biographyInput.value =
         member.biography ||
@@ -2504,8 +3058,16 @@ function buildDeletedMemberDetails(
         member.fatherId
     ) {
 
+        const father =
+            getMemberById(
+                member.fatherId
+            );
+
+
         details.push(
-            `Father ID: ${member.fatherId}.`
+            father
+                ? `Father: ${father.name} (ID ${member.fatherId}).`
+                : `Father ID: ${member.fatherId}.`
         );
 
     }
@@ -2569,6 +3131,45 @@ function resetForm() {
 
     memberIdInput.value =
         "";
+
+
+    /*
+       Clear hidden Father ID.
+    */
+
+    if (fatherIdInput) {
+
+        fatherIdInput.value =
+            "";
+
+    }
+
+
+    /*
+       Clear Father search.
+    */
+
+    if (fatherSearch) {
+
+        fatherSearch.value =
+            "";
+
+    }
+
+
+    /*
+       Hide suggestions.
+    */
+
+    if (fatherSuggestions) {
+
+        fatherSuggestions.innerHTML =
+            "";
+
+        fatherSuggestions.style.display =
+            "none";
+
+    }
 
 
     if (formTitle) {
@@ -2679,7 +3280,7 @@ function formatFieldName(
         )
 
         .replace(
-            /[_-]/g,
+            /[\_-]/g,
             " "
         )
 
