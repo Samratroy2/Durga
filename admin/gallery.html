@@ -10,14 +10,813 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="description"
+        content="Roy Bari Gallery Administration"
+    >
+
     <title>
         Roy Bari — Gallery
     </title>
+
 
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
+
+
+    <style>
+
+        /* =====================================================
+           GALLERY PAGE — SIDE BY SIDE LAYOUT
+           ===================================================== */
+
+        .manager-layout {
+
+            display: grid !important;
+
+            grid-template-columns:
+                minmax(420px, 0.9fr)
+                minmax(550px, 1.35fr);
+
+            gap: 24px;
+
+            width: 100% !important;
+
+            max-width: none !important;
+
+            margin: 0 !important;
+
+            padding: 0 !important;
+
+            align-items: start;
+
+        }
+
+
+        /* =====================================================
+           FORM CARD
+           ===================================================== */
+
+        .manager-form-card {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            background: #ffffff;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 14px;
+
+            padding: 30px;
+
+        }
+
+
+        /* =====================================================
+           LIST CARD
+           ===================================================== */
+
+        .manager-list-card {
+
+            width: 100% !important;
+
+            max-width: none !important;
+
+            box-sizing: border-box;
+
+            background: #ffffff;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 14px;
+
+            padding: 30px;
+
+        }
+
+
+        /* =====================================================
+           FORM
+           ===================================================== */
+
+        .gallery-form {
+
+            width: 100%;
+
+        }
+
+
+        .gallery-form-grid {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+
+        }
+
+
+        .gallery-form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .gallery-form-group.full {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .gallery-form-group label {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #4a392e;
+
+        }
+
+
+        .gallery-form-group input,
+        .gallery-form-group textarea {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px 14px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+            color: #3c3028;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition: .2s ease;
+
+        }
+
+
+        .gallery-form-group textarea {
+
+            min-height: 140px;
+
+            resize: vertical;
+
+            line-height: 1.5;
+
+        }
+
+
+        .gallery-form-group input:focus,
+        .gallery-form-group textarea:focus {
+
+            border-color: #795337;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, 0.08);
+
+        }
+
+
+        .gallery-form-group input::placeholder,
+        .gallery-form-group textarea::placeholder {
+
+            color: #aaa098;
+
+        }
+
+
+        /* =====================================================
+           FORM ACTIONS
+           ===================================================== */
+
+        .gallery-form-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 22px;
+
+        }
+
+
+        .gallery-save-button {
+
+            flex: 1;
+
+            min-height: 46px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #795337;
+
+            color: #ffffff;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+
+        }
+
+
+        .gallery-save-button:hover {
+
+            background: #62422d;
+
+        }
+
+
+        .gallery-save-button:disabled {
+
+            opacity: .65;
+
+            cursor: wait;
+
+        }
+
+
+        .gallery-cancel-button {
+
+            min-height: 46px;
+
+            padding: 0 18px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            color: #654936;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+
+        }
+
+
+        .gallery-cancel-button:hover {
+
+            background: #f6f0e9;
+
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        #galleryMessage {
+
+            min-height: 20px;
+
+            margin: 15px 0 0;
+
+            font-size: 13px;
+
+        }
+
+
+        #galleryMessage.success {
+
+            color: #39734a;
+
+        }
+
+
+        #galleryMessage.error {
+
+            color: #a33d3d;
+
+        }
+
+
+        /* =====================================================
+           GALLERY LIST
+           ===================================================== */
+
+        #galleryList {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+        /* =====================================================
+           GALLERY ITEM
+           ===================================================== */
+
+        .manager-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 18px;
+
+            padding: 16px;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 12px;
+
+            background: #ffffff;
+
+            transition:
+                background .2s ease,
+                transform .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .manager-item:hover {
+
+            background: #fffaf5;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 5px 16px
+                rgba(80, 55, 35, 0.06);
+
+        }
+
+
+        /* =====================================================
+           ITEM MAIN
+           ===================================================== */
+
+        .manager-item-main {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            min-width: 0;
+
+            flex: 1;
+
+        }
+
+
+        /* =====================================================
+           SQUARE IMAGE
+           ===================================================== */
+
+        .manager-avatar.gallery-thumbnail {
+
+            width: 70px;
+
+            height: 70px;
+
+            min-width: 70px;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #f3ece3;
+
+            color: #795337;
+
+            font-size: 25px;
+
+        }
+
+
+        .manager-avatar.gallery-thumbnail img {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+        }
+
+
+        /* =====================================================
+           GALLERY TEXT
+           ===================================================== */
+
+        .manager-item-main > div:last-child {
+
+            min-width: 0;
+
+        }
+
+
+        .manager-item-main h3 {
+
+            margin: 0 0 5px;
+
+            color: #3f2920;
+
+            font-family: Georgia, serif;
+
+            font-size: 18px;
+
+            line-height: 1.25;
+
+        }
+
+
+        .manager-item-main span {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #795337;
+
+            font-size: 11px;
+
+        }
+
+
+        .manager-item-main small {
+
+            display: block;
+
+            color: #8a817a;
+
+            font-size: 11px;
+
+            line-height: 1.4;
+
+            max-width: 350px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           ACTION BUTTONS
+           ===================================================== */
+
+        .manager-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .edit-button,
+        .delete-button {
+
+            padding: 9px 13px;
+
+            border-radius: 7px;
+
+            font-family: inherit;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+
+        }
+
+
+        .edit-button {
+
+            border: 1px solid #ddcbb8;
+
+            background: #fffaf5;
+
+            color: #795337;
+
+        }
+
+
+        .edit-button:hover {
+
+            background: #795337;
+
+            color: #ffffff;
+
+        }
+
+
+        .delete-button {
+
+            border: 1px solid #dfc9c3;
+
+            background: #ffffff;
+
+            color: #a13c3c;
+
+        }
+
+
+        .delete-button:hover {
+
+            background: #f9e8e8;
+
+            border-color: #cfa9a3;
+
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+           ===================================================== */
+
+        .empty-state {
+
+            padding: 50px 20px;
+
+            text-align: center;
+
+            color: #8b7b6d;
+
+        }
+
+
+        .empty-icon {
+
+            margin-bottom: 10px;
+
+            font-size: 35px;
+
+        }
+
+
+        .empty-state h3 {
+
+            margin: 0 0 5px;
+
+            color: #4b382c;
+
+            font-family: Georgia, serif;
+
+        }
+
+
+        .empty-state p {
+
+            margin: 0;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           LOADING
+           ===================================================== */
+
+        .gallery-loading {
+
+            padding: 45px 20px;
+
+            text-align: center;
+
+            color: #8b7b6d;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           ERROR IMAGE
+           ===================================================== */
+
+        .manager-avatar.gallery-thumbnail.image-error {
+
+            background: #f3ece3;
+
+        }
+
+
+        .manager-avatar.gallery-thumbnail.image-error::after {
+
+            content: "📷";
+
+            font-size: 24px;
+
+        }
+
+
+        /* =====================================================
+           HIDDEN ID
+           ===================================================== */
+
+        #galleryId {
+
+            display: none;
+
+        }
+
+
+        /* =====================================================
+           TABLET
+           ===================================================== */
+
+        @media (max-width: 1150px) {
+
+            .manager-layout {
+
+                grid-template-columns:
+                    minmax(360px, 0.9fr)
+                    minmax(430px, 1.1fr);
+
+                gap: 18px;
+
+            }
+
+
+            .manager-form-card,
+            .manager-list-card {
+
+                padding: 22px;
+
+            }
+
+
+            .manager-item {
+
+                gap: 12px;
+
+            }
+
+
+            .manager-avatar.gallery-thumbnail {
+
+                width: 60px;
+
+                height: 60px;
+
+                min-width: 60px;
+
+            }
+
+
+            .manager-item-main h3 {
+
+                font-size: 16px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .manager-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SMALL MOBILE
+           ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .manager-form-card,
+            .manager-list-card {
+
+                padding: 18px;
+
+            }
+
+
+            .gallery-form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .gallery-form-group.full {
+
+                grid-column: auto;
+
+            }
+
+
+            .manager-item {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+
+            .manager-item-main {
+
+                width: 100%;
+
+            }
+
+
+            .manager-actions {
+
+                width: 100%;
+
+            }
+
+
+            .edit-button,
+            .delete-button {
+
+                flex: 1;
+
+            }
+
+
+            .manager-item-main small {
+
+                max-width: 220px;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -25,16 +824,14 @@
 <body class="dashboard-page">
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          SIDEBAR
-         ========================================================= -->
+         ===================================================== -->
 
     <aside class="sidebar">
 
 
-        <!-- =====================================================
-             BRAND
-             ===================================================== -->
+        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
@@ -57,17 +854,14 @@
         </div>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              NAVIGATION
-             ===================================================== -->
+             ================================================= -->
 
         <nav class="sidebar-nav">
 
 
-            <!-- =================================================
-                 MAIN
-                 ================================================= -->
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -90,17 +884,12 @@
             </a>
 
 
-
-            <!-- =================================================
-                 CONTENT
-                 ================================================= -->
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
             </div>
 
-
-            <!-- FAMILY TREE -->
 
             <a
                 href="./family.html"
@@ -118,8 +907,6 @@
             </a>
 
 
-            <!-- PUJA EVENTS -->
-
             <a
                 href="./events.html"
                 class="nav-item"
@@ -135,8 +922,6 @@
 
             </a>
 
-
-            <!-- ARCHIVE -->
 
             <a
                 href="./archive.html"
@@ -154,8 +939,6 @@
             </a>
 
 
-            <!-- GALLERY - ACTIVE -->
-
             <a
                 href="./gallery.html"
                 class="nav-item active"
@@ -172,17 +955,12 @@
             </a>
 
 
-
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
+            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
             </div>
 
-
-            <!-- MEMORIES -->
 
             <a
                 href="./memories.html"
@@ -200,8 +978,6 @@
             </a>
 
 
-            <!-- RITUALS -->
-
             <a
                 href="./rituals.html"
                 class="nav-item"
@@ -218,8 +994,6 @@
             </a>
 
 
-            <!-- TIMELINE -->
-
             <a
                 href="./timeline.html"
                 class="nav-item"
@@ -235,6 +1009,7 @@
 
             </a>
 
+
             <!-- ADMIN -->
 
             <div class="nav-section-title">
@@ -244,7 +1019,7 @@
 
             <a
                 href="./enquiries.html"
-                class="nav-item active"
+                class="nav-item"
             >
 
                 <span class="nav-icon">
@@ -273,18 +1048,16 @@
 
             </a>
 
+
         </nav>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              SIDEBAR BOTTOM
-             ===================================================== -->
+             ================================================= -->
 
         <div class="sidebar-bottom">
 
-
-            <!-- ADMIN ACCESS -->
 
             <div class="sidebar-note">
 
@@ -307,12 +1080,10 @@
             </div>
 
 
-            <!-- LOGOUT -->
-
             <button
+                type="button"
                 id="logoutButton"
                 class="logout-button"
-                type="button"
             >
 
                 <span>
@@ -323,22 +1094,23 @@
 
             </button>
 
+
         </div>
+
 
     </aside>
 
 
-
-    <!-- =========================================================
-         MAIN CONTENT
-         ========================================================= -->
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
 
     <main class="dashboard-main">
 
 
-        <!-- =====================================================
+        <!-- =================================================
              TOPBAR
-             ===================================================== -->
+             ================================================= -->
 
         <header class="topbar">
 
@@ -360,13 +1132,16 @@
             </div>
 
 
-            <!-- ADMIN USER -->
-
             <div class="admin-user">
 
-                <div class="user-avatar">
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
                     A
                 </div>
+
 
                 <div class="user-details">
 
@@ -380,10 +1155,16 @@
 
                 </div>
 
+
+                <span class="user-status">
+                    ●
+                </span>
+
+
             </div>
 
-        </header>
 
+        </header>
 
 
         <!-- =====================================================
@@ -394,13 +1175,14 @@
 
 
             <!-- =================================================
-                 ADD / EDIT PHOTOGRAPH
+                 LEFT — ADD / EDIT FORM
                  ================================================= -->
 
             <div class="manager-form-card">
 
 
                 <div class="section-heading">
+
 
                     <div>
 
@@ -414,29 +1196,35 @@
 
                     </div>
 
+
                 </div>
 
 
+                <!-- =================================================
+                     FORM
+                     ================================================= -->
 
-                <!-- FORM -->
+                <form
+                    id="galleryForm"
+                    class="gallery-form"
+                >
 
-                <form id="galleryForm">
 
-
-                    <!-- Hidden Firestore document ID -->
+                    <!-- Hidden document ID -->
 
                     <input
                         type="hidden"
                         id="galleryId"
+                        name="galleryId"
                     >
 
 
-                    <div class="form-grid">
+                    <div class="gallery-form-grid">
 
 
                         <!-- TITLE -->
 
-                        <div class="form-group">
+                        <div class="gallery-form-group">
 
                             <label for="title">
                                 Title *
@@ -445,17 +1233,17 @@
                             <input
                                 type="text"
                                 id="title"
+                                name="title"
+                                placeholder="Enter photograph title"
                                 required
-                                placeholder="Photo title"
                             >
 
                         </div>
 
 
-
                         <!-- YEAR -->
 
-                        <div class="form-group">
+                        <div class="gallery-form-group">
 
                             <label for="year">
                                 Year
@@ -464,16 +1252,18 @@
                             <input
                                 type="number"
                                 id="year"
-                                placeholder="e.g. 1985"
+                                name="year"
+                                placeholder="e.g. 2025"
+                                min="1800"
+                                max="2100"
                             >
 
                         </div>
 
 
-
                         <!-- IMAGE URL -->
 
-                        <div class="form-group full-width">
+                        <div class="gallery-form-group full">
 
                             <label for="image">
                                 Image URL *
@@ -482,17 +1272,27 @@
                             <input
                                 type="url"
                                 id="image"
+                                name="image"
+                                placeholder="https://drive.google.com/..."
                                 required
-                                placeholder="https://..."
                             >
+
+                            <small
+                                style="
+                                    color:#8b7b6d;
+                                    font-size:11px;
+                                    line-height:1.5;
+                                "
+                            >
+                                Google Drive image links are supported.
+                            </small>
 
                         </div>
 
 
-
                         <!-- DESCRIPTION -->
 
-                        <div class="form-group full-width">
+                        <div class="gallery-form-group full">
 
                             <label for="description">
                                 Description
@@ -500,17 +1300,16 @@
 
                             <textarea
                                 id="description"
-                                rows="5"
-                                placeholder="Describe the photograph..."
+                                name="description"
+                                placeholder="Describe this photograph..."
                             ></textarea>
 
                         </div>
 
 
-
                         <!-- CATEGORY -->
 
-                        <div class="form-group full-width">
+                        <div class="gallery-form-group full">
 
                             <label for="category">
                                 Category
@@ -519,46 +1318,47 @@
                             <input
                                 type="text"
                                 id="category"
-                                placeholder="e.g. Durga Puja, Family"
+                                name="category"
+                                placeholder="e.g. Puja, Family, Tradition"
                             >
 
                         </div>
 
+
                     </div>
 
 
+                    <!-- =================================================
+                         FORM ACTIONS
+                         ================================================= -->
 
-                    <!-- FORM ACTIONS -->
-
-                    <div class="form-actions">
+                    <div class="gallery-form-actions">
 
 
                         <button
                             type="submit"
-                            class="primary-button"
                             id="saveButton"
+                            class="gallery-save-button"
                         >
-
                             Save Photograph
-
                         </button>
 
 
                         <button
                             type="button"
-                            class="secondary-button"
                             id="cancelButton"
+                            class="gallery-cancel-button"
                         >
-
                             Cancel
-
                         </button>
+
 
                     </div>
 
 
-
-                    <!-- MESSAGE -->
+                    <!-- =================================================
+                         MESSAGE
+                         ================================================= -->
 
                     <p
                         id="galleryMessage"
@@ -568,16 +1368,18 @@
 
                 </form>
 
+
             </div>
 
 
-
             <!-- =================================================
-                 GALLERY LIST
+                 RIGHT — GALLERY LIST
                  ================================================= -->
 
             <div class="manager-list-card">
 
+
+                <!-- HEADER -->
 
                 <div class="section-heading">
 
@@ -603,13 +1405,19 @@
                 </div>
 
 
+                <!-- =================================================
+                     GALLERY LIST
+                     ================================================= -->
 
-                <div
-                    id="galleryList"
-                    class="manager-list"
-                >
+                <div id="galleryList">
 
-                    Loading...
+
+                    <div class="gallery-loading">
+
+                        Loading gallery...
+
+                    </div>
+
 
                 </div>
 
@@ -620,20 +1428,22 @@
         </section>
 
 
-
         <!-- =====================================================
              FOOTER
              ===================================================== -->
 
         <footer class="dashboard-footer">
 
+
             <span>
                 Roy Bari
             </span>
 
+
             <span>
-                Family Heritage Management
+                Preserving tradition · One generation at a time
             </span>
+
 
         </footer>
 
@@ -641,10 +1451,9 @@
     </main>
 
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          JAVASCRIPT
-         ========================================================= -->
+         ===================================================== -->
 
     <script
         type="module"

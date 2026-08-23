@@ -4,11 +4,20 @@
    ACTIVITY: activityLogs
    ========================================================= */
 
+
+/* =========================================================
+   FIREBASE AUTH
+   ========================================================= */
+
 import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
+/* =========================================================
+   FIRESTORE
+   ========================================================= */
 
 import {
     collection,
@@ -22,6 +31,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
+
 import {
     auth,
     db
@@ -29,7 +42,7 @@ import {
 
 
 /* =========================================================
-   ELEMENTS
+   DOM ELEMENTS
    ========================================================= */
 
 const form =
@@ -55,6 +68,22 @@ const personInput =
 const categoryInput =
     document.getElementById("category");
 
+
+/*
+   IMPORTANT:
+
+   This input is the "Memory" field in HTML.
+
+   It is stored in Firestore as:
+
+       quote
+
+   Old documents using:
+
+       description
+
+   are also supported.
+*/
 
 const descriptionInput =
     document.getElementById("description");
@@ -148,32 +177,43 @@ onAuthStateChanged(
 
 
         /*
-           Store for other admin pages.
+           Store admin information.
         */
 
-        if (user.email) {
+        try {
 
-            localStorage.setItem(
-                "adminEmail",
-                user.email
-            );
+            if (user.email) {
+
+                localStorage.setItem(
+                    "adminEmail",
+                    user.email
+                );
+
+            }
+
+
+            if (user.uid) {
+
+                localStorage.setItem(
+                    "adminUid",
+                    user.uid
+                );
+
+            }
 
         }
+        catch (error) {
 
-
-        if (user.uid) {
-
-            localStorage.setItem(
-                "adminUid",
-                user.uid
+            console.warn(
+                "Unable to store admin information.",
+                error
             );
 
         }
 
 
         /*
-           Load memories only
-           after authentication.
+           Load memories after authentication.
         */
 
         await loadMemories();
@@ -192,7 +232,9 @@ function showMessage(
 ) {
 
     if (!message) {
+
         return;
+
     }
 
 
@@ -209,25 +251,57 @@ function showMessage(
 
 
 /* =========================================================
-   BUILD NEW DATA
+   GET MEMORY TEXT
+   =========================================================
+
+   Firestore uses:
+
+       quote
+
+   Older documents may use:
+
+       description
+
+   Therefore both are supported.
+
+   Priority:
+
+       quote
+       ↓
+       description
+       ↓
+       empty
+
+   ========================================================= */
+
+function getMemoryText(
+    memory
+) {
+
+    return (
+        memory?.quote ??
+        memory?.description ??
+        ""
+    );
+
+}
+
+
+/* =========================================================
+   BUILD NEW FORM DATA
    =========================================================
 
    IMPORTANT:
 
-   Empty fields are NOT stored.
+   Memory field is stored as:
 
-   Example:
+       quote
 
-   title = Durga Puja
-   year = 1985
-   person = empty
+   NOT:
 
-   Firestore:
+       description
 
-   {
-       title: "Durga Puja",
-       year: 1985
-   }
+   Empty fields are not stored.
 
    ========================================================= */
 
@@ -236,33 +310,14 @@ function getNewFormData() {
     const data = {};
 
 
-    const title =
-        titleInput.value.trim();
-
-
-    const year =
-        yearInput.value.trim();
-
-
-    const person =
-        personInput.value.trim();
-
-
-    const category =
-        categoryInput.value.trim();
-
-
-    const description =
-        descriptionInput.value.trim();
-
-
-    const imageUrl =
-        imageInput.value.trim();
-
-
     /*
        TITLE
     */
+
+    const title =
+        titleInput?.value.trim() ||
+        "";
+
 
     if (title) {
 
@@ -275,6 +330,11 @@ function getNewFormData() {
     /*
        YEAR
     */
+
+    const year =
+        yearInput?.value.trim() ||
+        "";
+
 
     if (year) {
 
@@ -300,6 +360,11 @@ function getNewFormData() {
        PERSON
     */
 
+    const person =
+        personInput?.value.trim() ||
+        "";
+
+
     if (person) {
 
         data.person =
@@ -312,6 +377,11 @@ function getNewFormData() {
        CATEGORY
     */
 
+    const category =
+        categoryInput?.value.trim() ||
+        "";
+
+
     if (category) {
 
         data.category =
@@ -321,20 +391,38 @@ function getNewFormData() {
 
 
     /*
-       DESCRIPTION
+       MEMORY / QUOTE
+
+       HTML field:
+
+           description
+
+       Firestore field:
+
+           quote
     */
 
-    if (description) {
+    const quote =
+        descriptionInput?.value.trim() ||
+        "";
 
-        data.description =
-            description;
+
+    if (quote) {
+
+        data.quote =
+            quote;
 
     }
 
 
     /*
-       IMAGE
+       IMAGE URL
     */
+
+    const imageUrl =
+        imageInput?.value.trim() ||
+        "";
+
 
     if (imageUrl) {
 
@@ -367,7 +455,8 @@ function getUpdateData() {
     */
 
     const title =
-        titleInput.value.trim();
+        titleInput?.value.trim() ||
+        "";
 
 
     if (title) {
@@ -389,7 +478,8 @@ function getUpdateData() {
     */
 
     const year =
-        yearInput.value.trim();
+        yearInput?.value.trim() ||
+        "";
 
 
     if (year) {
@@ -429,7 +519,8 @@ function getUpdateData() {
     */
 
     const person =
-        personInput.value.trim();
+        personInput?.value.trim() ||
+        "";
 
 
     if (person) {
@@ -451,7 +542,8 @@ function getUpdateData() {
     */
 
     const category =
-        categoryInput.value.trim();
+        categoryInput?.value.trim() ||
+        "";
 
 
     if (category) {
@@ -469,33 +561,52 @@ function getUpdateData() {
 
 
     /*
-       DESCRIPTION
+       MEMORY / QUOTE
+
+       Store in Firestore as:
+
+           quote
     */
 
-    const description =
-        descriptionInput.value.trim();
+    const quote =
+        descriptionInput?.value.trim() ||
+        "";
 
 
-    if (description) {
+    if (quote) {
 
-        data.description =
-            description;
+        data.quote =
+            quote;
 
     }
     else {
 
-        data.description =
+        data.quote =
             deleteField();
 
     }
 
 
     /*
-       IMAGE
+       IMPORTANT:
+
+       Remove old "description" field if
+       an old document still contains it.
+
+       This keeps all memories consistent.
+    */
+
+    data.description =
+        deleteField();
+
+
+    /*
+       IMAGE URL
     */
 
     const imageUrl =
-        imageInput.value.trim();
+        imageInput?.value.trim() ||
+        "";
 
 
     if (imageUrl) {
@@ -527,25 +638,6 @@ function getUpdateData() {
 
 /* =========================================================
    ACTIVITY LOGGER
-   =========================================================
-
-   Every ADD / UPDATE / DELETE creates
-   a separate document inside:
-
-   activityLogs
-
-   Example:
-
-   {
-       action: "UPDATE",
-       collection: "memories",
-       documentId: "...",
-       itemName: "Old Puja Memory",
-       performedBy: "admin@email.com",
-       performedByUid: "...",
-       createdAt: Timestamp
-   }
-
    ========================================================= */
 
 async function logActivity({
@@ -589,7 +681,8 @@ async function logActivity({
                     documentId || "",
 
                 itemName:
-                    itemName || "Untitled Memory",
+                    itemName ||
+                    "Untitled Memory",
 
                 performedBy:
                     user.email ||
@@ -615,8 +708,8 @@ async function logActivity({
     catch (error) {
 
         /*
-           Activity failure should not
-           make the main memory operation fail.
+           Activity logging failure should
+           NOT break the main operation.
         */
 
         console.error(
@@ -639,8 +732,11 @@ async function loadMemories() {
 
         if (list) {
 
-            list.innerHTML =
-                "Loading...";
+            list.innerHTML = `
+                <div class="empty-list">
+                    Loading memories...
+                </div>
+            `;
 
         }
 
@@ -729,13 +825,9 @@ async function loadMemories() {
         if (list) {
 
             list.innerHTML = `
-
                 <div class="empty-list">
-
                     Unable to load memories.
-
                 </div>
-
             `;
 
         }
@@ -746,7 +838,7 @@ async function loadMemories() {
 
 
 /* =========================================================
-   RENDER
+   RENDER MEMORIES
    ========================================================= */
 
 function renderMemories() {
@@ -771,15 +863,15 @@ function renderMemories() {
 
     if (!memories.length) {
 
-        list.innerHTML = `
+        if (list) {
 
-            <div class="empty-list">
+            list.innerHTML = `
+                <div class="empty-list">
+                    No memories found.
+                </div>
+            `;
 
-                No memories found.
-
-            </div>
-
-        `;
+        }
 
         return;
 
@@ -822,15 +914,11 @@ function renderMemories() {
             if (memory.year) {
 
                 tags += `
-
                     <span class="memory-tag">
-
                         ${escapeHTML(
                             memory.year
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -843,15 +931,11 @@ function renderMemories() {
             if (memory.person) {
 
                 tags += `
-
                     <span class="memory-tag">
-
                         ${escapeHTML(
                             memory.person
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -864,18 +948,57 @@ function renderMemories() {
             if (memory.category) {
 
                 tags += `
-
                     <span class="memory-tag">
-
                         ${escapeHTML(
                             memory.category
                         )}
-
                     </span>
-
                 `;
 
             }
+
+
+            /*
+               MEMORY TEXT
+
+               IMPORTANT:
+
+               Reads:
+
+                   quote
+
+               and falls back to:
+
+                   description
+            */
+
+            const memoryText =
+                getMemoryText(
+                    memory
+                );
+
+
+            /*
+               IMAGE
+            */
+
+            const imageHTML =
+                memory.imageUrl
+                    ? `
+                        <img
+                            src="${escapeHTML(
+                                memory.imageUrl
+                            )}"
+                            class="memory-image"
+                            alt="${escapeHTML(
+                                memory.title ||
+                                "Memory"
+                            )}"
+                            loading="lazy"
+                            onerror="this.style.display='none';"
+                        >
+                      `
+                    : "";
 
 
             /*
@@ -901,34 +1024,22 @@ function renderMemories() {
                 </h3>
 
 
-                <div class="memory-description">
-
-                    ${escapeHTML(
-                        memory.description ||
-                        ""
-                    )}
-
-                </div>
-
-
                 ${
-                    memory.imageUrl
+                    memoryText
                         ? `
+                            <div class="memory-description">
 
-                            <img
-                                src="${escapeHTML(
-                                    memory.imageUrl
-                                )}"
-                                class="memory-image"
-                                alt="${escapeHTML(
-                                    memory.title ||
-                                    "Memory"
-                                )}"
-                            >
+                                ${escapeHTML(
+                                    memoryText
+                                )}
 
+                            </div>
                           `
                         : ""
                 }
+
+
+                ${imageHTML}
 
 
                 <div class="memory-actions">
@@ -957,11 +1068,15 @@ function renderMemories() {
                EDIT
             */
 
-            item
-                .querySelector(
+            const editButton =
+                item.querySelector(
                     ".edit-button"
-                )
-                .addEventListener(
+                );
+
+
+            if (editButton) {
+
+                editButton.addEventListener(
                     "click",
                     () => {
 
@@ -972,16 +1087,22 @@ function renderMemories() {
                     }
                 );
 
+            }
+
 
             /*
                DELETE
             */
 
-            item
-                .querySelector(
+            const deleteButton =
+                item.querySelector(
                     ".delete-button"
-                )
-                .addEventListener(
+                );
+
+
+            if (deleteButton) {
+
+                deleteButton.addEventListener(
                     "click",
                     () => {
 
@@ -991,6 +1112,8 @@ function renderMemories() {
 
                     }
                 );
+
+            }
 
 
             list.appendChild(
@@ -1021,7 +1144,8 @@ if (form) {
             */
 
             const title =
-                titleInput.value.trim();
+                titleInput?.value.trim() ||
+                "";
 
 
             if (!title) {
@@ -1031,7 +1155,8 @@ if (form) {
                     "error"
                 );
 
-                titleInput.focus();
+
+                titleInput?.focus();
 
                 return;
 
@@ -1039,22 +1164,23 @@ if (form) {
 
 
             /*
-               Description is required
-               in your original system.
+               Validate Memory / Quote.
             */
 
-            const description =
-                descriptionInput.value.trim();
+            const quote =
+                descriptionInput?.value.trim() ||
+                "";
 
 
-            if (!description) {
+            if (!quote) {
 
                 showMessage(
                     "Please enter the memory.",
                     "error"
                 );
 
-                descriptionInput.focus();
+
+                descriptionInput?.focus();
 
                 return;
 
@@ -1065,14 +1191,18 @@ if (form) {
                Disable button.
             */
 
-            saveButton.disabled =
-                true;
+            if (saveButton) {
+
+                saveButton.disabled =
+                    true;
 
 
-            saveButton.textContent =
-                editingId
-                    ? "Updating..."
-                    : "Saving...";
+                saveButton.textContent =
+                    editingId
+                        ? "Updating..."
+                        : "Saving...";
+
+            }
 
 
             try {
@@ -1084,8 +1214,7 @@ if (form) {
                 if (editingId) {
 
                     /*
-                       Save current name before update.
-                       This is useful for activity history.
+                       Find old memory.
                     */
 
                     const oldMemory =
@@ -1101,6 +1230,10 @@ if (form) {
                         oldMemory?.title ||
                         "Untitled Memory";
 
+
+                    /*
+                       Update Firestore.
+                    */
 
                     const data =
                         getUpdateData();
@@ -1120,7 +1253,7 @@ if (form) {
 
 
                     /*
-                       ACTIVITY
+                       Activity log.
                     */
 
                     await logActivity({
@@ -1171,6 +1304,10 @@ if (form) {
                         serverTimestamp();
 
 
+                    /*
+                       Add document.
+                    */
+
                     const newDocument =
                         await addDoc(
 
@@ -1185,7 +1322,7 @@ if (form) {
 
 
                     /*
-                       ACTIVITY
+                       Activity log.
                     */
 
                     await logActivity({
@@ -1242,12 +1379,16 @@ if (form) {
             }
             finally {
 
-                saveButton.disabled =
-                    false;
+                if (saveButton) {
+
+                    saveButton.disabled =
+                        false;
 
 
-                saveButton.textContent =
-                    "Save Memory";
+                    saveButton.textContent =
+                        "Save Memory";
+
+                }
 
             }
 
@@ -1280,42 +1421,101 @@ function editMemory(
     }
 
 
+    /*
+       Store editing ID.
+    */
+
     editingId =
         id;
 
 
     /*
-       Fill form.
+       TITLE
     */
 
-    titleInput.value =
-        memory.title ||
-        "";
+    if (titleInput) {
+
+        titleInput.value =
+            memory.title ||
+            "";
+
+    }
 
 
-    yearInput.value =
-        memory.year ??
-        "";
+    /*
+       YEAR
+    */
+
+    if (yearInput) {
+
+        yearInput.value =
+            memory.year ??
+            "";
+
+    }
 
 
-    personInput.value =
-        memory.person ||
-        "";
+    /*
+       PERSON
+    */
+
+    if (personInput) {
+
+        personInput.value =
+            memory.person ||
+            "";
+
+    }
 
 
-    categoryInput.value =
-        memory.category ||
-        "";
+    /*
+       CATEGORY
+    */
+
+    if (categoryInput) {
+
+        categoryInput.value =
+            memory.category ||
+            "";
+
+    }
 
 
-    descriptionInput.value =
-        memory.description ||
-        "";
+    /*
+       MEMORY / QUOTE
+
+       IMPORTANT FIX:
+
+       Firestore:
+
+           quote
+
+       Old documents:
+
+           description
+    */
+
+    if (descriptionInput) {
+
+        descriptionInput.value =
+            getMemoryText(
+                memory
+            );
+
+    }
 
 
-    imageInput.value =
-        memory.imageUrl ||
-        "";
+    /*
+       IMAGE URL
+    */
+
+    if (imageInput) {
+
+        imageInput.value =
+            memory.imageUrl ||
+            "";
+
+    }
 
 
     /*
@@ -1339,7 +1539,7 @@ function editMemory(
 
 
     /*
-       Scroll.
+       Scroll to form.
     */
 
     if (form) {
@@ -1384,7 +1584,10 @@ async function deleteMemory(
 
     const confirmed =
         window.confirm(
-            `Delete "${memory.title || "this memory"}"?`
+            `Delete "${
+                memory.title ||
+                "this memory"
+            }"?`
         );
 
 
@@ -1548,18 +1751,29 @@ if (logoutButton) {
 
 
             /*
-               Remove locally stored
-               admin information.
+               Remove local admin information.
             */
 
-            localStorage.removeItem(
-                "adminEmail"
-            );
+            try {
+
+                localStorage.removeItem(
+                    "adminEmail"
+                );
 
 
-            localStorage.removeItem(
-                "adminUid"
-            );
+                localStorage.removeItem(
+                    "adminUid"
+                );
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "Unable to clear local admin information.",
+                    error
+                );
+
+            }
 
 
             window.location.replace(

@@ -10,7 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Roy Bari — Rituals</title>
+    <title>
+        Roy Bari — Rituals
+    </title>
 
     <link
         rel="stylesheet"
@@ -19,177 +21,581 @@
 
     <style>
 
-        .content-card {
-            background: #fff;
-            border: 1px solid #e7ddd3;
-            border-radius: 12px;
-            padding: 24px;
+        /* =====================================================
+           SIDE BY SIDE LAYOUT
+           ===================================================== */
+
+        .ritual-manager-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(420px, 0.9fr)
+                minmax(520px, 1.4fr);
+
+            gap: 24px;
+
+            width: 100%;
+
+            align-items: start;
+
         }
+
+
+        .content-card {
+
+            background: #fff;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 14px;
+
+            padding: 28px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* =====================================================
+           FORM
+           ===================================================== */
 
         .form-grid {
+
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
             gap: 16px;
+
         }
+
 
         .full-width {
+
             grid-column: 1 / -1;
+
         }
+
 
         .form-group {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 7px;
+
         }
 
+
         .form-group label {
+
             font-size: 12px;
+
             font-weight: 700;
+
             color: #67584c;
+
         }
+
 
         .form-group input,
         .form-group select,
         .form-group textarea {
+
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #ddd1c6;
-            border-radius: 7px;
-            background: #fffdf9;
-            color: #3c3028;
-            font-family: inherit;
-            outline: none;
+
             box-sizing: border-box;
+
+            padding: 12px 13px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+            color: #3c3028;
+
+            font-family: inherit;
+
+            outline: none;
+
         }
 
+
         .form-group textarea {
-            min-height: 120px;
+
+            min-height: 130px;
+
             resize: vertical;
+
+            line-height: 1.55;
+
         }
+
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
+
             border-color: #795337;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, 0.08);
+
         }
 
+
+        /* =====================================================
+           FORM ACTIONS
+           ===================================================== */
+
         .form-actions {
+
             display: flex;
+
             gap: 10px;
+
             margin-top: 20px;
+
         }
+
 
         .primary-button,
         .secondary-button {
+
             padding: 11px 18px;
+
             border-radius: 7px;
+
             cursor: pointer;
+
             font-family: inherit;
-            font-weight: 600;
+
+            font-weight: 700;
+
         }
+
 
         .primary-button {
+
             border: none;
+
             background: #795337;
-            color: white;
+
+            color: #fff;
+
         }
+
 
         .primary-button:hover {
+
             background: #633f29;
+
         }
+
+
+        .primary-button:disabled {
+
+            opacity: .6;
+
+            cursor: wait;
+
+        }
+
 
         .secondary-button {
+
             border: 1px solid #ddd1c6;
-            background: white;
+
+            background: #fff;
+
             color: #5d4b3d;
+
         }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
 
         #ritualMessage {
+
             min-height: 20px;
-            margin-top: 12px;
+
+            margin: 14px 0 0;
+
             font-size: 13px;
+
         }
 
-        .message-success {
+
+        .message.success {
+
             color: #39734a;
+
         }
 
-        .message-error {
+
+        .message.error {
+
             color: #a33d3d;
+
         }
+
+
+        /* =====================================================
+           RITUAL LIST
+           ===================================================== */
+
+        #ritualList {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
 
         .ritual-item {
-            padding: 18px 0;
+
+            padding: 20px 0;
+
             border-bottom: 1px solid #e8dfd6;
+
         }
+
+
+        .ritual-item:first-child {
+
+            padding-top: 5px;
+
+        }
+
 
         .ritual-item:last-child {
+
             border-bottom: none;
+
         }
+
+
+        .ritual-card-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 18px;
+
+        }
+
 
         .ritual-item h3 {
-            margin: 0 0 6px;
+
+            margin: 7px 0 0;
+
             font-family: Georgia, serif;
+
+            font-size: 20px;
+
             color: #3f2920;
+
         }
+
+
+        /* =====================================================
+           TAGS
+           ===================================================== */
 
         .ritual-meta {
+
             display: flex;
-            gap: 7px;
+
+            gap: 6px;
+
             flex-wrap: wrap;
-            margin-bottom: 8px;
+
         }
+
 
         .ritual-tag {
+
+            display: inline-flex;
+
+            align-items: center;
+
             padding: 4px 8px;
+
             border-radius: 20px;
+
             background: #f1e8df;
+
             color: #795337;
+
             font-size: 9px;
-            font-weight: 700;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+
             text-transform: uppercase;
+
         }
+
+
+        /* =====================================================
+           DETAILS
+           ===================================================== */
+
+        .ritual-details {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 8px 18px;
+
+            margin-top: 15px;
+
+            padding: 13px;
+
+            border-radius: 8px;
+
+            background: #faf6f1;
+
+        }
+
+
+        .ritual-detail {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
+
+        }
+
+
+        .ritual-detail strong {
+
+            color: #8a7565;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .ritual-detail span {
+
+            color: #4e4036;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           DESCRIPTION
+           ===================================================== */
 
         .ritual-description {
+
+            margin-top: 14px;
+
+            padding-top: 13px;
+
+            border-top: 1px solid #eee5dc;
+
             color: #74675d;
+
             line-height: 1.6;
+
             font-size: 13px;
+
         }
 
-        .item-actions {
+
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
+        .ritual-actions {
+
             display: flex;
+
             gap: 7px;
-            margin-top: 12px;
+
+            flex-shrink: 0;
+
         }
+
 
         .edit-button,
         .delete-button {
-            padding: 7px 11px;
-            border-radius: 6px;
+
+            padding: 8px 12px;
+
+            border-radius: 7px;
+
             border: 1px solid #ddd1c6;
-            background: white;
+
+            background: #fff;
+
             cursor: pointer;
+
+            font-family: inherit;
+
             font-size: 11px;
+
+            font-weight: 700;
+
         }
+
+
+        .edit-button {
+
+            color: #795337;
+
+        }
+
+
+        .edit-button:hover {
+
+            background: #f7eee6;
+
+        }
+
 
         .delete-button {
+
             color: #a13c3c;
+
+            border-color: #dfc9c3;
+
         }
+
+
+        .delete-button:hover {
+
+            background: #f9e8e8;
+
+        }
+
+
+        /* =====================================================
+           EMPTY
+           ===================================================== */
 
         .empty-list {
-            padding: 35px 10px;
+
+            padding: 55px 20px;
+
             text-align: center;
+
             color: #8b7b6d;
+
         }
 
-        @media (max-width: 800px) {
 
-            .form-grid {
+        .empty-list h3 {
+
+            margin: 10px 0 5px;
+
+            font-family: Georgia, serif;
+
+            color: #59483c;
+
+        }
+
+
+        .empty-list p {
+
+            margin: 0;
+
+            font-size: 12px;
+
+        }
+
+
+        .empty-icon {
+
+            font-size: 30px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .ritual-manager-layout {
+
                 grid-template-columns: 1fr;
+
             }
 
+        }
+
+
+        @media (max-width: 700px) {
+
+            .content-card {
+
+                padding: 20px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
             .full-width {
+
                 grid-column: auto;
+
+            }
+
+
+            .ritual-details {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .ritual-card-top {
+
+                flex-direction: column;
+
+            }
+
+
+            .ritual-actions {
+
+                width: 100%;
+
             }
 
         }
@@ -208,6 +614,7 @@
 
     <aside class="sidebar">
 
+
         <div class="sidebar-brand">
 
             <div class="sidebar-logo">
@@ -216,7 +623,9 @@
 
             <div class="sidebar-brand-text">
 
-                <h2>Roy Bari</h2>
+                <h2>
+                    Roy Bari
+                </h2>
 
                 <span>
                     Administration
@@ -229,92 +638,149 @@
 
         <nav class="sidebar-nav">
 
-            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
             </div>
 
+
             <a
                 href="./dashboard.html"
                 class="nav-item"
             >
-                <span class="nav-icon">◈</span>
-                <span>Dashboard</span>
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
             </a>
 
-
-            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
             </div>
 
+
             <a
                 href="./family.html"
                 class="nav-item"
             >
-                <span class="nav-icon">👨‍👩‍👧</span>
-                <span>Family Tree</span>
+
+                <span class="nav-icon">
+                    👨‍👩‍👧
+                </span>
+
+                <span>
+                    Family Tree
+                </span>
+
             </a>
+
 
             <a
                 href="./events.html"
                 class="nav-item"
             >
-                <span class="nav-icon">🪔</span>
-                <span>Puja Events</span>
+
+                <span class="nav-icon">
+                    🪔
+                </span>
+
+                <span>
+                    Puja Events
+                </span>
+
             </a>
+
 
             <a
                 href="./archive.html"
                 class="nav-item"
             >
-                <span class="nav-icon">📜</span>
-                <span>Archive</span>
+
+                <span class="nav-icon">
+                    📜
+                </span>
+
+                <span>
+                    Archive
+                </span>
+
             </a>
+
 
             <a
                 href="./gallery.html"
                 class="nav-item"
             >
-                <span class="nav-icon">📷</span>
-                <span>Gallery</span>
+
+                <span class="nav-icon">
+                    📷
+                </span>
+
+                <span>
+                    Gallery
+                </span>
+
             </a>
 
-
-            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
             </div>
 
+
             <a
                 href="./memories.html"
                 class="nav-item"
             >
-                <span class="nav-icon">♡</span>
-                <span>Memories</span>
+
+                <span class="nav-icon">
+                    ♡
+                </span>
+
+                <span>
+                    Memories
+                </span>
+
             </a>
+
 
             <a
                 href="./rituals.html"
                 class="nav-item active"
             >
-                <span class="nav-icon">ॐ</span>
-                <span>Rituals</span>
+
+                <span class="nav-icon">
+                    ॐ
+                </span>
+
+                <span>
+                    Rituals
+                </span>
+
             </a>
+
 
             <a
                 href="./timeline.html"
                 class="nav-item"
             >
-                <span class="nav-icon">📅</span>
-                <span>Timeline</span>
+
+                <span class="nav-icon">
+                    📅
+                </span>
+
+                <span>
+                    Timeline
+                </span>
+
             </a>
 
-
-            <!-- ADMIN -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -323,7 +789,7 @@
 
             <a
                 href="./enquiries.html"
-                class="nav-item active"
+                class="nav-item"
             >
 
                 <span class="nav-icon">
@@ -351,13 +817,13 @@
                 </span>
 
             </a>
-            
+
+
         </nav>
 
 
-        <!-- SIDEBAR BOTTOM -->
-
         <div class="sidebar-bottom">
+
 
             <div class="sidebar-note">
 
@@ -366,20 +832,34 @@
                 </span>
 
                 <div>
-                    <strong>Admin Access</strong>
-                    <small>Protected area</small>
+
+                    <strong>
+                        Admin Access
+                    </strong>
+
+                    <small>
+                        Protected area
+                    </small>
+
                 </div>
 
             </div>
+
 
             <button
                 id="logoutButton"
                 class="logout-button"
                 type="button"
             >
-                <span>⇥</span>
+
+                <span>
+                    ⇥
+                </span>
+
                 Logout
+
             </button>
+
 
         </div>
 
@@ -394,6 +874,7 @@
 
 
         <header class="topbar">
+
 
             <div class="topbar-left">
 
@@ -432,15 +913,23 @@
 
             </div>
 
+
         </header>
 
 
-        <section class="manager-layout">
+        <!-- =================================================
+             SIDE BY SIDE CONTENT
+             ================================================= -->
+
+        <section class="ritual-manager-layout">
 
 
-            <!-- FORM -->
+            <!-- =================================================
+                 FORM
+                 ================================================= -->
 
             <div class="content-card">
+
 
                 <div class="section-heading">
 
@@ -461,6 +950,7 @@
 
                 <form id="ritualForm">
 
+
                     <div class="form-grid">
 
 
@@ -474,7 +964,7 @@
                                 id="name"
                                 type="text"
                                 required
-                                placeholder="Ritual name"
+                                placeholder="e.g. Bodhan & Kalparambha"
                             >
 
                         </div>
@@ -489,7 +979,21 @@
                             <input
                                 id="day"
                                 type="text"
-                                placeholder="e.g. Saptami"
+                                placeholder="e.g. Sasthi"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="date">
+                                Date
+                            </label>
+
+                            <input
+                                id="date"
+                                type="date"
                             >
 
                         </div>
@@ -504,7 +1008,22 @@
                             <input
                                 id="time"
                                 type="text"
-                                placeholder="e.g. 7:00 AM"
+                                placeholder="e.g. Evening"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="category">
+                                Category
+                            </label>
+
+                            <input
+                                id="category"
+                                type="text"
+                                placeholder="e.g. Sasthi"
                             >
 
                         </div>
@@ -547,6 +1066,52 @@
                         </div>
 
 
+                        <div class="form-group">
+
+                            <label for="location">
+                                Location
+                            </label>
+
+                            <input
+                                id="location"
+                                type="text"
+                                placeholder="e.g. Roy Bari"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="priest">
+                                Priest
+                            </label>
+
+                            <input
+                                id="priest"
+                                type="text"
+                                placeholder="e.g. Family Purohit"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="order">
+                                Display Order
+                            </label>
+
+                            <input
+                                id="order"
+                                type="number"
+                                min="1"
+                                placeholder="e.g. 1"
+                            >
+
+                        </div>
+
+
                         <div class="form-group full-width">
 
                             <label for="description">
@@ -574,6 +1139,7 @@
                             Save Ritual
                         </button>
 
+
                         <button
                             type="button"
                             class="secondary-button"
@@ -585,16 +1151,23 @@
                     </div>
 
 
-                    <p id="ritualMessage"></p>
+                    <p
+                        id="ritualMessage"
+                    ></p>
+
 
                 </form>
+
 
             </div>
 
 
-            <!-- LIST -->
+            <!-- =================================================
+                 LIST
+                 ================================================= -->
 
             <div class="content-card">
+
 
                 <div class="section-heading">
 
@@ -610,6 +1183,7 @@
 
                     </div>
 
+
                     <span id="ritualCount">
                         0 rituals
                     </span>
@@ -618,13 +1192,21 @@
 
 
                 <div id="ritualList">
+
                     Loading...
+
                 </div>
+
 
             </div>
 
+
         </section>
 
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
 
         <footer class="dashboard-footer">
 
@@ -633,10 +1215,11 @@
             </span>
 
             <span>
-                Family Heritage Management
+                Ritual Management
             </span>
 
         </footer>
+
 
     </main>
 
@@ -645,6 +1228,7 @@
         type="module"
         src="./js/rituals.js"
     ></script>
+
 
 </body>
 

@@ -10,14 +10,21 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="description"
+        content="Roy Bari Administration — Website Enquiries"
+    >
+
     <title>
         Roy Bari — Enquiries
     </title>
+
 
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
+
 
     <style>
 
@@ -116,7 +123,7 @@
             border-color: #795337;
 
             box-shadow:
-                0 0 0 2px
+                0 0 0 3px
                 rgba(121, 83, 55, 0.08);
 
         }
@@ -138,6 +145,13 @@
         }
 
 
+        #enquiryMessage.success {
+
+            color: #39734a;
+
+        }
+
+
         #enquiryMessage.error {
 
             color: #a33d3d;
@@ -147,7 +161,7 @@
 
 
         /* =====================================================
-           TABLE WRAPPER
+           TABLE
            ===================================================== */
 
         .enquiry-table-wrapper {
@@ -160,19 +174,16 @@
 
             border-radius: 10px;
 
+            background: #fff;
+
         }
 
-
-
-        /* =====================================================
-           TABLE
-           ===================================================== */
 
         .enquiry-table {
 
             width: 100%;
 
-            min-width: 1100px;
+            min-width: 950px;
 
             border-collapse: separate;
 
@@ -193,11 +204,11 @@
 
             color: #624a38;
 
-            font-size: 11px;
+            font-size: 10px;
 
             font-weight: 800;
 
-            letter-spacing: 0.08em;
+            letter-spacing: .08em;
 
             text-align: left;
 
@@ -208,7 +219,7 @@
 
         .enquiry-table tbody td {
 
-            padding: 17px 16px;
+            padding: 16px;
 
             border-bottom: 1px solid #eee6de;
 
@@ -237,16 +248,54 @@
 
 
         /* =====================================================
+           UNREAD ROW
+           ===================================================== */
+
+        .enquiry-table tbody tr.unread-row {
+
+            background: #fffaf3;
+
+        }
+
+
+        .enquiry-table tbody tr.unread-row:hover {
+
+            background: #fff5e9;
+
+        }
+
+
+        .unread-indicator {
+
+            display: inline-block;
+
+            width: 7px;
+
+            height: 7px;
+
+            margin-right: 7px;
+
+            border-radius: 50%;
+
+            background: #b84a3b;
+
+            vertical-align: middle;
+
+        }
+
+
+
+        /* =====================================================
            NAME
            ===================================================== */
 
         .enquiry-name {
 
-            min-width: 150px;
-
-            font-weight: 700;
+            min-width: 170px;
 
             color: #332820 !important;
+
+            font-weight: 700;
 
         }
 
@@ -276,27 +325,9 @@
 
             min-width: 180px;
 
-            font-weight: 600;
-
             color: #5d4b3d !important;
 
-        }
-
-
-
-        /* =====================================================
-           MESSAGE
-           ===================================================== */
-
-        .enquiry-message-cell {
-
-            min-width: 300px;
-
-            max-width: 450px;
-
-            line-height: 1.55;
-
-            color: #6d625a !important;
+            font-weight: 600;
 
         }
 
@@ -308,35 +339,68 @@
 
         .enquiry-date {
 
-            min-width: 170px;
+            min-width: 165px;
 
-            white-space: nowrap;
+            color: #766b63 !important;
 
             font-size: 12px !important;
 
-            color: #766b63 !important;
+            white-space: nowrap;
 
         }
 
 
 
         /* =====================================================
-           DOCUMENT ID
+           STATUS
            ===================================================== */
 
-        .enquiry-id {
+        .enquiry-status {
 
-            min-width: 160px;
+            min-width: 110px;
 
-            max-width: 220px;
+        }
 
-            font-family: monospace;
 
-            font-size: 11px !important;
+        .status-badge {
 
-            color: #795337 !important;
+            display: inline-flex;
 
-            word-break: break-all;
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+        }
+
+
+        .status-badge.unread {
+
+            background: #fdeaea;
+
+            color: #a33b3b;
+
+        }
+
+
+        .status-badge.read {
+
+            background: #e9f6ec;
+
+            color: #327442;
 
         }
 
@@ -348,39 +412,79 @@
 
         .enquiry-actions {
 
-            min-width: 90px;
+            min-width: 220px;
 
-            text-align: right;
+            white-space: nowrap;
 
         }
 
 
-        .delete-enquiry {
+        .enquiry-action-button {
 
-            padding: 8px 13px;
+            display: inline-flex;
 
-            border-radius: 7px;
+            align-items: center;
 
-            border: 1px solid #dfc9c3;
+            justify-content: center;
+
+            padding: 7px 10px;
+
+            margin-right: 5px;
+
+            border-radius: 6px;
+
+            border: 1px solid #ddd1c6;
 
             background: #fff;
 
-            color: #a13c3c;
+            color: #6f4b35;
 
             font-family: inherit;
 
-            font-size: 11px;
+            font-size: 10px;
 
             font-weight: 700;
 
             cursor: pointer;
 
-            transition: 0.2s ease;
+            transition: .2s ease;
 
         }
 
 
-        .delete-enquiry:hover {
+        .enquiry-action-button:hover {
+
+            background: #f6eee6;
+
+            border-color: #cdb9a8;
+
+        }
+
+
+        .enquiry-action-button.read-button {
+
+            color: #39734a;
+
+        }
+
+
+        .enquiry-action-button.unread-button {
+
+            color: #9a6a13;
+
+        }
+
+
+        .enquiry-action-button.delete-button {
+
+            color: #a13c3c;
+
+            border-color: #dfc9c3;
+
+        }
+
+
+        .enquiry-action-button.delete-button:hover {
 
             background: #f9e8e8;
 
@@ -389,9 +493,9 @@
         }
 
 
-        .delete-enquiry:disabled {
+        .enquiry-action-button:disabled {
 
-            opacity: 0.6;
+            opacity: .55;
 
             cursor: wait;
 
@@ -406,11 +510,265 @@
         .enquiry-empty,
         .enquiry-loading {
 
-            padding: 45px !important;
+            padding: 50px !important;
 
             text-align: center !important;
 
             color: #8b7b6d !important;
+
+        }
+
+
+
+        /* =====================================================
+           DETAIL MODAL
+           ===================================================== */
+
+        .enquiry-modal {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 9999;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 25px;
+
+            background:
+                rgba(45, 32, 24, .48);
+
+            backdrop-filter: blur(3px);
+
+        }
+
+
+        .enquiry-modal.open {
+
+            display: flex;
+
+        }
+
+
+        .enquiry-modal-card {
+
+            width: min(700px, 100%);
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            background: #fff;
+
+            border: 1px solid #e2d6ca;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(40, 25, 15, .22);
+
+        }
+
+
+        .enquiry-modal-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 24px 26px;
+
+            border-bottom: 1px solid #eee5dc;
+
+        }
+
+
+        .enquiry-modal-label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #a67c52;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        .enquiry-modal-header h2 {
+
+            margin: 0;
+
+            color: #3f2920;
+
+            font-family: Georgia, serif;
+
+            font-size: 23px;
+
+        }
+
+
+        .enquiry-modal-close {
+
+            width: 34px;
+
+            height: 34px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 7px;
+
+            background: #fff;
+
+            color: #604b3d;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+        }
+
+
+        .enquiry-modal-close:hover {
+
+            background: #f6eee6;
+
+        }
+
+
+        .enquiry-modal-body {
+
+            padding: 25px 26px;
+
+        }
+
+
+        .enquiry-detail-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .enquiry-detail {
+
+            padding: 14px;
+
+            border: 1px solid #eee4db;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+        }
+
+
+        .enquiry-detail-label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #927e6d;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .enquiry-detail-value {
+
+            color: #3f342d;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            overflow-wrap: anywhere;
+
+        }
+
+
+        .enquiry-full-message {
+
+            padding: 18px;
+
+            border: 1px solid #e5dbd0;
+
+            border-radius: 9px;
+
+            background: #fffaf5;
+
+        }
+
+
+        .enquiry-full-message h3 {
+
+            margin: 0 0 10px;
+
+            color: #4b382c;
+
+            font-size: 13px;
+
+        }
+
+
+        .enquiry-full-message p {
+
+            margin: 0;
+
+            color: #62574f;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            white-space: pre-wrap;
+
+            overflow-wrap: anywhere;
+
+        }
+
+
+        .enquiry-modal-footer {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding: 18px 26px;
+
+            border-top: 1px solid #eee5dc;
 
         }
 
@@ -425,6 +783,31 @@
             .manager-list-card {
 
                 padding: 20px;
+
+            }
+
+
+            .enquiry-detail-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .enquiry-modal {
+
+                padding: 12px;
+
+            }
+
+
+            .enquiry-modal-header,
+            .enquiry-modal-body,
+            .enquiry-modal-footer {
+
+                padding-left: 18px;
+
+                padding-right: 18px;
 
             }
 
@@ -466,11 +849,8 @@
         </div>
 
 
-
         <nav class="sidebar-nav">
 
-
-            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -492,9 +872,6 @@
 
             </a>
 
-
-
-            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -565,9 +942,6 @@
             </a>
 
 
-
-            <!-- MORE -->
-
             <div class="nav-section-title">
                 MORE
             </div>
@@ -621,9 +995,6 @@
             </a>
 
 
-
-            <!-- ADMIN -->
-
             <div class="nav-section-title">
                 ADMIN
             </div>
@@ -662,9 +1033,6 @@
 
         </nav>
 
-
-
-        <!-- SIDEBAR BOTTOM -->
 
         <div class="sidebar-bottom">
 
@@ -717,8 +1085,6 @@
     <main class="dashboard-main">
 
 
-        <!-- TOPBAR -->
-
         <header class="topbar">
 
 
@@ -733,7 +1099,7 @@
                 </h1>
 
                 <p>
-                    View messages and enquiries submitted
+                    View and manage messages submitted
                     through the Roy Bari website.
                 </p>
 
@@ -774,8 +1140,6 @@
             <div class="manager-list-card">
 
 
-                <!-- HEADING -->
-
                 <div class="section-heading">
 
                     <div>
@@ -810,24 +1174,19 @@
                     <input
                         type="search"
                         id="enquirySearch"
-                        placeholder="Search name, email, reason, message..."
+                        placeholder="Search name, email, reason..."
+                        autocomplete="off"
                     >
 
                 </div>
 
 
 
-                <!-- MESSAGE -->
-
-                <p
-                    id="enquiryMessage"
-                ></p>
+                <p id="enquiryMessage"></p>
 
 
 
-                <!-- =================================================
-                     TABLE
-                     ================================================= -->
+                <!-- TABLE -->
 
                 <div class="enquiry-table-wrapper">
 
@@ -850,15 +1209,11 @@
                                 </th>
 
                                 <th>
-                                    MESSAGE
-                                </th>
-
-                                <th>
                                     DATE & TIME
                                 </th>
 
                                 <th>
-                                    DOCUMENT ID
+                                    STATUS
                                 </th>
 
                                 <th>
@@ -870,14 +1225,12 @@
                         </thead>
 
 
-                        <tbody
-                            id="enquiryList"
-                        >
+                        <tbody id="enquiryList">
 
                             <tr>
 
                                 <td
-                                    colspan="7"
+                                    colspan="6"
                                     class="enquiry-loading"
                                 >
                                     Loading enquiries...
@@ -894,12 +1247,13 @@
 
             </div>
 
-
         </section>
 
 
 
-        <!-- FOOTER -->
+        <!-- =====================================================
+             FOOTER
+             ===================================================== -->
 
         <footer class="dashboard-footer">
 
@@ -913,14 +1267,170 @@
 
         </footer>
 
-
     </main>
 
 
 
     <!-- =====================================================
-         JAVASCRIPT
+         ENQUIRY DETAIL MODAL
          ===================================================== -->
+
+    <div
+        id="enquiryModal"
+        class="enquiry-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="enquiryModalTitle"
+    >
+
+        <div class="enquiry-modal-card">
+
+
+            <div class="enquiry-modal-header">
+
+                <div>
+
+                    <span class="enquiry-modal-label">
+                        WEBSITE ENQUIRY
+                    </span>
+
+                    <h2 id="enquiryModalTitle">
+                        Enquiry Details
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="closeEnquiryModal"
+                    class="enquiry-modal-close"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <div class="enquiry-modal-body">
+
+
+                <div class="enquiry-detail-grid">
+
+
+                    <div class="enquiry-detail">
+
+                        <span class="enquiry-detail-label">
+                            Name
+                        </span>
+
+                        <div
+                            id="detailName"
+                            class="enquiry-detail-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <div class="enquiry-detail">
+
+                        <span class="enquiry-detail-label">
+                            Email
+                        </span>
+
+                        <div
+                            id="detailEmail"
+                            class="enquiry-detail-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <div class="enquiry-detail">
+
+                        <span class="enquiry-detail-label">
+                            Reason
+                        </span>
+
+                        <div
+                            id="detailReason"
+                            class="enquiry-detail-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <div class="enquiry-detail">
+
+                        <span class="enquiry-detail-label">
+                            Date
+                        </span>
+
+                        <div
+                            id="detailDate"
+                            class="enquiry-detail-value"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="enquiry-full-message">
+
+                    <h3>
+                        Message
+                    </h3>
+
+                    <p id="detailMessage">
+                        —
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="enquiry-modal-footer">
+
+                <button
+                    type="button"
+                    id="modalStatusButton"
+                    class="enquiry-action-button"
+                >
+                    Mark as Unread
+                </button>
+
+
+                <button
+                    type="button"
+                    id="modalCloseButton"
+                    class="enquiry-action-button"
+                >
+                    Close
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
 
     <script
         type="module"

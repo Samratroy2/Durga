@@ -4,11 +4,20 @@
    ACTIVITY HISTORY: activityLogs
    ========================================================= */
 
+
+/* =========================================================
+   FIREBASE AUTH
+   ========================================================= */
+
 import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
+/* =========================================================
+   FIRESTORE
+   ========================================================= */
 
 import {
     collection,
@@ -20,6 +29,10 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
 
 import {
     auth,
@@ -94,7 +107,7 @@ let gallery = [];
 
 
 /* =========================================================
-   AUTH
+   AUTHENTICATION
    ========================================================= */
 
 onAuthStateChanged(
@@ -163,12 +176,16 @@ async function loadGallery() {
         );
 
 
-        galleryCount.textContent =
-            `${gallery.length} photo${
-                gallery.length === 1
-                    ? ""
-                    : "s"
-            }`;
+        if (galleryCount) {
+
+            galleryCount.textContent =
+                `${gallery.length} photo${
+                    gallery.length === 1
+                        ? ""
+                        : "s"
+                }`;
+
+        }
 
 
         renderGallery();
@@ -182,17 +199,115 @@ async function loadGallery() {
         );
 
 
-        galleryList.innerHTML = `
+        if (galleryList) {
 
-            <p class="message error">
+            galleryList.innerHTML = `
 
-                Unable to load gallery.
+                <p class="message error">
+                    Unable to load gallery.
+                </p>
 
-            </p>
+            `;
 
-        `;
+        }
 
     }
+
+}
+
+
+/* =========================================================
+   CONVERT GOOGLE DRIVE URL
+   ========================================================= */
+
+function convertGoogleDriveUrl(url) {
+
+    if (!url) {
+
+        return "";
+
+    }
+
+
+    const value =
+        String(url).trim();
+
+
+    /*
+       Google Drive file URL
+
+       Example:
+
+       https://drive.google.com/file/d/FILE_ID/view
+    */
+
+    const fileMatch =
+        value.match(
+            /drive\.google\.com\/file\/d\/([^/]+)/
+        );
+
+
+    if (
+        fileMatch &&
+        fileMatch[1]
+    ) {
+
+        const fileId =
+            fileMatch[1];
+
+
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+
+    }
+
+
+    /*
+       Google Drive open URL
+
+       Example:
+
+       https://drive.google.com/open?id=FILE_ID
+    */
+
+    try {
+
+        const parsed =
+            new URL(value);
+
+
+        const id =
+            parsed.searchParams.get(
+                "id"
+            );
+
+
+        if (
+            id &&
+            value.includes(
+                "drive.google.com"
+            )
+        ) {
+
+            return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+
+        }
+
+    }
+    catch (error) {
+
+        console.warn(
+            "Invalid image URL:",
+            value
+        );
+
+    }
+
+
+    /*
+       Normal image URL
+    */
+
+    return value;
 
 }
 
@@ -202,6 +317,13 @@ async function loadGallery() {
    ========================================================= */
 
 function renderGallery() {
+
+    if (!galleryList) {
+
+        return;
+
+    }
+
 
     if (!gallery.length) {
 
@@ -247,38 +369,100 @@ function renderGallery() {
                 "manager-item";
 
 
+            /*
+               IMPORTANT
+
+               Your Firestore screenshot shows
+               the image URL is stored in:
+
+               link
+
+               So we use item.link first.
+
+               item.image is also supported
+               for older documents.
+            */
+
+            const originalImageUrl =
+                item.link ||
+                item.image ||
+                "";
+
+
+            const imageUrl =
+                convertGoogleDriveUrl(
+                    originalImageUrl
+                );
+
+
+            /*
+               IMAGE HTML
+            */
+
+            const imageHTML =
+                imageUrl
+
+                    ? `
+
+                        <img
+                            src="${escapeHtml(
+                                imageUrl
+                            )}"
+                            alt="${escapeHtml(
+                                item.title ||
+                                "Photograph"
+                            )}"
+                            loading="lazy"
+                            onerror="
+                                this.onerror=null;
+                                this.style.display='none';
+                                this.parentElement.classList.add('image-error');
+                            "
+                        >
+
+                      `
+
+                    : `
+
+                        <span>
+                            📷
+                        </span>
+
+                      `;
+
+
             card.innerHTML = `
 
                 <div class="manager-item-main">
 
-                    <div class="manager-avatar">
 
-                        ${
-                            item.image
-                                ? `
-                                    <img
-                                        src="${escapeHtml(
-                                            item.image
-                                        )}"
-                                        alt="${escapeHtml(
-                                            item.title ||
-                                            "Photo"
-                                        )}"
-                                    >
-                                  `
-                                : "📷"
-                        }
+                    <!-- =================================================
+                         SQUARE IMAGE
+                         ================================================= -->
+
+                    <div
+                        class="manager-avatar gallery-thumbnail"
+                        title="Gallery photograph"
+                    >
+
+                        ${imageHTML}
 
                     </div>
 
 
+                    <!-- =================================================
+                         DETAILS
+                         ================================================= -->
+
                     <div>
 
                         <h3>
+
                             ${escapeHtml(
                                 item.title ||
                                 "Untitled"
                             )}
+
                         </h3>
 
 
@@ -315,7 +499,12 @@ function renderGallery() {
                 </div>
 
 
+                <!-- =================================================
+                     ACTIONS
+                     ================================================= -->
+
                 <div class="manager-actions">
+
 
                     <button
                         type="button"
@@ -324,7 +513,9 @@ function renderGallery() {
                             item.id
                         )}"
                     >
+
                         Edit
+
                     </button>
 
 
@@ -335,8 +526,11 @@ function renderGallery() {
                             item.id
                         )}"
                     >
+
                         Delete
+
                     </button>
+
 
                 </div>
 
@@ -361,6 +555,7 @@ function renderGallery() {
    ========================================================= */
 
 function attachGalleryButtons() {
+
 
     document
         .querySelectorAll(
@@ -409,7 +604,7 @@ function attachGalleryButtons() {
 
 
 /* =========================================================
-   SAVE
+   SAVE GALLERY
    ========================================================= */
 
 if (form) {
@@ -421,23 +616,28 @@ if (form) {
             event.preventDefault();
 
 
-            saveButton.disabled =
-                true;
+            if (saveButton) {
 
+                saveButton.disabled =
+                    true;
 
-            saveButton.textContent =
-                galleryId.value
-                    ? "Updating..."
-                    : "Saving...";
+                saveButton.textContent =
+                    galleryId.value
+                        ? "Updating..."
+                        : "Saving...";
+
+            }
 
 
             try {
+
 
                 /* =================================================
                    ADD
                    ================================================= */
 
                 if (!galleryId.value) {
+
 
                     const data = {
 
@@ -450,6 +650,20 @@ if (form) {
                                     yearInput.value
                                 )
                                 : null,
+
+
+                        /*
+                           Save URL in BOTH fields.
+
+                           "link" is the field used by
+                           your current Firestore documents.
+
+                           "image" keeps compatibility
+                           with your existing code.
+                        */
+
+                        link:
+                            imageInput.value.trim(),
 
                         image:
                             imageInput.value.trim(),
@@ -478,10 +692,6 @@ if (form) {
                             data
                         );
 
-
-                    /*
-                       STORE ACTIVITY
-                    */
 
                     await logActivity({
 
@@ -521,6 +731,7 @@ if (form) {
 
                 else {
 
+
                     const oldItem =
                         gallery.find(
                             item =>
@@ -550,6 +761,9 @@ if (form) {
                                 )
                                 : null,
 
+                        link:
+                            imageInput.value.trim(),
+
                         image:
                             imageInput.value.trim(),
 
@@ -564,11 +778,6 @@ if (form) {
 
                     };
 
-
-                    /*
-                       Find exactly what changed
-                       before updating Firestore.
-                    */
 
                     const changes =
                         getChangedFields(
@@ -586,10 +795,6 @@ if (form) {
                         newData
                     );
 
-
-                    /*
-                       STORE ACTIVITY
-                    */
 
                     await logActivity({
 
@@ -646,12 +851,15 @@ if (form) {
             }
 
 
-            saveButton.disabled =
-                false;
+            if (saveButton) {
 
+                saveButton.disabled =
+                    false;
 
-            saveButton.textContent =
-                "Save Photograph";
+                saveButton.textContent =
+                    "Save Photograph";
+
+            }
 
         }
     );
@@ -675,6 +883,7 @@ function getChangedFields(
 
         "title",
         "year",
+        "link",
         "image",
         "description",
         "category"
@@ -812,7 +1021,7 @@ function buildCreatedDetails(
 
 
 /* =========================================================
-   EDIT
+   EDIT GALLERY
    ========================================================= */
 
 function editGallery(
@@ -848,7 +1057,13 @@ function editGallery(
         "";
 
 
+    /*
+       Firestore uses "link".
+       Older documents may use "image".
+    */
+
     imageInput.value =
+        item.link ||
         item.image ||
         "";
 
@@ -863,13 +1078,25 @@ function editGallery(
         "";
 
 
-    formTitle.textContent =
-        "Edit Photograph";
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Edit Photograph";
+
+    }
 
 
-    saveButton.textContent =
-        "Update Photograph";
+    if (saveButton) {
 
+        saveButton.textContent =
+            "Update Photograph";
+
+    }
+
+
+    /*
+       Show edit form at top.
+    */
 
     window.scrollTo({
 
@@ -883,7 +1110,7 @@ function editGallery(
 
 
 /* =========================================================
-   DELETE
+   DELETE GALLERY
    ========================================================= */
 
 async function deleteGallery(
@@ -923,9 +1150,6 @@ async function deleteGallery(
 
     try {
 
-        /*
-           Delete Firestore document.
-        */
 
         await deleteDoc(
             doc(
@@ -935,10 +1159,6 @@ async function deleteGallery(
             )
         );
 
-
-        /*
-           STORE ACTIVITY
-        */
 
         await logActivity({
 
@@ -1042,7 +1262,7 @@ function buildDeletedDetails(
 
 
 /* =========================================================
-   RESET
+   RESET FORM
    ========================================================= */
 
 if (cancelButton) {
@@ -1064,16 +1284,28 @@ function resetForm() {
     }
 
 
-    galleryId.value =
-        "";
+    if (galleryId) {
+
+        galleryId.value =
+            "";
+
+    }
 
 
-    formTitle.textContent =
-        "Add Photograph";
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Add Photograph";
+
+    }
 
 
-    saveButton.textContent =
-        "Save Photograph";
+    if (saveButton) {
+
+        saveButton.textContent =
+            "Save Photograph";
+
+    }
 
 }
 
@@ -1157,7 +1389,7 @@ function formatFieldName(
         )
 
         .replace(
-            /[_-]/g,
+            /[\_-]/g,
             " "
         )
 
