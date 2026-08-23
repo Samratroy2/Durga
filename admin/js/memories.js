@@ -72,9 +72,11 @@ const categoryInput =
 /*
    IMPORTANT:
 
-   This input is the "Memory" field in HTML.
+   HTML field:
 
-   It is stored in Firestore as:
+       description
+
+   Firestore field:
 
        quote
 
@@ -262,8 +264,6 @@ function showMessage(
 
        description
 
-   Therefore both are supported.
-
    Priority:
 
        quote
@@ -291,15 +291,9 @@ function getMemoryText(
    BUILD NEW FORM DATA
    =========================================================
 
-   IMPORTANT:
-
-   Memory field is stored as:
+   Firestore field:
 
        quote
-
-   NOT:
-
-       description
 
    Empty fields are not stored.
 
@@ -310,9 +304,9 @@ function getNewFormData() {
     const data = {};
 
 
-    /*
+    /* =====================================================
        TITLE
-    */
+       ===================================================== */
 
     const title =
         titleInput?.value.trim() ||
@@ -327,9 +321,9 @@ function getNewFormData() {
     }
 
 
-    /*
+    /* =====================================================
        YEAR
-    */
+       ===================================================== */
 
     const year =
         yearInput?.value.trim() ||
@@ -356,9 +350,9 @@ function getNewFormData() {
     }
 
 
-    /*
+    /* =====================================================
        PERSON
-    */
+       ===================================================== */
 
     const person =
         personInput?.value.trim() ||
@@ -373,9 +367,9 @@ function getNewFormData() {
     }
 
 
-    /*
+    /* =====================================================
        CATEGORY
-    */
+       ===================================================== */
 
     const category =
         categoryInput?.value.trim() ||
@@ -390,17 +384,9 @@ function getNewFormData() {
     }
 
 
-    /*
+    /* =====================================================
        MEMORY / QUOTE
-
-       HTML field:
-
-           description
-
-       Firestore field:
-
-           quote
-    */
+       ===================================================== */
 
     const quote =
         descriptionInput?.value.trim() ||
@@ -415,9 +401,9 @@ function getNewFormData() {
     }
 
 
-    /*
+    /* =====================================================
        IMAGE URL
-    */
+       ===================================================== */
 
     const imageUrl =
         imageInput?.value.trim() ||
@@ -450,9 +436,9 @@ function getUpdateData() {
     const data = {};
 
 
-    /*
+    /* =====================================================
        TITLE
-    */
+       ===================================================== */
 
     const title =
         titleInput?.value.trim() ||
@@ -473,9 +459,9 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        YEAR
-    */
+       ===================================================== */
 
     const year =
         yearInput?.value.trim() ||
@@ -514,9 +500,9 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        PERSON
-    */
+       ===================================================== */
 
     const person =
         personInput?.value.trim() ||
@@ -537,9 +523,9 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        CATEGORY
-    */
+       ===================================================== */
 
     const category =
         categoryInput?.value.trim() ||
@@ -560,13 +546,9 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        MEMORY / QUOTE
-
-       Store in Firestore as:
-
-           quote
-    */
+       ===================================================== */
 
     const quote =
         descriptionInput?.value.trim() ||
@@ -588,21 +570,19 @@ function getUpdateData() {
 
 
     /*
-       IMPORTANT:
+       Remove old description field.
 
-       Remove old "description" field if
-       an old document still contains it.
-
-       This keeps all memories consistent.
+       This keeps old and new documents
+       consistent.
     */
 
     data.description =
         deleteField();
 
 
-    /*
+    /* =====================================================
        IMAGE URL
-    */
+       ===================================================== */
 
     const imageUrl =
         imageInput?.value.trim() ||
@@ -623,9 +603,9 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        UPDATED TIME
-    */
+       ===================================================== */
 
     data.updatedAt =
         serverTimestamp();
@@ -637,13 +617,114 @@ function getUpdateData() {
 
 
 /* =========================================================
+   ACTIVITY SNAPSHOT
+   =========================================================
+
+   This creates a clean version of a memory only for
+   activity comparison.
+
+   IMPORTANT:
+
+   Old "description" and new "quote" are treated as
+   the same "Memory" field.
+
+   ========================================================= */
+
+function getActivitySnapshot(
+    memory
+) {
+
+    return {
+
+        title:
+            memory?.title ??
+            "",
+
+        year:
+            memory?.year ??
+            "",
+
+        person:
+            memory?.person ??
+            "",
+
+        category:
+            memory?.category ??
+            "",
+
+        quote:
+            getMemoryText(
+                memory
+            ),
+
+        imageUrl:
+            memory?.imageUrl ??
+            ""
+
+    };
+
+}
+
+
+/* =========================================================
+   GET NEW ACTIVITY SNAPSHOT
+   ========================================================= */
+
+function getNewActivitySnapshot() {
+
+    return {
+
+        title:
+            titleInput?.value.trim() ||
+            "",
+
+        year:
+            yearInput?.value.trim() ||
+            "",
+
+        person:
+            personInput?.value.trim() ||
+            "",
+
+        category:
+            categoryInput?.value.trim() ||
+            "",
+
+        quote:
+            descriptionInput?.value.trim() ||
+            "",
+
+        imageUrl:
+            imageInput?.value.trim() ||
+            ""
+
+    };
+
+}
+
+
+/* =========================================================
    ACTIVITY LOGGER
+   =========================================================
+
+   DETAILS WILL ONLY SAY WHAT CHANGED.
+
+   Example:
+
+       Category changed
+
+   or:
+
+       Category changed, Person changed
+
    ========================================================= */
 
 async function logActivity({
     action,
     documentId,
-    itemName
+    itemName,
+    oldData = null,
+    newData = null
 }) {
 
     try {
@@ -664,6 +745,86 @@ async function logActivity({
         }
 
 
+        const currentAction =
+            String(
+                action || ""
+            ).toUpperCase();
+
+
+        let details =
+            "Activity performed.";
+
+
+        /* =================================================
+           CREATE
+           ================================================= */
+
+        if (
+            currentAction === "CREATE"
+        ) {
+
+            details =
+                "Memory added.";
+
+        }
+
+
+        /* =================================================
+           DELETE
+           ================================================= */
+
+        else if (
+            currentAction === "DELETE"
+        ) {
+
+            details =
+                "Memory deleted.";
+
+        }
+
+
+        /* =================================================
+           UPDATE
+           ================================================= */
+
+        else if (
+            currentAction === "UPDATE"
+        ) {
+
+            const changedFields =
+                getChangedFields(
+                    oldData,
+                    newData
+                );
+
+
+            if (
+                changedFields.length > 0
+            ) {
+
+                details =
+                    changedFields
+                        .map(
+                            field =>
+                                `${field} changed`
+                        )
+                        .join(", ");
+
+            }
+            else {
+
+                details =
+                    "Memory updated.";
+
+            }
+
+        }
+
+
+        /* =================================================
+           SAVE ACTIVITY
+           ================================================= */
+
         await addDoc(
             collection(
                 db,
@@ -672,7 +833,7 @@ async function logActivity({
             {
 
                 action:
-                    action,
+                    currentAction,
 
                 collection:
                     "memories",
@@ -684,6 +845,9 @@ async function logActivity({
                     itemName ||
                     "Untitled Memory",
 
+                details:
+                    details,
+
                 performedBy:
                     user.email ||
                     "Unknown Admin",
@@ -693,6 +857,9 @@ async function logActivity({
                     "",
 
                 createdAt:
+                    serverTimestamp(),
+
+                performedAt:
                     serverTimestamp()
 
             }
@@ -700,17 +867,25 @@ async function logActivity({
 
 
         console.log(
-            "Memory activity logged:",
-            action
+            "Activity logged:",
+            {
+                action:
+                    currentAction,
+
+                collection:
+                    "memories",
+
+                itemName:
+                    itemName,
+
+                details:
+                    details
+            }
         );
 
     }
-    catch (error) {
 
-        /*
-           Activity logging failure should
-           NOT break the main operation.
-        */
+    catch (error) {
 
         console.error(
             "Activity logging error:",
@@ -718,6 +893,239 @@ async function logActivity({
         );
 
     }
+
+}
+
+
+/* =========================================================
+   FIND CHANGED FIELDS
+   ========================================================= */
+
+function getChangedFields(
+    oldData,
+    newData
+) {
+
+    const changed =
+        [];
+
+
+    if (!oldData) {
+
+        return changed;
+
+    }
+
+
+    if (!newData) {
+
+        return changed;
+
+    }
+
+
+    /* =====================================================
+       FIELD LABELS
+       =====================================================
+
+       Firestore field
+             ↓
+       Activity Details
+
+       title
+             → Title
+
+       year
+             → Year
+
+       person
+             → Person
+
+       category
+             → Category
+
+       quote
+             → Memory
+
+       imageUrl
+             → Image
+
+       ===================================================== */
+
+    const fields = [
+
+        {
+            key:
+                "title",
+
+            label:
+                "Title"
+        },
+
+        {
+            key:
+                "year",
+
+            label:
+                "Year"
+        },
+
+        {
+            key:
+                "person",
+
+            label:
+                "Person"
+        },
+
+        {
+            key:
+                "category",
+
+            label:
+                "Category"
+        },
+
+        {
+            key:
+                "quote",
+
+            label:
+                "Memory"
+        },
+
+        {
+            key:
+                "imageUrl",
+
+            label:
+                "Image"
+        }
+
+    ];
+
+
+    fields.forEach(
+        field => {
+
+            const oldValue =
+                normalizeActivityValue(
+                    oldData[
+                        field.key
+                    ]
+                );
+
+
+            const newValue =
+                normalizeActivityValue(
+                    newData[
+                        field.key
+                    ]
+                );
+
+
+            if (
+                oldValue !==
+                newValue
+            ) {
+
+                changed.push(
+                    field.label
+                );
+
+            }
+
+        }
+    );
+
+
+    return changed;
+
+}
+
+
+/* =========================================================
+   NORMALIZE ACTIVITY VALUE
+   ========================================================= */
+
+function normalizeActivityValue(
+    value
+) {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+
+        return "";
+
+    }
+
+
+    /*
+       Firestore Timestamp
+    */
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
+
+        return value
+            .toDate()
+            .getTime()
+            .toString();
+
+    }
+
+
+    /*
+       Array
+    */
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+
+        return JSON.stringify(
+            value
+        );
+
+    }
+
+
+    /*
+       Object
+    */
+
+    if (
+        typeof value ===
+        "object"
+    ) {
+
+        try {
+
+            return JSON.stringify(
+                value
+            );
+
+        }
+        catch {
+
+            return String(
+                value
+            );
+
+        }
+
+    }
+
+
+    return String(
+        value
+    ).trim();
 
 }
 
@@ -777,16 +1185,24 @@ async function loadMemories() {
             (a, b) => {
 
                 const yearA =
-                    Number(a.year);
+                    Number(
+                        a.year
+                    );
 
 
                 const yearB =
-                    Number(b.year);
+                    Number(
+                        b.year
+                    );
 
 
                 if (
-                    Number.isFinite(yearA) &&
-                    Number.isFinite(yearB)
+                    Number.isFinite(
+                        yearA
+                    ) &&
+                    Number.isFinite(
+                        yearB
+                    )
                 ) {
 
                     return (
@@ -814,6 +1230,7 @@ async function loadMemories() {
         renderMemories();
 
     }
+
     catch (error) {
 
         console.error(
@@ -961,13 +1378,11 @@ function renderMemories() {
             /*
                MEMORY TEXT
 
-               IMPORTANT:
-
-               Reads:
+               Supports both:
 
                    quote
 
-               and falls back to:
+               and:
 
                    description
             */
@@ -1225,10 +1640,57 @@ if (form) {
                         );
 
 
+                    if (!oldMemory) {
+
+                        throw new Error(
+                            "Memory not found."
+                        );
+
+                    }
+
+
                     const itemName =
                         title ||
-                        oldMemory?.title ||
+                        oldMemory.title ||
                         "Untitled Memory";
+
+
+                    /*
+                       Create activity snapshot
+                       BEFORE Firestore update.
+                    */
+
+                    const oldActivityData =
+                        getActivitySnapshot(
+                            oldMemory
+                        );
+
+
+                    /*
+                       Create new activity snapshot
+                       from current form.
+                    */
+
+                    const newActivityData =
+                        getNewActivitySnapshot();
+
+
+                    /*
+                       Calculate changed fields
+                       BEFORE update.
+                    */
+
+                    const changedFields =
+                        getChangedFields(
+                            oldActivityData,
+                            newActivityData
+                        );
+
+
+                    console.log(
+                        "Memory changed fields:",
+                        changedFields
+                    );
 
 
                     /*
@@ -1254,6 +1716,9 @@ if (form) {
 
                     /*
                        Activity log.
+
+                       Only changed field names
+                       are stored.
                     */
 
                     await logActivity({
@@ -1265,13 +1730,21 @@ if (form) {
                             editingId,
 
                         itemName:
-                            itemName
+                            itemName,
+
+                        oldData:
+                            oldActivityData,
+
+                        newData:
+                            newActivityData
 
                     });
 
 
                     showMessage(
-                        "Memory updated successfully.",
+                        changedFields.length
+                            ? `${changedFields.join(", ")} changed.`
+                            : "Memory updated successfully.",
                         "success"
                     );
 
@@ -1362,6 +1835,7 @@ if (form) {
                 await loadMemories();
 
             }
+
             catch (error) {
 
                 console.error(
@@ -1377,6 +1851,7 @@ if (form) {
                 );
 
             }
+
             finally {
 
                 if (saveButton) {
@@ -1484,13 +1959,11 @@ function editMemory(
     /*
        MEMORY / QUOTE
 
-       IMPORTANT FIX:
-
-       Firestore:
+       Supports:
 
            quote
 
-       Old documents:
+       and old:
 
            description
     */
@@ -1647,6 +2120,7 @@ async function deleteMemory(
         await loadMemories();
 
     }
+
     catch (error) {
 
         console.error(
@@ -1740,6 +2214,7 @@ if (logoutButton) {
                 );
 
             }
+
             catch (error) {
 
                 console.error(
@@ -1766,6 +2241,7 @@ if (logoutButton) {
                 );
 
             }
+
             catch (error) {
 
                 console.warn(

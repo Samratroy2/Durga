@@ -118,6 +118,7 @@ onAuthStateChanged(
 
         }
 
+
         currentAdmin =
             user;
 
@@ -131,21 +132,33 @@ onAuthStateChanged(
         }
 
 
-        if (user.email) {
+        try {
 
-            localStorage.setItem(
-                "adminEmail",
-                user.email
-            );
+            if (user.email) {
+
+                localStorage.setItem(
+                    "adminEmail",
+                    user.email
+                );
+
+            }
+
+
+            if (user.uid) {
+
+                localStorage.setItem(
+                    "adminUid",
+                    user.uid
+                );
+
+            }
 
         }
+        catch (error) {
 
-
-        if (user.uid) {
-
-            localStorage.setItem(
-                "adminUid",
-                user.uid
+            console.warn(
+                "Unable to store admin information.",
+                error
             );
 
         }
@@ -203,10 +216,6 @@ function firestoreDateToInput(
     let date = null;
 
 
-    /*
-       Firestore Timestamp
-    */
-
     if (
         typeof value === "object" &&
         typeof value.toDate === "function"
@@ -217,11 +226,6 @@ function firestoreDateToInput(
 
     }
 
-
-    /*
-       JavaScript Date
-    */
-
     else if (
         value instanceof Date
     ) {
@@ -230,11 +234,6 @@ function firestoreDateToInput(
             value;
 
     }
-
-
-    /*
-       String
-    */
 
     else if (
         typeof value === "string"
@@ -261,6 +260,7 @@ function firestoreDateToInput(
     const year =
         date.getFullYear();
 
+
     const month =
         String(
             date.getMonth() + 1
@@ -268,6 +268,7 @@ function firestoreDateToInput(
             2,
             "0"
         );
+
 
     const day =
         String(
@@ -296,13 +297,6 @@ function inputDateToTimestamp(
         return null;
 
     }
-
-
-    /*
-       HTML date gives:
-
-       YYYY-MM-DD
-    */
 
 
     const parts =
@@ -338,11 +332,6 @@ function inputDateToTimestamp(
 
     }
 
-
-    /*
-       Noon avoids unwanted date
-       shifting caused by timezone.
-    */
 
     const date =
         new Date(
@@ -389,6 +378,7 @@ function formatDisplayDate(
             value.toDate();
 
     }
+
     else if (
         value instanceof Date
     ) {
@@ -397,6 +387,7 @@ function formatDisplayDate(
             value;
 
     }
+
     else {
 
         date =
@@ -439,37 +430,35 @@ function getNewFormData() {
 
 
     const name =
-        nameInput.value.trim();
+        nameInput?.value.trim() || "";
 
     const day =
-        dayInput.value.trim();
+        dayInput?.value.trim() || "";
 
     const date =
-        dateInput.value;
+        dateInput?.value || "";
 
     const time =
-        timeInput.value.trim();
+        timeInput?.value.trim() || "";
 
     const category =
-        categoryInput.value.trim();
+        categoryInput?.value.trim() || "";
 
     const type =
-        typeInput.value.trim();
+        typeInput?.value.trim() || "";
 
     const location =
-        locationInput.value.trim();
+        locationInput?.value.trim() || "";
 
     const priest =
-        priestInput.value.trim();
+        priestInput?.value.trim() || "";
 
     const order =
-        orderInput.value.trim();
+        orderInput?.value.trim() || "";
 
     const description =
-        descriptionInput.value.trim();
+        descriptionInput?.value.trim() || "";
 
-
-    /* NAME */
 
     if (name) {
 
@@ -479,8 +468,6 @@ function getNewFormData() {
     }
 
 
-    /* DAY */
-
     if (day) {
 
         data.day =
@@ -488,8 +475,6 @@ function getNewFormData() {
 
     }
 
-
-    /* DATE */
 
     if (date) {
 
@@ -509,8 +494,6 @@ function getNewFormData() {
     }
 
 
-    /* TIME */
-
     if (time) {
 
         data.time =
@@ -518,8 +501,6 @@ function getNewFormData() {
 
     }
 
-
-    /* CATEGORY */
 
     if (category) {
 
@@ -529,8 +510,6 @@ function getNewFormData() {
     }
 
 
-    /* TYPE */
-
     if (type) {
 
         data.type =
@@ -538,8 +517,6 @@ function getNewFormData() {
 
     }
 
-
-    /* LOCATION */
 
     if (location) {
 
@@ -549,8 +526,6 @@ function getNewFormData() {
     }
 
 
-    /* PRIEST */
-
     if (priest) {
 
         data.priest =
@@ -559,8 +534,6 @@ function getNewFormData() {
     }
 
 
-    /* ORDER */
-
     if (order) {
 
         data.order =
@@ -568,8 +541,6 @@ function getNewFormData() {
 
     }
 
-
-    /* DESCRIPTION */
 
     if (description) {
 
@@ -593,10 +564,8 @@ function getUpdateData() {
     const data = {};
 
 
-    /* NAME */
-
     const name =
-        nameInput.value.trim();
+        nameInput?.value.trim() || "";
 
     data.name =
         name
@@ -604,10 +573,8 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* DAY */
-
     const day =
-        dayInput.value.trim();
+        dayInput?.value.trim() || "";
 
     data.day =
         day
@@ -615,10 +582,8 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* DATE */
-
     const date =
-        dateInput.value;
+        dateInput?.value || "";
 
 
     if (date) {
@@ -629,20 +594,13 @@ function getUpdateData() {
             );
 
 
-        if (timestamp) {
-
-            data.date =
-                timestamp;
-
-        }
-        else {
-
-            data.date =
-                deleteField();
-
-        }
+        data.date =
+            timestamp
+                ? timestamp
+                : deleteField();
 
     }
+
     else {
 
         data.date =
@@ -651,11 +609,8 @@ function getUpdateData() {
     }
 
 
-    /* TIME */
-
     const time =
-        timeInput.value.trim();
-
+        timeInput?.value.trim() || "";
 
     data.time =
         time
@@ -664,21 +619,15 @@ function getUpdateData() {
 
 
     /*
-       IMPORTANT:
-
-       Remove old uppercase "Time"
-       if an old document contains it.
+       Remove old uppercase Time field.
     */
 
     data.Time =
         deleteField();
 
 
-    /* CATEGORY */
-
     const category =
-        categoryInput.value.trim();
-
+        categoryInput?.value.trim() || "";
 
     data.category =
         category
@@ -686,11 +635,8 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* TYPE */
-
     const type =
-        typeInput.value.trim();
-
+        typeInput?.value.trim() || "";
 
     data.type =
         type
@@ -698,11 +644,8 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* LOCATION */
-
     const location =
-        locationInput.value.trim();
-
+        locationInput?.value.trim() || "";
 
     data.location =
         location
@@ -710,11 +653,8 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* PRIEST */
-
     const priest =
-        priestInput.value.trim();
-
+        priestInput?.value.trim() || "";
 
     data.priest =
         priest
@@ -722,11 +662,8 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* ORDER */
-
     const order =
-        orderInput.value.trim();
-
+        orderInput?.value.trim() || "";
 
     data.order =
         order
@@ -734,19 +671,14 @@ function getUpdateData() {
             : deleteField();
 
 
-    /* DESCRIPTION */
-
     const description =
-        descriptionInput.value.trim();
-
+        descriptionInput?.value.trim() || "";
 
     data.description =
         description
             ? description
             : deleteField();
 
-
-    /* UPDATED */
 
     data.updatedAt =
         serverTimestamp();
@@ -758,13 +690,119 @@ function getUpdateData() {
 
 
 /* =========================================================
+   ACTIVITY SNAPSHOT
+   =========================================================
+
+   Used ONLY to determine which fields changed.
+
+   ========================================================= */
+
+function getActivitySnapshot(
+    ritual
+) {
+
+    return {
+
+        name:
+            ritual?.name ?? "",
+
+        day:
+            ritual?.day ?? "",
+
+        date:
+            ritual?.date ?? "",
+
+        time:
+            ritual?.time ??
+            ritual?.Time ??
+            "",
+
+        category:
+            ritual?.category ?? "",
+
+        type:
+            ritual?.type ?? "",
+
+        location:
+            ritual?.location ?? "",
+
+        priest:
+            ritual?.priest ?? "",
+
+        order:
+            ritual?.order ?? "",
+
+        description:
+            ritual?.description ?? ""
+
+    };
+
+}
+
+
+/* =========================================================
+   NEW ACTIVITY SNAPSHOT FROM FORM
+   ========================================================= */
+
+function getNewActivitySnapshot() {
+
+    return {
+
+        name:
+            nameInput?.value.trim() || "",
+
+        day:
+            dayInput?.value.trim() || "",
+
+        date:
+            dateInput?.value || "",
+
+        time:
+            timeInput?.value.trim() || "",
+
+        category:
+            categoryInput?.value.trim() || "",
+
+        type:
+            typeInput?.value.trim() || "",
+
+        location:
+            locationInput?.value.trim() || "",
+
+        priest:
+            priestInput?.value.trim() || "",
+
+        order:
+            orderInput?.value.trim() || "",
+
+        description:
+            descriptionInput?.value.trim() || ""
+
+    };
+
+}
+
+
+/* =========================================================
    ACTIVITY LOGGER
+   =========================================================
+
+   DETAILS EXAMPLES:
+
+       Category changed
+
+       Category changed, Priest changed
+
+       Date changed, Time changed
+
    ========================================================= */
 
 async function logActivity({
     action,
     documentId,
-    itemName
+    itemName,
+    oldData = null,
+    newData = null
 }) {
 
     try {
@@ -776,10 +814,95 @@ async function logActivity({
 
         if (!user) {
 
+            console.warn(
+                "Activity not logged: no authenticated user."
+            );
+
             return;
 
         }
 
+
+        const currentAction =
+            String(
+                action || ""
+            ).toUpperCase();
+
+
+        let details =
+            "Activity performed.";
+
+
+        /* =================================================
+           CREATE
+           ================================================= */
+
+        if (
+            currentAction === "CREATE"
+        ) {
+
+            details =
+                "Ritual added.";
+
+        }
+
+
+        /* =================================================
+           DELETE
+           ================================================= */
+
+        else if (
+            currentAction === "DELETE"
+        ) {
+
+            details =
+                "Ritual deleted.";
+
+        }
+
+
+        /* =================================================
+           UPDATE
+           ================================================= */
+
+        else if (
+            currentAction === "UPDATE"
+        ) {
+
+            const changedFields =
+                getChangedFields(
+                    oldData,
+                    newData
+                );
+
+
+            if (
+                changedFields.length > 0
+            ) {
+
+                details =
+                    changedFields
+                        .map(
+                            field =>
+                                `${field} changed`
+                        )
+                        .join(", ");
+
+            }
+
+            else {
+
+                details =
+                    "Ritual updated.";
+
+            }
+
+        }
+
+
+        /* =================================================
+           SAVE ACTIVITY LOG
+           ================================================= */
 
         await addDoc(
             collection(
@@ -789,7 +912,7 @@ async function logActivity({
             {
 
                 action:
-                    action,
+                    currentAction,
 
                 collection:
                     "rituals",
@@ -801,6 +924,9 @@ async function logActivity({
                     itemName ||
                     "Untitled Ritual",
 
+                details:
+                    details,
+
                 performedBy:
                     user.email ||
                     "Unknown Admin",
@@ -810,13 +936,34 @@ async function logActivity({
                     "",
 
                 createdAt:
+                    serverTimestamp(),
+
+                performedAt:
                     serverTimestamp()
 
             }
         );
 
 
+        console.log(
+            "Activity logged:",
+            {
+                action:
+                    currentAction,
+
+                collection:
+                    "rituals",
+
+                itemName:
+                    itemName,
+
+                details:
+                    details
+            }
+        );
+
     }
+
     catch (error) {
 
         console.error(
@@ -825,6 +972,207 @@ async function logActivity({
         );
 
     }
+
+}
+
+
+/* =========================================================
+   GET CHANGED FIELDS
+   ========================================================= */
+
+function getChangedFields(
+    oldData,
+    newData
+) {
+
+    const changed = [];
+
+
+    if (
+        !oldData ||
+        !newData
+    ) {
+
+        return changed;
+
+    }
+
+
+    const fields = [
+
+        {
+            key: "name",
+            label: "Name"
+        },
+
+        {
+            key: "day",
+            label: "Day"
+        },
+
+        {
+            key: "date",
+            label: "Date"
+        },
+
+        {
+            key: "time",
+            label: "Time"
+        },
+
+        {
+            key: "category",
+            label: "Category"
+        },
+
+        {
+            key: "type",
+            label: "Type"
+        },
+
+        {
+            key: "location",
+            label: "Location"
+        },
+
+        {
+            key: "priest",
+            label: "Priest"
+        },
+
+        {
+            key: "order",
+            label: "Order"
+        },
+
+        {
+            key: "description",
+            label: "Description"
+        }
+
+    ];
+
+
+    fields.forEach(
+        field => {
+
+            const oldValue =
+                normalizeActivityValue(
+                    oldData[
+                        field.key
+                    ]
+                );
+
+
+            const newValue =
+                normalizeActivityValue(
+                    newData[
+                        field.key
+                    ]
+                );
+
+
+            if (
+                oldValue !==
+                newValue
+            ) {
+
+                changed.push(
+                    field.label
+                );
+
+            }
+
+        }
+    );
+
+
+    return changed;
+
+}
+
+
+/* =========================================================
+   NORMALIZE ACTIVITY VALUE
+   ========================================================= */
+
+function normalizeActivityValue(
+    value
+) {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+
+        return "";
+
+    }
+
+
+    /*
+       Firestore Timestamp
+    */
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
+
+        return value
+            .toDate()
+            .getTime()
+            .toString();
+
+    }
+
+
+    /*
+       Date
+    */
+
+    if (
+        value instanceof Date
+    ) {
+
+        return value
+            .getTime()
+            .toString();
+
+    }
+
+
+    /*
+       Object
+    */
+
+    if (
+        typeof value ===
+        "object"
+    ) {
+
+        try {
+
+            return JSON.stringify(
+                value
+            );
+
+        }
+
+        catch {
+
+            return String(
+                value
+            );
+
+        }
+
+    }
+
+
+    return String(
+        value
+    ).trim();
 
 }
 
@@ -840,13 +1188,9 @@ async function loadRituals() {
         if (list) {
 
             list.innerHTML = `
-
                 <div class="empty-list">
-
                     Loading rituals...
-
                 </div>
-
             `;
 
         }
@@ -888,15 +1232,23 @@ async function loadRituals() {
             (a, b) => {
 
                 const orderA =
-                    Number(a.order);
+                    Number(
+                        a.order
+                    );
 
                 const orderB =
-                    Number(b.order);
+                    Number(
+                        b.order
+                    );
 
 
                 if (
-                    Number.isFinite(orderA) &&
-                    Number.isFinite(orderB)
+                    Number.isFinite(
+                        orderA
+                    ) &&
+                    Number.isFinite(
+                        orderB
+                    )
                 ) {
 
                     return (
@@ -924,6 +1276,7 @@ async function loadRituals() {
         renderRituals();
 
     }
+
     catch (error) {
 
         console.error(
@@ -935,13 +1288,9 @@ async function loadRituals() {
         if (list) {
 
             list.innerHTML = `
-
                 <div class="empty-list">
-
                     Unable to load rituals.
-
                 </div>
-
             `;
 
         }
@@ -970,7 +1319,6 @@ function renderRituals() {
     if (!rituals.length) {
 
         list.innerHTML = `
-
             <div class="empty-list">
 
                 <div class="empty-icon">
@@ -986,7 +1334,6 @@ function renderRituals() {
                 </p>
 
             </div>
-
         `;
 
         return;
@@ -1022,15 +1369,11 @@ function renderRituals() {
             if (ritual.day) {
 
                 tags += `
-
                     <span class="ritual-tag">
-
                         ${escapeHTML(
                             ritual.day
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -1039,15 +1382,11 @@ function renderRituals() {
             if (ritual.time) {
 
                 tags += `
-
                     <span class="ritual-tag">
-
                         ${escapeHTML(
                             ritual.time
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -1056,15 +1395,11 @@ function renderRituals() {
             if (ritual.category) {
 
                 tags += `
-
                     <span class="ritual-tag">
-
                         ${escapeHTML(
                             ritual.category
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -1073,15 +1408,11 @@ function renderRituals() {
             if (ritual.type) {
 
                 tags += `
-
                     <span class="ritual-tag">
-
                         ${escapeHTML(
                             ritual.type
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -1104,7 +1435,6 @@ function renderRituals() {
             if (displayDate) {
 
                 details += `
-
                     <div class="ritual-detail">
 
                         <strong>
@@ -1118,7 +1448,6 @@ function renderRituals() {
                         </span>
 
                     </div>
-
                 `;
 
             }
@@ -1127,7 +1456,6 @@ function renderRituals() {
             if (ritual.location) {
 
                 details += `
-
                     <div class="ritual-detail">
 
                         <strong>
@@ -1141,7 +1469,6 @@ function renderRituals() {
                         </span>
 
                     </div>
-
                 `;
 
             }
@@ -1150,7 +1477,6 @@ function renderRituals() {
             if (ritual.priest) {
 
                 details += `
-
                     <div class="ritual-detail">
 
                         <strong>
@@ -1164,7 +1490,6 @@ function renderRituals() {
                         </span>
 
                     </div>
-
                 `;
 
             }
@@ -1177,7 +1502,6 @@ function renderRituals() {
             ) {
 
                 details += `
-
                     <div class="ritual-detail">
 
                         <strong>
@@ -1191,7 +1515,6 @@ function renderRituals() {
                         </span>
 
                     </div>
-
                 `;
 
             }
@@ -1210,25 +1533,18 @@ function renderRituals() {
                         ${
                             tags
                                 ? `
-
                                     <div class="ritual-meta">
-
                                         ${tags}
-
                                     </div>
-
                                   `
                                 : ""
                         }
 
-
                         <h3>
-
                             ${escapeHTML(
                                 ritual.name ||
                                 "Untitled"
                             )}
-
                         </h3>
 
                     </div>
@@ -1240,9 +1556,7 @@ function renderRituals() {
                             type="button"
                             class="edit-button"
                         >
-
                             Edit
-
                         </button>
 
 
@@ -1250,9 +1564,7 @@ function renderRituals() {
                             type="button"
                             class="delete-button"
                         >
-
                             Delete
-
                         </button>
 
                     </div>
@@ -1263,13 +1575,9 @@ function renderRituals() {
                 ${
                     details
                         ? `
-
                             <div class="ritual-details">
-
                                 ${details}
-
                             </div>
-
                           `
                         : ""
                 }
@@ -1278,17 +1586,13 @@ function renderRituals() {
                 ${
                     ritual.description
                         ? `
-
                             <div
                                 class="ritual-description"
                             >
-
                                 ${escapeHTML(
                                     ritual.description
                                 )}
-
                             </div>
-
                           `
                         : ""
                 }
@@ -1297,14 +1601,18 @@ function renderRituals() {
 
 
             /* =================================================
-               EDIT BUTTON
+               EDIT
                ================================================= */
 
-            item
-                .querySelector(
+            const editButton =
+                item.querySelector(
                     ".edit-button"
-                )
-                .addEventListener(
+                );
+
+
+            if (editButton) {
+
+                editButton.addEventListener(
                     "click",
                     () => {
 
@@ -1315,16 +1623,22 @@ function renderRituals() {
                     }
                 );
 
+            }
+
 
             /* =================================================
-               DELETE BUTTON
+               DELETE
                ================================================= */
 
-            item
-                .querySelector(
+            const deleteButton =
+                item.querySelector(
                     ".delete-button"
-                )
-                .addEventListener(
+                );
+
+
+            if (deleteButton) {
+
+                deleteButton.addEventListener(
                     "click",
                     () => {
 
@@ -1334,6 +1648,8 @@ function renderRituals() {
 
                     }
                 );
+
+            }
 
 
             list.appendChild(
@@ -1360,7 +1676,8 @@ if (form) {
 
 
             const name =
-                nameInput.value.trim();
+                nameInput?.value.trim() ||
+                "";
 
 
             if (!name) {
@@ -1370,21 +1687,26 @@ if (form) {
                     "error"
                 );
 
-                nameInput.focus();
+
+                nameInput?.focus();
 
                 return;
 
             }
 
 
-            saveButton.disabled =
-                true;
+            if (saveButton) {
+
+                saveButton.disabled =
+                    true;
 
 
-            saveButton.textContent =
-                editingId
-                    ? "Updating..."
-                    : "Saving...";
+                saveButton.textContent =
+                    editingId
+                        ? "Updating..."
+                        : "Saving...";
+
+            }
 
 
             try {
@@ -1403,6 +1725,55 @@ if (form) {
                         );
 
 
+                    if (!oldRitual) {
+
+                        throw new Error(
+                            "Ritual not found."
+                        );
+
+                    }
+
+
+                    /*
+                       Snapshot BEFORE update.
+                    */
+
+                    const oldActivityData =
+                        getActivitySnapshot(
+                            oldRitual
+                        );
+
+
+                    /*
+                       Snapshot FROM FORM.
+                    */
+
+                    const newActivityData =
+                        getNewActivitySnapshot();
+
+
+                    /*
+                       Find changed fields BEFORE
+                       Firestore update.
+                    */
+
+                    const changedFields =
+                        getChangedFields(
+                            oldActivityData,
+                            newActivityData
+                        );
+
+
+                    console.log(
+                        "Ritual changed fields:",
+                        changedFields
+                    );
+
+
+                    /*
+                       Update Firestore.
+                    */
+
                     const data =
                         getUpdateData();
 
@@ -1420,6 +1791,10 @@ if (form) {
                     );
 
 
+                    /*
+                       Activity log.
+                    */
+
                     await logActivity({
 
                         action:
@@ -1430,14 +1805,22 @@ if (form) {
 
                         itemName:
                             name ||
-                            oldRitual?.name ||
-                            "Untitled Ritual"
+                            oldRitual.name ||
+                            "Untitled Ritual",
+
+                        oldData:
+                            oldActivityData,
+
+                        newData:
+                            newActivityData
 
                     });
 
 
                     showMessage(
-                        "Ritual updated successfully.",
+                        changedFields.length
+                            ? `${changedFields.join(", ")} changed.`
+                            : "Ritual updated successfully.",
                         "success"
                     );
 
@@ -1504,6 +1887,7 @@ if (form) {
                 await loadRituals();
 
             }
+
             catch (error) {
 
                 console.error(
@@ -1519,14 +1903,19 @@ if (form) {
                 );
 
             }
+
             finally {
 
-                saveButton.disabled =
-                    false;
+                if (saveButton) {
+
+                    saveButton.disabled =
+                        false;
 
 
-                saveButton.textContent =
-                    "Save Ritual";
+                    saveButton.textContent =
+                        "Save Ritual";
+
+                }
 
             }
 
@@ -1563,89 +1952,97 @@ function editRitual(
         id;
 
 
-    /* NAME */
+    if (nameInput) {
 
-    nameInput.value =
-        ritual.name ||
-        "";
+        nameInput.value =
+            ritual.name ||
+            "";
 
-
-    /* DAY */
-
-    dayInput.value =
-        ritual.day ||
-        "";
+    }
 
 
-    /* DATE */
+    if (dayInput) {
 
-    dateInput.value =
-        firestoreDateToInput(
-            ritual.date
-        );
+        dayInput.value =
+            ritual.day ||
+            "";
 
-
-    /*
-       TIME
-
-       Your current Firestore document
-       uses:
-
-       time: "Evening"
-
-       So this will correctly show:
-
-       Evening
-    */
-
-    timeInput.value =
-        ritual.time ||
-        "";
+    }
 
 
-    /* CATEGORY */
+    if (dateInput) {
 
-    categoryInput.value =
-        ritual.category ||
-        "";
+        dateInput.value =
+            firestoreDateToInput(
+                ritual.date
+            );
 
-
-    /* TYPE */
-
-    typeInput.value =
-        ritual.type ||
-        "";
+    }
 
 
-    /* LOCATION */
+    if (timeInput) {
 
-    locationInput.value =
-        ritual.location ||
-        "";
+        timeInput.value =
+            ritual.time ||
+            ritual.Time ||
+            "";
 
-
-    /* PRIEST */
-
-    priestInput.value =
-        ritual.priest ||
-        "";
+    }
 
 
-    /* ORDER */
+    if (categoryInput) {
 
-    orderInput.value =
-        ritual.order ??
-        "";
+        categoryInput.value =
+            ritual.category ||
+            "";
 
-
-    /* DESCRIPTION */
-
-    descriptionInput.value =
-        ritual.description ||
-        "";
+    }
 
 
-    /* FORM TITLE */
+    if (typeInput) {
+
+        typeInput.value =
+            ritual.type ||
+            "";
+
+    }
+
+
+    if (locationInput) {
+
+        locationInput.value =
+            ritual.location ||
+            "";
+
+    }
+
+
+    if (priestInput) {
+
+        priestInput.value =
+            ritual.priest ||
+            "";
+
+    }
+
+
+    if (orderInput) {
+
+        orderInput.value =
+            ritual.order ??
+            "";
+
+    }
+
+
+    if (descriptionInput) {
+
+        descriptionInput.value =
+            ritual.description ||
+            "";
+
+    }
+
 
     if (formTitle) {
 
@@ -1655,8 +2052,6 @@ function editRitual(
     }
 
 
-    /* BUTTON */
-
     if (saveButton) {
 
         saveButton.textContent =
@@ -1664,10 +2059,6 @@ function editRitual(
 
     }
 
-
-    /*
-       Scroll to top/form.
-    */
 
     if (form) {
 
@@ -1762,6 +2153,7 @@ async function deleteRitual(
         await loadRituals();
 
     }
+
     catch (error) {
 
         console.error(
@@ -1853,6 +2245,7 @@ if (logoutButton) {
                 );
 
             }
+
             catch (error) {
 
                 console.error(
@@ -1863,14 +2256,27 @@ if (logoutButton) {
             }
 
 
-            localStorage.removeItem(
-                "adminEmail"
-            );
+            try {
+
+                localStorage.removeItem(
+                    "adminEmail"
+                );
 
 
-            localStorage.removeItem(
-                "adminUid"
-            );
+                localStorage.removeItem(
+                    "adminUid"
+                );
+
+            }
+
+            catch (error) {
+
+                console.warn(
+                    "Unable to clear local admin information.",
+                    error
+                );
+
+            }
 
 
             window.location.replace(

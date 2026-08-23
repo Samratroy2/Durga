@@ -10,16 +10,17 @@
 
 import {
     collection,
-    getDocs,
-    query,
-    orderBy
+    getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+import {
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
-    db
+    db,
+    auth
 } from "../firebase.js";
-
 
 
 /* =========================================================
@@ -27,52 +28,28 @@ import {
    ========================================================= */
 
 const activityList =
-    document.getElementById(
-        "activityList"
-    );
-
+    document.getElementById("activityList");
 
 const activityCount =
-    document.getElementById(
-        "activityCount"
-    );
-
+    document.getElementById("activityCount");
 
 const activitySearch =
-    document.getElementById(
-        "activitySearch"
-    );
-
+    document.getElementById("activitySearch");
 
 const actionFilter =
-    document.getElementById(
-        "actionFilter"
-    );
-
+    document.getElementById("actionFilter");
 
 const collectionFilter =
-    document.getElementById(
-        "collectionFilter"
-    );
-
+    document.getElementById("collectionFilter");
 
 const activityMessage =
-    document.getElementById(
-        "activityMessage"
-    );
-
+    document.getElementById("activityMessage");
 
 const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
-
+    document.getElementById("logoutButton");
 
 const adminEmail =
-    document.getElementById(
-        "adminEmail"
-    );
-
+    document.getElementById("adminEmail");
 
 
 /* =========================================================
@@ -80,7 +57,6 @@ const adminEmail =
    ========================================================= */
 
 let activities = [];
-
 
 
 /* =========================================================
@@ -93,25 +69,18 @@ function showMessage(
 ) {
 
     if (!activityMessage) {
-
         return;
-
     }
 
-
-    activityMessage.textContent =
-        text;
-
+    activityMessage.textContent = text;
 
     activityMessage.className =
         `message-${type}`;
-
 }
 
 
-
 /* =========================================================
-   LOAD ACTIVITIES
+   LOAD ALL ACTIVITIES
    ========================================================= */
 
 async function loadActivities() {
@@ -123,9 +92,12 @@ async function loadActivities() {
         );
 
         return;
-
     }
 
+
+    /* =====================================================
+       LOADING
+       ===================================================== */
 
     activityList.innerHTML = `
 
@@ -145,76 +117,71 @@ async function loadActivities() {
 
     try {
 
-        let snapshot;
+        console.log(
+            "Loading activityLogs..."
+        );
 
 
         /* =================================================
-           FIRST TRY:
-           SORT BY performedAt
+           GET ENTIRE COLLECTION
+           
+           IMPORTANT:
+           No orderBy() is used.
+           
+           This makes sure documents without
+           performedAt are also loaded.
            ================================================= */
 
-        try {
-
-            const activityQuery =
-                query(
-                    collection(
-                        db,
-                        "activityLogs"
-                    ),
-                    orderBy(
-                        "performedAt",
-                        "desc"
-                    )
-                );
-
-
-            snapshot =
-                await getDocs(
-                    activityQuery
-                );
-
-        }
-
-        catch (error) {
-
-            console.warn(
-                "performedAt query failed. Loading all activity logs.",
-                error
+        const activityRef =
+            collection(
+                db,
+                "activityLogs"
             );
 
 
-            /* =============================================
-               FALLBACK
-               ============================================= */
+        const snapshot =
+            await getDocs(
+                activityRef
+            );
 
-            snapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "activityLogs"
-                    )
-                );
 
-        }
-
+        console.log(
+            "Total activity documents:",
+            snapshot.size
+        );
 
 
         /* =================================================
-           READ DATA
+           RESET ARRAY
            ================================================= */
 
         activities = [];
 
 
+        /* =================================================
+           READ EVERY DOCUMENT
+           ================================================= */
+
         snapshot.forEach(
             documentSnapshot => {
+
+                const data =
+                    documentSnapshot.data();
+
+
+                console.log(
+                    "Activity document:",
+                    documentSnapshot.id,
+                    data
+                );
+
 
                 activities.push({
 
                     id:
                         documentSnapshot.id,
 
-                    ...documentSnapshot.data()
+                    ...data
 
                 });
 
@@ -222,43 +189,74 @@ async function loadActivities() {
         );
 
 
-
         /* =================================================
-           SORT
+           SORT NEWEST FIRST
            ================================================= */
 
         activities.sort(
             (a, b) => {
 
-                return (
-
-                    getTime(
-                        b.performedAt ||
-                        b.createdAt ||
-                        b.updatedAt
-                    )
-
-                    -
-
+                const timeA =
                     getTime(
                         a.performedAt ||
                         a.createdAt ||
-                        a.updatedAt
-                    )
+                        a.updatedAt ||
+                        a.timestamp
+                    );
 
-                );
+
+                const timeB =
+                    getTime(
+                        b.performedAt ||
+                        b.createdAt ||
+                        b.updatedAt ||
+                        b.timestamp
+                    );
+
+
+                return timeB - timeA;
 
             }
         );
 
 
-
         /* =================================================
-           RENDER
+           RENDER ALL
            ================================================= */
 
         renderActivities(
             activities
+        );
+
+
+        /* =================================================
+           MESSAGE
+           ================================================= */
+
+        if (
+            activities.length === 0
+        ) {
+
+            showMessage(
+                "No activity logs found in Firestore.",
+                "info"
+            );
+
+        }
+
+        else {
+
+            showMessage(
+                `${activities.length} activity logs loaded.`,
+                "success"
+            );
+
+        }
+
+
+        console.log(
+            "Activities loaded:",
+            activities.length
         );
 
     }
@@ -291,6 +289,7 @@ async function loadActivities() {
 
 
         showMessage(
+            error.message ||
             "Unable to load activity history.",
             "error"
         );
@@ -298,7 +297,6 @@ async function loadActivities() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -310,9 +308,7 @@ function updateCount(
 ) {
 
     if (!activityCount) {
-
         return;
-
     }
 
 
@@ -324,7 +320,6 @@ function updateCount(
 }
 
 
-
 /* =========================================================
    RENDER ACTIVITIES
    ========================================================= */
@@ -334,11 +329,8 @@ function renderActivities(
 ) {
 
     if (!activityList) {
-
         return;
-
     }
-
 
 
     /* =====================================================
@@ -369,9 +361,7 @@ function renderActivities(
         updateCount(0);
 
         return;
-
     }
-
 
 
     /* =====================================================
@@ -383,18 +373,15 @@ function renderActivities(
     );
 
 
-
     /* =====================================================
        CLEAR TABLE
        ===================================================== */
 
-    activityList.innerHTML =
-        "";
-
+    activityList.innerHTML = "";
 
 
     /* =====================================================
-       CREATE ROWS
+       CREATE EVERY ROW
        ===================================================== */
 
     list.forEach(
@@ -410,9 +397,8 @@ function renderActivities(
                 "activity-row";
 
 
-
             /* =================================================
-               DATA
+               ACTION
                ================================================= */
 
             const action =
@@ -423,12 +409,20 @@ function renderActivities(
                     .toLowerCase();
 
 
+            /* =================================================
+               COLLECTION
+               ================================================= */
+
             const collectionName =
                 activity.collection ||
                 activity.collectionName ||
                 activity.section ||
                 "Unknown";
 
+
+            /* =================================================
+               TITLE
+               ================================================= */
 
             const title =
                 activity.title ||
@@ -437,12 +431,20 @@ function renderActivities(
                 "Untitled";
 
 
+            /* =================================================
+               DETAILS
+               ================================================= */
+
             const details =
                 activity.details ||
                 activity.description ||
                 activity.message ||
                 "—";
 
+
+            /* =================================================
+               ADMIN
+               ================================================= */
 
             const performedBy =
                 activity.performedBy ||
@@ -452,20 +454,29 @@ function renderActivities(
                 "Unknown admin";
 
 
+            /* =================================================
+               DOCUMENT ID
+               ================================================= */
+
             const documentId =
                 activity.documentId ||
                 activity.docId ||
                 activity.recordId ||
+                activity.id ||
                 "—";
 
+
+            /* =================================================
+               DATE
+               ================================================= */
 
             const date =
                 formatDate(
                     activity.performedAt ||
                     activity.createdAt ||
-                    activity.updatedAt
+                    activity.updatedAt ||
+                    activity.timestamp
                 );
-
 
 
             /* =================================================
@@ -480,7 +491,6 @@ function renderActivities(
 
             actionCell.className =
                 "activity-action-cell";
-
 
 
             const actionIcon =
@@ -506,7 +516,6 @@ function renderActivities(
             );
 
 
-
             /* =================================================
                SECTION CELL
                ================================================= */
@@ -521,7 +530,6 @@ function renderActivities(
                 "activity-section-cell";
 
 
-
             const sectionWrapper =
                 document.createElement(
                     "div"
@@ -530,7 +538,6 @@ function renderActivities(
 
             sectionWrapper.className =
                 "activity-section-wrapper";
-
 
 
             const sectionIcon =
@@ -553,7 +560,6 @@ function renderActivities(
                 formatCollection(
                     collectionName
                 );
-
 
 
             const sectionLabel =
@@ -587,7 +593,6 @@ function renderActivities(
             );
 
 
-
             /* =================================================
                ACTIVITY CELL
                ================================================= */
@@ -604,7 +609,6 @@ function renderActivities(
 
             activityCell.textContent =
                 title;
-
 
 
             /* =================================================
@@ -625,7 +629,6 @@ function renderActivities(
                 details;
 
 
-
             /* =================================================
                ADMIN CELL
                ================================================= */
@@ -642,7 +645,6 @@ function renderActivities(
 
             adminCell.textContent =
                 performedBy;
-
 
 
             /* =================================================
@@ -663,7 +665,6 @@ function renderActivities(
                 date;
 
 
-
             /* =================================================
                DOCUMENT ID CELL
                ================================================= */
@@ -680,7 +681,6 @@ function renderActivities(
 
             documentCell.textContent =
                 documentId;
-
 
 
             /* =================================================
@@ -722,7 +722,6 @@ function renderActivities(
             );
 
 
-
             /* =================================================
                APPEND ROW
                ================================================= */
@@ -735,7 +734,6 @@ function renderActivities(
     );
 
 }
-
 
 
 /* =========================================================
@@ -763,7 +761,6 @@ function applyFilters() {
             .trim()
             .toLowerCase() ||
         "";
-
 
 
     const filtered =
@@ -824,7 +821,6 @@ function applyFilters() {
                     .toLowerCase();
 
 
-
                 if (
                     search &&
                     !searchable.includes(
@@ -835,7 +831,6 @@ function applyFilters() {
                     return false;
 
                 }
-
 
 
                 /* =========================================
@@ -862,7 +857,6 @@ function applyFilters() {
                     }
 
                 }
-
 
 
                 /* =========================================
@@ -895,12 +889,10 @@ function applyFilters() {
                 }
 
 
-
                 return true;
 
             }
         );
-
 
 
     renderActivities(
@@ -908,7 +900,6 @@ function applyFilters() {
     );
 
 }
-
 
 
 /* =========================================================
@@ -921,7 +912,6 @@ activitySearch?.addEventListener(
 );
 
 
-
 /* =========================================================
    ACTION FILTER
    ========================================================= */
@@ -932,7 +922,6 @@ actionFilter?.addEventListener(
 );
 
 
-
 /* =========================================================
    COLLECTION FILTER
    ========================================================= */
@@ -941,7 +930,6 @@ collectionFilter?.addEventListener(
     "change",
     applyFilters
 );
-
 
 
 /* =========================================================
@@ -955,24 +943,16 @@ function formatAction(
     switch (action) {
 
         case "created":
-
             return "Added";
 
-
         case "updated":
-
             return "Updated";
 
-
         case "deleted":
-
             return "Deleted";
 
-
         case "login":
-
             return "Login";
-
 
         default:
 
@@ -988,10 +968,8 @@ function formatAction(
 }
 
 
-
 /* =========================================================
    ACTION ICON
-   SAME AS DASHBOARD
    ========================================================= */
 
 function getActionIcon(
@@ -1005,7 +983,6 @@ function getActionIcon(
             .toLowerCase();
 
 
-
     if (
         value.includes("create") ||
         value.includes("add")
@@ -1014,7 +991,6 @@ function getActionIcon(
         return "➕";
 
     }
-
 
 
     if (
@@ -1027,7 +1003,6 @@ function getActionIcon(
     }
 
 
-
     if (
         value.includes("delete") ||
         value.includes("remove")
@@ -1036,7 +1011,6 @@ function getActionIcon(
         return "🗑️";
 
     }
-
 
 
     if (
@@ -1048,11 +1022,9 @@ function getActionIcon(
     }
 
 
-
     return "📝";
 
 }
-
 
 
 /* =========================================================
@@ -1070,7 +1042,6 @@ function getActionClass(
             .toLowerCase();
 
 
-
     if (
         value.includes("create") ||
         value.includes("add")
@@ -1079,7 +1050,6 @@ function getActionClass(
         return "created";
 
     }
-
 
 
     if (
@@ -1092,7 +1062,6 @@ function getActionClass(
     }
 
 
-
     if (
         value.includes("delete") ||
         value.includes("remove")
@@ -1103,11 +1072,9 @@ function getActionClass(
     }
 
 
-
     return "other";
 
 }
-
 
 
 /* =========================================================
@@ -1125,7 +1092,6 @@ function getSectionIcon(
             .toLowerCase();
 
 
-
     if (
         value.includes("family")
     ) {
@@ -1133,7 +1099,6 @@ function getSectionIcon(
         return "👨‍👩‍👧";
 
     }
-
 
 
     if (
@@ -1145,7 +1110,6 @@ function getSectionIcon(
     }
 
 
-
     if (
         value.includes("bhog")
     ) {
@@ -1153,7 +1117,6 @@ function getSectionIcon(
         return "🍚";
 
     }
-
 
 
     if (
@@ -1165,7 +1128,6 @@ function getSectionIcon(
     }
 
 
-
     if (
         value.includes("gallery")
     ) {
@@ -1173,7 +1135,6 @@ function getSectionIcon(
         return "📷";
 
     }
-
 
 
     if (
@@ -1185,7 +1146,6 @@ function getSectionIcon(
     }
 
 
-
     if (
         value.includes("ritual")
     ) {
@@ -1193,7 +1153,6 @@ function getSectionIcon(
         return "ॐ";
 
     }
-
 
 
     if (
@@ -1205,7 +1164,6 @@ function getSectionIcon(
     }
 
 
-
     if (
         value.includes("enquir")
     ) {
@@ -1213,7 +1171,6 @@ function getSectionIcon(
         return "✉️";
 
     }
-
 
 
     if (
@@ -1225,11 +1182,9 @@ function getSectionIcon(
     }
 
 
-
     return "📝";
 
 }
-
 
 
 /* =========================================================
@@ -1278,14 +1233,12 @@ function formatCollection(
     };
 
 
-
     return (
         names[value] ||
         formatFieldName(value)
     );
 
 }
-
 
 
 /* =========================================================
@@ -1306,7 +1259,7 @@ function formatFieldName(
         )
 
         .replace(
-            /[\_-]/g,
+            /[\\_-]/g,
             " "
         )
 
@@ -1326,7 +1279,6 @@ function formatFieldName(
 }
 
 
-
 /* =========================================================
    FORMAT DATE
    ========================================================= */
@@ -1336,11 +1288,8 @@ function formatDate(
 ) {
 
     if (!value) {
-
         return "Date unavailable";
-
     }
-
 
 
     try {
@@ -1348,8 +1297,9 @@ function formatDate(
         let date;
 
 
-
-        /* Firestore Timestamp */
+        /* =================================================
+           FIRESTORE TIMESTAMP
+           ================================================= */
 
         if (
             typeof value.toDate ===
@@ -1362,8 +1312,9 @@ function formatDate(
         }
 
 
-
-        /* Timestamp-like object */
+        /* =================================================
+           TIMESTAMP-LIKE OBJECT
+           ================================================= */
 
         else if (
             value.seconds !==
@@ -1380,8 +1331,9 @@ function formatDate(
         }
 
 
-
-        /* Normal Date / String */
+        /* =================================================
+           NORMAL DATE / STRING
+           ================================================= */
 
         else {
 
@@ -1393,7 +1345,6 @@ function formatDate(
         }
 
 
-
         if (
             Number.isNaN(
                 date.getTime()
@@ -1403,7 +1354,6 @@ function formatDate(
             return "Date unavailable";
 
         }
-
 
 
         return date.toLocaleString(
@@ -1448,7 +1398,6 @@ function formatDate(
 }
 
 
-
 /* =========================================================
    GET TIME
    ========================================================= */
@@ -1458,16 +1407,15 @@ function getTime(
 ) {
 
     if (!value) {
-
         return 0;
-
     }
-
 
 
     try {
 
-        /* Firestore Timestamp */
+        /* =================================================
+           FIRESTORE TIMESTAMP
+           ================================================= */
 
         if (
             typeof value.toDate ===
@@ -1481,8 +1429,9 @@ function getTime(
         }
 
 
-
-        /* Timestamp-like object */
+        /* =================================================
+           TIMESTAMP-LIKE OBJECT
+           ================================================= */
 
         if (
             value.seconds !==
@@ -1496,8 +1445,9 @@ function getTime(
         }
 
 
-
-        /* Normal date */
+        /* =================================================
+           NORMAL DATE
+           ================================================= */
 
         const time =
             new Date(
@@ -1520,62 +1470,48 @@ function getTime(
 }
 
 
-
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
-
-function escapeHTML(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
-}
-
-
-
 /* =========================================================
    LOGOUT
    ========================================================= */
 
 logoutButton?.addEventListener(
     "click",
-    () => {
+    async () => {
 
-        window.location.href =
-            "./index.html";
+        try {
+
+            await signOut(
+                auth
+            );
+
+
+            localStorage.removeItem(
+                "adminEmail"
+            );
+
+
+            window.location.href =
+                "./index.html";
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Logout error:",
+                error
+            );
+
+
+            showMessage(
+                "Unable to logout.",
+                "error"
+            );
+
+        }
 
     }
 );
-
 
 
 /* =========================================================
@@ -1609,7 +1545,6 @@ catch (error) {
     );
 
 }
-
 
 
 /* =========================================================

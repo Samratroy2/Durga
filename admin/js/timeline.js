@@ -14,7 +14,6 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
 import {
     collection,
     getDocs,
@@ -25,7 +24,6 @@ import {
     serverTimestamp,
     deleteField
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
 
 import {
     auth,
@@ -38,87 +36,46 @@ import {
    ========================================================= */
 
 const timelineForm =
-    document.getElementById(
-        "timelineForm"
-    );
-
+    document.getElementById("timelineForm");
 
 const formTitle =
-    document.getElementById(
-        "formTitle"
-    );
-
+    document.getElementById("formTitle");
 
 const yearInput =
-    document.getElementById(
-        "year"
-    );
-
+    document.getElementById("year");
 
 const eraInput =
-    document.getElementById(
-        "era"
-    );
-
+    document.getElementById("era");
 
 const titleInput =
-    document.getElementById(
-        "title"
-    );
-
+    document.getElementById("title");
 
 const typeInput =
-    document.getElementById(
-        "type"
-    );
-
+    document.getElementById("type");
 
 const descriptionInput =
-    document.getElementById(
-        "description"
-    );
-
+    document.getElementById("description");
 
 const saveButton =
-    document.getElementById(
-        "saveTimelineButton"
-    );
-
+    document.getElementById("saveTimelineButton");
 
 const cancelButton =
-    document.getElementById(
-        "cancelTimelineButton"
-    );
-
+    document.getElementById("cancelTimelineButton");
 
 const timelineList =
-    document.getElementById(
-        "timelineList"
-    );
-
+    document.getElementById("timelineList");
 
 const timelineCount =
-    document.getElementById(
-        "timelineCount"
-    );
-
+    document.getElementById("timelineCount");
 
 const message =
-    document.getElementById(
-        "timelineMessage"
-    );
-
+    document.getElementById("timelineMessage");
 
 const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
-
+    document.getElementById("logoutButton");
 
 const adminEmail =
-    document.getElementById(
-        "adminEmail"
-    );
+    document.getElementById("adminEmail");
 
 
 /* =========================================================
@@ -155,10 +112,6 @@ onAuthStateChanged(
             user;
 
 
-        /*
-           Show logged-in admin.
-        */
-
         if (adminEmail) {
 
             adminEmail.textContent =
@@ -168,26 +121,33 @@ onAuthStateChanged(
         }
 
 
-        /*
-           Save admin information
-           for other admin pages.
-        */
+        try {
 
-        if (user.email) {
+            if (user.email) {
 
-            localStorage.setItem(
-                "adminEmail",
-                user.email
-            );
+                localStorage.setItem(
+                    "adminEmail",
+                    user.email
+                );
+
+            }
+
+
+            if (user.uid) {
+
+                localStorage.setItem(
+                    "adminUid",
+                    user.uid
+                );
+
+            }
 
         }
+        catch (error) {
 
-
-        if (user.uid) {
-
-            localStorage.setItem(
-                "adminUid",
-                user.uid
+            console.warn(
+                "Unable to store admin information.",
+                error
             );
 
         }
@@ -209,7 +169,9 @@ function showMessage(
 ) {
 
     if (!message) {
+
         return;
+
     }
 
 
@@ -227,10 +189,6 @@ function showMessage(
 
 /* =========================================================
    GET NEW FORM DATA
-   =========================================================
-
-   Only fields containing values are stored.
-
    ========================================================= */
 
 function getNewFormData() {
@@ -239,28 +197,22 @@ function getNewFormData() {
 
 
     const year =
-        yearInput?.value.trim();
-
+        yearInput?.value.trim() || "";
 
     const era =
-        eraInput?.value.trim();
-
+        eraInput?.value.trim() || "";
 
     const title =
-        titleInput?.value.trim();
-
+        titleInput?.value.trim() || "";
 
     const type =
-        typeInput?.value.trim();
-
+        typeInput?.value.trim() || "";
 
     const description =
-        descriptionInput?.value.trim();
+        descriptionInput?.value.trim() || "";
 
 
-    /*
-       YEAR
-    */
+    /* YEAR */
 
     if (year !== "") {
 
@@ -282,9 +234,7 @@ function getNewFormData() {
     }
 
 
-    /*
-       ERA
-    */
+    /* ERA */
 
     if (era !== "") {
 
@@ -294,9 +244,7 @@ function getNewFormData() {
     }
 
 
-    /*
-       TITLE
-    */
+    /* TITLE */
 
     if (title !== "") {
 
@@ -306,9 +254,7 @@ function getNewFormData() {
     }
 
 
-    /*
-       TYPE
-    */
+    /* TYPE */
 
     if (type !== "") {
 
@@ -318,9 +264,7 @@ function getNewFormData() {
     }
 
 
-    /*
-       DESCRIPTION
-    */
+    /* DESCRIPTION */
 
     if (description !== "") {
 
@@ -337,11 +281,6 @@ function getNewFormData() {
 
 /* =========================================================
    GET UPDATE DATA
-   =========================================================
-
-   If a field is cleared during editing,
-   deleteField() removes it from Firestore.
-
    ========================================================= */
 
 function getUpdateData() {
@@ -349,12 +288,12 @@ function getUpdateData() {
     const data = {};
 
 
-    /*
+    /* =====================================================
        YEAR
-    */
+       ===================================================== */
 
     const year =
-        yearInput?.value.trim();
+        yearInput?.value.trim() || "";
 
 
     if (year !== "") {
@@ -389,12 +328,12 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        ERA
-    */
+       ===================================================== */
 
     const era =
-        eraInput?.value.trim();
+        eraInput?.value.trim() || "";
 
 
     if (era !== "") {
@@ -411,12 +350,12 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        TITLE
-    */
+       ===================================================== */
 
     const title =
-        titleInput?.value.trim();
+        titleInput?.value.trim() || "";
 
 
     if (title !== "") {
@@ -433,12 +372,12 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        TYPE
-    */
+       ===================================================== */
 
     const type =
-        typeInput?.value.trim();
+        typeInput?.value.trim() || "";
 
 
     if (type !== "") {
@@ -455,12 +394,12 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        DESCRIPTION
-    */
+       ===================================================== */
 
     const description =
-        descriptionInput?.value.trim();
+        descriptionInput?.value.trim() || "";
 
 
     if (description !== "") {
@@ -477,9 +416,9 @@ function getUpdateData() {
     }
 
 
-    /*
+    /* =====================================================
        UPDATED TIME
-    */
+       ===================================================== */
 
     data.updatedAt =
         serverTimestamp();
@@ -491,21 +430,190 @@ function getUpdateData() {
 
 
 /* =========================================================
+   ACTIVITY SNAPSHOT
+
+   Only the actual editable fields are included.
+
+   This is used to compare OLD vs NEW.
+   ========================================================= */
+
+function getActivitySnapshot(
+    entry
+) {
+
+    return {
+
+        year:
+            entry?.year ?? "",
+
+        era:
+            entry?.era ?? "",
+
+        title:
+            entry?.title ?? "",
+
+        type:
+            entry?.type ?? "",
+
+        description:
+            entry?.description ?? ""
+
+    };
+
+}
+
+
+/* =========================================================
+   GET CURRENT FORM SNAPSHOT
+   ========================================================= */
+
+function getFormActivitySnapshot() {
+
+    let year = "";
+
+    const yearText =
+        yearInput?.value.trim() || "";
+
+
+    if (yearText !== "") {
+
+        const numericYear =
+            Number(yearText);
+
+
+        if (
+            Number.isFinite(
+                numericYear
+            )
+        ) {
+
+            year =
+                numericYear;
+
+        }
+        else {
+
+            year =
+                yearText;
+
+        }
+
+    }
+
+
+    return {
+
+        year:
+            year,
+
+        era:
+            eraInput?.value.trim() || "",
+
+        title:
+            titleInput?.value.trim() || "",
+
+        type:
+            typeInput?.value.trim() || "",
+
+        description:
+            descriptionInput?.value.trim() || ""
+
+    };
+
+}
+
+
+/* =========================================================
+   GET CHANGED FIELDS
+   ========================================================= */
+
+function getChangedFields(
+    oldData,
+    newData
+) {
+
+    const changedFields = [];
+
+
+    const fields = [
+
+        {
+            key: "year",
+            label: "Year"
+        },
+
+        {
+            key: "era",
+            label: "Era"
+        },
+
+        {
+            key: "title",
+            label: "Title"
+        },
+
+        {
+            key: "type",
+            label: "Type"
+        },
+
+        {
+            key: "description",
+            label: "Description"
+        }
+
+    ];
+
+
+    fields.forEach(
+        field => {
+
+            const oldValue =
+                normalizeActivityValue(
+                    oldData?.[
+                        field.key
+                    ]
+                );
+
+
+            const newValue =
+                normalizeActivityValue(
+                    newData?.[
+                        field.key
+                    ]
+                );
+
+
+            if (
+                oldValue !==
+                newValue
+            ) {
+
+                changedFields.push(
+                    field.label
+                );
+
+            }
+
+        }
+    );
+
+
+    return changedFields;
+
+}
+
+
+/* =========================================================
    ACTIVITY LOGGER
-   =========================================================
-
-   Every operation creates a NEW activityLogs document.
-
-   CREATE
-   UPDATE
-   DELETE
-
    ========================================================= */
 
 async function logActivity({
     action,
     documentId,
-    itemName
+    itemName,
+    oldData = null,
+    newData = null
 }) {
 
     try {
@@ -526,6 +634,86 @@ async function logActivity({
         }
 
 
+        const currentAction =
+            String(
+                action || ""
+            ).toUpperCase();
+
+
+        let details =
+            "Activity performed.";
+
+
+        /* =================================================
+           CREATE
+           ================================================= */
+
+        if (
+            currentAction === "CREATE"
+        ) {
+
+            details =
+                "Timeline event added.";
+
+        }
+
+
+        /* =================================================
+           DELETE
+           ================================================= */
+
+        else if (
+            currentAction === "DELETE"
+        ) {
+
+            details =
+                "Timeline event deleted.";
+
+        }
+
+
+        /* =================================================
+           UPDATE
+           ================================================= */
+
+        else if (
+            currentAction === "UPDATE"
+        ) {
+
+            const changedFields =
+                getChangedFields(
+                    oldData,
+                    newData
+                );
+
+
+            if (
+                changedFields.length
+            ) {
+
+                details =
+                    changedFields
+                        .map(
+                            field =>
+                                `${field} changed`
+                        )
+                        .join(", ");
+
+            }
+            else {
+
+                details =
+                    "Timeline event updated.";
+
+            }
+
+        }
+
+
+        /* =================================================
+           SAVE ACTIVITY
+           ================================================= */
+
         await addDoc(
             collection(
                 db,
@@ -534,7 +722,7 @@ async function logActivity({
             {
 
                 action:
-                    action,
+                    currentAction,
 
                 collection:
                     "timeline",
@@ -546,6 +734,9 @@ async function logActivity({
                     itemName ||
                     "Untitled Timeline Event",
 
+                details:
+                    details,
+
                 performedBy:
                     user.email ||
                     "Unknown Admin",
@@ -555,6 +746,9 @@ async function logActivity({
                     "",
 
                 createdAt:
+                    serverTimestamp(),
+
+                performedAt:
                     serverTimestamp()
 
             }
@@ -563,16 +757,11 @@ async function logActivity({
 
         console.log(
             "Timeline activity logged:",
-            action
+            details
         );
 
     }
     catch (error) {
-
-        /*
-           Activity failure should NOT
-           stop the main operation.
-        */
 
         console.error(
             "Activity logging error:",
@@ -580,6 +769,78 @@ async function logActivity({
         );
 
     }
+
+}
+
+
+/* =========================================================
+   NORMALIZE VALUE
+   ========================================================= */
+
+function normalizeActivityValue(
+    value
+) {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+
+        return "";
+
+    }
+
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
+
+        return value
+            .toDate()
+            .getTime()
+            .toString();
+
+    }
+
+
+    if (
+        value instanceof Date
+    ) {
+
+        return value
+            .getTime()
+            .toString();
+
+    }
+
+
+    if (
+        typeof value ===
+        "object"
+    ) {
+
+        try {
+
+            return JSON.stringify(
+                value
+            );
+
+        }
+        catch {
+
+            return String(
+                value
+            );
+
+        }
+
+    }
+
+
+    return String(
+        value
+    ).trim();
 
 }
 
@@ -617,9 +878,7 @@ function clearForm() {
     }
 
 
-    showMessage(
-        ""
-    );
+    showMessage("");
 
 }
 
@@ -634,8 +893,11 @@ async function loadTimeline() {
 
         if (timelineList) {
 
-            timelineList.innerHTML =
-                "Loading...";
+            timelineList.innerHTML = `
+                <div class="empty-list">
+                    Loading...
+                </div>
+            `;
 
         }
 
@@ -668,19 +930,22 @@ async function loadTimeline() {
         );
 
 
-        /*
-           Sort by year.
-        */
+        /* =================================================
+           SORT BY YEAR
+           ================================================= */
 
         timelineEntries.sort(
             (a, b) => {
 
                 const yearA =
-                    Number(a.year);
-
+                    Number(
+                        a.year
+                    );
 
                 const yearB =
-                    Number(b.year);
+                    Number(
+                        b.year
+                    );
 
 
                 if (
@@ -692,8 +957,10 @@ async function loadTimeline() {
                     )
                 ) {
 
-                    return yearA -
-                        yearB;
+                    return (
+                        yearA -
+                        yearB
+                    );
 
                 }
 
@@ -748,13 +1015,9 @@ async function loadTimeline() {
         if (timelineList) {
 
             timelineList.innerHTML = `
-
                 <div class="empty-list">
-
                     Unable to load timeline.
-
                 </div>
-
             `;
 
         }
@@ -779,13 +1042,9 @@ function renderTimeline() {
     if (!timelineEntries.length) {
 
         timelineList.innerHTML = `
-
             <div class="empty-list">
-
                 No timeline entries found.
-
             </div>
-
         `;
 
 
@@ -802,10 +1061,6 @@ function renderTimeline() {
     }
 
 
-    /*
-       COUNT
-    */
-
     if (timelineCount) {
 
         timelineCount.textContent =
@@ -816,17 +1071,9 @@ function renderTimeline() {
     }
 
 
-    /*
-       CLEAR LIST
-    */
-
     timelineList.innerHTML =
         "";
 
-
-    /*
-       RENDER EACH ENTRY
-    */
 
     timelineEntries.forEach(
         entry => {
@@ -841,9 +1088,9 @@ function renderTimeline() {
                 "timeline-item";
 
 
-            /*
+            /* =================================================
                YEAR
-            */
+               ================================================= */
 
             const year =
                 document.createElement(
@@ -860,9 +1107,9 @@ function renderTimeline() {
                 "—";
 
 
-            /*
+            /* =================================================
                CONTENT
-            */
+               ================================================= */
 
             const content =
                 document.createElement(
@@ -878,43 +1125,27 @@ function renderTimeline() {
                 "";
 
 
-            /*
-               ERA
-            */
-
             if (entry.era) {
 
                 metaHTML += `
-
                     <span class="timeline-tag">
-
                         ${escapeHTML(
                             entry.era
                         )}
-
                     </span>
-
                 `;
 
             }
 
 
-            /*
-               TYPE
-            */
-
             if (entry.type) {
 
                 metaHTML += `
-
                     <span class="timeline-tag">
-
                         ${escapeHTML(
                             entry.type
                         )}
-
                     </span>
-
                 `;
 
             }
@@ -925,40 +1156,30 @@ function renderTimeline() {
                 ${
                     metaHTML
                         ? `
-
                             <div class="timeline-meta">
-
                                 ${metaHTML}
-
                             </div>
-
                           `
                         : ""
                 }
 
 
                 <h3>
-
                     ${escapeHTML(
                         entry.title ||
                         "Untitled"
                     )}
-
                 </h3>
 
 
                 ${
                     entry.description
                         ? `
-
                             <p>
-
                                 ${escapeHTML(
                                     entry.description
                                 )}
-
                             </p>
-
                           `
                         : ""
                 }
@@ -966,9 +1187,9 @@ function renderTimeline() {
             `;
 
 
-            /*
+            /* =================================================
                ACTIONS
-            */
+               ================================================= */
 
             const actions =
                 document.createElement(
@@ -980,9 +1201,7 @@ function renderTimeline() {
                 "timeline-actions";
 
 
-            /*
-               EDIT BUTTON
-            */
+            /* EDIT */
 
             const editButton =
                 document.createElement(
@@ -1014,9 +1233,7 @@ function renderTimeline() {
             );
 
 
-            /*
-               DELETE BUTTON
-            */
+            /* DELETE */
 
             const deleteButton =
                 document.createElement(
@@ -1096,12 +1313,9 @@ if (timelineForm) {
             event.preventDefault();
 
 
-            /*
-               TITLE REQUIRED
-            */
-
             const title =
-                titleInput?.value.trim();
+                titleInput?.value.trim() ||
+                "";
 
 
             if (!title) {
@@ -1112,31 +1326,31 @@ if (timelineForm) {
                 );
 
 
-                titleInput.focus();
+                titleInput?.focus();
 
                 return;
 
             }
 
 
-            /*
-               DISABLE BUTTON
-            */
+            if (saveButton) {
 
-            saveButton.disabled =
-                true;
+                saveButton.disabled =
+                    true;
 
 
-            saveButton.textContent =
-                editingId
-                    ? "Updating..."
-                    : "Saving...";
+                saveButton.textContent =
+                    editingId
+                        ? "Updating..."
+                        : "Saving...";
+
+            }
 
 
             try {
 
                 /* =================================================
-                   UPDATE EXISTING ENTRY
+                   UPDATE
                    ================================================= */
 
                 if (editingId) {
@@ -1148,6 +1362,58 @@ if (timelineForm) {
                                 editingId
                         );
 
+
+                    if (!oldEntry) {
+
+                        throw new Error(
+                            "Timeline entry not found."
+                        );
+
+                    }
+
+
+                    /*
+                       IMPORTANT:
+
+                       Take OLD data before
+                       updating Firestore.
+                    */
+
+                    const oldActivityData =
+                        getActivitySnapshot(
+                            oldEntry
+                        );
+
+
+                    /*
+                       Take NEW data directly
+                       from the form.
+                    */
+
+                    const newActivityData =
+                        getFormActivitySnapshot();
+
+
+                    /*
+                       Find exactly what changed.
+                    */
+
+                    const changedFields =
+                        getChangedFields(
+                            oldActivityData,
+                            newActivityData
+                        );
+
+
+                    console.log(
+                        "Timeline changed fields:",
+                        changedFields
+                    );
+
+
+                    /*
+                       Update Firestore.
+                    */
 
                     const data =
                         getUpdateData();
@@ -1167,7 +1433,7 @@ if (timelineForm) {
 
 
                     /*
-                       Activity log.
+                       Store activity.
                     */
 
                     await logActivity({
@@ -1180,22 +1446,46 @@ if (timelineForm) {
 
                         itemName:
                             title ||
-                            oldEntry?.title ||
-                            "Untitled Timeline Event"
+                            oldEntry.title ||
+                            "Untitled Timeline Event",
+
+                        oldData:
+                            oldActivityData,
+
+                        newData:
+                            newActivityData
 
                     });
 
 
-                    showMessage(
-                        "Timeline entry updated successfully.",
-                        "success"
-                    );
+                    /*
+                       Show exactly what changed.
+                    */
+
+                    if (
+                        changedFields.length
+                    ) {
+
+                        showMessage(
+                            `${changedFields.join(", ")} changed.`,
+                            "success"
+                        );
+
+                    }
+                    else {
+
+                        showMessage(
+                            "Timeline entry updated.",
+                            "success"
+                        );
+
+                    }
 
                 }
 
 
                 /* =================================================
-                   ADD NEW ENTRY
+                   CREATE
                    ================================================= */
 
                 else {
@@ -1204,17 +1494,9 @@ if (timelineForm) {
                         getNewFormData();
 
 
-                    /*
-                       Created timestamp.
-                    */
-
                     data.createdAt =
                         serverTimestamp();
 
-
-                    /*
-                       Updated timestamp.
-                    */
 
                     data.updatedAt =
                         serverTimestamp();
@@ -1232,10 +1514,6 @@ if (timelineForm) {
 
                         );
 
-
-                    /*
-                       Activity log.
-                    */
 
                     await logActivity({
 
@@ -1260,16 +1538,8 @@ if (timelineForm) {
                 }
 
 
-                /*
-                   RESET
-                */
-
                 clearForm();
 
-
-                /*
-                   RELOAD
-                */
 
                 await loadTimeline();
 
@@ -1291,12 +1561,16 @@ if (timelineForm) {
             }
             finally {
 
-                saveButton.disabled =
-                    false;
+                if (saveButton) {
+
+                    saveButton.disabled =
+                        false;
 
 
-                saveButton.textContent =
-                    "Save Timeline Event";
+                    saveButton.textContent =
+                        "Save Timeline Event";
+
+                }
 
             }
 
@@ -1333,38 +1607,50 @@ function editTimeline(
         id;
 
 
-    /*
-       FILL FORM
-    */
+    if (yearInput) {
 
-    yearInput.value =
-        entry.year ??
-        "";
+        yearInput.value =
+            entry.year ??
+            "";
 
-
-    eraInput.value =
-        entry.era ??
-        "";
+    }
 
 
-    titleInput.value =
-        entry.title ??
-        "";
+    if (eraInput) {
+
+        eraInput.value =
+            entry.era ??
+            "";
+
+    }
 
 
-    typeInput.value =
-        entry.type ??
-        "";
+    if (titleInput) {
+
+        titleInput.value =
+            entry.title ??
+            "";
+
+    }
 
 
-    descriptionInput.value =
-        entry.description ??
-        "";
+    if (typeInput) {
+
+        typeInput.value =
+            entry.type ??
+            "";
+
+    }
 
 
-    /*
-       CHANGE UI
-    */
+    if (descriptionInput) {
+
+        descriptionInput.value =
+            entry.description ??
+            "";
+
+    }
+
 
     if (formTitle) {
 
@@ -1387,10 +1673,6 @@ function editTimeline(
         "info"
     );
 
-
-    /*
-       SCROLL TO FORM
-    */
 
     if (timelineForm) {
 
@@ -1434,9 +1716,10 @@ async function deleteTimeline(
 
     const confirmed =
         window.confirm(
-
-            `Delete "${entry.title || "this timeline entry"}"?`
-
+            `Delete "${
+                entry.title ||
+                "this timeline entry"
+            }"?`
         );
 
 
@@ -1449,10 +1732,6 @@ async function deleteTimeline(
 
     try {
 
-        /*
-           DELETE FIRESTORE DOCUMENT
-        */
-
         await deleteDoc(
 
             doc(
@@ -1463,10 +1742,6 @@ async function deleteTimeline(
 
         );
 
-
-        /*
-           STORE ACTIVITY
-        */
 
         await logActivity({
 
@@ -1489,11 +1764,6 @@ async function deleteTimeline(
         );
 
 
-        /*
-           If currently editing,
-           reset form.
-        */
-
         if (
             editingId ===
             id
@@ -1503,10 +1773,6 @@ async function deleteTimeline(
 
         }
 
-
-        /*
-           Reload.
-        */
 
         await loadTimeline();
 
@@ -1575,14 +1841,26 @@ if (logoutButton) {
             }
 
 
-            localStorage.removeItem(
-                "adminEmail"
-            );
+            try {
+
+                localStorage.removeItem(
+                    "adminEmail"
+                );
 
 
-            localStorage.removeItem(
-                "adminUid"
-            );
+                localStorage.removeItem(
+                    "adminUid"
+                );
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "Unable to clear local admin information.",
+                    error
+                );
+
+            }
 
 
             window.location.replace(
