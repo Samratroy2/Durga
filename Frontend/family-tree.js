@@ -104,6 +104,26 @@ let childrenOf = {};
 let parentsOf = {};
 
 
+/*
+   IMPORTANT
+
+   Stores the person whose card was clicked.
+
+   Example:
+
+   11111433221
+
+   Then Show Fathers follows:
+
+   1111143322
+   111114332
+   11111433
+   ...
+*/
+
+let selectedPersonId = null;
+
+
 /* =========================================================
    ZOOM
    ========================================================= */
@@ -487,7 +507,7 @@ function renderTree() {
 
 
     /*
-       Reset zoom after a fresh render.
+       Reset zoom after fresh render.
     */
 
     applyZoom(false);
@@ -710,6 +730,20 @@ function createPersonCard(person) {
         "click",
         () => {
 
+            /*
+               Remember which person was clicked.
+            */
+
+            selectedPersonId =
+                String(person.id);
+
+
+            console.log(
+                "Selected person:",
+                selectedPersonId
+            );
+
+
             showPerson(
                 person
             );
@@ -732,6 +766,17 @@ function createPersonCard(person) {
             ) {
 
                 event.preventDefault();
+
+
+                selectedPersonId =
+                    String(person.id);
+
+
+                console.log(
+                    "Selected person:",
+                    selectedPersonId
+                );
+
 
                 showPerson(
                     person
@@ -777,8 +822,7 @@ function drawConnections() {
 
 
     /*
-       SVG must use the actual stage
-       dimensions.
+       SVG must use actual stage dimensions.
     */
 
     const width =
@@ -1030,6 +1074,14 @@ function createCurve(
 
 function showPerson(person) {
 
+    /*
+       Make sure selected person is updated.
+    */
+
+    selectedPersonId =
+        String(person.id);
+
+
     const father =
         getFather(
             person.id
@@ -1241,9 +1293,7 @@ function showPerson(person) {
 function getFather(personId) {
 
     const id =
-        String(
-            personId
-        );
+        String(personId);
 
 
     if (
@@ -1254,6 +1304,14 @@ function getFather(personId) {
 
     }
 
+
+    /*
+       Father = remove last digit.
+
+       11111433221
+              ↓
+       1111143322
+    */
 
     const fatherId =
         id.slice(
@@ -1292,69 +1350,29 @@ function getChildren(
 
 
 /* =========================================================
-   SHOW ALL FATHERS
+   SHOW FATHER LINEAGE
    ========================================================= */
 
 function showAllFathers() {
 
-    const fatherMap =
-        new Map();
+    /*
+       No person selected.
+    */
 
-
-    Object.values(
-        members
-    ).forEach(
-        person => {
-
-            const father =
-                getFather(
-                    person.id
-                );
-
-
-            if (!father) {
-
-                return;
-
-            }
-
-
-            fatherMap.set(
-                father.id,
-                father
-            );
-
-        }
-    );
-
-
-    const fathers =
-        Array.from(
-            fatherMap.values()
-        )
-            .sort(
-                (a, b) =>
-                    Number(a.id) -
-                    Number(b.id)
-            );
-
-
-    if (
-        fathers.length === 0
-    ) {
+    if (!selectedPersonId) {
 
         fathersModalBody.innerHTML = `
 
             <p class="modal-eyebrow">
-                Roy Bari
+                ROY BARI
             </p>
 
             <h2 id="fathersModalTitle">
-                Fathers
+                Father Lineage
             </h2>
 
             <p>
-                No father information found.
+                Click a family member first.
             </p>
 
         `;
@@ -1365,10 +1383,143 @@ function showAllFathers() {
         );
 
 
+        fathersModalClose.focus();
+
+
         return;
 
     }
 
+
+    /*
+       Start from selected person.
+    */
+
+    let currentId =
+        String(selectedPersonId);
+
+
+    const lineage = [];
+
+
+    /*
+       Keep going upward.
+
+       Example:
+
+       11111433221
+       ↓
+       1111143322
+       ↓
+       111114332
+       ↓
+       11111433
+       ↓
+       1111143
+       ↓
+       111114
+    */
+
+    while (
+        currentId.length > 1
+    ) {
+
+        const fatherId =
+            currentId.slice(
+                0,
+                -1
+            );
+
+
+        /*
+           Stop when the calculated
+           father doesn't exist.
+        */
+
+        if (
+            !members[fatherId]
+        ) {
+
+            break;
+
+        }
+
+
+        const father =
+            members[fatherId];
+
+
+        lineage.push(
+            father
+        );
+
+
+        /*
+           Continue from father.
+        */
+
+        currentId =
+            fatherId;
+
+    }
+
+
+    /*
+       No father records.
+    */
+
+    if (
+        lineage.length === 0
+    ) {
+
+        fathersModalBody.innerHTML = `
+
+            <p class="modal-eyebrow">
+                ROY BARI
+            </p>
+
+            <h2 id="fathersModalTitle">
+                Father Lineage
+            </h2>
+
+            <p>
+
+                No father information found for
+
+                <strong>
+
+                    ${escapeHTML(
+                        members[selectedPersonId]?.name ||
+                        selectedPersonId
+                    )}
+
+                </strong>
+
+            </p>
+
+        `;
+
+
+        fathersModal.classList.add(
+            "open"
+        );
+
+
+        fathersModalClose.focus();
+
+
+        return;
+
+    }
+
+
+    const selectedPerson =
+        members[selectedPersonId];
+
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
     let html = `
 
@@ -1377,21 +1528,61 @@ function showAllFathers() {
         </p>
 
         <h2 id="fathersModalTitle">
-            Fathers
+            Father Lineage
         </h2>
 
         <p class="modal-description">
 
-            ${fathers.length}
-            father records found
+            Ancestors of
+
+            <strong>
+
+                ${escapeHTML(
+                    selectedPerson?.name ||
+                    selectedPersonId
+                )}
+
+            </strong>
 
         </p>
 
     `;
 
 
-    fathers.forEach(
+    /* =====================================================
+       DISPLAY LINEAGE
+       ===================================================== */
+
+    lineage.forEach(
         (father, index) => {
+
+            let relationship;
+
+
+            if (
+                index === 0
+            ) {
+
+                relationship =
+                    "Father";
+
+            } else if (
+                index === 1
+            ) {
+
+                relationship =
+                    "Grandfather";
+
+            } else {
+
+                relationship =
+                    "Great-".repeat(
+                        index - 1
+                    ) +
+                    "Grandfather";
+
+            }
+
 
             html += `
 
@@ -1405,8 +1596,20 @@ function showAllFathers() {
 
                     <div class="father-information">
 
+                        <p class="modal-section-label">
+
+                            ${escapeHTML(
+                                relationship
+                            )}
+
+                        </p>
+
             `;
 
+
+            /*
+               Show all fields of this father.
+            */
 
             Object.entries(
                 father
@@ -1484,128 +1687,119 @@ function showAllFathers() {
    SEARCH
    ========================================================= */
 
-searchInput.addEventListener(
-    "input",
-    () => {
+if (searchInput) {
 
-        const query =
-            searchInput.value
-                .trim()
-                .toLowerCase();
+    searchInput.addEventListener(
+        "input",
+        () => {
 
-
-        document
-            .querySelectorAll(
-                ".person-card"
-            )
-            .forEach(
-                card =>
-                    card.classList.remove(
-                        "is-match"
-                    )
-            );
+            const query =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
 
 
-        if (!query) {
-
-            return;
-
-        }
-
-
-        let firstCard =
-            null;
-
-
-        Object.values(
-            members
-        ).forEach(
-            person => {
-
-                const name =
-                    String(
-                        person.name ||
-                        ""
-                    )
-                        .toLowerCase();
-
-
-                if (
-                    !name.includes(
-                        query
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                const card =
-                    findCard(
-                        person.id
-                    );
-
-
-                if (!card) {
-
-                    return;
-
-                }
-
-
-                card.classList.add(
-                    "is-match"
+            document
+                .querySelectorAll(
+                    ".person-card"
+                )
+                .forEach(
+                    card =>
+                        card.classList.remove(
+                            "is-match"
+                        )
                 );
 
 
-                if (!firstCard) {
+            if (!query) {
 
-                    firstCard =
-                        card;
-
-                }
+                return;
 
             }
-        );
 
 
-        if (firstCard) {
+            let firstCard =
+                null;
 
-            firstCard.scrollIntoView({
 
-                behavior:
-                    "smooth",
+            Object.values(
+                members
+            ).forEach(
+                person => {
 
-                block:
-                    "center",
+                    const name =
+                        String(
+                            person.name ||
+                            ""
+                        )
+                            .toLowerCase();
 
-                inline:
-                    "center"
 
-            });
+                    if (
+                        !name.includes(
+                            query
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const card =
+                        findCard(
+                            person.id
+                        );
+
+
+                    if (!card) {
+
+                        return;
+
+                    }
+
+
+                    card.classList.add(
+                        "is-match"
+                    );
+
+
+                    if (!firstCard) {
+
+                        firstCard =
+                            card;
+
+                    }
+
+                }
+            );
+
+
+            if (firstCard) {
+
+                firstCard.scrollIntoView({
+
+                    behavior:
+                        "smooth",
+
+                    block:
+                        "center",
+
+                    inline:
+                        "center"
+
+                });
+
+            }
 
         }
+    );
 
-    }
-);
+}
 
 
 /* =========================================================
    APPLY ZOOM
-
-   IMPORTANT:
-
-   Zoom is now applied to TREE STAGE,
-   not familyTree.
-
-   This keeps:
-
-   - cards
-   - generation labels
-   - SVG connectors
-
-   together.
    ========================================================= */
 
 function applyZoom(
@@ -1651,148 +1845,174 @@ function applyZoom(
    ZOOM IN
    ========================================================= */
 
-zoomIn.addEventListener(
-    "click",
-    () => {
+if (zoomIn) {
 
-        zoom =
-            Math.min(
-                MAX_ZOOM,
-                Number(
-                    (
-                        zoom +
-                        ZOOM_STEP
-                    ).toFixed(2)
-                )
-            );
+    zoomIn.addEventListener(
+        "click",
+        () => {
+
+            zoom =
+                Math.min(
+                    MAX_ZOOM,
+                    Number(
+                        (
+                            zoom +
+                            ZOOM_STEP
+                        ).toFixed(2)
+                    )
+                );
 
 
-        applyZoom();
+            applyZoom();
 
-    }
-);
+        }
+    );
+
+}
 
 
 /* =========================================================
    ZOOM OUT
    ========================================================= */
 
-zoomOut.addEventListener(
-    "click",
-    () => {
+if (zoomOut) {
 
-        zoom =
-            Math.max(
-                MIN_ZOOM,
-                Number(
-                    (
-                        zoom -
-                        ZOOM_STEP
-                    ).toFixed(2)
-                )
-            );
+    zoomOut.addEventListener(
+        "click",
+        () => {
+
+            zoom =
+                Math.max(
+                    MIN_ZOOM,
+                    Number(
+                        (
+                            zoom -
+                            ZOOM_STEP
+                        ).toFixed(2)
+                    )
+                );
 
 
-        applyZoom();
+            applyZoom();
 
-    }
-);
+        }
+    );
+
+}
 
 
 /* =========================================================
    RESET ZOOM
    ========================================================= */
 
-resetZoom.addEventListener(
-    "click",
-    () => {
+if (resetZoom) {
 
-        zoom =
-            1;
+    resetZoom.addEventListener(
+        "click",
+        () => {
 
+            zoom = 1;
 
-        applyZoom();
+            applyZoom();
 
-    }
-);
+        }
+    );
+
+}
 
 
 /* =========================================================
    PERSON MODAL CLOSE
    ========================================================= */
 
-personModalClose.addEventListener(
-    "click",
-    () => {
+if (personModalClose) {
 
-        personModal.classList.remove(
-            "open"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   FATHERS MODAL CLOSE
-   ========================================================= */
-
-fathersModalClose.addEventListener(
-    "click",
-    () => {
-
-        fathersModal.classList.remove(
-            "open"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   CLICK OUTSIDE PERSON MODAL
-   ========================================================= */
-
-personModal.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target ===
-            personModal
-        ) {
+    personModalClose.addEventListener(
+        "click",
+        () => {
 
             personModal.classList.remove(
                 "open"
             );
 
         }
+    );
 
-    }
-);
+}
 
 
 /* =========================================================
-   CLICK OUTSIDE FATHERS MODAL
+   FATHERS MODAL CLOSE
    ========================================================= */
 
-fathersModal.addEventListener(
-    "click",
-    event => {
+if (fathersModalClose) {
 
-        if (
-            event.target ===
-            fathersModal
-        ) {
+    fathersModalClose.addEventListener(
+        "click",
+        () => {
 
             fathersModal.classList.remove(
                 "open"
             );
 
         }
+    );
 
-    }
-);
+}
+
+
+/* =========================================================
+   CLICK OUTSIDE PERSON MODAL
+   ========================================================= */
+
+if (personModal) {
+
+    personModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                personModal
+            ) {
+
+                personModal.classList.remove(
+                    "open"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLICK OUTSIDE FATHERS MODAL
+   ========================================================= */
+
+if (fathersModal) {
+
+    fathersModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                fathersModal
+            ) {
+
+                fathersModal.classList.remove(
+                    "open"
+                );
+
+            }
+
+        }
+    );
+
+}
 
 
 /* =========================================================
@@ -1812,14 +2032,22 @@ document.addEventListener(
         }
 
 
-        personModal.classList.remove(
-            "open"
-        );
+        if (personModal) {
+
+            personModal.classList.remove(
+                "open"
+            );
+
+        }
 
 
-        fathersModal.classList.remove(
-            "open"
-        );
+        if (fathersModal) {
+
+            fathersModal.classList.remove(
+                "open"
+            );
+
+        }
 
     }
 );
@@ -1829,10 +2057,14 @@ document.addEventListener(
    SHOW FATHERS
    ========================================================= */
 
-showFathers.addEventListener(
-    "click",
-    showAllFathers
-);
+if (showFathers) {
+
+    showFathers.addEventListener(
+        "click",
+        showAllFathers
+    );
+
+}
 
 
 /* =========================================================
@@ -1859,58 +2091,62 @@ let scrollStartY =
    MOUSE DOWN
    ========================================================= */
 
-treeWrapper.addEventListener(
-    "mousedown",
-    event => {
+if (treeWrapper) {
 
-        /*
-           Don't start panning on cards,
-           buttons or inputs.
-        */
+    treeWrapper.addEventListener(
+        "mousedown",
+        event => {
 
-        if (
-            event.target.closest(
-                ".person-card"
-            ) ||
-            event.target.closest(
-                "button"
-            ) ||
-            event.target.closest(
-                "input"
-            )
-        ) {
+            /*
+               Don't start panning on cards,
+               buttons or inputs.
+            */
 
-            return;
+            if (
+                event.target.closest(
+                    ".person-card"
+                ) ||
+                event.target.closest(
+                    "button"
+                ) ||
+                event.target.closest(
+                    "input"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            isPanning =
+                true;
+
+
+            treeWrapper.classList.add(
+                "is-panning"
+            );
+
+
+            panStartX =
+                event.clientX;
+
+
+            panStartY =
+                event.clientY;
+
+
+            scrollStartX =
+                treeWrapper.scrollLeft;
+
+
+            scrollStartY =
+                treeWrapper.scrollTop;
 
         }
+    );
 
-
-        isPanning =
-            true;
-
-
-        treeWrapper.classList.add(
-            "is-panning"
-        );
-
-
-        panStartX =
-            event.clientX;
-
-
-        panStartY =
-            event.clientY;
-
-
-        scrollStartX =
-            treeWrapper.scrollLeft;
-
-
-        scrollStartY =
-            treeWrapper.scrollTop;
-
-    }
-);
+}
 
 
 /* =========================================================
@@ -1959,9 +2195,13 @@ window.addEventListener(
             false;
 
 
-        treeWrapper.classList.remove(
-            "is-panning"
-        );
+        if (treeWrapper) {
+
+            treeWrapper.classList.remove(
+                "is-panning"
+            );
+
+        }
 
     }
 );
@@ -1984,102 +2224,106 @@ let touchScrollY =
     0;
 
 
-treeWrapper.addEventListener(
-    "touchstart",
-    event => {
+if (treeWrapper) {
 
-        if (
-            event.target.closest(
-                ".person-card"
-            ) ||
-            event.target.closest(
-                "button"
-            ) ||
-            event.target.closest(
-                "input"
-            )
-        ) {
+    treeWrapper.addEventListener(
+        "touchstart",
+        event => {
 
-            return;
+            if (
+                event.target.closest(
+                    ".person-card"
+                ) ||
+                event.target.closest(
+                    "button"
+                ) ||
+                event.target.closest(
+                    "input"
+                )
+            ) {
 
+                return;
+
+            }
+
+
+            const touch =
+                event.touches[0];
+
+
+            touchStartX =
+                touch.clientX;
+
+
+            touchStartY =
+                touch.clientY;
+
+
+            touchScrollX =
+                treeWrapper.scrollLeft;
+
+
+            touchScrollY =
+                treeWrapper.scrollTop;
+
+        },
+        {
+            passive: true
         }
+    );
 
 
-        const touch =
-            event.touches[0];
+    treeWrapper.addEventListener(
+        "touchmove",
+        event => {
+
+            if (
+                event.target.closest(
+                    ".person-card"
+                ) ||
+                event.target.closest(
+                    "button"
+                ) ||
+                event.target.closest(
+                    "input"
+                )
+            ) {
+
+                return;
+
+            }
 
 
-        touchStartX =
-            touch.clientX;
+            const touch =
+                event.touches[0];
 
 
-        touchStartY =
-            touch.clientY;
+            const dx =
+                touch.clientX -
+                touchStartX;
 
 
-        touchScrollX =
-            treeWrapper.scrollLeft;
+            const dy =
+                touch.clientY -
+                touchStartY;
 
 
-        touchScrollY =
-            treeWrapper.scrollTop;
-
-    },
-    {
-        passive: true
-    }
-);
+            treeWrapper.scrollLeft =
+                touchScrollX -
+                dx;
 
 
-treeWrapper.addEventListener(
-    "touchmove",
-    event => {
+            treeWrapper.scrollTop =
+                touchScrollY -
+                dy;
 
-        if (
-            event.target.closest(
-                ".person-card"
-            ) ||
-            event.target.closest(
-                "button"
-            ) ||
-            event.target.closest(
-                "input"
-            )
-        ) {
-
-            return;
-
+        },
+        {
+            passive: true
         }
+    );
 
-
-        const touch =
-            event.touches[0];
-
-
-        const dx =
-            touch.clientX -
-            touchStartX;
-
-
-        const dy =
-            touch.clientY -
-            touchStartY;
-
-
-        treeWrapper.scrollLeft =
-            touchScrollX -
-            dx;
-
-
-        treeWrapper.scrollTop =
-            touchScrollY -
-            dy;
-
-    },
-    {
-        passive: true
-    }
-);
+}
 
 
 /* =========================================================
@@ -2120,17 +2364,21 @@ window.addEventListener(
    REDRAW AFTER SCROLL
    ========================================================= */
 
-treeWrapper.addEventListener(
-    "scroll",
-    () => {
+if (treeWrapper) {
 
-        drawConnections();
+    treeWrapper.addEventListener(
+        "scroll",
+        () => {
 
-    },
-    {
-        passive: true
-    }
-);
+            drawConnections();
+
+        },
+        {
+            passive: true
+        }
+    );
+
+}
 
 
 /* =========================================================
@@ -2147,7 +2395,7 @@ function formatFieldName(key) {
         )
 
         .replace(
-            /[_-]/g,
+            /[\_-]/g,
             " "
         )
 
