@@ -19,20 +19,431 @@
         href="./css/admin.css"
     >
 
+    <style>
+
+        /* =====================================================
+           FULL WIDTH
+           ===================================================== */
+
+        .manager-layout {
+
+            display: block !important;
+
+            width: 100% !important;
+
+            max-width: none !important;
+
+            margin: 0 !important;
+
+        }
+
+
+        .manager-list-card {
+
+            width: 100% !important;
+
+            max-width: none !important;
+
+            box-sizing: border-box;
+
+            background: #fff;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 14px;
+
+            padding: 30px;
+
+        }
+
+
+
+        /* =====================================================
+           SEARCH
+           ===================================================== */
+
+        .enquiry-search {
+
+            width: 100%;
+
+            margin: 25px 0;
+
+        }
+
+
+        .enquiry-search label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #67584c;
+
+        }
+
+
+        .enquiry-search input {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 14px 15px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+            color: #3c3028;
+
+            font-family: inherit;
+
+            font-size: 14px;
+
+            outline: none;
+
+        }
+
+
+        .enquiry-search input:focus {
+
+            border-color: #795337;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(121, 83, 55, 0.08);
+
+        }
+
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        #enquiryMessage {
+
+            min-height: 20px;
+
+            margin: 10px 0 15px;
+
+            font-size: 13px;
+
+        }
+
+
+        #enquiryMessage.error {
+
+            color: #a33d3d;
+
+        }
+
+
+
+        /* =====================================================
+           TABLE WRAPPER
+           ===================================================== */
+
+        .enquiry-table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            border: 1px solid #e5dbd0;
+
+            border-radius: 10px;
+
+        }
+
+
+
+        /* =====================================================
+           TABLE
+           ===================================================== */
+
+        .enquiry-table {
+
+            width: 100%;
+
+            min-width: 1100px;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            background: #fff;
+
+        }
+
+
+        .enquiry-table thead th {
+
+            padding: 15px 16px;
+
+            background: #f4eee7;
+
+            border-bottom: 1px solid #ddd1c6;
+
+            color: #624a38;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.08em;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+        }
+
+
+        .enquiry-table tbody td {
+
+            padding: 17px 16px;
+
+            border-bottom: 1px solid #eee6de;
+
+            color: #4b4038;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+
+        }
+
+
+        .enquiry-table tbody tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        .enquiry-table tbody tr:hover {
+
+            background: #fffaf5;
+
+        }
+
+
+
+        /* =====================================================
+           NAME
+           ===================================================== */
+
+        .enquiry-name {
+
+            min-width: 150px;
+
+            font-weight: 700;
+
+            color: #332820 !important;
+
+        }
+
+
+
+        /* =====================================================
+           EMAIL
+           ===================================================== */
+
+        .enquiry-email {
+
+            min-width: 210px;
+
+            color: #795337 !important;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        /* =====================================================
+           REASON
+           ===================================================== */
+
+        .enquiry-reason {
+
+            min-width: 180px;
+
+            font-weight: 600;
+
+            color: #5d4b3d !important;
+
+        }
+
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        .enquiry-message-cell {
+
+            min-width: 300px;
+
+            max-width: 450px;
+
+            line-height: 1.55;
+
+            color: #6d625a !important;
+
+        }
+
+
+
+        /* =====================================================
+           DATE
+           ===================================================== */
+
+        .enquiry-date {
+
+            min-width: 170px;
+
+            white-space: nowrap;
+
+            font-size: 12px !important;
+
+            color: #766b63 !important;
+
+        }
+
+
+
+        /* =====================================================
+           DOCUMENT ID
+           ===================================================== */
+
+        .enquiry-id {
+
+            min-width: 160px;
+
+            max-width: 220px;
+
+            font-family: monospace;
+
+            font-size: 11px !important;
+
+            color: #795337 !important;
+
+            word-break: break-all;
+
+        }
+
+
+
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
+        .enquiry-actions {
+
+            min-width: 90px;
+
+            text-align: right;
+
+        }
+
+
+        .delete-enquiry {
+
+            padding: 8px 13px;
+
+            border-radius: 7px;
+
+            border: 1px solid #dfc9c3;
+
+            background: #fff;
+
+            color: #a13c3c;
+
+            font-family: inherit;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        .delete-enquiry:hover {
+
+            background: #f9e8e8;
+
+            border-color: #cfa9a3;
+
+        }
+
+
+        .delete-enquiry:disabled {
+
+            opacity: 0.6;
+
+            cursor: wait;
+
+        }
+
+
+
+        /* =====================================================
+           EMPTY / LOADING
+           ===================================================== */
+
+        .enquiry-empty,
+        .enquiry-loading {
+
+            padding: 45px !important;
+
+            text-align: center !important;
+
+            color: #8b7b6d !important;
+
+        }
+
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .manager-list-card {
+
+                padding: 20px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
 <body class="dashboard-page">
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          SIDEBAR
-         ========================================================= -->
+         ===================================================== -->
 
     <aside class="sidebar">
 
-
-        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
@@ -55,10 +466,11 @@
         </div>
 
 
-        <!-- NAVIGATION -->
 
         <nav class="sidebar-nav">
 
+
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -80,6 +492,9 @@
 
             </a>
 
+
+
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -119,22 +534,6 @@
 
 
             <a
-                href="./bhog.html"
-                class="nav-item"
-            >
-
-                <span class="nav-icon">
-                    🍚
-                </span>
-
-                <span>
-                    Bhog
-                </span>
-
-            </a>
-
-
-            <a
                 href="./archive.html"
                 class="nav-item"
             >
@@ -165,6 +564,9 @@
 
             </a>
 
+
+
+            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
@@ -219,6 +621,9 @@
             </a>
 
 
+
+            <!-- ADMIN -->
+
             <div class="nav-section-title">
                 ADMIN
             </div>
@@ -256,6 +661,7 @@
             </a>
 
         </nav>
+
 
 
         <!-- SIDEBAR BOTTOM -->
@@ -304,9 +710,9 @@
 
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN
-         ========================================================= -->
+         ===================================================== -->
 
     <main class="dashboard-main">
 
@@ -395,7 +801,7 @@
 
                 <!-- SEARCH -->
 
-                <div class="form-group">
+                <div class="enquiry-search">
 
                     <label for="enquirySearch">
                         Search
@@ -404,7 +810,7 @@
                     <input
                         type="search"
                         id="enquirySearch"
-                        placeholder="Search name, email, reason..."
+                        placeholder="Search name, email, reason, message..."
                     >
 
                 </div>
@@ -415,19 +821,73 @@
 
                 <p
                     id="enquiryMessage"
-                    class="message"
                 ></p>
 
 
 
-                <!-- LIST -->
+                <!-- =================================================
+                     TABLE
+                     ================================================= -->
 
-                <div
-                    id="enquiryList"
-                    class="manager-list"
-                >
+                <div class="enquiry-table-wrapper">
 
-                    Loading enquiries...
+                    <table class="enquiry-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    NAME
+                                </th>
+
+                                <th>
+                                    EMAIL
+                                </th>
+
+                                <th>
+                                    REASON
+                                </th>
+
+                                <th>
+                                    MESSAGE
+                                </th>
+
+                                <th>
+                                    DATE & TIME
+                                </th>
+
+                                <th>
+                                    DOCUMENT ID
+                                </th>
+
+                                <th>
+                                    ACTION
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="enquiryList"
+                        >
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="enquiry-loading"
+                                >
+                                    Loading enquiries...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
@@ -457,6 +917,10 @@
     </main>
 
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
 
     <script
         type="module"

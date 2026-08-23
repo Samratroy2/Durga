@@ -7,6 +7,9 @@
       "hosting": {
         "admin": [
           "roy-bari-admin"
+        ],
+        "main": [
+          "roy-bari-durga-puja"
         ]
       }
     }

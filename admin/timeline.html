@@ -27,472 +27,262 @@
 
     <style>
 
-        /* =====================================================
-           TIMELINE PAGE
-           ===================================================== */
+        .timeline-form-card,
+        .timeline-list-card {
+            background: #fff;
+            border: 1px solid #e7ddd3;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
 
         .timeline-form-card,
         .timeline-list-card {
-
-            background: #fff;
-
-            border: 1px solid #e7ddd3;
-
-            border-radius: 12px;
-
-            padding: 24px;
-
-        }
-
-
-        .timeline-form-card {
-
             width: 100%;
-
+            box-sizing: border-box;
         }
 
-
-        .timeline-list-card {
-
-            width: 100%;
-
-        }
-
-
-        /* =====================================================
-           FORM GRID
-           ===================================================== */
 
         .timeline-form-grid {
-
             display: grid;
-
             grid-template-columns:
                 repeat(2, minmax(0, 1fr));
-
             gap: 16px;
-
         }
 
 
         .full-width {
-
             grid-column: 1 / -1;
-
         }
 
 
-        /* =====================================================
-           INPUTS
-           ===================================================== */
-
         .form-group {
-
             display: flex;
-
             flex-direction: column;
-
             gap: 7px;
-
         }
 
 
         .form-group label {
-
             font-size: 12px;
-
             font-weight: 700;
-
             color: #67584c;
-
         }
 
 
         .form-group input,
         .form-group select,
         .form-group textarea {
-
             width: 100%;
-
             padding: 11px 12px;
-
             border: 1px solid #ddd1c6;
-
             border-radius: 7px;
-
             background: #fffdf9;
-
             color: #3c3028;
-
             font-family: inherit;
-
             outline: none;
-
+            box-sizing: border-box;
         }
 
 
         .form-group textarea {
-
             resize: vertical;
-
             min-height: 120px;
-
         }
 
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
-
             border-color: #795337;
-
             box-shadow:
                 0 0 0 2px
                 rgba(121, 83, 55, 0.08);
-
         }
 
-
-        /* =====================================================
-           AUTO FIELDS
-           ===================================================== */
-
-        .readonly-field {
-
-            background: #f3eee8 !important;
-
-            cursor: not-allowed;
-
-        }
-
-
-        .auto-badge {
-
-            display: inline-block;
-
-            margin-left: 5px;
-
-            padding: 3px 7px;
-
-            border-radius: 20px;
-
-            background: #eee4da;
-
-            color: #795337;
-
-            font-size: 8px;
-
-            font-weight: 700;
-
-            text-transform: uppercase;
-
-            letter-spacing: 0.08em;
-
-        }
-
-
-        /* =====================================================
-           ACTIONS
-           ===================================================== */
 
         .form-actions {
-
             display: flex;
-
             gap: 10px;
-
             margin-top: 20px;
-
         }
 
 
         .primary-button,
         .secondary-button {
-
             border-radius: 7px;
-
             padding: 11px 18px;
-
             font-family: inherit;
-
             font-weight: 600;
-
             cursor: pointer;
-
         }
 
 
         .primary-button {
-
             border: none;
-
             background: #795337;
-
             color: white;
-
         }
 
 
         .primary-button:hover {
-
             background: #633f29;
-
         }
 
 
         .secondary-button {
-
             border: 1px solid #ddd1c6;
-
             background: white;
-
             color: #5d4b3d;
-
         }
 
 
-        /* =====================================================
-           TIMELINE LIST
-           ===================================================== */
-
         .timeline-list {
-
             margin-top: 10px;
-
         }
 
 
         .timeline-item {
-
             position: relative;
-
             display: grid;
-
             grid-template-columns:
                 80px 1fr auto;
-
             gap: 18px;
-
             padding: 20px 0;
-
             border-bottom:
                 1px solid #e8dfd6;
-
         }
 
 
         .timeline-item:last-child {
-
             border-bottom: none;
-
         }
 
 
         .timeline-year {
-
             font-family: Georgia, serif;
-
             font-size: 21px;
-
             font-weight: 600;
-
             color: #70442f;
-
         }
 
 
         .timeline-content h3 {
-
             margin: 0 0 5px;
-
             font-family: Georgia, serif;
-
             font-size: 18px;
-
             color: #3f2920;
-
         }
 
 
         .timeline-content p {
-
             margin: 0;
-
             color: #74675d;
-
             line-height: 1.6;
-
             font-size: 13px;
-
         }
 
 
         .timeline-meta {
-
             display: flex;
-
             flex-wrap: wrap;
-
             gap: 6px;
-
             margin-bottom: 8px;
-
         }
 
 
         .timeline-tag {
-
             display: inline-block;
-
             padding: 4px 8px;
-
             border-radius: 20px;
-
             background: #f1e8df;
-
             color: #795337;
-
             font-size: 9px;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 0.05em;
-
         }
 
 
         .timeline-actions {
-
             display: flex;
-
             gap: 6px;
-
             align-items: flex-start;
-
         }
 
 
         .timeline-edit,
         .timeline-delete {
-
             padding: 7px 10px;
-
             border-radius: 6px;
-
             background: white;
-
             border: 1px solid #ddd1c6;
-
             cursor: pointer;
-
             font-size: 11px;
-
         }
 
 
         .timeline-edit:hover {
-
             background: #f3ebe4;
-
         }
 
 
         .timeline-delete {
-
             color: #a13c3c;
-
         }
 
 
         .timeline-delete:hover {
-
             background: #f9e8e8;
-
         }
 
 
-        /* =====================================================
-           STATUS
-           ===================================================== */
-
         #timelineMessage {
-
             min-height: 20px;
-
             margin-top: 12px;
-
             font-size: 13px;
-
         }
 
 
         .message-success {
-
             color: #39734a;
-
         }
 
 
         .message-error {
-
             color: #a33d3d;
-
         }
 
 
         .message-info {
-
             color: #735b48;
-
         }
 
 
         .empty-list {
-
             padding: 40px 10px;
-
             text-align: center;
-
             color: #8b7b6d;
-
         }
 
-
-        /* =====================================================
-           RESPONSIVE
-           ===================================================== */
 
         @media (max-width: 850px) {
 
             .timeline-form-grid {
-
                 grid-template-columns: 1fr;
-
             }
-
 
             .full-width {
-
                 grid-column: auto;
-
             }
-
 
             .timeline-item {
-
                 grid-template-columns: 1fr;
-
                 gap: 8px;
-
             }
 
-
             .timeline-actions {
-
                 margin-top: 8px;
-
             }
 
         }
@@ -512,14 +302,11 @@
     <aside class="sidebar">
 
 
-        <!-- BRAND -->
-
         <div class="sidebar-brand">
 
             <div class="sidebar-logo">
                 🪔
             </div>
-
 
             <div class="sidebar-brand-text">
 
@@ -536,11 +323,10 @@
         </div>
 
 
-
-        <!-- NAVIGATION -->
-
         <nav class="sidebar-nav">
 
+
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -551,7 +337,6 @@
                 href="./dashboard.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     ◈
                 </span>
@@ -559,10 +344,10 @@
                 <span>
                     Dashboard
                 </span>
-
             </a>
 
 
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -573,7 +358,6 @@
                 href="./family.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     👨‍👩‍👧
                 </span>
@@ -581,7 +365,6 @@
                 <span>
                     Family Tree
                 </span>
-
             </a>
 
 
@@ -589,7 +372,6 @@
                 href="./events.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     🪔
                 </span>
@@ -597,14 +379,13 @@
                 <span>
                     Puja Events
                 </span>
-
             </a>
+
 
             <a
                 href="./archive.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     📜
                 </span>
@@ -612,7 +393,6 @@
                 <span>
                     Archive
                 </span>
-
             </a>
 
 
@@ -620,7 +400,6 @@
                 href="./gallery.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     📷
                 </span>
@@ -628,10 +407,10 @@
                 <span>
                     Gallery
                 </span>
-
             </a>
 
 
+            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
@@ -642,7 +421,6 @@
                 href="./memories.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     ♡
                 </span>
@@ -650,7 +428,6 @@
                 <span>
                     Memories
                 </span>
-
             </a>
 
 
@@ -658,7 +435,6 @@
                 href="./rituals.html"
                 class="nav-item"
             >
-
                 <span class="nav-icon">
                     ॐ
                 </span>
@@ -666,7 +442,6 @@
                 <span>
                     Rituals
                 </span>
-
             </a>
 
 
@@ -674,7 +449,6 @@
                 href="./timeline.html"
                 class="nav-item active"
             >
-
                 <span class="nav-icon">
                     📅
                 </span>
@@ -682,12 +456,48 @@
                 <span>
                     Timeline
                 </span>
+            </a>
+
+
+            <!-- ADMIN -->
+
+            <div class="nav-section-title">
+                ADMIN
+            </div>
+
+
+            <a
+                href="./enquiries.html"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">
+                    ✉
+                </span>
+
+                <span>
+                    Enquiries
+                </span>
 
             </a>
 
 
-        </nav>
+            <a
+                href="./activity.html"
+                class="nav-item"
+            >
 
+                <span class="nav-icon">
+                    ◷
+                </span>
+
+                <span>
+                    Activity History
+                </span>
+
+            </a>
+
+        </nav>
 
 
         <!-- SIDEBAR BOTTOM -->
@@ -735,15 +545,12 @@
     </aside>
 
 
-
     <!-- =====================================================
          MAIN
          ===================================================== -->
 
     <main class="dashboard-main">
 
-
-        <!-- TOPBAR -->
 
         <header class="topbar">
 
@@ -788,17 +595,14 @@
         </header>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              CONTENT
-             ===================================================== -->
+             ================================================= -->
 
         <section class="manager-layout">
 
 
-            <!-- =================================================
-                 ADD / EDIT
-                 ================================================= -->
+            <!-- ADD / EDIT -->
 
             <div class="timeline-form-card">
 
@@ -820,14 +624,11 @@
                 </div>
 
 
-
                 <form id="timelineForm">
 
 
                     <div class="timeline-form-grid">
 
-
-                        <!-- YEAR -->
 
                         <div class="form-group">
 
@@ -844,9 +645,6 @@
                         </div>
 
 
-
-                        <!-- ERA -->
-
                         <div class="form-group">
 
                             <label for="era">
@@ -861,9 +659,6 @@
 
                         </div>
 
-
-
-                        <!-- TITLE -->
 
                         <div class="form-group full-width">
 
@@ -880,9 +675,6 @@
 
                         </div>
 
-
-
-                        <!-- TYPE -->
 
                         <div class="form-group">
 
@@ -925,9 +717,6 @@
                         </div>
 
 
-
-                        <!-- DESCRIPTION -->
-
                         <div class="form-group full-width">
 
                             <label for="description">
@@ -945,11 +734,7 @@
                     </div>
 
 
-
-                    <!-- ACTIONS -->
-
                     <div class="form-actions">
-
 
                         <button
                             type="submit"
@@ -968,13 +753,10 @@
                             Cancel
                         </button>
 
-
                     </div>
 
 
-                    <p
-                        id="timelineMessage"
-                    ></p>
+                    <p id="timelineMessage"></p>
 
 
                 </form>
@@ -982,16 +764,12 @@
             </div>
 
 
-
-            <!-- =================================================
-                 LIST
-                 ================================================= -->
+            <!-- LIST -->
 
             <div class="timeline-list-card">
 
 
                 <div class="section-heading">
-
 
                     <div>
 
@@ -1010,18 +788,14 @@
                         0 entries
                     </span>
 
-
                 </div>
-
 
 
                 <div
                     id="timelineList"
                     class="timeline-list"
                 >
-
                     Loading...
-
                 </div>
 
 
@@ -1029,7 +803,6 @@
 
 
         </section>
-
 
 
         <!-- FOOTER -->
@@ -1049,11 +822,6 @@
 
     </main>
 
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-         ===================================================== -->
 
     <script
         type="module"

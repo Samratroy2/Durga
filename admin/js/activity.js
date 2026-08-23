@@ -4,6 +4,10 @@
    ========================================================= */
 
 
+/* =========================================================
+   FIREBASE
+   ========================================================= */
+
 import {
     collection,
     getDocs,
@@ -80,35 +84,124 @@ let activities = [];
 
 
 /* =========================================================
-   LOAD ACTIVITY
+   MESSAGE
+   ========================================================= */
+
+function showMessage(
+    text,
+    type = "info"
+) {
+
+    if (!activityMessage) {
+
+        return;
+
+    }
+
+
+    activityMessage.textContent =
+        text;
+
+
+    activityMessage.className =
+        `message-${type}`;
+
+}
+
+
+
+/* =========================================================
+   LOAD ACTIVITIES
    ========================================================= */
 
 async function loadActivities() {
 
+    if (!activityList) {
+
+        console.error(
+            "activityList element not found."
+        );
+
+        return;
+
+    }
+
+
+    activityList.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                class="activity-loading"
+            >
+                Loading activity history...
+            </td>
+
+        </tr>
+
+    `;
+
+
     try {
 
-        activityList.innerHTML =
-            "Loading activity history...";
+        let snapshot;
 
 
-        const activityQuery =
-            query(
-                collection(
-                    db,
-                    "activityLogs"
-                ),
-                orderBy(
-                    "performedAt",
-                    "desc"
-                )
+        /* =================================================
+           FIRST TRY:
+           SORT BY performedAt
+           ================================================= */
+
+        try {
+
+            const activityQuery =
+                query(
+                    collection(
+                        db,
+                        "activityLogs"
+                    ),
+                    orderBy(
+                        "performedAt",
+                        "desc"
+                    )
+                );
+
+
+            snapshot =
+                await getDocs(
+                    activityQuery
+                );
+
+        }
+
+        catch (error) {
+
+            console.warn(
+                "performedAt query failed. Loading all activity logs.",
+                error
             );
 
 
-        const snapshot =
-            await getDocs(
-                activityQuery
-            );
+            /* =============================================
+               FALLBACK
+               ============================================= */
 
+            snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "activityLogs"
+                    )
+                );
+
+        }
+
+
+
+        /* =================================================
+           READ DATA
+           ================================================= */
 
         activities = [];
 
@@ -129,17 +222,48 @@ async function loadActivities() {
         );
 
 
-        updateCount(
-            activities.length
+
+        /* =================================================
+           SORT
+           ================================================= */
+
+        activities.sort(
+            (a, b) => {
+
+                return (
+
+                    getTime(
+                        b.performedAt ||
+                        b.createdAt ||
+                        b.updatedAt
+                    )
+
+                    -
+
+                    getTime(
+                        a.performedAt ||
+                        a.createdAt ||
+                        a.updatedAt
+                    )
+
+                );
+
+            }
         );
 
+
+
+        /* =================================================
+           RENDER
+           ================================================= */
 
         renderActivities(
             activities
         );
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(
             "Activity loading error:",
@@ -147,81 +271,29 @@ async function loadActivities() {
         );
 
 
-        /*
-           Support older activity records
-           or records without performedAt.
-        */
+        activityList.innerHTML = `
 
-        try {
+            <tr>
 
-            const snapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "activityLogs"
-                    )
-                );
-
-
-            activities = [];
-
-
-            snapshot.forEach(
-                documentSnapshot => {
-
-                    activities.push({
-
-                        id:
-                            documentSnapshot.id,
-
-                        ...documentSnapshot.data()
-
-                    });
-
-                }
-            );
-
-
-            activities.sort(
-                (a, b) => {
-
-                    return getTime(
-                        b.performedAt ||
-                        b.createdAt
-                    ) -
-                    getTime(
-                        a.performedAt ||
-                        a.createdAt
-                    );
-
-                }
-            );
-
-
-            updateCount(
-                activities.length
-            );
-
-
-            renderActivities(
-                activities
-            );
-
-
-        } catch (fallbackError) {
-
-            console.error(
-                fallbackError
-            );
-
-
-            activityList.innerHTML = `
-                <div class="empty-state">
+                <td
+                    colspan="7"
+                    class="activity-empty"
+                >
                     Unable to load activity history.
-                </div>
-            `;
+                </td>
 
-        }
+            </tr>
+
+        `;
+
+
+        updateCount(0);
+
+
+        showMessage(
+            "Unable to load activity history.",
+            "error"
+        );
 
     }
 
@@ -230,12 +302,19 @@ async function loadActivities() {
 
 
 /* =========================================================
-   COUNT
+   UPDATE COUNT
    ========================================================= */
 
 function updateCount(
     count
 ) {
+
+    if (!activityCount) {
+
+        return;
+
+    }
+
 
     activityCount.textContent =
         count === 1
@@ -254,187 +333,402 @@ function renderActivities(
     list
 ) {
 
-    if (
-        !list ||
-        list.length === 0
-    ) {
-
-        activityList.innerHTML = `
-            <div class="empty-state">
-                No activity history found.
-            </div>
-        `;
+    if (!activityList) {
 
         return;
 
     }
 
 
-    activityList.innerHTML = "";
 
+    /* =====================================================
+       EMPTY
+       ===================================================== */
+
+    if (
+        !list ||
+        list.length === 0
+    ) {
+
+        activityList.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="activity-empty"
+                >
+                    No activity history found.
+                </td>
+
+            </tr>
+
+        `;
+
+
+        updateCount(0);
+
+        return;
+
+    }
+
+
+
+    /* =====================================================
+       COUNT
+       ===================================================== */
+
+    updateCount(
+        list.length
+    );
+
+
+
+    /* =====================================================
+       CLEAR TABLE
+       ===================================================== */
+
+    activityList.innerHTML =
+        "";
+
+
+
+    /* =====================================================
+       CREATE ROWS
+       ===================================================== */
 
     list.forEach(
         activity => {
 
-            const item =
+            const row =
                 document.createElement(
-                    "article"
+                    "tr"
                 );
 
 
-            item.className =
-                "manager-item";
+            row.className =
+                "activity-row";
 
+
+
+            /* =================================================
+               DATA
+               ================================================= */
 
             const action =
                 String(
                     activity.action ||
                     "unknown"
-                ).toLowerCase();
+                )
+                    .toLowerCase();
 
 
             const collectionName =
                 activity.collection ||
+                activity.collectionName ||
+                activity.section ||
                 "Unknown";
 
 
             const title =
                 activity.title ||
                 activity.name ||
+                activity.activity ||
                 "Untitled";
-
-
-            const performedBy =
-                activity.performedBy ||
-                activity.email ||
-                "Unknown admin";
 
 
             const details =
                 activity.details ||
                 activity.description ||
-                "";
+                activity.message ||
+                "—";
+
+
+            const performedBy =
+                activity.performedBy ||
+                activity.email ||
+                activity.adminEmail ||
+                activity.userEmail ||
+                "Unknown admin";
 
 
             const documentId =
                 activity.documentId ||
-                "";
+                activity.docId ||
+                activity.recordId ||
+                "—";
 
 
             const date =
                 formatDate(
                     activity.performedAt ||
-                    activity.createdAt
+                    activity.createdAt ||
+                    activity.updatedAt
                 );
 
 
-            item.innerHTML = `
 
-                <div class="manager-item-main">
+            /* =================================================
+               ACTION CELL
+               ================================================= */
 
-
-                    <div class="manager-item-title">
-
-                        ${getActionIcon(
-                            action
-                        )}
-
-                        ${escapeHTML(
-                            formatAction(
-                                action
-                            )
-                        )}
-
-                        —
-
-                        ${escapeHTML(
-                            formatCollection(
-                                collectionName
-                            )
-                        )}
-
-                    </div>
+            const actionCell =
+                document.createElement(
+                    "td"
+                );
 
 
-                    <div class="manager-item-meta">
-
-                        <span>
-
-                            ${escapeHTML(
-                                title
-                            )}
-
-                        </span>
-
-                    </div>
+            actionCell.className =
+                "activity-action-cell";
 
 
-                    ${
-                        details
-                            ? `
-                                <div class="manager-item-description">
 
-                                    ${escapeHTML(
-                                        details
-                                    )}
-
-                                </div>
-                            `
-                            : ""
-                    }
+            const actionIcon =
+                document.createElement(
+                    "span"
+                );
 
 
-                    <div class="manager-item-meta">
-
-                        <span>
-
-                            By:
-                            <strong>
-                                ${escapeHTML(
-                                    performedBy
-                                )}
-                            </strong>
-
-                        </span>
+            actionIcon.className =
+                `activity-history-icon ${getActionClass(action)}`;
 
 
-                        <span>
-
-                            ${escapeHTML(
-                                date
-                            )}
-
-                        </span>
-
-                    </div>
+            actionIcon.textContent =
+                getActionIcon(action);
 
 
-                    ${
-                        documentId
-                            ? `
-                                <div class="manager-item-meta">
+            actionIcon.title =
+                formatAction(action);
 
-                                    <span>
 
-                                        Document ID:
-                                        ${escapeHTML(
-                                            documentId
-                                        )}
+            actionCell.appendChild(
+                actionIcon
+            );
 
-                                    </span>
 
-                                </div>
-                            `
-                            : ""
-                    }
 
-                </div>
+            /* =================================================
+               SECTION CELL
+               ================================================= */
 
-            `;
+            const sectionCell =
+                document.createElement(
+                    "td"
+                );
 
+
+            sectionCell.className =
+                "activity-section-cell";
+
+
+
+            const sectionWrapper =
+                document.createElement(
+                    "div"
+                );
+
+
+            sectionWrapper.className =
+                "activity-section-wrapper";
+
+
+
+            const sectionIcon =
+                document.createElement(
+                    "span"
+                );
+
+
+            sectionIcon.className =
+                "activity-section-icon";
+
+
+            sectionIcon.textContent =
+                getSectionIcon(
+                    collectionName
+                );
+
+
+            sectionIcon.title =
+                formatCollection(
+                    collectionName
+                );
+
+
+
+            const sectionLabel =
+                document.createElement(
+                    "span"
+                );
+
+
+            sectionLabel.className =
+                "activity-section-label";
+
+
+            sectionLabel.textContent =
+                formatCollection(
+                    collectionName
+                );
+
+
+            sectionWrapper.appendChild(
+                sectionIcon
+            );
+
+
+            sectionWrapper.appendChild(
+                sectionLabel
+            );
+
+
+            sectionCell.appendChild(
+                sectionWrapper
+            );
+
+
+
+            /* =================================================
+               ACTIVITY CELL
+               ================================================= */
+
+            const activityCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            activityCell.className =
+                "activity-title-cell";
+
+
+            activityCell.textContent =
+                title;
+
+
+
+            /* =================================================
+               DETAILS CELL
+               ================================================= */
+
+            const detailsCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            detailsCell.className =
+                "activity-details-cell";
+
+
+            detailsCell.textContent =
+                details;
+
+
+
+            /* =================================================
+               ADMIN CELL
+               ================================================= */
+
+            const adminCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            adminCell.className =
+                "activity-admin-cell";
+
+
+            adminCell.textContent =
+                performedBy;
+
+
+
+            /* =================================================
+               DATE CELL
+               ================================================= */
+
+            const dateCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            dateCell.className =
+                "activity-date-cell";
+
+
+            dateCell.textContent =
+                date;
+
+
+
+            /* =================================================
+               DOCUMENT ID CELL
+               ================================================= */
+
+            const documentCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            documentCell.className =
+                "activity-document-cell";
+
+
+            documentCell.textContent =
+                documentId;
+
+
+
+            /* =================================================
+               APPEND CELLS
+               ================================================= */
+
+            row.appendChild(
+                actionCell
+            );
+
+
+            row.appendChild(
+                sectionCell
+            );
+
+
+            row.appendChild(
+                activityCell
+            );
+
+
+            row.appendChild(
+                detailsCell
+            );
+
+
+            row.appendChild(
+                adminCell
+            );
+
+
+            row.appendChild(
+                dateCell
+            );
+
+
+            row.appendChild(
+                documentCell
+            );
+
+
+
+            /* =================================================
+               APPEND ROW
+               ================================================= */
 
             activityList.appendChild(
-                item
+                row
             );
 
         }
@@ -445,33 +739,31 @@ function renderActivities(
 
 
 /* =========================================================
-   FILTER
+   APPLY FILTERS
    ========================================================= */
 
 function applyFilters() {
 
     const search =
-        activitySearch
-            ?.value
+        activitySearch?.value
             .trim()
             .toLowerCase() ||
         "";
 
 
     const action =
-        actionFilter
-            ?.value
+        actionFilter?.value
             .trim()
             .toLowerCase() ||
         "";
 
 
-    const collectionName =
-        collectionFilter
-            ?.value
+    const selectedCollection =
+        collectionFilter?.value
             .trim()
             .toLowerCase() ||
         "";
+
 
 
     const filtered =
@@ -479,7 +771,9 @@ function applyFilters() {
             activity => {
 
 
-                /* SEARCH */
+                /* =========================================
+                   SEARCH
+                   ========================================= */
 
                 const searchable = [
 
@@ -487,28 +781,48 @@ function applyFilters() {
 
                     activity.collection,
 
+                    activity.collectionName,
+
+                    activity.section,
+
                     activity.title,
 
                     activity.name,
+
+                    activity.activity,
 
                     activity.details,
 
                     activity.description,
 
+                    activity.message,
+
                     activity.performedBy,
 
                     activity.email,
 
-                    activity.documentId
+                    activity.adminEmail,
+
+                    activity.userEmail,
+
+                    activity.documentId,
+
+                    activity.docId,
+
+                    activity.recordId
 
                 ]
+
                     .filter(
                         value =>
                             value !== undefined &&
                             value !== null
                     )
+
                     .join(" ")
+
                     .toLowerCase();
+
 
 
                 if (
@@ -523,36 +837,63 @@ function applyFilters() {
                 }
 
 
-                /* ACTION */
+
+                /* =========================================
+                   ACTION FILTER
+                   ========================================= */
+
+                if (action) {
+
+                    const currentAction =
+                        String(
+                            activity.action ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    if (
+                        currentAction !==
+                        action
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+
+                /* =========================================
+                   COLLECTION FILTER
+                   ========================================= */
 
                 if (
-                    action &&
-                    String(
-                        activity.action ||
-                        ""
-                    ).toLowerCase() !==
-                    action
+                    selectedCollection
                 ) {
 
-                    return false;
+                    const currentCollection =
+                        String(
+                            activity.collection ||
+                            activity.collectionName ||
+                            activity.section ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    if (
+                        currentCollection !==
+                        selectedCollection
+                    ) {
+
+                        return false;
+
+                    }
 
                 }
 
-
-                /* COLLECTION */
-
-                if (
-                    collectionName &&
-                    String(
-                        activity.collection ||
-                        ""
-                    ).toLowerCase() !==
-                    collectionName
-                ) {
-
-                    return false;
-
-                }
 
 
                 return true;
@@ -560,10 +901,6 @@ function applyFilters() {
             }
         );
 
-
-    updateCount(
-        filtered.length
-    );
 
 
     renderActivities(
@@ -578,14 +915,10 @@ function applyFilters() {
    SEARCH
    ========================================================= */
 
-if (activitySearch) {
-
-    activitySearch.addEventListener(
-        "input",
-        applyFilters
-    );
-
-}
+activitySearch?.addEventListener(
+    "input",
+    applyFilters
+);
 
 
 
@@ -593,14 +926,10 @@ if (activitySearch) {
    ACTION FILTER
    ========================================================= */
 
-if (actionFilter) {
-
-    actionFilter.addEventListener(
-        "change",
-        applyFilters
-    );
-
-}
+actionFilter?.addEventListener(
+    "change",
+    applyFilters
+);
 
 
 
@@ -608,19 +937,15 @@ if (actionFilter) {
    COLLECTION FILTER
    ========================================================= */
 
-if (collectionFilter) {
-
-    collectionFilter.addEventListener(
-        "change",
-        applyFilters
-    );
-
-}
+collectionFilter?.addEventListener(
+    "change",
+    applyFilters
+);
 
 
 
 /* =========================================================
-   ACTION NAME
+   FORMAT ACTION
    ========================================================= */
 
 function formatAction(
@@ -630,19 +955,33 @@ function formatAction(
     switch (action) {
 
         case "created":
+
             return "Added";
 
+
         case "updated":
+
             return "Updated";
 
+
         case "deleted":
+
             return "Deleted";
 
+
+        case "login":
+
+            return "Login";
+
+
         default:
-            return action
-                .charAt(0)
-                .toUpperCase() +
-                action.slice(1);
+
+            return (
+                action
+                    .charAt(0)
+                    .toUpperCase() +
+                action.slice(1)
+            );
 
     }
 
@@ -652,34 +991,249 @@ function formatAction(
 
 /* =========================================================
    ACTION ICON
+   SAME AS DASHBOARD
    ========================================================= */
 
 function getActionIcon(
     action
 ) {
 
-    switch (action) {
+    const value =
+        String(
+            action || ""
+        )
+            .toLowerCase();
 
-        case "created":
-            return "＋";
 
-        case "updated":
-            return "✎";
 
-        case "deleted":
-            return "×";
+    if (
+        value.includes("create") ||
+        value.includes("add")
+    ) {
 
-        default:
-            return "•";
+        return "➕";
 
     }
+
+
+
+    if (
+        value.includes("update") ||
+        value.includes("edit")
+    ) {
+
+        return "✏️";
+
+    }
+
+
+
+    if (
+        value.includes("delete") ||
+        value.includes("remove")
+    ) {
+
+        return "🗑️";
+
+    }
+
+
+
+    if (
+        value.includes("login")
+    ) {
+
+        return "🔐";
+
+    }
+
+
+
+    return "📝";
 
 }
 
 
 
 /* =========================================================
-   COLLECTION NAME
+   ACTION CLASS
+   ========================================================= */
+
+function getActionClass(
+    action
+) {
+
+    const value =
+        String(
+            action || ""
+        )
+            .toLowerCase();
+
+
+
+    if (
+        value.includes("create") ||
+        value.includes("add")
+    ) {
+
+        return "created";
+
+    }
+
+
+
+    if (
+        value.includes("update") ||
+        value.includes("edit")
+    ) {
+
+        return "updated";
+
+    }
+
+
+
+    if (
+        value.includes("delete") ||
+        value.includes("remove")
+    ) {
+
+        return "deleted";
+
+    }
+
+
+
+    return "other";
+
+}
+
+
+
+/* =========================================================
+   SECTION ICON
+   ========================================================= */
+
+function getSectionIcon(
+    collectionName
+) {
+
+    const value =
+        String(
+            collectionName || ""
+        )
+            .toLowerCase();
+
+
+
+    if (
+        value.includes("family")
+    ) {
+
+        return "👨‍👩‍👧";
+
+    }
+
+
+
+    if (
+        value.includes("event")
+    ) {
+
+        return "🪔";
+
+    }
+
+
+
+    if (
+        value.includes("bhog")
+    ) {
+
+        return "🍚";
+
+    }
+
+
+
+    if (
+        value.includes("archive")
+    ) {
+
+        return "📜";
+
+    }
+
+
+
+    if (
+        value.includes("gallery")
+    ) {
+
+        return "📷";
+
+    }
+
+
+
+    if (
+        value.includes("memory")
+    ) {
+
+        return "♡";
+
+    }
+
+
+
+    if (
+        value.includes("ritual")
+    ) {
+
+        return "ॐ";
+
+    }
+
+
+
+    if (
+        value.includes("timeline")
+    ) {
+
+        return "📅";
+
+    }
+
+
+
+    if (
+        value.includes("enquir")
+    ) {
+
+        return "✉️";
+
+    }
+
+
+
+    if (
+        value.includes("activity")
+    ) {
+
+        return "🕘";
+
+    }
+
+
+
+    return "📝";
+
+}
+
+
+
+/* =========================================================
+   FORMAT COLLECTION
    ========================================================= */
 
 function formatCollection(
@@ -690,6 +1244,9 @@ function formatCollection(
 
         familyMembers:
             "Family Tree",
+
+        familyRelationships:
+            "Family Relationship",
 
         events:
             "Puja Events",
@@ -713,9 +1270,13 @@ function formatCollection(
             "Timeline",
 
         enquiries:
-            "Enquiries"
+            "Enquiries",
+
+        activityLogs:
+            "Activity History"
 
     };
+
 
 
     return (
@@ -740,12 +1301,12 @@ function formatFieldName(
     )
 
         .replace(
-            /([A-Z])/g,
-            " $1"
+            /([a-z])([A-Z])/g,
+            "$1 $2"
         )
 
         .replace(
-            /[_-]/g,
+            /[\_-]/g,
             " "
         )
 
@@ -781,20 +1342,32 @@ function formatDate(
     }
 
 
+
     try {
 
         let date;
 
 
+
+        /* Firestore Timestamp */
+
         if (
-            value?.toDate
+            typeof value.toDate ===
+            "function"
         ) {
 
             date =
                 value.toDate();
 
-        } else if (
-            value?.seconds
+        }
+
+
+
+        /* Timestamp-like object */
+
+        else if (
+            value.seconds !==
+            undefined
         ) {
 
             date =
@@ -804,12 +1377,21 @@ function formatDate(
                     ) * 1000
                 );
 
-        } else {
+        }
+
+
+
+        /* Normal Date / String */
+
+        else {
 
             date =
-                new Date(value);
+                new Date(
+                    value
+                );
 
         }
+
 
 
         if (
@@ -823,15 +1405,41 @@ function formatDate(
         }
 
 
+
         return date.toLocaleString(
             "en-IN",
             {
-                dateStyle: "medium",
-                timeStyle: "short"
+
+                day:
+                    "2-digit",
+
+                month:
+                    "short",
+
+                year:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                hour12:
+                    true
+
             }
         );
 
-    } catch {
+    }
+
+    catch (error) {
+
+        console.error(
+            "Date formatting error:",
+            error
+        );
+
 
         return "Date unavailable";
 
@@ -856,37 +1464,58 @@ function getTime(
     }
 
 
-    if (
-        value?.toDate
-    ) {
 
-        return value
-            .toDate()
-            .getTime();
+    try {
+
+        /* Firestore Timestamp */
+
+        if (
+            typeof value.toDate ===
+            "function"
+        ) {
+
+            return value
+                .toDate()
+                .getTime();
+
+        }
+
+
+
+        /* Timestamp-like object */
+
+        if (
+            value.seconds !==
+            undefined
+        ) {
+
+            return Number(
+                value.seconds
+            ) * 1000;
+
+        }
+
+
+
+        /* Normal date */
+
+        const time =
+            new Date(
+                value
+            ).getTime();
+
+
+        return Number.isNaN(time)
+            ? 0
+            : time;
 
     }
 
+    catch {
 
-    if (
-        value?.seconds
-    ) {
-
-        return Number(
-            value.seconds
-        ) * 1000;
+        return 0;
 
     }
-
-
-    const time =
-        new Date(
-            value
-        ).getTime();
-
-
-    return Number.isNaN(time)
-        ? 0
-        : time;
 
 }
 
@@ -937,19 +1566,15 @@ function escapeHTML(
    LOGOUT
    ========================================================= */
 
-if (logoutButton) {
+logoutButton?.addEventListener(
+    "click",
+    () => {
 
-    logoutButton.addEventListener(
-        "click",
-        () => {
+        window.location.href =
+            "./index.html";
 
-            window.location.href =
-                "./index.html";
-
-        }
-    );
-
-}
+    }
+);
 
 
 
@@ -957,19 +1582,31 @@ if (logoutButton) {
    ADMIN EMAIL
    ========================================================= */
 
-const savedEmail =
-    localStorage.getItem(
-        "adminEmail"
+try {
+
+    const savedEmail =
+        localStorage.getItem(
+            "adminEmail"
+        );
+
+
+    if (
+        savedEmail &&
+        adminEmail
+    ) {
+
+        adminEmail.textContent =
+            savedEmail;
+
+    }
+
+}
+
+catch (error) {
+
+    console.warn(
+        "Could not read admin email."
     );
-
-
-if (
-    savedEmail &&
-    adminEmail
-) {
-
-    adminEmail.textContent =
-        savedEmail;
 
 }
 

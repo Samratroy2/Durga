@@ -3,6 +3,11 @@
    FIREBASE FIRESTORE
    ========================================================= */
 
+
+/* =========================================================
+   FIREBASE
+   ========================================================= */
+
 import {
     collection,
     getDocs,
@@ -33,32 +38,46 @@ import {
 } from "./activityLogger.js";
 
 
+
 /* =========================================================
    ELEMENTS
    ========================================================= */
 
 const enquiryList =
-    document.getElementById("enquiryList");
+    document.getElementById(
+        "enquiryList"
+    );
 
 
 const enquiryCount =
-    document.getElementById("enquiryCount");
+    document.getElementById(
+        "enquiryCount"
+    );
 
 
 const enquirySearch =
-    document.getElementById("enquirySearch");
+    document.getElementById(
+        "enquirySearch"
+    );
 
 
 const enquiryMessage =
-    document.getElementById("enquiryMessage");
+    document.getElementById(
+        "enquiryMessage"
+    );
 
 
 const logoutButton =
-    document.getElementById("logoutButton");
+    document.getElementById(
+        "logoutButton"
+    );
 
 
 const adminEmail =
-    document.getElementById("adminEmail");
+    document.getElementById(
+        "adminEmail"
+    );
+
 
 
 /* =========================================================
@@ -66,6 +85,7 @@ const adminEmail =
    ========================================================= */
 
 let enquiries = [];
+
 
 
 /* =========================================================
@@ -76,28 +96,66 @@ async function loadEnquiries() {
 
     try {
 
-        enquiryList.innerHTML =
-            "Loading enquiries...";
+        showLoading();
 
 
-        const enquiryQuery =
-            query(
-                collection(
-                    db,
-                    "enquiries"
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
-                )
+        let snapshot;
+
+
+        /* =================================================
+           TRY SORTED QUERY
+           ================================================= */
+
+        try {
+
+            const enquiryQuery =
+                query(
+                    collection(
+                        db,
+                        "enquiries"
+                    ),
+                    orderBy(
+                        "createdAt",
+                        "desc"
+                    )
+                );
+
+
+            snapshot =
+                await getDocs(
+                    enquiryQuery
+                );
+
+        }
+
+
+        /* =================================================
+           FALLBACK
+           ================================================= */
+
+        catch (error) {
+
+            console.warn(
+                "createdAt query failed. Loading all enquiries.",
+                error
             );
 
 
-        const snapshot =
-            await getDocs(
-                enquiryQuery
-            );
+            snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "enquiries"
+                    )
+                );
 
+        }
+
+
+
+        /* =================================================
+           READ DATA
+           ================================================= */
 
         enquiries = [];
 
@@ -118,10 +176,36 @@ async function loadEnquiries() {
         );
 
 
-        updateCount(
-            enquiries.length
+
+        /* =================================================
+           SORT
+           ================================================= */
+
+        enquiries.sort(
+            (a, b) => {
+
+                return (
+
+                    getTime(
+                        b.createdAt
+                    )
+
+                    -
+
+                    getTime(
+                        a.createdAt
+                    )
+
+                );
+
+            }
         );
 
+
+
+        /* =================================================
+           RENDER
+           ================================================= */
 
         renderEnquiries(
             enquiries
@@ -136,85 +220,59 @@ async function loadEnquiries() {
         );
 
 
-        /*
-           Some old enquiry documents may not
-           have createdAt. Try loading without
-           orderBy.
-        */
+        enquiryList.innerHTML = `
 
-        try {
+            <tr>
 
-            const snapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "enquiries"
-                    )
-                );
-
-
-            enquiries = [];
-
-
-            snapshot.forEach(
-                documentSnapshot => {
-
-                    enquiries.push({
-
-                        id:
-                            documentSnapshot.id,
-
-                        ...documentSnapshot.data()
-
-                    });
-
-                }
-            );
-
-
-            enquiries.sort(
-                (a, b) => {
-
-                    return getTime(
-                        b.createdAt
-                    ) -
-                    getTime(
-                        a.createdAt
-                    );
-
-                }
-            );
-
-
-            updateCount(
-                enquiries.length
-            );
-
-
-            renderEnquiries(
-                enquiries
-            );
-
-
-        } catch (fallbackError) {
-
-            console.error(
-                "Fallback enquiry error:",
-                fallbackError
-            );
-
-
-            enquiryList.innerHTML = `
-                <div class="empty-state">
+                <td
+                    colspan="7"
+                    class="enquiry-empty"
+                >
                     Unable to load enquiries.
-                </div>
-            `;
+                </td>
 
-        }
+            </tr>
+
+        `;
+
+
+        updateCount(0);
+
+
+        showMessage(
+            "Unable to load enquiries.",
+            true
+        );
 
     }
 
 }
+
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+function showLoading() {
+
+    enquiryList.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                class="enquiry-loading"
+            >
+                Loading enquiries...
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
 
 
 /* =========================================================
@@ -225,12 +283,18 @@ function updateCount(
     count
 ) {
 
+    if (!enquiryCount) {
+        return;
+    }
+
+
     enquiryCount.textContent =
         count === 1
             ? "1 enquiry"
             : `${count} enquiries`;
 
 }
+
 
 
 /* =========================================================
@@ -241,15 +305,33 @@ function renderEnquiries(
     list
 ) {
 
+    updateCount(
+        list.length
+    );
+
+
+    /* =====================================================
+       EMPTY
+       ===================================================== */
+
     if (
         !list ||
         list.length === 0
     ) {
 
         enquiryList.innerHTML = `
-            <div class="empty-state">
-                No enquiries found.
-            </div>
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="enquiry-empty"
+                >
+                    No enquiries found.
+                </td>
+
+            </tr>
+
         `;
 
         return;
@@ -257,21 +339,36 @@ function renderEnquiries(
     }
 
 
+
+    /* =====================================================
+       CLEAR
+       ===================================================== */
+
     enquiryList.innerHTML = "";
 
+
+
+    /* =====================================================
+       CREATE ROWS
+       ===================================================== */
 
     list.forEach(
         enquiry => {
 
-            const item =
+            const row =
                 document.createElement(
-                    "article"
+                    "tr"
                 );
 
 
-            item.className =
-                "manager-item";
+            row.className =
+                "enquiry-row";
 
+
+
+            /* =================================================
+               DATA
+               ================================================= */
 
             const name =
                 enquiry.name ||
@@ -299,151 +396,223 @@ function renderEnquiries(
                 );
 
 
-            item.innerHTML = `
-
-                <div class="manager-item-main">
-
-                    <div class="manager-item-title">
-
-                        ${escapeHTML(
-                            name
-                        )}
-
-                    </div>
+            const id =
+                enquiry.id ||
+                "—";
 
 
-                    <div class="manager-item-meta">
 
-                        <span>
-                            ${escapeHTML(
-                                email
-                            )}
-                        </span>
+            /* =================================================
+               NAME
+               ================================================= */
 
-                        <span>
-                            ${escapeHTML(
-                                reason
-                            )}
-                        </span>
-
-                    </div>
+            const nameCell =
+                document.createElement(
+                    "td"
+                );
 
 
-                    <div class="manager-item-description">
-
-                        ${escapeHTML(
-                            message
-                        )}
-
-                    </div>
+            nameCell.className =
+                "enquiry-name";
 
 
-                    <div class="manager-item-meta">
-
-                        <span>
-                            ${escapeHTML(
-                                date
-                            )}
-                        </span>
-
-                        <span>
-                            ID:
-                            ${escapeHTML(
-                                enquiry.id
-                            )}
-                        </span>
-
-                    </div>
-
-                </div>
+            nameCell.textContent =
+                name;
 
 
-                <div class="manager-item-actions">
 
-                    <button
-                        type="button"
-                        class="secondary-button delete-enquiry"
-                        data-id="${escapeHTML(
-                            enquiry.id
-                        )}"
-                    >
-                        Delete
-                    </button>
+            /* =================================================
+               EMAIL
+               ================================================= */
 
-                </div>
+            const emailCell =
+                document.createElement(
+                    "td"
+                );
 
-            `;
+
+            emailCell.className =
+                "enquiry-email";
+
+
+            emailCell.textContent =
+                email;
+
+
+
+            /* =================================================
+               REASON
+               ================================================= */
+
+            const reasonCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            reasonCell.className =
+                "enquiry-reason";
+
+
+            reasonCell.textContent =
+                reason;
+
+
+
+            /* =================================================
+               MESSAGE
+               ================================================= */
+
+            const messageCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            messageCell.className =
+                "enquiry-message-cell";
+
+
+            messageCell.textContent =
+                message;
+
+
+
+            /* =================================================
+               DATE
+               ================================================= */
+
+            const dateCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            dateCell.className =
+                "enquiry-date";
+
+
+            dateCell.textContent =
+                date;
+
+
+
+            /* =================================================
+               DOCUMENT ID
+               ================================================= */
+
+            const idCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            idCell.className =
+                "enquiry-id";
+
+
+            idCell.textContent =
+                id;
+
+
+
+            /* =================================================
+               ACTION
+               ================================================= */
+
+            const actionCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            actionCell.className =
+                "enquiry-actions";
+
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            deleteButton.type =
+                "button";
+
+
+            deleteButton.className =
+                "delete-enquiry";
+
+
+            deleteButton.dataset.id =
+                id;
+
+
+            deleteButton.textContent =
+                "Delete";
+
+
+            deleteButton.addEventListener(
+                "click",
+                () => {
+
+                    deleteEnquiry(
+                        id,
+                        deleteButton
+                    );
+
+                }
+            );
+
+
+            actionCell.appendChild(
+                deleteButton
+            );
+
+
+
+            /* =================================================
+               APPEND
+               ================================================= */
+
+            row.appendChild(
+                nameCell
+            );
+
+            row.appendChild(
+                emailCell
+            );
+
+            row.appendChild(
+                reasonCell
+            );
+
+            row.appendChild(
+                messageCell
+            );
+
+            row.appendChild(
+                dateCell
+            );
+
+            row.appendChild(
+                idCell
+            );
+
+            row.appendChild(
+                actionCell
+            );
 
 
             enquiryList.appendChild(
-                item
+                row
             );
 
         }
     );
 
-
-    attachDeleteButtons();
-
 }
 
-
-/* =========================================================
-   DELETE BUTTONS
-   ========================================================= */
-
-function attachDeleteButtons() {
-
-    document
-        .querySelectorAll(
-            ".delete-enquiry"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    async () => {
-
-                        const id =
-                            button.dataset.id;
-
-
-                        const enquiry =
-                            enquiries.find(
-                                item =>
-                                    item.id === id
-                            );
-
-
-                        const confirmed =
-                            window.confirm(
-                                `Delete enquiry from ${
-                                    enquiry?.name ||
-                                    "this person"
-                                }?`
-                            );
-
-
-                        if (!confirmed) {
-
-                            return;
-
-                        }
-
-
-                        await deleteEnquiry(
-                            id,
-                            button
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-}
 
 
 /* =========================================================
@@ -474,6 +643,28 @@ async function deleteEnquiry(
     }
 
 
+
+    /* =====================================================
+       CONFIRM
+       ===================================================== */
+
+    const confirmed =
+        window.confirm(
+            `Delete enquiry from ${
+                enquiry.name ||
+                "this person"
+            }?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+
     try {
 
         button.disabled =
@@ -484,8 +675,9 @@ async function deleteEnquiry(
             "Deleting...";
 
 
+
         /* =================================================
-           SAVE INFORMATION BEFORE DELETE
+           SAVE DATA BEFORE DELETE
            ================================================= */
 
         const enquiryName =
@@ -508,8 +700,9 @@ async function deleteEnquiry(
             "No message";
 
 
+
         /* =================================================
-           DELETE FROM FIRESTORE
+           DELETE FIRESTORE DOCUMENT
            ================================================= */
 
         await deleteDoc(
@@ -521,32 +714,45 @@ async function deleteEnquiry(
         );
 
 
+
         /* =================================================
            ACTIVITY LOG
            ================================================= */
 
-        await logActivity({
+        try {
 
-            action:
-                "deleted",
+            await logActivity({
 
-            collectionName:
-                "enquiries",
+                action:
+                    "deleted",
 
-            documentId:
-                id,
+                collectionName:
+                    "enquiries",
 
-            title:
-                `Enquiry from ${enquiryName}`,
+                documentId:
+                    id,
 
-            details:
-                `Deleted enquiry from ${enquiryName}. Email: ${enquiryEmail}. Reason: ${enquiryReason}. Message: ${enquiryMessageText}`
+                title:
+                    `Enquiry from ${enquiryName}`,
 
-        });
+                details:
+                    `Deleted enquiry from ${enquiryName}. Email: ${enquiryEmail}. Reason: ${enquiryReason}. Message: ${enquiryMessageText}`
+
+            });
+
+        } catch (activityError) {
+
+            console.warn(
+                "Activity logging failed:",
+                activityError
+            );
+
+        }
+
 
 
         /* =================================================
-           REMOVE FROM LOCAL ARRAY
+           REMOVE FROM LOCAL DATA
            ================================================= */
 
         enquiries =
@@ -556,18 +762,30 @@ async function deleteEnquiry(
             );
 
 
+
         /* =================================================
-           UPDATE UI
+           RE-RENDER
            ================================================= */
 
-        updateCount(
-            enquiries.length
-        );
+        const searchValue =
+            enquirySearch?.value
+                .trim()
+                .toLowerCase() ||
+            "";
 
 
-        renderEnquiries(
-            enquiries
-        );
+        if (searchValue) {
+
+            applySearch();
+
+        } else {
+
+            renderEnquiries(
+                enquiries
+            );
+
+        }
+
 
 
         showMessage(
@@ -583,12 +801,6 @@ async function deleteEnquiry(
         );
 
 
-        showMessage(
-            "Unable to delete enquiry.",
-            true
-        );
-
-
         button.disabled =
             false;
 
@@ -596,9 +808,16 @@ async function deleteEnquiry(
         button.textContent =
             "Delete";
 
+
+        showMessage(
+            "Unable to delete enquiry.",
+            true
+        );
+
     }
 
 }
+
 
 
 /* =========================================================
@@ -609,66 +828,81 @@ if (enquirySearch) {
 
     enquirySearch.addEventListener(
         "input",
-        () => {
-
-            const searchValue =
-                enquirySearch.value
-                    .trim()
-                    .toLowerCase();
-
-
-            if (!searchValue) {
-
-                renderEnquiries(
-                    enquiries
-                );
-
-                return;
-
-            }
-
-
-            const filtered =
-                enquiries.filter(
-                    enquiry => {
-
-                        return [
-
-                            enquiry.name,
-
-                            enquiry.email,
-
-                            enquiry.reason,
-
-                            enquiry.message,
-
-                            enquiry.id
-
-                        ]
-                            .filter(Boolean)
-                            .some(
-                                value =>
-                                    String(
-                                        value
-                                    )
-                                        .toLowerCase()
-                                        .includes(
-                                            searchValue
-                                        )
-                            );
-
-                    }
-                );
-
-
-            renderEnquiries(
-                filtered
-            );
-
-        }
+        applySearch
     );
 
 }
+
+
+
+/* =========================================================
+   APPLY SEARCH
+   ========================================================= */
+
+function applySearch() {
+
+    const searchValue =
+        enquirySearch?.value
+            .trim()
+            .toLowerCase() ||
+        "";
+
+
+    if (!searchValue) {
+
+        renderEnquiries(
+            enquiries
+        );
+
+        return;
+
+    }
+
+
+
+    const filtered =
+        enquiries.filter(
+            enquiry => {
+
+                const searchable = [
+
+                    enquiry.name,
+
+                    enquiry.email,
+
+                    enquiry.reason,
+
+                    enquiry.message,
+
+                    enquiry.id
+
+                ]
+
+                    .filter(
+                        value =>
+                            value !== undefined &&
+                            value !== null
+                    )
+
+                    .join(" ")
+
+                    .toLowerCase();
+
+
+                return searchable.includes(
+                    searchValue
+                );
+
+            }
+        );
+
+
+    renderEnquiries(
+        filtered
+    );
+
+}
+
 
 
 /* =========================================================
@@ -697,21 +931,28 @@ function showMessage(
     );
 
 
-    setTimeout(
-        () => {
-
-            enquiryMessage.textContent =
-                "";
-
-            enquiryMessage.classList.remove(
-                "error"
-            );
-
-        },
-        4000
+    clearTimeout(
+        showMessage.timeout
     );
 
+
+    showMessage.timeout =
+        setTimeout(
+            () => {
+
+                enquiryMessage.textContent =
+                    "";
+
+                enquiryMessage.classList.remove(
+                    "error"
+                );
+
+            },
+            4000
+        );
+
 }
+
 
 
 /* =========================================================
@@ -734,8 +975,11 @@ function formatDate(
         let date;
 
 
+        /* Firestore Timestamp */
+
         if (
-            value?.toDate
+            typeof value.toDate ===
+            "function"
         ) {
 
             date =
@@ -743,8 +987,12 @@ function formatDate(
 
         }
 
+
+        /* Timestamp object */
+
         else if (
-            value?.seconds
+            value.seconds !==
+            undefined
         ) {
 
             date =
@@ -755,6 +1003,9 @@ function formatDate(
                 );
 
         }
+
+
+        /* Normal Date/String */
 
         else {
 
@@ -780,14 +1031,27 @@ function formatDate(
         return date.toLocaleString(
             "en-IN",
             {
-                dateStyle:
-                    "medium",
 
-                timeStyle:
-                    "short"
+                day:
+                    "2-digit",
+
+                month:
+                    "short",
+
+                year:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                hour12:
+                    true
+
             }
         );
-
 
     } catch {
 
@@ -796,6 +1060,7 @@ function formatDate(
     }
 
 }
+
 
 
 /* =========================================================
@@ -813,81 +1078,52 @@ function getTime(
     }
 
 
-    if (
-        value?.toDate
-    ) {
+    try {
 
-        return value
-            .toDate()
-            .getTime();
+        if (
+            typeof value.toDate ===
+            "function"
+        ) {
+
+            return value
+                .toDate()
+                .getTime();
+
+        }
+
+
+        if (
+            value.seconds !==
+            undefined
+        ) {
+
+            return Number(
+                value.seconds
+            ) * 1000;
+
+        }
+
+
+        const time =
+            new Date(
+                value
+            ).getTime();
+
+
+        return Number.isNaN(
+            time
+        )
+            ? 0
+            : time;
+
+    } catch {
+
+        return 0;
 
     }
 
-
-    if (
-        value?.seconds
-    ) {
-
-        return Number(
-            value.seconds
-        ) * 1000;
-
-    }
-
-
-    const time =
-        new Date(
-            value
-        ).getTime();
-
-
-    return Number.isNaN(
-        time
-    )
-        ? 0
-        : time;
-
 }
 
-
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
-
-function escapeHTML(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
-}
 
 
 /* =========================================================
@@ -904,6 +1140,11 @@ if (logoutButton) {
 
                 await signOut(
                     auth
+                );
+
+
+                localStorage.removeItem(
+                    "adminEmail"
                 );
 
 
@@ -927,8 +1168,9 @@ if (logoutButton) {
 }
 
 
+
 /* =========================================================
-   LOAD ADMIN EMAIL
+   ADMIN EMAIL
    ========================================================= */
 
 const savedEmail =
@@ -946,6 +1188,7 @@ if (
         savedEmail;
 
 }
+
 
 
 /* =========================================================

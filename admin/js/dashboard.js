@@ -334,10 +334,9 @@ async function loadCollectionCount(
 
 }
 
-
-
 /* =========================================================
    LOAD RECENT ACTIVITY
+   SHOW ONLY LATEST 4
    ========================================================= */
 
 async function loadRecentActivity() {
@@ -351,29 +350,82 @@ async function loadRecentActivity() {
 
         recentActivityList.innerHTML = `
             <div class="activity-loading">
-                Loading activity history...
+                Loading recent activity...
             </div>
         `;
 
 
-        const activityQuery =
-            query(
-                collection(
-                    db,
-                    "activityLogs"
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
-                ),
-                limit(5)
+        /*
+         * ACTIVITY LOGGER USES performedAt
+         *
+         * Therefore we first try:
+         *
+         * performedAt DESC
+         *
+         * and only show the latest 4 records.
+         */
+
+        let snapshot;
+
+
+        try {
+
+            const activityQuery =
+                query(
+                    collection(
+                        db,
+                        "activityLogs"
+                    ),
+                    orderBy(
+                        "performedAt",
+                        "desc"
+                    ),
+                    limit(4)
+                );
+
+
+            snapshot =
+                await getDocs(
+                    activityQuery
+                );
+
+        }
+
+
+        /*
+         * FALLBACK
+         *
+         * Some older records may use createdAt.
+         */
+
+        catch (performedAtError) {
+
+            console.warn(
+                "performedAt query failed. Trying createdAt...",
+                performedAtError
             );
 
 
-        const snapshot =
-            await getDocs(
-                activityQuery
-            );
+            const activityQuery =
+                query(
+                    collection(
+                        db,
+                        "activityLogs"
+                    ),
+                    orderBy(
+                        "createdAt",
+                        "desc"
+                    ),
+                    limit(4)
+                );
+
+
+            snapshot =
+                await getDocs(
+                    activityQuery
+                );
+
+        }
 
 
         const activities = [];
@@ -395,11 +447,21 @@ async function loadRecentActivity() {
         );
 
 
+        /*
+         * SHOW ONLY LATEST 4
+         */
+
         renderRecentActivity(
-            activities
+            activities.slice(
+                0,
+                4
+            )
         );
 
+
     }
+
+
     catch (error) {
 
         console.error(
@@ -409,33 +471,102 @@ async function loadRecentActivity() {
 
 
         /*
-           This usually happens when:
+         * FINAL FALLBACK
+         *
+         * Load all records and sort manually.
+         */
 
-           1. activityLogs collection does not exist yet
-           2. createdAt is missing
-           3. Firestore index is required
-           4. Firestore rules deny access
-        */
+        try {
+
+            const snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "activityLogs"
+                    )
+                );
 
 
-        recentActivityList.innerHTML = `
-            <div class="activity-empty">
-                No activity history available yet.
-            </div>
-        `;
+            const activities = [];
 
 
-        if (activitySummary) {
+            snapshot.forEach(
+                activityDoc => {
 
-            activitySummary.textContent =
-                "No activities";
+                    activities.push({
+
+                        id:
+                            activityDoc.id,
+
+                        ...activityDoc.data()
+
+                    });
+
+                }
+            );
+
+
+            /*
+             * SORT USING performedAt FIRST
+             * THEN createdAt
+             */
+
+            activities.sort(
+                (a, b) => {
+
+                    return getActivityTime(
+                        b
+                    ) -
+                    getActivityTime(
+                        a
+                    );
+
+                }
+            );
+
+
+            /*
+             * ONLY TOP 4
+             */
+
+            renderRecentActivity(
+                activities.slice(
+                    0,
+                    4
+                )
+            );
+
+
+        }
+
+
+        catch (fallbackError) {
+
+            console.error(
+                "Final activity fallback error:",
+                fallbackError
+            );
+
+
+            recentActivityList.innerHTML = `
+                <div class="activity-empty">
+                    Unable to load recent activity.
+                </div>
+            `;
+
+
+            if (activitySummary) {
+
+                activitySummary.textContent =
+                    "Unable to load";
+
+            }
 
         }
 
     }
 
 }
-
 
 
 /* =========================================================

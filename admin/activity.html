@@ -19,15 +19,667 @@
         href="./css/admin.css"
     >
 
+    <style>
+
+        /* =====================================================
+           FULL WIDTH
+           ===================================================== */
+
+        .manager-layout {
+
+            display: block !important;
+
+            width: 100% !important;
+
+            max-width: none !important;
+
+            margin: 0 !important;
+
+            padding: 0 !important;
+
+        }
+
+
+        .manager-list-card {
+
+            width: 100% !important;
+
+            max-width: none !important;
+
+            box-sizing: border-box;
+
+            background: #ffffff;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 14px;
+
+            padding: 30px;
+
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .activity-heading {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .activity-heading-left span {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #a67c52;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        .activity-heading-left h2 {
+
+            margin: 0;
+
+            font-family: Georgia, serif;
+
+            font-size: 28px;
+
+            color: #3f2920;
+
+        }
+
+
+        .activity-count {
+
+            color: #795337;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           FILTERS
+           ===================================================== */
+
+        .activity-filters {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 2fr)
+                minmax(180px, 1fr)
+                minmax(180px, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+
+        }
+
+
+        .activity-filter-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .activity-filter-group label {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #67584c;
+
+        }
+
+
+        .activity-filter-group input,
+        .activity-filter-group select {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 12px 14px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+            color: #3c3028;
+
+            font-family: inherit;
+
+            outline: none;
+
+        }
+
+
+        .activity-filter-group input:focus,
+        .activity-filter-group select:focus {
+
+            border-color: #795337;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, 0.08);
+
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        #activityMessage {
+
+            min-height: 20px;
+
+            margin: 10px 0 18px;
+
+            font-size: 13px;
+
+        }
+
+
+        .message-success {
+
+            color: #39734a;
+
+        }
+
+
+        .message-error {
+
+            color: #a33d3d;
+
+        }
+
+
+        .message-info {
+
+            color: #735b48;
+
+        }
+
+
+        /* =====================================================
+           TABLE WRAPPER
+           ===================================================== */
+
+        .activity-table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            border: 1px solid #e4d9cf;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+        }
+
+
+        /* =====================================================
+           TABLE
+           ===================================================== */
+
+        .activity-table {
+
+            width: 100%;
+
+            min-width: 1100px;
+
+            border-collapse: collapse;
+
+            table-layout: auto;
+
+        }
+
+
+        /* =====================================================
+           TABLE HEADER
+           ===================================================== */
+
+        .activity-table thead {
+
+            background: #f6f0e9;
+
+        }
+
+
+        .activity-table th {
+
+            padding: 15px 16px;
+
+            border-bottom: 1px solid #ddd1c6;
+
+            color: #6b5849;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-align: left;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           TABLE BODY
+           ===================================================== */
+
+        .activity-table td {
+
+            padding: 16px;
+
+            border-bottom: 1px solid #eee6df;
+
+            color: #55483f;
+
+            font-size: 12px;
+
+            vertical-align: middle;
+
+        }
+
+
+        .activity-table tbody tr {
+
+            transition:
+                background .15s ease;
+
+        }
+
+
+        .activity-table tbody tr:hover {
+
+            background: #fffaf5;
+
+        }
+
+
+        .activity-table tbody tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        /* =====================================================
+           ACTION CELL
+           SAME STYLE AS DASHBOARD RECENT ACTIVITY
+           ===================================================== */
+
+        .activity-action-cell {
+
+            width: 75px;
+
+            text-align: center;
+
+        }
+
+
+        .activity-history-icon {
+
+            width: 40px;
+
+            height: 40px;
+
+            min-width: 40px;
+
+            border-radius: 50%;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 16px;
+
+            line-height: 1;
+
+            box-sizing: border-box;
+
+            background: #f3ece3;
+
+        }
+
+
+        /* =====================================================
+           CREATED
+           ===================================================== */
+
+        .activity-history-icon.created {
+
+            background: #e9f6ec;
+
+            color: #327442;
+
+        }
+
+
+        /* =====================================================
+           UPDATED
+           ===================================================== */
+
+        .activity-history-icon.updated {
+
+            background: #fff4dc;
+
+            color: #9a6a13;
+
+        }
+
+
+        /* =====================================================
+           DELETED
+           ===================================================== */
+
+        .activity-history-icon.deleted {
+
+            background: #fdeaea;
+
+            color: #a33b3b;
+
+        }
+
+
+        /* =====================================================
+           OTHER
+           ===================================================== */
+
+        .activity-history-icon.other {
+
+            background: #eeeef5;
+
+            color: #55556d;
+
+        }
+
+
+        /* =====================================================
+           SECTION CELL
+           ===================================================== */
+
+        .activity-section-cell {
+
+            min-width: 150px;
+
+        }
+
+
+        .activity-section-wrapper {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+        }
+
+
+        .activity-section-icon {
+
+            width: 30px;
+
+            height: 30px;
+
+            min-width: 30px;
+
+            border-radius: 50%;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #f3ece3;
+
+            font-size: 14px;
+
+        }
+
+
+        .activity-section-label {
+
+            color: #795337;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           ACTIVITY TITLE
+           ===================================================== */
+
+        .activity-title-cell {
+
+            min-width: 180px;
+
+            color: #3f2920;
+
+            font-weight: 700;
+
+            line-height: 1.45;
+
+        }
+
+
+        /* =====================================================
+           DETAILS
+           ===================================================== */
+
+        .activity-details-cell {
+
+            max-width: 350px;
+
+            min-width: 250px;
+
+            color: #74675d;
+
+            line-height: 1.55;
+
+            white-space: normal;
+
+            overflow-wrap: anywhere;
+
+        }
+
+
+        /* =====================================================
+           ADMIN
+           ===================================================== */
+
+        .activity-admin-cell {
+
+            min-width: 190px;
+
+            white-space: nowrap;
+
+            color: #69584b;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =====================================================
+           DATE
+           ===================================================== */
+
+        .activity-date-cell {
+
+            min-width: 155px;
+
+            white-space: nowrap;
+
+            color: #8a817a;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================================
+           DOCUMENT ID
+           ===================================================== */
+
+        .activity-document-cell {
+
+            max-width: 160px;
+
+            min-width: 130px;
+
+            color: #9a8b7e;
+
+            font-family: monospace;
+
+            font-size: 10px;
+
+            overflow-wrap: anywhere;
+
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+           ===================================================== */
+
+        .activity-empty {
+
+            padding: 55px 20px !important;
+
+            text-align: center;
+
+            color: #8b7b6d !important;
+
+            font-size: 13px !important;
+
+        }
+
+
+        /* =====================================================
+           LOADING
+           ===================================================== */
+
+        .activity-loading {
+
+            padding: 45px 20px !important;
+
+            text-align: center;
+
+            color: #8b7b6d !important;
+
+            font-size: 13px !important;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .manager-list-card {
+
+                padding: 20px;
+
+            }
+
+
+            .activity-filters {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .activity-heading {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .manager-list-card {
+
+                padding: 15px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
 <body class="dashboard-page">
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          SIDEBAR
-         ========================================================= -->
+         ===================================================== -->
 
     <aside class="sidebar">
 
@@ -39,6 +691,7 @@
             <div class="sidebar-logo">
                 🪔
             </div>
+
 
             <div class="sidebar-brand-text">
 
@@ -55,10 +708,15 @@
         </div>
 
 
-        <!-- NAVIGATION -->
+
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
 
         <nav class="sidebar-nav">
 
+
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -80,6 +738,9 @@
 
             </a>
 
+
+
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -119,22 +780,6 @@
 
 
             <a
-                href="./bhog.html"
-                class="nav-item"
-            >
-
-                <span class="nav-icon">
-                    🍚
-                </span>
-
-                <span>
-                    Bhog
-                </span>
-
-            </a>
-
-
-            <a
                 href="./archive.html"
                 class="nav-item"
             >
@@ -165,6 +810,9 @@
 
             </a>
 
+
+
+            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
@@ -219,6 +867,9 @@
             </a>
 
 
+
+            <!-- ADMIN -->
+
             <div class="nav-section-title">
                 ADMIN
             </div>
@@ -255,18 +906,24 @@
 
             </a>
 
+
         </nav>
 
 
-        <!-- SIDEBAR BOTTOM -->
+
+        <!-- =================================================
+             SIDEBAR BOTTOM
+             ================================================= -->
 
         <div class="sidebar-bottom">
+
 
             <div class="sidebar-note">
 
                 <span class="sidebar-note-icon">
                     🔒
                 </span>
+
 
                 <div>
 
@@ -297,22 +954,26 @@
 
             </button>
 
+
         </div>
 
     </aside>
 
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN
-         ========================================================= -->
+         ===================================================== -->
 
     <main class="dashboard-main">
 
 
-        <!-- TOPBAR -->
+        <!-- =================================================
+             TOPBAR
+             ================================================= -->
 
         <header class="topbar">
+
 
             <div class="topbar-left">
 
@@ -337,6 +998,7 @@
                     A
                 </div>
 
+
                 <div class="user-details">
 
                     <strong id="adminEmail">
@@ -355,9 +1017,9 @@
 
 
 
-        <!-- =====================================================
+        <!-- =================================================
              ACTIVITY
-             ===================================================== -->
+             ================================================= -->
 
         <section class="manager-layout">
 
@@ -365,11 +1027,12 @@
             <div class="manager-list-card">
 
 
-                <!-- HEADING -->
+                <!-- HEADER -->
 
-                <div class="section-heading">
+                <div class="activity-heading">
 
-                    <div>
+
+                    <div class="activity-heading-left">
 
                         <span>
                             FIRESTORE
@@ -382,20 +1045,28 @@
                     </div>
 
 
-                    <span id="activityCount">
+                    <span
+                        id="activityCount"
+                        class="activity-count"
+                    >
                         0 activities
                     </span>
+
 
                 </div>
 
 
 
-                <!-- FILTERS -->
+                <!-- =================================================
+                     FILTERS
+                     ================================================= -->
 
-                <div class="form-grid">
+                <div class="activity-filters">
 
 
-                    <div class="form-group">
+                    <!-- SEARCH -->
+
+                    <div class="activity-filter-group">
 
                         <label for="activitySearch">
                             Search
@@ -405,20 +1076,22 @@
                             type="search"
                             id="activitySearch"
                             placeholder="Search activity..."
+                            autocomplete="off"
                         >
 
                     </div>
 
 
-                    <div class="form-group">
+
+                    <!-- ACTION -->
+
+                    <div class="activity-filter-group">
 
                         <label for="actionFilter">
                             Action
                         </label>
 
-                        <select
-                            id="actionFilter"
-                        >
+                        <select id="actionFilter">
 
                             <option value="">
                                 All Actions
@@ -441,15 +1114,16 @@
                     </div>
 
 
-                    <div class="form-group">
+
+                    <!-- SECTION -->
+
+                    <div class="activity-filter-group">
 
                         <label for="collectionFilter">
                             Section
                         </label>
 
-                        <select
-                            id="collectionFilter"
-                        >
+                        <select id="collectionFilter">
 
                             <option value="">
                                 All Sections
@@ -495,6 +1169,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -508,14 +1183,73 @@
 
 
 
-                <!-- ACTIVITY LIST -->
+                <!-- =================================================
+                     TABLE
+                     ================================================= -->
 
-                <div
-                    id="activityList"
-                    class="manager-list"
-                >
+                <div class="activity-table-wrapper">
 
-                    Loading activity history...
+
+                    <table class="activity-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Action
+                                </th>
+
+                                <th>
+                                    Section
+                                </th>
+
+                                <th>
+                                    Activity
+                                </th>
+
+                                <th>
+                                    Details
+                                </th>
+
+                                <th>
+                                    Admin
+                                </th>
+
+                                <th>
+                                    Date & Time
+                                </th>
+
+                                <th>
+                                    Document ID
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="activityList"
+                        >
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="activity-loading"
+                                >
+                                    Loading activity history...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                    </table>
+
 
                 </div>
 
@@ -527,7 +1261,9 @@
 
 
 
-        <!-- FOOTER -->
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
 
         <footer class="dashboard-footer">
 
@@ -545,6 +1281,10 @@
     </main>
 
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
 
     <script
         type="module"

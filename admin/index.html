@@ -19,11 +19,186 @@
         Roy Bari — Admin Login
     </title>
 
-
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
+
+
+    <style>
+
+        /* =====================================================
+           LOGIN UI IMPROVEMENTS
+           ===================================================== */
+
+        .login-card {
+            position: relative;
+        }
+
+
+        .login-heading h1 {
+            margin-bottom: 10px;
+        }
+
+
+        .login-heading p {
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           INPUT WRAPPER
+           ===================================================== */
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+
+        .input-wrapper input {
+            width: 100%;
+            box-sizing: border-box;
+            padding-right: 52px;
+        }
+
+
+        .input-icon {
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           PASSWORD TOGGLE
+           ===================================================== */
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+            background: transparent;
+
+            color: #765237;
+
+            font-size: 17px;
+
+            cursor: pointer;
+
+            border-radius: 7px;
+
+            transition:
+                background .2s ease,
+                color .2s ease,
+                transform .2s ease;
+        }
+
+
+        .password-toggle:hover {
+            background: #f4ede5;
+            color: #553822;
+        }
+
+
+        .password-toggle:active {
+            transform:
+                translateY(-50%)
+                scale(.94);
+        }
+
+
+        .password-toggle:focus-visible {
+            outline: 2px solid #8a6140;
+            outline-offset: 2px;
+        }
+
+
+        /* =====================================================
+           LOGIN BUTTON
+           ===================================================== */
+
+        .primary-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .primary-button .button-arrow {
+            margin-left: 8px;
+            transition: transform .2s ease;
+        }
+
+
+        .primary-button:hover .button-arrow {
+            transform: translateX(4px);
+        }
+
+
+        /* =====================================================
+           LOGIN MESSAGE
+           ===================================================== */
+
+        .login-page .message {
+            min-height: 20px;
+            margin-top: 12px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .login-footer {
+            margin-top: 28px;
+        }
+
+
+        .login-footer span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .login-card {
+                width: calc(100% - 32px);
+                box-sizing: border-box;
+            }
+
+
+            .login-heading h1 {
+                font-size: 32px;
+            }
+
+
+            .login-heading p {
+                font-size: 13px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -38,6 +213,7 @@
     <div class="login-decoration decoration-one"></div>
 
     <div class="login-decoration decoration-two"></div>
+
 
 
     <!-- =====================================================
@@ -63,6 +239,7 @@
             </div>
 
 
+
             <!-- =================================================
                  HEADING
                  ================================================= -->
@@ -85,6 +262,7 @@
             </div>
 
 
+
             <!-- =================================================
                  LOGIN FORM
                  ================================================= -->
@@ -92,7 +270,9 @@
             <form id="loginForm">
 
 
-                <!-- EMAIL -->
+                <!-- =================================================
+                     EMAIL
+                     ================================================= -->
 
                 <div class="form-group">
 
@@ -102,10 +282,6 @@
 
 
                     <div class="input-wrapper">
-
-                        <span class="input-icon">
-                            ✉
-                        </span>
 
 
                         <input
@@ -122,7 +298,10 @@
                 </div>
 
 
-                <!-- PASSWORD -->
+
+                <!-- =================================================
+                     PASSWORD
+                     ================================================= -->
 
                 <div class="form-group">
 
@@ -132,10 +311,6 @@
 
 
                     <div class="input-wrapper">
-
-                        <span class="input-icon">
-                            🔒
-                        </span>
 
 
                         <input
@@ -147,12 +322,31 @@
                             required
                         >
 
+
+                        <!-- SHOW / HIDE PASSWORD -->
+
+                        <button
+                            type="button"
+                            id="passwordToggle"
+                            class="password-toggle"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                            title="Show password"
+                        >
+
+                            👁
+
+                        </button>
+
                     </div>
 
                 </div>
 
 
-                <!-- LOGIN BUTTON -->
+
+                <!-- =================================================
+                     LOGIN BUTTON
+                     ================================================= -->
 
                 <button
                     type="submit"
@@ -161,17 +355,15 @@
                 >
 
                     <span id="loginButtonText">
-                        Login to Admin Panel
+                        Login
                     </span>
-
-                    <span class="button-arrow">
-                        →
-                    </span>
-
                 </button>
 
 
-                <!-- MESSAGE -->
+
+                <!-- =================================================
+                     MESSAGE
+                     ================================================= -->
 
                 <p
                     id="loginMessage"
@@ -180,6 +372,7 @@
 
 
             </form>
+
 
 
             <!-- =================================================
@@ -198,7 +391,10 @@
         </section>
 
 
-        <!-- BRAND -->
+
+        <!-- =================================================
+             BRAND
+             ================================================= -->
 
         <p class="login-brand">
 
@@ -210,6 +406,7 @@
     </main>
 
 
+
     <!-- =====================================================
          LOGIN JAVASCRIPT
          ===================================================== -->
@@ -218,6 +415,96 @@
         type="module"
         src="./js/login.js"
     ></script>
+
+
+    <!-- =====================================================
+         PASSWORD SHOW / HIDE
+         ===================================================== -->
+
+    <script>
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+
+        const passwordToggle =
+            document.getElementById(
+                "passwordToggle"
+            );
+
+
+        if (
+            passwordInput &&
+            passwordToggle
+        ) {
+
+            passwordToggle.addEventListener(
+                "click",
+                () => {
+
+                    const isPassword =
+                        passwordInput.type ===
+                        "password";
+
+
+                    if (isPassword) {
+
+                        passwordInput.type =
+                            "text";
+
+                        passwordToggle.textContent =
+                            "🙈";
+
+                        passwordToggle.setAttribute(
+                            "aria-label",
+                            "Hide password"
+                        );
+
+                        passwordToggle.setAttribute(
+                            "title",
+                            "Hide password"
+                        );
+
+                        passwordToggle.setAttribute(
+                            "aria-pressed",
+                            "true"
+                        );
+
+                    }
+
+                    else {
+
+                        passwordInput.type =
+                            "password";
+
+                        passwordToggle.textContent =
+                            "👁";
+
+                        passwordToggle.setAttribute(
+                            "aria-label",
+                            "Show password"
+                        );
+
+                        passwordToggle.setAttribute(
+                            "title",
+                            "Show password"
+                        );
+
+                        passwordToggle.setAttribute(
+                            "aria-pressed",
+                            "false"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+    </script>
 
 
 </body>

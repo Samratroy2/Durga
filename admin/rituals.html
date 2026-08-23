@@ -94,6 +94,10 @@
             color: white;
         }
 
+        .primary-button:hover {
+            background: #633f29;
+        }
+
         .secondary-button {
             border: 1px solid #ddd1c6;
             background: white;
@@ -225,6 +229,8 @@
 
         <nav class="sidebar-nav">
 
+            <!-- MAIN -->
+
             <div class="nav-section-title">
                 MAIN
             </div>
@@ -237,6 +243,8 @@
                 <span>Dashboard</span>
             </a>
 
+
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -275,6 +283,8 @@
             </a>
 
 
+            <!-- MORE -->
+
             <div class="nav-section-title">
                 MORE
             </div>
@@ -303,8 +313,49 @@
                 <span>Timeline</span>
             </a>
 
+
+            <!-- ADMIN -->
+
+            <div class="nav-section-title">
+                ADMIN
+            </div>
+
+
+            <a
+                href="./enquiries.html"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">
+                    ✉
+                </span>
+
+                <span>
+                    Enquiries
+                </span>
+
+            </a>
+
+
+            <a
+                href="./activity.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◷
+                </span>
+
+                <span>
+                    Activity History
+                </span>
+
+            </a>
+            
         </nav>
 
+
+        <!-- SIDEBAR BOTTOM -->
 
         <div class="sidebar-bottom">
 
@@ -326,13 +377,13 @@
                 class="logout-button"
                 type="button"
             >
-                ⇥ Logout
+                <span>⇥</span>
+                Logout
             </button>
 
         </div>
 
     </aside>
-
 
 
     <!-- =====================================================
@@ -384,13 +435,10 @@
         </header>
 
 
-
         <section class="manager-layout">
 
 
-            <!-- =================================================
-                 FORM
-                 ================================================= -->
+            <!-- FORM -->
 
             <div class="content-card">
 
@@ -412,7 +460,6 @@
 
 
                 <form id="ritualForm">
-
 
                     <div class="form-grid">
 
@@ -545,10 +592,7 @@
             </div>
 
 
-
-            <!-- =================================================
-                 LIST
-                 ================================================= -->
+            <!-- LIST -->
 
             <div class="content-card">
 
@@ -574,13 +618,10 @@
 
 
                 <div id="ritualList">
-
                     Loading...
-
                 </div>
 
             </div>
-
 
         </section>
 
