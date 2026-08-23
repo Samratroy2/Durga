@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Roy Bari — Family Tree
+    </title>
+
+    <meta
+        name="description"
+        content="The Roy Bari family tree and genealogy, preserving generations of the Roy family across centuries."
+    >
+
+
+    <!-- =====================================================
+         FONTS
+         ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Mukta:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         MAIN WEBSITE CSS
+         DO NOT CHANGE
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+    <!-- =====================================================
+         FAMILY TREE CSS
+         YOUR UPLOADED CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="family-tree.css"
+    >
+
+</head>
+
+
+<body class="family-tree-page">
+
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+<header class="site-header">
+
+    <nav class="nav">
+
+
+        <!-- =================================================
+             BRAND
+             ================================================= -->
+
+        <a
+            href="index.html"
+            class="brand"
+        >
+
+            ROY BARI
+
+            <span>
+                Est. 1671 · Nohari
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MOBILE MENU
+             ================================================= -->
+
+        <button
+            type="button"
+            class="nav-toggle"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
+
+
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+
+            <li>
+                <a href="history.html">
+                    The House
+                </a>
+            </li>
+
+
+            <li>
+                <a
+                    href="family-tree.html"
+                    class="active"
+                    aria-current="page"
+                >
+                    Family Tree
+                </a>
+            </li>
+
+
+            <li>
+                <a href="puja.html">
+                    The puja
+                </a>
+            </li>
+
+
+            <li>
+                <a href="gallery.html">
+                    Gallery
+                </a>
+            </li>
+
+
+            <li>
+                <a href="events.html">
+                    Events
+                </a>
+            </li>
+
+
+            <li>
+                <a href="archive.html">
+                    Archive
+                </a>
+            </li>
+
+
+            <li>
+                <a href="visit.html">
+                    Visit
+                </a>
+            </li>
+
+
+            <li>
+                <a href="contact.html">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =========================================================
+     HERO
+     
+     Uses:
+     body.family-tree-page .hero
+     body.family-tree-page .hero .hero-inner
+     body.family-tree-page .hero h1
+     body.family-tree-page .hero .tagline
+     
+     from your uploaded CSS.
+     ========================================================= -->
+
+<section class="hero">
+
+    <div class="hero-inner">
+
+        <div class="hero-content">
+
+
+            <!-- =================================================
+                 EYEBROW
+                 ================================================= -->
+
+            <div class="eyebrow">
+
+                রায় বাড়ি
+                &nbsp;·&nbsp;
+                ROY BARI
+
+            </div>
+
+
+            <!-- =================================================
+                 TITLE
+                 ================================================= -->
+
+            <h1>
+                Family Tree
+            </h1>
+
+
+            <!-- =================================================
+                 DESCRIPTION
+                 ================================================= -->
+
+            <p class="tagline">
+
+                The generations of the Roy family,
+                preserved across centuries.
+
+            </p>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     FAMILY TREE SECTION
+     
+     IMPORTANT:
+     The class names here match your uploaded CSS.
+     ========================================================= -->
+
+<section class="family-tree-events-section">
+
+
+    <div class="container">
+
+
+        <!-- =================================================
+             SECTION HEADER
+             EVENTS-STYLE
+             ================================================= -->
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                The Family Archive
+            </div>
+
+
+            <h2>
+                The Roy Family Tree
+            </h2>
+
+
+            <p class="lead">
+
+                Explore the generations of the Roy family,
+                follow family connections, and click any name
+                to view its recorded details.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CONTROLS
+             ================================================= -->
+
+        <div class="tree-controls">
+
+
+            <!-- =================================================
+                 SEARCH
+                 ================================================= -->
+
+            <div class="search-field">
+
+                <svg
+                    class="search-icon"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                >
+
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="7"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    ></circle>
+
+
+                    <line
+                        x1="16.6"
+                        y1="16.6"
+                        x2="21"
+                        y2="21"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    ></line>
+
+                </svg>
+
+
+                <input
+                    type="search"
+                    id="personSearch"
+                    placeholder="Find a name..."
+                    aria-label="Find a family member by name"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ZOOM
+                 ================================================= -->
+
+            <div
+                class="zoom-group"
+                role="group"
+                aria-label="Zoom controls"
+            >
+
+                <button
+                    type="button"
+                    id="zoomOut"
+                    aria-label="Zoom out"
+                >
+                    −
+                </button>
+
+
+                <button
+                    type="button"
+                    id="resetZoom"
+                    aria-label="Reset zoom"
+                >
+                    100%
+                </button>
+
+
+                <button
+                    type="button"
+                    id="zoomIn"
+                    aria-label="Zoom in"
+                >
+                    +
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SHOW FATHERS
+                 ================================================= -->
+
+            <button
+                type="button"
+                id="showFathers"
+                class="show-fathers-button"
+            >
+                Show Fathers
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             STATUS
+             ================================================= -->
+
+        <div
+            id="status"
+            class="status"
+            aria-live="polite"
+        >
+            Loading family tree...
+        </div>
+
+
+
+        <!-- =================================================
+             TREE WRAPPER
+             ================================================= -->
+
+        <div
+            id="treeWrapper"
+            class="tree-wrapper"
+        >
+
+
+            <div
+                id="treeStage"
+                class="tree-stage"
+            >
+
+
+                <!-- =================================================
+                     SVG CONNECTOR LAYER
+                     
+                     JavaScript draws:
+                     - Parent → Child
+                     - Spouse
+                     - Family connections
+                     ================================================= -->
+
+                <svg
+                    id="treeLines"
+                    class="tree-lines"
+                    aria-hidden="true"
+                ></svg>
+
+
+
+                <!-- =================================================
+                     FAMILY TREE
+                     
+                     family-tree.js generates the actual
+                     generations and person cards here.
+                     ================================================= -->
+
+                <div
+                    id="familyTree"
+                    class="family-tree"
+                ></div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PAN HINT
+             ================================================= -->
+
+        <p class="pan-hint">
+
+            Drag to pan
+            &nbsp;·&nbsp;
+            click a card for details
+
+        </p>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PERSON DETAIL MODAL
+     ========================================================= -->
+
+<div
+    id="personModal"
+    class="person-modal-backdrop"
+>
+
+
+    <div
+        class="person-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="personModalName"
+    >
+
+
+        <!-- =================================================
+             CLOSE BUTTON
+             ================================================= -->
+
+        <button
+            type="button"
+            class="person-modal-close"
+            id="personModalClose"
+            aria-label="Close"
+        >
+            &times;
+        </button>
+
+
+        <!-- =================================================
+             PERSON CONTENT
+             
+             family-tree.js fills this dynamically.
+             ================================================= -->
+
+        <div
+            class="person-modal-body"
+            id="personModalBody"
+        ></div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     FATHERS MODAL
+     ========================================================= -->
+
+<div
+    id="fathersModal"
+    class="person-modal-backdrop"
+>
+
+
+    <div
+        class="person-modal fathers-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="fathersModalTitle"
+    >
+
+
+        <!-- =================================================
+             CLOSE BUTTON
+             ================================================= -->
+
+        <button
+            type="button"
+            class="person-modal-close"
+            id="fathersModalClose"
+            aria-label="Close"
+        >
+            &times;
+        </button>
+
+
+        <!-- =================================================
+             FATHERS CONTENT
+             
+             family-tree.js fills this dynamically.
+             ================================================= -->
+
+        <div
+            class="person-modal-body"
+            id="fathersModalBody"
+        ></div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="site-footer">
+
+    <div class="container">
+
+
+        <div class="footer-grid">
+
+
+            <!-- =================================================
+                 ROY BARI
+                 ================================================= -->
+
+            <div>
+
+                <h5>
+                    Roy Bari
+                </h5>
+
+                <p>
+                    V8J4+5FF,
+                    Chhota Nohari,
+                    West Bengal 721121
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EXPLORE
+                 ================================================= -->
+
+            <div>
+
+                <h5>
+                    Explore
+                </h5>
+
+                <ul>
+
+                    <li>
+                        <a href="history.html">
+                            The House
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="family-tree.html">
+                            Family Tree
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="puja.html">
+                            The puja
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="events.html">
+                            Events
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="archive.html">
+                            Archive
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 VISIT
+                 ================================================= -->
+
+            <div>
+
+                <h5>
+                    Visit
+                </h5>
+
+                <ul>
+
+                    <li>
+                        <a href="visit.html">
+                            Location &amp; Timings
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="gallery.html">
+                            Gallery
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CONTACT
+                 ================================================= -->
+
+            <div>
+
+                <h5>
+                    Contact
+                </h5>
+
+                <ul>
+
+                    <li>
+                        <a href="contact.html">
+                            Get in Touch
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             FOOTER BOTTOM
+             ================================================= -->
+
+        <div class="footer-bottom">
+
+            <span>
+
+                © 2026 Roy Bari.
+                A family archive,
+                not a commercial event.
+
+            </span>
+
+        </div>
+
+
+    </div>
+
+</footer>
+
+
+
+<!-- =========================================================
+     MAIN WEBSITE JAVASCRIPT
+     ========================================================= -->
+
+<script src="main.js"></script>
+
+
+
+<!-- =========================================================
+     FAMILY TREE JAVASCRIPT
+     ========================================================= -->
+
+<script
+    type="module"
+    src="family-tree.js"
+></script>
+
+
+</body>
+
+</html>
