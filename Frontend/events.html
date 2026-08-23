@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ROY Bari</title>
+
+    <meta
+        name="description"
+        content="The Durga Puja events and rituals of ROY Bari — from Mahalaya to Dashami."
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="site-header">
+
+    <nav class="nav">
+
+        <a
+            href="index.html"
+            class="brand"
+        >
+
+            ROY BARI
+
+            <span>
+                Est. 1671 · Nohari
+            </span>
+
+        </a>
+
+
+        <button
+            class="nav-toggle"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+            type="button"
+        >
+            ☰
+        </button>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="history.html">
+                    The House
+                </a>
+            </li>
+
+            <li>
+                <a href="puja.html">
+                    The Puja
+                </a>
+            </li>
+
+            <li>
+                <a href="gallery.html">
+                    Gallery
+                </a>
+            </li>
+
+            <li>
+                <a
+                    href="events.html"
+                    class="active"
+                >
+                    Events
+                </a>
+            </li>
+
+            <li>
+                <a href="archive.html">
+                    Archive
+                </a>
+            </li>
+
+            
+
+            <li>
+                <a href="visit.html">
+                    Visit
+                </a>
+            </li>
+
+            <li>
+                <a href="contact.html">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section
+    class="hero"
+    style="min-height:44vh;"
+>
+
+    <div class="hero-inner">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                The Puja Calendar
+            </div>
+
+            <h1>
+                The Days We Keep
+            </h1>
+
+            <p class="tagline">
+
+                From Mahalaya to Dashami, discover
+                the rituals, gatherings, and traditions
+                that mark the days of the Roy Bari
+                Durga Puja.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     NEXT EVENT
+===================================================== -->
+
+<section>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                Next at the Bari
+            </div>
+
+            <h2 id="next-event-name">
+                Loading...
+            </h2>
+
+            <p
+                class="lead"
+                id="next-event-description"
+            >
+                Loading the next Puja event...
+            </p>
+
+        </div>
+
+
+        <!-- COUNTDOWN -->
+
+        <div
+            class="event-countdown"
+            id="event-timer"
+        >
+
+            <div class="event-time-box">
+
+                <span
+                    id="days"
+                    class="event-time-number"
+                >
+                    00
+                </span>
+
+                <span class="event-time-label">
+                    Days
+                </span>
+
+            </div>
+
+
+            <div class="event-time-box">
+
+                <span
+                    id="hours"
+                    class="event-time-number"
+                >
+                    00
+                </span>
+
+                <span class="event-time-label">
+                    Hours
+                </span>
+
+            </div>
+
+
+            <div class="event-time-box">
+
+                <span
+                    id="minutes"
+                    class="event-time-number"
+                >
+                    00
+                </span>
+
+                <span class="event-time-label">
+                    Minutes
+                </span>
+
+            </div>
+
+
+            <div class="event-time-box">
+
+                <span
+                    id="seconds"
+                    class="event-time-number"
+                >
+                    00
+                </span>
+
+                <span class="event-time-label">
+                    Seconds
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PUJA EVENTS
+===================================================== -->
+
+<section class="section-alt">
+
+    <div class="container">
+
+
+        <!-- SECTION HEADER -->
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                The Calendar
+            </div>
+
+            <h2>
+                The Puja, day by day
+            </h2>
+
+            <p class="lead">
+
+                Each day carries its own ritual,
+                rhythm, and place in the family's
+                tradition.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FILTERS
+        ================================================= -->
+
+        <div class="pill-row event-filters">
+
+            <button
+                type="button"
+                class="pill event-filter active"
+                data-filter="all"
+            >
+                All Days
+            </button>
+
+
+            <button
+                type="button"
+                class="pill event-filter"
+                data-filter="ritual"
+            >
+                Rituals
+            </button>
+
+
+            <button
+                type="button"
+                class="pill event-filter"
+                data-filter="family"
+            >
+                Family
+            </button>
+
+
+            <button
+                type="button"
+                class="pill event-filter"
+                data-filter="visitor"
+            >
+                Visitors
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FIREBASE EVENTS
+        ================================================= -->
+
+        <div
+            class="events-grid"
+            id="events-grid"
+        >
+
+            <!--
+                events.js will replace this
+                with Firestore event cards.
+            -->
+
+            <div class="event-card">
+
+                <div class="event-content">
+
+                    <h3>
+                        Loading events...
+                    </h3>
+
+                    <p>
+                        Please wait while the
+                        Puja calendar is loaded.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+
+            <!-- FOOTER BRAND -->
+
+            <div>
+
+                <h5>
+                    Roy Bari
+                </h5>
+
+                <p>
+                    V8J4+5FF, Chhota Nohari,
+                    West Bengal 721121
+                </p>
+
+            </div>
+
+
+            <!-- EXPLORE -->
+
+            <div>
+
+                <h5>
+                    Explore
+                </h5>
+
+                <ul>
+
+                    <li>
+                        <a href="history.html">
+                            The House
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="puja.html">
+                            The Puja
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="events.html">
+                            Events
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="archive.html">
+                            Archive
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- VISIT -->
+
+            <div>
+
+                <h5>
+                    Visit
+                </h5>
+
+                <ul>
+
+                    <li>
+                        <a href="visit.html">
+                            Location &amp; Timings
+                        </a>
+                    </li>
+
+                    
+
+                    <li>
+                        <a href="gallery.html">
+                            Gallery
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- CONTACT -->
+
+            <div>
+
+                <h5>
+                    Contact
+                </h5>
+
+                <ul>
+
+                    <li>
+                        <a href="contact.html">
+                            Get in Touch
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- FOOTER BOTTOM -->
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 Roy Bari.
+                A family archive,
+                not a commercial event.
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="main.js"></script>
+
+<script
+    type="module"
+    src="events.js"
+></script>
+
+
+</body>
+
+</html>
