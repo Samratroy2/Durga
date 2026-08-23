@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "roy-bari-durga-puja"
-  }
+  },
+  "targets": {
+    "roy-bari-durga-puja": {
+      "hosting": {
+        "admin": [
+          "roy-bari-admin"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
