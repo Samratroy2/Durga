@@ -2419,32 +2419,48 @@ function formatFieldName(key) {
    FORMAT VALUE
    ========================================================= */
 
+/* =========================================================
+   FORMAT VALUE
+   ========================================================= */
+
 function formatValue(value) {
 
     if (
         value === null ||
-        value === undefined
+        value === undefined ||
+        value === ""
     ) {
-
-        return "—";
-
+        return "";
     }
 
 
+    /* =====================================================
+       FIRESTORE TIMESTAMP — NORMAL TIMESTAMP OBJECT
+       ===================================================== */
+
     if (
-        typeof value === "object"
+        typeof value === "object" &&
+        typeof value.toDate === "function"
     ) {
 
         try {
 
-            return JSON.stringify(
-                value
-            );
+            return value
+                .toDate()
+                .toLocaleString("en-IN", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                });
 
-        } catch {
+        } catch (error) {
 
-            return String(
-                value
+            console.warn(
+                "Timestamp conversion failed:",
+                error
             );
 
         }
@@ -2452,12 +2468,108 @@ function formatValue(value) {
     }
 
 
-    return String(
-        value
-    );
+    /* =====================================================
+       FIRESTORE TIMESTAMP — SERIALIZED OBJECT
+       ===================================================== */
+
+    if (
+        typeof value === "object" &&
+        value.seconds !== undefined
+    ) {
+
+        try {
+
+            const seconds =
+                Number(value.seconds);
+
+            const nanoseconds =
+                Number(
+                    value.nanoseconds || 0
+                );
+
+
+            const milliseconds =
+                (seconds * 1000) +
+                Math.floor(
+                    nanoseconds / 1000000
+                );
+
+
+            const date =
+                new Date(milliseconds);
+
+
+            if (
+                !Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+
+                return date.toLocaleString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true
+                    }
+                );
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Serialized timestamp conversion failed:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ARRAY
+       ===================================================== */
+
+    if (Array.isArray(value)) {
+
+        return value.join(", ");
+
+    }
+
+
+    /* =====================================================
+       OTHER OBJECT
+       ===================================================== */
+
+    if (
+        typeof value === "object"
+    ) {
+
+        try {
+
+            return JSON.stringify(value);
+
+        } catch {
+
+            return String(value);
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NORMAL VALUE
+       ===================================================== */
+
+    return String(value);
 
 }
-
 
 /* =========================================================
    ESCAPE HTML

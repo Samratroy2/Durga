@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Roy Bari Admin Panel"
+    >
+
+    <title>
+        Roy Bari — Admin Login
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="./css/admin.css"
+    >
+
+</head>
+
+
+<body class="login-page">
+
+
+    <!-- =====================================================
+         BACKGROUND DECORATION
+         ===================================================== -->
+
+    <div class="login-decoration decoration-one"></div>
+
+    <div class="login-decoration decoration-two"></div>
+
+
+    <!-- =====================================================
+         LOGIN WRAPPER
+         ===================================================== -->
+
+    <main class="login-wrapper">
+
+
+        <section class="login-card">
+
+
+            <!-- =================================================
+                 LOGO
+                 ================================================= -->
+
+            <div class="login-logo">
+
+                <div class="logo-symbol">
+                    🪔
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 HEADING
+                 ================================================= -->
+
+            <div class="login-heading">
+
+                <span class="login-label">
+                    ROY BARI
+                </span>
+
+                <h1>
+                    Admin Panel
+                </h1>
+
+                <p>
+                    Manage your family heritage,
+                    traditions and archives.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+                 ================================================= -->
+
+            <form id="loginForm">
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="primary-button"
+                >
+
+                    <span id="loginButtonText">
+                        Login to Admin Panel
+                    </span>
+
+                    <span class="button-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <!-- MESSAGE -->
+
+                <p
+                    id="loginMessage"
+                    class="message"
+                ></p>
+
+
+            </form>
+
+
+            <!-- =================================================
+                 FOOTER
+                 ================================================= -->
+
+            <div class="login-footer">
+
+                <span>
+                    🔐 Secure administrator access
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- BRAND -->
+
+        <p class="login-brand">
+
+            © Roy Bari · Preserving generations of tradition
+
+        </p>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         LOGIN JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        type="module"
+        src="./js/login.js"
+    ></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Roy Bari — Activity History
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="./css/admin.css"
+    >
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                🪔
+            </div>
+
+            <div class="sidebar-brand-text">
+
+                <h2>
+                    Roy Bari
+                </h2>
+
+                <span>
+                    Administration
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <div class="nav-section-title">
+                MAIN
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                CONTENT
+            </div>
+
+
+            <a
+                href="./family.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    👨‍👩‍👧
+                </span>
+
+                <span>
+                    Family Tree
+                </span>
+
+            </a>
+
+
+            <a
+                href="./events.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    🪔
+                </span>
+
+                <span>
+                    Puja Events
+                </span>
+
+            </a>
+
+
+            <a
+                href="./bhog.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    🍚
+                </span>
+
+                <span>
+                    Bhog
+                </span>
+
+            </a>
+
+
+            <a
+                href="./archive.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📜
+                </span>
+
+                <span>
+                    Archive
+                </span>
+
+            </a>
+
+
+            <a
+                href="./gallery.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📷
+                </span>
+
+                <span>
+                    Gallery
+                </span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                MORE
+            </div>
+
+
+            <a
+                href="./memories.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ♡
+                </span>
+
+                <span>
+                    Memories
+                </span>
+
+            </a>
+
+
+            <a
+                href="./rituals.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ॐ
+                </span>
+
+                <span>
+                    Rituals
+                </span>
+
+            </a>
+
+
+            <a
+                href="./timeline.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📅
+                </span>
+
+                <span>
+                    Timeline
+                </span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                ADMIN
+            </div>
+
+
+            <a
+                href="./enquiries.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ✉
+                </span>
+
+                <span>
+                    Enquiries
+                </span>
+
+            </a>
+
+
+            <a
+                href="./activity.html"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">
+                    ◷
+                </span>
+
+                <span>
+                    Activity History
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-note">
+
+                <span class="sidebar-note-icon">
+                    🔒
+                </span>
+
+                <div>
+
+                    <strong>
+                        Admin Access
+                    </strong>
+
+                    <small>
+                        Protected area
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="logoutButton"
+                class="logout-button"
+            >
+
+                <span>
+                    ⇥
+                </span>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MAIN
+         ========================================================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <span class="page-eyebrow">
+                    ADMINISTRATION
+                </span>
+
+                <h1>
+                    Activity History
+                </h1>
+
+                <p>
+                    See what was changed, by whom and when.
+                </p>
+
+            </div>
+
+
+            <div class="admin-user">
+
+                <div class="user-avatar">
+                    A
+                </div>
+
+                <div class="user-details">
+
+                    <strong id="adminEmail">
+                        Admin
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================================
+             ACTIVITY
+             ===================================================== -->
+
+        <section class="manager-layout">
+
+
+            <div class="manager-list-card">
+
+
+                <!-- HEADING -->
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span>
+                            FIRESTORE
+                        </span>
+
+                        <h2>
+                            Complete Activity History
+                        </h2>
+
+                    </div>
+
+
+                    <span id="activityCount">
+                        0 activities
+                    </span>
+
+                </div>
+
+
+
+                <!-- FILTERS -->
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="activitySearch">
+                            Search
+                        </label>
+
+                        <input
+                            type="search"
+                            id="activitySearch"
+                            placeholder="Search activity..."
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="actionFilter">
+                            Action
+                        </label>
+
+                        <select
+                            id="actionFilter"
+                        >
+
+                            <option value="">
+                                All Actions
+                            </option>
+
+                            <option value="created">
+                                Added
+                            </option>
+
+                            <option value="updated">
+                                Updated
+                            </option>
+
+                            <option value="deleted">
+                                Deleted
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="collectionFilter">
+                            Section
+                        </label>
+
+                        <select
+                            id="collectionFilter"
+                        >
+
+                            <option value="">
+                                All Sections
+                            </option>
+
+                            <option value="familyMembers">
+                                Family
+                            </option>
+
+                            <option value="events">
+                                Events
+                            </option>
+
+                            <option value="bhog">
+                                Bhog
+                            </option>
+
+                            <option value="archive">
+                                Archive
+                            </option>
+
+                            <option value="gallery">
+                                Gallery
+                            </option>
+
+                            <option value="memories">
+                                Memories
+                            </option>
+
+                            <option value="rituals">
+                                Rituals
+                            </option>
+
+                            <option value="timeline">
+                                Timeline
+                            </option>
+
+                            <option value="enquiries">
+                                Enquiries
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MESSAGE -->
+
+                <p
+                    id="activityMessage"
+                    class="message"
+                ></p>
+
+
+
+                <!-- ACTIVITY LIST -->
+
+                <div
+                    id="activityList"
+                    class="manager-list"
+                >
+
+                    Loading activity history...
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Roy Bari
+            </span>
+
+            <span>
+                Complete Administrative History
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <script
+        type="module"
+        src="./js/activity.js"
+    ></script>
+
+
+</body>
+
+</html>

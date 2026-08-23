@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Roy Bari — Puja Events
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="./css/admin.css"
+    >
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+
+        <!-- =====================================================
+             BRAND
+             ===================================================== -->
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                🪔
+            </div>
+
+            <div class="sidebar-brand-text">
+
+                <h2>
+                    Roy Bari
+                </h2>
+
+                <span>
+                    Administration
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVIGATION
+             ===================================================== -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- =================================================
+                 MAIN
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MAIN
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                CONTENT
+            </div>
+
+
+            <!-- FAMILY TREE -->
+
+            <a
+                href="./family.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    👨‍👩‍👧
+                </span>
+
+                <span>
+                    Family Tree
+                </span>
+
+            </a>
+
+
+            <!-- PUJA EVENTS -->
+
+            <a
+                href="./events.html"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">
+                    🪔
+                </span>
+
+                <span>
+                    Puja Events
+                </span>
+
+            </a>
+
+
+
+            <!-- ARCHIVE -->
+
+            <a
+                href="./archive.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📜
+                </span>
+
+                <span>
+                    Archive
+                </span>
+
+            </a>
+
+
+            <!-- GALLERY -->
+
+            <a
+                href="./gallery.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📷
+                </span>
+
+                <span>
+                    Gallery
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 MORE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MORE
+            </div>
+
+
+            <!-- MEMORIES -->
+
+            <a
+                href="./memories.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ♡
+                </span>
+
+                <span>
+                    Memories
+                </span>
+
+            </a>
+
+
+            <!-- RITUALS -->
+
+            <a
+                href="./rituals.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ॐ
+                </span>
+
+                <span>
+                    Rituals
+                </span>
+
+            </a>
+
+
+            <!-- TIMELINE -->
+
+            <a
+                href="./timeline.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    📅
+                </span>
+
+                <span>
+                    Timeline
+                </span>
+
+            </a>
+
+        </nav>
+
+
+
+        <!-- =====================================================
+             SIDEBAR BOTTOM
+             ===================================================== -->
+
+        <div class="sidebar-bottom">
+
+
+            <!-- ADMIN STATUS -->
+
+            <div class="sidebar-note">
+
+                <span class="sidebar-note-icon">
+                    🔒
+                </span>
+
+                <div>
+
+                    <strong>
+                        Admin Access
+                    </strong>
+
+                    <small>
+                        Protected area
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGOUT -->
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+                type="button"
+            >
+
+                <span>
+                    ⇥
+                </span>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- =====================================================
+             TOPBAR
+             ===================================================== -->
+
+        <header class="topbar">
+
+
+            <div class="topbar-left">
+
+                <span class="page-eyebrow">
+                    CONTENT MANAGEMENT
+                </span>
+
+                <h1>
+                    Puja Events
+                </h1>
+
+                <p>
+                    Manage Durga Puja events and celebrations.
+                </p>
+
+            </div>
+
+
+            <!-- ADMIN USER -->
+
+            <div class="admin-user">
+
+                <div class="user-avatar">
+                    A
+                </div>
+
+                <div class="user-details">
+
+                    <strong id="adminEmail">
+                        Admin
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================================
+             EVENT MANAGEMENT
+             ===================================================== -->
+
+        <section class="manager-layout">
+
+
+            <!-- =================================================
+                 ADD / EDIT EVENT
+                 ================================================= -->
+
+            <div class="manager-form-card">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span>
+                            PUJA EVENT
+                        </span>
+
+                        <h2 id="formTitle">
+                            Add Event
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- FORM -->
+
+                <form id="eventForm">
+
+
+                    <!-- Hidden document ID -->
+
+                    <input
+                        type="hidden"
+                        id="eventId"
+                    >
+
+
+
+                    <div class="form-grid">
+
+
+                        <!-- TITLE -->
+
+                        <div class="form-group">
+
+                            <label for="title">
+                                Title *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="title"
+                                required
+                                placeholder="Event title"
+                            >
+
+                        </div>
+
+
+
+                        <!-- DATE -->
+
+                        <div class="form-group">
+
+                            <label for="date">
+                                Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="date"
+                            >
+
+                        </div>
+
+
+
+                        <!-- TIME -->
+
+                        <div class="form-group">
+
+                            <label for="time">
+                                Time
+                            </label>
+
+                            <input
+                                type="text"
+                                id="time"
+                                placeholder="e.g. 7:00 PM"
+                            >
+
+                        </div>
+
+
+
+                        <!-- LOCATION -->
+
+                        <div class="form-group">
+
+                            <label for="location">
+                                Location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="location"
+                                placeholder="Event location"
+                            >
+
+                        </div>
+
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="form-group full-width">
+
+                            <label for="description">
+                                Description
+                            </label>
+
+                            <textarea
+                                id="description"
+                                rows="5"
+                                placeholder="Describe the event..."
+                            ></textarea>
+
+                        </div>
+
+
+
+                        <!-- IMAGE -->
+
+                        <div class="form-group full-width">
+
+                            <label for="image">
+                                Image URL
+                            </label>
+
+                            <input
+                                type="url"
+                                id="image"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- FORM BUTTONS -->
+
+                    <div class="form-actions">
+
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            id="saveButton"
+                        >
+
+                            Save Event
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="cancelButton"
+                        >
+
+                            Cancel
+
+                        </button>
+
+                    </div>
+
+
+
+                    <!-- MESSAGE -->
+
+                    <p
+                        id="eventMessage"
+                        class="message"
+                    ></p>
+
+
+                </form>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EVENT LIST
+                 ================================================= -->
+
+            <div class="manager-list-card">
+
+
+                <div class="section-heading">
+
+
+                    <div>
+
+                        <span>
+                            FIRESTORE
+                        </span>
+
+                        <h2>
+                            Events
+                        </h2>
+
+                    </div>
+
+
+                    <span id="eventCount">
+                        0 events
+                    </span>
+
+
+                </div>
+
+
+
+                <div
+                    id="eventList"
+                    class="manager-list"
+                >
+
+                    Loading...
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             FOOTER
+             ===================================================== -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Roy Bari
+            </span>
+
+            <span>
+                Family Heritage Management
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+    <script
+        type="module"
+        src="./js/events.js"
+    ></script>
+
+
+</body>
+
+</html>
