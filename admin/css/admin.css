@@ -36,7 +36,9 @@ body {
 
 
 button,
-input {
+input,
+select,
+textarea {
     font-family: inherit;
 }
 
@@ -632,6 +634,8 @@ input {
 
     height: 44px;
 
+    flex-shrink: 0;
+
     display: flex;
 
     align-items: center;
@@ -690,6 +694,23 @@ input {
         20px 12px;
 
     overflow-y: auto;
+
+}
+
+
+.sidebar-nav::-webkit-scrollbar {
+
+    width: 4px;
+
+}
+
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border-radius: 10px;
 
 }
 
@@ -764,9 +785,34 @@ input {
 }
 
 
+/* Font Awesome icons */
+
+.nav-item > i {
+
+    width: 25px;
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    font-size: 16px;
+
+}
+
+
+/* Custom nav icon such as ॐ */
+
 .nav-icon {
 
     width: 25px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
 
     text-align: center;
 
@@ -812,7 +858,16 @@ input {
 }
 
 
-.sidebar-note-icon {
+.sidebar-note > i {
+
+    width: 20px;
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    color:
+        #d8d0c8;
 
     font-size: 15px;
 
@@ -845,6 +900,12 @@ input {
 }
 
 
+/* =========================================================
+   LOGOUT BUTTON
+   DESKTOP = ICON + TEXT
+   MOBILE = ICON ONLY
+   ========================================================= */
+
 .logout-button {
 
     width: 100%;
@@ -875,8 +936,21 @@ input {
 
     font-size: 12px;
 
+    font-weight: 500;
+
     transition:
-        0.2s;
+        background 0.2s,
+        color 0.2s,
+        border-color 0.2s;
+
+}
+
+
+.logout-button i {
+
+    font-size: 15px;
+
+    line-height: 1;
 
 }
 
@@ -885,6 +959,9 @@ input {
 
     background:
         rgba(190, 78, 65, 0.18);
+
+    border-color:
+        rgba(190, 78, 65, 0.25);
 
     color:
         #fff;
@@ -1859,307 +1936,6 @@ input {
 
 
 /* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (
-    max-width: 1100px
-) {
-
-    .dashboard-main {
-
-        padding:
-            30px;
-
-    }
-
-
-    .stats-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-    }
-
-
-    .admin-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-    }
-
-}
-
-
-/* =========================================================
-   MOBILE SIDEBAR
-   ========================================================= */
-
-@media (
-    max-width: 800px
-) {
-
-    .sidebar {
-
-        width: 72px;
-
-    }
-
-
-    .sidebar-brand {
-
-        justify-content: center;
-
-        padding:
-            18px 8px;
-
-    }
-
-
-    .sidebar-brand-text {
-
-        display: none;
-
-    }
-
-
-    .sidebar-logo {
-
-        width: 42px;
-
-        height: 42px;
-
-    }
-
-
-    .nav-section-title {
-
-        display: none;
-
-    }
-
-
-    .nav-item {
-
-        justify-content: center;
-
-        padding:
-            12px 5px;
-
-    }
-
-
-    .nav-item span:not(.nav-icon) {
-
-        display: none;
-
-    }
-
-
-    .nav-icon {
-
-        width: auto;
-
-        font-size: 18px;
-
-    }
-
-
-    .sidebar-note {
-
-        justify-content: center;
-
-        padding: 9px 5px;
-
-    }
-
-
-    .sidebar-note > div {
-
-        display: none;
-
-    }
-
-
-    .logout-button {
-
-        font-size: 0;
-
-    }
-
-
-    .logout-button span {
-
-        font-size: 17px;
-
-    }
-
-
-    .dashboard-main {
-
-        margin-left: 72px;
-
-        padding:
-            25px 20px;
-
-    }
-
-
-    .admin-user {
-
-        padding: 5px;
-
-    }
-
-
-    .user-details {
-
-        display: none;
-
-    }
-
-
-    .user-status {
-
-        display: none;
-
-    }
-
-
-    .welcome-card {
-
-        padding:
-            28px;
-
-    }
-
-
-    .welcome-art {
-
-        display: none;
-
-    }
-
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
-
-@media (
-    max-width: 560px
-) {
-
-    .login-page {
-
-        padding:
-            15px;
-
-    }
-
-
-    .login-card {
-
-        padding:
-            30px 22px;
-
-        border-radius:
-            18px;
-
-    }
-
-
-    .login-heading h1 {
-
-        font-size:
-            28px;
-
-    }
-
-
-    .dashboard-main {
-
-        padding:
-            20px 14px;
-
-    }
-
-
-    .topbar {
-
-        align-items:
-            flex-start;
-
-    }
-
-
-    .topbar h1 {
-
-        font-size:
-            25px;
-
-    }
-
-
-    .stats-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .admin-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .welcome-card {
-
-        min-height:
-            175px;
-
-        padding:
-            24px;
-
-    }
-
-
-    .welcome-card h2 {
-
-        font-size:
-            23px;
-
-    }
-
-
-    .dashboard-footer {
-
-        flex-direction:
-            column;
-
-        align-items:
-            flex-start;
-
-        gap: 5px;
-
-    }
-
-
-    .status-right {
-
-        display: none;
-
-    }
-
-}
-
-/* =========================================================
    ADMIN MANAGEMENT PAGES
    ========================================================= */
 
@@ -2225,9 +2001,11 @@ input {
 
     border-radius: 9px;
 
-    background: #fcfaf7;
+    background:
+        #fcfaf7;
 
-    color: #302820;
+    color:
+        #302820;
 
     padding: 12px;
 
@@ -2295,9 +2073,11 @@ input {
 
     border-radius: 11px;
 
-    background: white;
+    background:
+        white;
 
-    color: #684832;
+    color:
+        #684832;
 
     font-weight: 700;
 
@@ -2342,7 +2122,8 @@ input {
 
     border-radius: 12px;
 
-    background: #fff;
+    background:
+        #fff;
 
 }
 
@@ -2574,6 +2355,473 @@ input {
 }
 
 
+/* =====================================================
+   FATHER SEARCH
+   ===================================================== */
+
+.father-search-wrapper {
+
+    position: relative;
+
+}
+
+
+#fatherSearch {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+}
+
+
+.father-suggestions {
+
+    position: absolute;
+
+    top:
+        calc(100% + 5px);
+
+    left: 0;
+
+    right: 0;
+
+    background:
+        #fff;
+
+    border:
+        1px solid #ddd1c6;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(70, 45, 25, 0.12);
+
+    max-height: 260px;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+
+    display: none;
+
+}
+
+
+.father-suggestion {
+
+    padding:
+        11px 13px;
+
+    cursor: pointer;
+
+    border-bottom:
+        1px solid #eee5dc;
+
+}
+
+
+.father-suggestion:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.father-suggestion:hover {
+
+    background:
+        #f4ece4;
+
+}
+
+
+.father-suggestion strong {
+
+    display: block;
+
+    color:
+        #4f3828;
+
+    margin-bottom: 3px;
+
+}
+
+
+.father-suggestion small {
+
+    color:
+        #8b7b6d;
+
+}
+
+
+.father-no-result {
+
+    padding: 14px;
+
+    color:
+        #8b7b6d;
+
+    text-align: center;
+
+    font-size: 12px;
+
+}
+
+
+/* =====================================================
+   FIRESTORE FAMILY SEARCH
+   ===================================================== */
+
+.family-search-wrapper {
+
+    position: relative;
+
+    margin:
+        18px 0 8px;
+
+}
+
+
+.family-search-wrapper i {
+
+    position: absolute;
+
+    left: 15px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    color:
+        #8b7b6d;
+
+    font-size: 14px;
+
+    pointer-events: none;
+
+}
+
+
+#familySearch {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding:
+        13px 42px 13px 42px;
+
+    border:
+        1px solid #ddd1c6;
+
+    border-radius: 8px;
+
+    background:
+        #fff;
+
+    color:
+        #3b3028;
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+
+}
+
+
+#familySearch::placeholder {
+
+    color:
+        #9a8b7e;
+
+}
+
+
+#familySearch:focus {
+
+    border-color:
+        #b27a4a;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(178, 122, 74, 0.10);
+
+}
+
+
+.family-search-clear {
+
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 28px;
+
+    height: 28px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+        transparent;
+
+    color:
+        #8b7b6d;
+
+    cursor: pointer;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.family-search-clear:hover {
+
+    background:
+        #eee5dc;
+
+    color:
+        #704a31;
+
+}
+
+
+.family-search-info {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    min-height: 18px;
+
+    margin-top: 6px;
+
+    padding:
+        0 2px;
+
+    font-size: 11px;
+
+    color:
+        #8b7b6d;
+
+}
+
+
+.family-search-no-result {
+
+    padding:
+        35px 15px;
+
+    text-align: center;
+
+    color:
+        #8b7b6d;
+
+}
+
+
+.family-search-no-result i {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 24px;
+
+    color:
+        #b27a4a;
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .dashboard-main {
+
+        padding:
+            30px;
+
+    }
+
+
+    .stats-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .admin-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT BUTTON
+   DESKTOP = ICON + TEXT
+   MOBILE = ICON ONLY
+   ========================================================= */
+
+.logout-button {
+
+    width: 100%;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    border-radius: 9px;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    color:
+        #c9c0b8;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition:
+        background 0.2s,
+        color 0.2s,
+        border-color 0.2s;
+
+}
+
+
+.logout-button i {
+
+    font-size: 15px;
+
+    line-height: 1;
+
+}
+
+
+/* RED HOVER */
+
+.logout-button:hover {
+
+    background:
+        red;
+
+    border-color:
+        red;
+
+    color:
+        white;
+
+}
+
+
+/* =========================================================
+   MOBILE — ICON ONLY
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .logout-button {
+
+        width: 48px;
+
+        height: 48px;
+
+        margin:
+            0 auto;
+
+        padding: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 0;
+
+        border-radius: 10px;
+
+        font-size: 0;
+
+    }
+
+
+    .logout-button i {
+
+        display: block;
+
+        font-size: 18px;
+
+        line-height: 1;
+
+    }
+
+
+    /* KEEP RED HOVER ON MOBILE */
+
+    .logout-button:hover {
+
+        background:
+            red;
+
+        border-color:
+            red;
+
+        color:
+            white;
+
+    }
+
+}
+
+
+/* =========================================================
+   MANAGEMENT TABLET
+   ========================================================= */
+
 @media (max-width: 950px) {
 
     .manager-layout {
@@ -2586,7 +2834,352 @@ input {
 }
 
 
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    /* -----------------------------------------
+       SIDEBAR
+       ----------------------------------------- */
+
+    .sidebar {
+
+        width: 72px;
+
+    }
+
+
+    .sidebar-brand {
+
+        justify-content: center;
+
+        padding:
+            18px 8px;
+
+    }
+
+
+    .sidebar-brand-text {
+
+        display: none;
+
+    }
+
+
+    .sidebar-logo {
+
+        width: 42px;
+
+        height: 42px;
+
+    }
+
+
+    /* -----------------------------------------
+       NAV
+       ----------------------------------------- */
+
+    .nav-section-title {
+
+        display: none;
+
+    }
+
+
+    .nav-item {
+
+        justify-content: center;
+
+        gap: 0;
+
+        padding:
+            12px 5px;
+
+    }
+
+
+    .nav-item span:not(.nav-icon) {
+
+        display: none;
+
+    }
+
+
+    .nav-item > i {
+
+        width: auto;
+
+        font-size: 18px;
+
+    }
+
+
+    .nav-icon {
+
+        width: auto;
+
+        font-size: 18px;
+
+    }
+
+
+    /* -----------------------------------------
+       SIDEBAR NOTE
+       ----------------------------------------- */
+
+    .sidebar-note {
+
+        justify-content: center;
+
+        padding:
+            9px 5px;
+
+    }
+
+
+    .sidebar-note > div {
+
+        display: none;
+
+    }
+
+
+    .sidebar-note > i {
+
+        width: auto;
+
+        font-size: 17px;
+
+    }
+
+
+    /* -----------------------------------------
+       LOGOUT — ICON ONLY
+       ----------------------------------------- */
+
+    .logout-button {
+
+        width: 48px;
+
+        height: 48px;
+
+        margin:
+            0 auto;
+
+        padding: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 0;
+
+        border-radius: 10px;
+
+        font-size: 0;
+
+    }
+
+
+    .logout-button i {
+
+        display: block;
+
+        font-size: 18px;
+
+        line-height: 1;
+
+    }
+
+
+    .logout-button:hover {
+
+        background:red;
+
+        color: #fff;
+
+    }
+
+
+    /* -----------------------------------------
+       MAIN
+       ----------------------------------------- */
+
+    .dashboard-main {
+
+        margin-left: 72px;
+
+        padding:
+            25px 20px;
+
+    }
+
+
+    /* -----------------------------------------
+       TOP USER
+       ----------------------------------------- */
+
+    .admin-user {
+
+        padding: 5px;
+
+    }
+
+
+    .user-details {
+
+        display: none;
+
+    }
+
+
+    .user-status {
+
+        display: none;
+
+    }
+
+
+    /* -----------------------------------------
+       WELCOME
+       ----------------------------------------- */
+
+    .welcome-card {
+
+        padding:
+            28px;
+
+    }
+
+
+    .welcome-art {
+
+        display: none;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 600px) {
+
+    .login-page {
+
+        padding:
+            15px;
+
+    }
+
+
+    .login-card {
+
+        padding:
+            30px 22px;
+
+        border-radius:
+            18px;
+
+    }
+
+
+    .login-heading h1 {
+
+        font-size:
+            28px;
+
+    }
+
+
+    .dashboard-main {
+
+        padding:
+            20px 14px;
+
+    }
+
+
+    .topbar {
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .topbar h1 {
+
+        font-size:
+            25px;
+
+    }
+
+
+    .stats-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .admin-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .welcome-card {
+
+        min-height:
+            175px;
+
+        padding:
+            24px;
+
+    }
+
+
+    .welcome-card h2 {
+
+        font-size:
+            23px;
+
+    }
+
+
+    .dashboard-footer {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap: 5px;
+
+    }
+
+
+    .status-right {
+
+        display: none;
+
+    }
+
+
+    /* -----------------------------------------
+       MANAGEMENT
+       ----------------------------------------- */
 
     .form-grid {
 
@@ -2607,7 +3200,8 @@ input {
     .manager-form-card,
     .manager-list-card {
 
-        padding: 18px;
+        padding:
+            18px;
 
     }
 
@@ -2647,189 +3241,90 @@ input {
 }
 
 
-/* =====================================================
-   FATHER SEARCH
-   ===================================================== */
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
 
-.father-search-wrapper {
-    position: relative;
-}
+@media (max-width: 400px) {
 
-#fatherSearch {
-    width: 100%;
-    box-sizing: border-box;
-}
+    .sidebar {
 
-.father-suggestions {
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    right: 0;
+        width: 64px;
 
-    background: #fff;
+    }
 
-    border: 1px solid #ddd1c6;
-    border-radius: 8px;
 
-    box-shadow: 0 8px 25px rgba(70, 45, 25, 0.12);
+    .dashboard-main {
 
-    max-height: 260px;
-    overflow-y: auto;
+        margin-left: 64px;
 
-    z-index: 1000;
+        padding:
+            18px 12px;
 
-    display: none;
-}
+    }
 
-.father-suggestion {
-    padding: 11px 13px;
 
-    cursor: pointer;
+    .sidebar-brand {
 
-    border-bottom: 1px solid #eee5dc;
-}
+        padding:
+            15px 5px;
 
-.father-suggestion:last-child {
-    border-bottom: none;
-}
+    }
 
-.father-suggestion:hover {
-    background: #f4ece4;
-}
 
-.father-suggestion strong {
-    display: block;
+    .sidebar-logo {
 
-    color: #4f3828;
+        width: 40px;
 
-    margin-bottom: 3px;
-}
+        height: 40px;
 
-.father-suggestion small {
-    color: #8b7b6d;
-}
+    }
 
-.father-no-result {
-    padding: 14px;
 
-    color: #8b7b6d;
+    .nav-item {
 
-    text-align: center;
+        min-height:
+            42px;
 
-    font-size: 12px;
-}
+    }
 
-.logout-button{
-    color: red;
-    height: 45px;
-    font-size: 15px;
-}
 
-.logout-button:hover{
-    background-color: red;
-    color: white;
+    .logout-button {
+
+        width: 44px;
+
+        height: 44px;
+
+    }
+
+
+    .logout-button i {
+
+        font-size:
+            17px;
+
+    }
+
 }
 
 
-/* =====================================================
-   FIRESTORE FAMILY SEARCH
-   ===================================================== */
-
-.family-search-wrapper {
-    position: relative;
-    margin: 18px 0 8px;
-}
-
-.family-search-wrapper i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #8b7b6d;
-    font-size: 14px;
-    pointer-events: none;
-}
-
-#familySearch {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 13px 42px 13px 42px;
-    border: 1px solid #ddd1c6;
-    border-radius: 8px;
-    background: #fff;
-    color: #3b3028;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-#familySearch::placeholder {
-    color: #9a8b7e;
-}
-
-#familySearch:focus {
-    border-color: #b27a4a;
-    box-shadow: 0 0 0 3px rgba(178, 122, 74, 0.10);
-}
-
-.family-search-clear {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    
-    width: 28px;
-    height: 28px;
-    
-    border: none;
-    border-radius: 50%;
-    
-    background: transparent;
-    color: #8b7b6d;
-    
-    cursor: pointer;
-    
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
-.family-search-clear:hover {
-    background: #eee5dc;
-    color: #704a31;
-}
-
-.family-search-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 18px;
-    margin-top: 6px;
-    padding: 0 2px;
-    
-    font-size: 11px;
-    color: #8b7b6d;
-}
-
-.family-search-no-result {
-    padding: 35px 15px;
-    text-align: center;
-    color: #8b7b6d;
-}
-
-.family-search-no-result i {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 24px;
-    color: #b27a4a;
-}
+/* =========================================================
+   FAMILY SEARCH MOBILE
+   ========================================================= */
 
 @media (max-width: 700px) {
 
     #familySearch {
-        font-size: 14px;
-        padding-top: 14px;
-        padding-bottom: 14px;
+
+        font-size:
+            14px;
+
+        padding-top:
+            14px;
+
+        padding-bottom:
+            14px;
+
     }
 
 }
