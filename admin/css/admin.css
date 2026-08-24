@@ -2729,3 +2729,107 @@ input {
     background-color: red;
     color: white;
 }
+
+
+/* =====================================================
+   FIRESTORE FAMILY SEARCH
+   ===================================================== */
+
+.family-search-wrapper {
+    position: relative;
+    margin: 18px 0 8px;
+}
+
+.family-search-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8b7b6d;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+#familySearch {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 42px 13px 42px;
+    border: 1px solid #ddd1c6;
+    border-radius: 8px;
+    background: #fff;
+    color: #3b3028;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#familySearch::placeholder {
+    color: #9a8b7e;
+}
+
+#familySearch:focus {
+    border-color: #b27a4a;
+    box-shadow: 0 0 0 3px rgba(178, 122, 74, 0.10);
+}
+
+.family-search-clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    width: 28px;
+    height: 28px;
+    
+    border: none;
+    border-radius: 50%;
+    
+    background: transparent;
+    color: #8b7b6d;
+    
+    cursor: pointer;
+    
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.family-search-clear:hover {
+    background: #eee5dc;
+    color: #704a31;
+}
+
+.family-search-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 18px;
+    margin-top: 6px;
+    padding: 0 2px;
+    
+    font-size: 11px;
+    color: #8b7b6d;
+}
+
+.family-search-no-result {
+    padding: 35px 15px;
+    text-align: center;
+    color: #8b7b6d;
+}
+
+.family-search-no-result i {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #b27a4a;
+}
+
+@media (max-width: 700px) {
+
+    #familySearch {
+        font-size: 14px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+}

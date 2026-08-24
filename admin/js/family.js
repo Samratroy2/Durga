@@ -19,19 +19,20 @@
    ├── 121
    └── 122
 
-   FATHER SEARCH:
-   - Search by Family ID
-   - Search by Name
-   - Select member from suggestions
-
-   IMPORTANT:
-
-   Only fields containing data are stored.
-
-   Empty fields are NOT stored.
-
-   Editing an existing empty field removes
-   that field from Firestore.
+   FEATURES:
+   - Father search by ID or name
+   - Automatic child Family ID
+   - Automatic generation
+   - Mother selection
+   - Spouse selection
+   - Add member
+   - Edit member
+   - Delete member
+   - ID change with reference updates
+   - Activity logging
+   - Firestore Family Members search
+   - Search by ID, name, father, mother, spouse,
+     relation, generation and years
 
    ========================================================= */
 
@@ -148,7 +149,7 @@ const spouseSelect =
 
 
 /* =========================================================
-   AUTOMATIC FIELDS
+   AUTOMATIC / OTHER FIELDS
    ========================================================= */
 
 const generationInput =
@@ -182,7 +183,7 @@ const biographyInput =
 
 
 /* =========================================================
-   LIST
+   FAMILY LIST
    ========================================================= */
 
 const familyList =
@@ -194,6 +195,28 @@ const familyList =
 const memberCount =
     document.getElementById(
         "memberCount"
+    );
+
+
+/* =========================================================
+   FIRESTORE FAMILY MEMBERS SEARCH
+   ========================================================= */
+
+const familySearch =
+    document.getElementById(
+        "familySearch"
+    );
+
+
+const clearFamilySearch =
+    document.getElementById(
+        "clearFamilySearch"
+    );
+
+
+const familySearchInfo =
+    document.getElementById(
+        "familySearchInfo"
     );
 
 
@@ -259,7 +282,6 @@ let members = [];
 
    If changed to "13":
 
-   old document:
    familyMembers/11
 
    becomes:
@@ -285,7 +307,6 @@ onAuthStateChanged(
             );
 
             return;
-
         }
 
 
@@ -348,8 +369,8 @@ async function loadMembers() {
         );
 
 
-        /*
-           Numeric hierarchical sorting.
+        /* -----------------------------------------------------
+           HIERARCHICAL NUMERIC SORTING
 
            1
            2
@@ -358,7 +379,7 @@ async function loadMembers() {
            111
            112
            121
-        */
+           ----------------------------------------------------- */
 
         members.sort(
             (a, b) => {
@@ -491,20 +512,14 @@ function populateRelationshipSelects() {
 
 /* =========================================================
    FATHER SEARCH
-   =========================================================
-
-   Search works with:
-
-   11
-   Haridas
-   Roy
-   Haridas Roy
-
    ========================================================= */
 
 function searchFatherMembers() {
 
-    if (!fatherSearch || !fatherSuggestions) {
+    if (
+        !fatherSearch ||
+        !fatherSuggestions
+    ) {
 
         return;
 
@@ -517,7 +532,8 @@ function searchFatherMembers() {
             .toLowerCase();
 
 
-    fatherSuggestions.innerHTML = "";
+    fatherSuggestions.innerHTML =
+        "";
 
 
     if (!query) {
@@ -530,22 +546,13 @@ function searchFatherMembers() {
     }
 
 
-    /*
-       Search by:
-
-       1. Family ID
-       2. Name
-       3. Full combined text
-    */
-
     const results =
         members.filter(
             member => {
 
                 /*
-                   Do not allow the member
-                   to select himself as father
-                   while editing.
+                   Do not allow a member
+                   to select himself as father.
                 */
 
                 if (
@@ -561,13 +568,15 @@ function searchFatherMembers() {
 
                 const id =
                     String(
-                        member.id || ""
+                        member.id ||
+                        ""
                     ).toLowerCase();
 
 
                 const name =
                     String(
-                        member.name || ""
+                        member.name ||
+                        ""
                     ).toLowerCase();
 
 
@@ -582,10 +591,6 @@ function searchFatherMembers() {
             }
         );
 
-
-    /*
-       No result
-    */
 
     if (
         results.length === 0
@@ -609,10 +614,6 @@ function searchFatherMembers() {
 
     }
 
-
-    /*
-       Display results
-    */
 
     results.forEach(
         member => {
@@ -649,7 +650,9 @@ function searchFatherMembers() {
 
                     ${
                         member.generation !==
-                            undefined
+                            undefined &&
+                        member.generation !==
+                            null
                             ? ` • Generation ${
                                 escapeHtml(
                                     String(
@@ -711,8 +714,7 @@ function selectFather(
 
 
     /*
-       Store the actual ID
-       in hidden input.
+       Store actual Father ID.
     */
 
     fatherIdInput.value =
@@ -720,17 +722,13 @@ function selectFather(
 
 
     /*
-       Display name + ID
-       to administrator.
+       Display:
+       Name (ID)
     */
 
     fatherSearch.value =
         `${member.name || "Unnamed"} (${member.id})`;
 
-
-    /*
-       Hide suggestions.
-    */
 
     if (fatherSuggestions) {
 
@@ -744,8 +742,8 @@ function selectFather(
 
 
     /*
-       Do not automatically change
-       Family ID while editing.
+       When editing, don't automatically
+       change the Family ID.
     */
 
     if (originalId) {
@@ -756,7 +754,7 @@ function selectFather(
 
 
     /*
-       Generate child ID.
+       Generate next child ID.
     */
 
     const nextId =
@@ -770,17 +768,14 @@ function selectFather(
 
 
     /*
-       Calculate generation.
-
-       Father generation 1
-       Child generation 2
+       Father generation + 1.
     */
 
     if (
         member.generation !==
-        undefined &&
+            undefined &&
         member.generation !==
-        null
+            null
     ) {
 
         generationInput.value =
@@ -790,12 +785,6 @@ function selectFather(
 
     }
     else {
-
-        /*
-           If father has no generation,
-           assume child is generation 2
-           only when appropriate.
-        */
 
         generationInput.value =
             "";
@@ -816,21 +805,17 @@ if (fatherSearch) {
         () => {
 
             /*
-               If user changes the search text
-               after selecting a father, clear
-               the actual father ID.
-
-               This prevents accidentally saving
-               an old father ID.
+               If search text changes,
+               remove previously selected father.
             */
 
             fatherIdInput.value =
                 "";
 
+
             /*
-               For a new member, typing a new
-               father search should clear the
-               automatically generated ID.
+               For a new member, clear
+               generated ID and generation.
             */
 
             if (!originalId) {
@@ -950,7 +935,9 @@ function generateNextChildId(
 
 
     const parentId =
-        String(fatherId);
+        String(
+            fatherId
+        );
 
 
     const childIds =
@@ -1036,9 +1023,7 @@ function buildNewMemberData() {
     const data = {};
 
 
-    /*
-       NAME
-    */
+    /* NAME */
 
     const name =
         nameInput.value.trim();
@@ -1052,9 +1037,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       RELATION
-    */
+    /* RELATION */
 
     const relation =
         relationInput.value.trim();
@@ -1068,9 +1051,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       FATHER
-    */
+    /* FATHER */
 
     const selectedFatherId =
         fatherIdInput
@@ -1086,9 +1067,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       MOTHER
-    */
+    /* MOTHER */
 
     if (
         motherSelect &&
@@ -1101,9 +1080,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       SPOUSE
-    */
+    /* SPOUSE */
 
     if (
         spouseSelect &&
@@ -1116,9 +1093,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       GENERATION
-    */
+    /* GENERATION */
 
     if (
         generationInput.value.trim()
@@ -1132,9 +1107,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       BIRTH YEAR
-    */
+    /* BIRTH YEAR */
 
     if (
         birthYearInput.value.trim()
@@ -1148,9 +1121,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       DEATH YEAR
-    */
+    /* DEATH YEAR */
 
     if (
         deathYearInput.value.trim()
@@ -1164,9 +1135,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       IMAGE
-    */
+    /* IMAGE */
 
     const image =
         imageInput.value.trim();
@@ -1180,9 +1149,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       BIOGRAPHY
-    */
+    /* BIOGRAPHY */
 
     const biography =
         biographyInput.value.trim();
@@ -1196,9 +1163,7 @@ function buildNewMemberData() {
     }
 
 
-    /*
-       CREATED ONLY ONCE
-    */
+    /* TIMESTAMPS */
 
     data.createdAt =
         serverTimestamp();
@@ -1222,9 +1187,7 @@ function buildUpdateData() {
     const data = {};
 
 
-    /*
-       NAME
-    */
+    /* NAME */
 
     const name =
         nameInput.value.trim();
@@ -1244,9 +1207,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       RELATION
-    */
+    /* RELATION */
 
     const relation =
         relationInput.value.trim();
@@ -1266,9 +1227,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       FATHER
-    */
+    /* FATHER */
 
     const selectedFatherId =
         fatherIdInput
@@ -1290,9 +1249,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       MOTHER
-    */
+    /* MOTHER */
 
     if (
         motherSelect &&
@@ -1311,9 +1268,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       SPOUSE
-    */
+    /* SPOUSE */
 
     if (
         spouseSelect &&
@@ -1332,9 +1287,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       GENERATION
-    */
+    /* GENERATION */
 
     if (
         generationInput.value.trim()
@@ -1354,9 +1307,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       BIRTH YEAR
-    */
+    /* BIRTH YEAR */
 
     if (
         birthYearInput.value.trim()
@@ -1376,9 +1327,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       DEATH YEAR
-    */
+    /* DEATH YEAR */
 
     if (
         deathYearInput.value.trim()
@@ -1398,9 +1347,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       IMAGE
-    */
+    /* IMAGE */
 
     const image =
         imageInput.value.trim();
@@ -1420,9 +1367,7 @@ function buildUpdateData() {
     }
 
 
-    /*
-       BIOGRAPHY
-    */
+    /* BIOGRAPHY */
 
     const biography =
         biographyInput.value.trim();
@@ -1443,7 +1388,7 @@ function buildUpdateData() {
 
 
     /*
-       CREATED AT IS NOT TOUCHED.
+       createdAt is never changed.
     */
 
     data.updatedAt =
@@ -1472,9 +1417,7 @@ if (form) {
                 memberIdInput.value.trim();
 
 
-            /*
-               Validate ID.
-            */
+            /* VALIDATE ID */
 
             if (
                 !/^[0-9]+$/.test(
@@ -1492,9 +1435,7 @@ if (form) {
             }
 
 
-            /*
-               Validate name.
-            */
+            /* VALIDATE NAME */
 
             if (
                 !nameInput.value.trim()
@@ -1513,9 +1454,9 @@ if (form) {
             /*
                Validate Father selection.
 
-               If the administrator typed
-               something but did not select
-               a real father, prevent saving.
+               If something is typed but
+               no actual father was selected,
+               prevent saving.
             */
 
             if (
@@ -1535,9 +1476,7 @@ if (form) {
             }
 
 
-            /*
-               Duplicate ID check.
-            */
+            /* DUPLICATE ID */
 
             const duplicate =
                 members.find(
@@ -1594,10 +1533,6 @@ if (form) {
                         data
                     );
 
-
-                    /*
-                       ACTIVITY LOG
-                    */
 
                     await logActivity({
 
@@ -1668,7 +1603,7 @@ if (form) {
 
 
                         /*
-                           Calculate changes BEFORE
+                           Calculate changes before
                            updating Firestore.
                         */
 
@@ -1687,10 +1622,6 @@ if (form) {
                             updateData
                         );
 
-
-                        /*
-                           ACTIVITY LOG
-                        */
 
                         await logActivity({
 
@@ -1730,10 +1661,6 @@ if (form) {
 
                     else {
 
-                        /*
-                           Make sure new ID doesn't exist.
-                        */
-
                         const alreadyExists =
                             members.some(
                                 member =>
@@ -1752,10 +1679,6 @@ if (form) {
 
                         }
 
-
-                        /*
-                           Build clean new document.
-                        */
 
                         const newData =
                             buildNewMemberData();
@@ -1790,7 +1713,7 @@ if (form) {
 
 
                         /*
-                           Update references first.
+                           Update all references.
                         */
 
                         await updateReferences(
@@ -1811,10 +1734,6 @@ if (form) {
                             )
                         );
 
-
-                        /*
-                           ACTIVITY LOG
-                        */
 
                         await logActivity({
 
@@ -1902,23 +1821,14 @@ function getChangedFields(
     const fields = [
 
         "name",
-
         "relation",
-
         "fatherId",
-
         "motherId",
-
         "spouseId",
-
         "generation",
-
         "birthYear",
-
         "deathYear",
-
         "image",
-
         "biography"
 
     ];
@@ -2059,7 +1969,9 @@ function buildCreatedMemberDetails(
     );
 
 
-    if (data.fatherId) {
+    if (
+        data.fatherId
+    ) {
 
         const father =
             getMemberById(
@@ -2076,7 +1988,9 @@ function buildCreatedMemberDetails(
     }
 
 
-    if (data.generation) {
+    if (
+        data.generation
+    ) {
 
         details.push(
             `Generation: ${data.generation}`
@@ -2085,7 +1999,9 @@ function buildCreatedMemberDetails(
     }
 
 
-    if (data.relation) {
+    if (
+        data.relation
+    ) {
 
         details.push(
             `Relation: ${data.relation}`
@@ -2171,23 +2087,14 @@ function buildChangedDetailsForIdChange(
     const fields = [
 
         "name",
-
         "relation",
-
         "fatherId",
-
         "motherId",
-
         "spouseId",
-
         "generation",
-
         "birthYear",
-
         "deathYear",
-
         "image",
-
         "biography"
 
     ];
@@ -2250,15 +2157,13 @@ function buildChangedDetailsForIdChange(
    UPDATE ALL REFERENCES
    =========================================================
 
-   Example:
-
-   Before:
+   If:
 
    11
    ├── 111
    └── 112
 
-   If 11 becomes 13:
+   changes to 13:
 
    111 fatherId = 13
    112 fatherId = 13
@@ -2358,6 +2263,353 @@ async function updateReferences(
 
 
 /* =========================================================
+   FIRESTORE FAMILY MEMBERS SEARCH
+   ========================================================= */
+
+/*
+   Build one searchable text string for every member.
+
+   Search supports:
+
+   - Family ID
+   - Name
+   - Relation
+   - Father ID
+   - Father Name
+   - Mother ID
+   - Mother Name
+   - Spouse ID
+   - Spouse Name
+   - Generation
+   - Birth Year
+   - Death Year
+*/
+
+function getFamilyMemberSearchText(
+    member
+) {
+
+    const father =
+        getMemberById(
+            member.fatherId
+        );
+
+
+    const mother =
+        getMemberById(
+            member.motherId
+        );
+
+
+    const spouse =
+        getMemberById(
+            member.spouseId
+        );
+
+
+    return [
+
+        member.id,
+
+        member.name,
+
+        member.relation,
+
+        member.fatherId,
+
+        member.motherId,
+
+        member.spouseId,
+
+        member.generation,
+
+        member.birthYear,
+
+        member.deathYear,
+
+        father?.name,
+
+        mother?.name,
+
+        spouse?.name
+
+    ]
+        .filter(
+            value =>
+                value !==
+                    undefined &&
+                value !==
+                    null
+        )
+        .join(" ")
+        .toLowerCase();
+
+}
+
+
+/* =========================================================
+   UPDATE SEARCH INFORMATION
+   ========================================================= */
+
+function updateFamilySearchInfo(
+    visibleCount,
+    totalCount,
+    query
+) {
+
+    if (!familySearchInfo) {
+
+        return;
+
+    }
+
+
+    if (!query) {
+
+        familySearchInfo.textContent =
+            `Showing all ${totalCount} family member${
+                totalCount === 1
+                    ? ""
+                    : "s"
+            }`;
+
+        return;
+
+    }
+
+
+    familySearchInfo.textContent =
+        `Showing ${visibleCount} of ${totalCount} members`;
+
+}
+
+
+/* =========================================================
+   FILTER FIRESTORE FAMILY MEMBERS
+   ========================================================= */
+
+function filterFamilyMembers() {
+
+    if (!familyList) {
+
+        return;
+
+    }
+
+
+    const query =
+        familySearch
+            ? familySearch.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const cards =
+        familyList.querySelectorAll(
+            ".manager-item"
+        );
+
+
+    let visibleCount =
+        0;
+
+
+    cards.forEach(
+        card => {
+
+            const searchText =
+                card.dataset.searchText ||
+                "";
+
+
+            const matches =
+                !query ||
+                searchText.includes(
+                    query
+                );
+
+
+            if (matches) {
+
+                card.style.display =
+                    "";
+
+                visibleCount++;
+
+            }
+            else {
+
+                card.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+
+    updateFamilySearchInfo(
+        visibleCount,
+        members.length,
+        query
+    );
+
+
+    /*
+       Remove / create no-result message.
+    */
+
+    let noResult =
+        familyList.querySelector(
+            ".family-search-no-result"
+        );
+
+
+    if (
+        query &&
+        visibleCount === 0 &&
+        cards.length > 0
+    ) {
+
+        if (!noResult) {
+
+            noResult =
+                document.createElement(
+                    "div"
+                );
+
+
+            noResult.className =
+                "family-search-no-result";
+
+
+            noResult.innerHTML = `
+
+                <i class="fa-solid fa-user-slash"></i>
+
+                <strong>
+                    No family member found
+                </strong>
+
+                <div>
+                    Try searching by name,
+                    Family ID, father,
+                    mother or relation.
+                </div>
+
+            `;
+
+
+            familyList.appendChild(
+                noResult
+            );
+
+        }
+
+
+        noResult.style.display =
+            "block";
+
+    }
+    else if (noResult) {
+
+        noResult.style.display =
+            "none";
+
+    }
+
+
+    /*
+       Show / hide clear button.
+    */
+
+    if (clearFamilySearch) {
+
+        clearFamilySearch.style.display =
+            query
+                ? "flex"
+                : "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   SEARCH INPUT EVENT
+   ========================================================= */
+
+if (familySearch) {
+
+    familySearch.addEventListener(
+        "input",
+        filterFamilyMembers
+    );
+
+
+    /*
+       ESC = clear search.
+    */
+
+    familySearch.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                familySearch.value =
+                    "";
+
+                filterFamilyMembers();
+
+                familySearch.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR SEARCH BUTTON
+   ========================================================= */
+
+if (clearFamilySearch) {
+
+    clearFamilySearch.addEventListener(
+        "click",
+        () => {
+
+            if (familySearch) {
+
+                familySearch.value =
+                    "";
+
+            }
+
+
+            filterFamilyMembers();
+
+
+            if (familySearch) {
+
+                familySearch.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    RENDER MEMBERS
    ========================================================= */
 
@@ -2369,6 +2621,10 @@ function renderMembers() {
 
     }
 
+
+    /*
+       Empty family.
+    */
 
     if (
         members.length === 0
@@ -2394,6 +2650,14 @@ function renderMembers() {
 
         `;
 
+
+        updateFamilySearchInfo(
+            0,
+            0,
+            ""
+        );
+
+
         return;
 
     }
@@ -2415,6 +2679,24 @@ function renderMembers() {
             card.className =
                 "manager-item";
 
+
+            /*
+               Store searchable text.
+
+               This allows the search to work
+               without making another Firestore
+               request.
+            */
+
+            card.dataset.searchText =
+                getFamilyMemberSearchText(
+                    member
+                );
+
+
+            /* =================================================
+               AVATAR
+               ================================================= */
 
             let avatar =
                 "👤";
@@ -2441,6 +2723,10 @@ function renderMembers() {
             }
 
 
+            /* =================================================
+               RELATIONSHIPS
+               ================================================= */
+
             const father =
                 getMemberById(
                     member.fatherId
@@ -2458,6 +2744,10 @@ function renderMembers() {
                     member.spouseId
                 );
 
+
+            /* =================================================
+               CARD
+               ================================================= */
 
             card.innerHTML = `
 
@@ -2591,6 +2881,19 @@ function renderMembers() {
 
     attachMemberButtons();
 
+
+    /*
+       Re-apply search after rendering.
+
+       This is important after:
+       - Add
+       - Edit
+       - Delete
+       - Firestore reload
+    */
+
+    filterFamilyMembers();
+
 }
 
 
@@ -2611,8 +2914,12 @@ function getMemberById(
 
     return members.find(
         member =>
-            String(member.id) ===
-            String(id)
+            String(
+                member.id
+            ) ===
+            String(
+                id
+            )
     ) || null;
 
 }
@@ -2711,14 +3018,9 @@ function editMember(
         "";
 
 
-    /*
+    /* =================================================
        FATHER
-
-       Store actual ID in hidden input.
-
-       Display:
-       Name (ID)
-    */
+       ================================================= */
 
     if (fatherIdInput) {
 
@@ -2731,7 +3033,9 @@ function editMember(
 
     if (fatherSearch) {
 
-        if (member.fatherId) {
+        if (
+            member.fatherId
+        ) {
 
             const father =
                 getMemberById(
@@ -2774,9 +3078,9 @@ function editMember(
     }
 
 
-    /*
+    /* =================================================
        MOTHER
-    */
+       ================================================= */
 
     if (motherSelect) {
 
@@ -2787,9 +3091,9 @@ function editMember(
     }
 
 
-    /*
+    /* =================================================
        SPOUSE
-    */
+       ================================================= */
 
     if (spouseSelect) {
 
@@ -2800,45 +3104,45 @@ function editMember(
     }
 
 
-    /*
+    /* =================================================
        GENERATION
-    */
+       ================================================= */
 
     generationInput.value =
         member.generation ??
         "";
 
 
-    /*
+    /* =================================================
        BIRTH YEAR
-    */
+       ================================================= */
 
     birthYearInput.value =
         member.birthYear ??
         "";
 
 
-    /*
+    /* =================================================
        DEATH YEAR
-    */
+       ================================================= */
 
     deathYearInput.value =
         member.deathYear ??
         "";
 
 
-    /*
+    /* =================================================
        IMAGE
-    */
+       ================================================= */
 
     imageInput.value =
         member.image ||
         "";
 
 
-    /*
+    /* =================================================
        BIOGRAPHY
-    */
+       ================================================= */
 
     biographyInput.value =
         member.biography ||
@@ -2908,7 +3212,7 @@ async function deleteMember(
 
 
     /*
-       Prevent deleting a father
+       Do not delete a father
        who still has children.
     */
 
@@ -2970,9 +3274,7 @@ async function deleteMember(
 
     try {
 
-        /*
-           Delete member.
-        */
+        /* DELETE MEMBER */
 
         await deleteDoc(
             doc(
@@ -2983,9 +3285,7 @@ async function deleteMember(
         );
 
 
-        /*
-           ACTIVITY LOG
-        */
+        /* ACTIVITY LOG */
 
         await logActivity({
 
@@ -3133,9 +3433,7 @@ function resetForm() {
         "";
 
 
-    /*
-       Clear hidden Father ID.
-    */
+    /* CLEAR HIDDEN FATHER ID */
 
     if (fatherIdInput) {
 
@@ -3145,9 +3443,7 @@ function resetForm() {
     }
 
 
-    /*
-       Clear Father search.
-    */
+    /* CLEAR FATHER SEARCH */
 
     if (fatherSearch) {
 
@@ -3157,9 +3453,7 @@ function resetForm() {
     }
 
 
-    /*
-       Hide suggestions.
-    */
+    /* HIDE FATHER SUGGESTIONS */
 
     if (fatherSuggestions) {
 
@@ -3197,6 +3491,22 @@ function resetForm() {
             "message";
 
     }
+
+
+    /*
+       Clear Firestore member search
+       when form is reset.
+    */
+
+    if (familySearch) {
+
+        familySearch.value =
+            "";
+
+    }
+
+
+    filterFamilyMembers();
 
 }
 

@@ -28,11 +28,16 @@
         href="./css/admin.css"
     >
 
-    
+
+    <!-- =====================================================
+         FONT AWESOME
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
+
 
     <!-- =====================================================
          PAGE-SPECIFIC CSS
@@ -88,6 +93,113 @@
             color: #80583d;
 
             line-height: 1.55;
+
+        }
+
+
+        /* =====================================================
+           FATHER SEARCH
+           ===================================================== */
+
+        .father-search-wrapper {
+
+            position: relative;
+
+        }
+
+
+        #fatherSearch {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+        }
+
+
+        .father-suggestions {
+
+            position: absolute;
+
+            left: 0;
+
+            right: 0;
+
+            top: calc(100% + 5px);
+
+            z-index: 1000;
+
+            display: none;
+
+            background: #fff;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.10);
+
+            max-height: 240px;
+
+            overflow-y: auto;
+
+        }
+
+
+        .father-suggestion {
+
+            padding: 12px 14px;
+
+            cursor: pointer;
+
+            border-bottom:
+                1px solid #eee5dc;
+
+        }
+
+
+        .father-suggestion:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .father-suggestion:hover {
+
+            background: #f6eee7;
+
+        }
+
+
+        .father-suggestion strong {
+
+            display: block;
+
+            color: #3d3028;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .father-suggestion small {
+
+            color: #8b7b6d;
+
+        }
+
+
+        .father-no-result {
+
+            padding: 15px;
+
+            text-align: center;
+
+            color: #8b7b6d;
+
+            font-size: 13px;
 
         }
 
@@ -174,6 +286,183 @@
         .message-info {
 
             color: #735b48;
+
+        }
+
+
+        /* =====================================================
+           FIRESTORE FAMILY SEARCH
+           ===================================================== */
+
+        .family-search-wrapper {
+
+            position: relative;
+
+            margin: 18px 0 8px;
+
+        }
+
+
+        .family-search-wrapper > i {
+
+            position: absolute;
+
+            left: 15px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            color: #8b7b6d;
+
+            font-size: 14px;
+
+            pointer-events: none;
+
+        }
+
+
+        #familySearch {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px 45px 13px 42px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            color: #3b3028;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+
+        }
+
+
+        #familySearch::placeholder {
+
+            color: #9a8b7e;
+
+        }
+
+
+        #familySearch:focus {
+
+            border-color: #b27a4a;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(178, 122, 74, 0.10);
+
+        }
+
+
+        .family-search-clear {
+
+            position: absolute;
+
+            right: 9px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            width: 30px;
+
+            height: 30px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: transparent;
+
+            color: #8b7b6d;
+
+            cursor: pointer;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .family-search-clear:hover {
+
+            background: #eee5dc;
+
+            color: #704a31;
+
+        }
+
+
+        .family-search-info {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            min-height: 18px;
+
+            margin-top: 6px;
+
+            padding: 0 2px;
+
+            font-size: 11px;
+
+            color: #8b7b6d;
+
+        }
+
+
+        .family-search-no-result {
+
+            padding: 35px 15px;
+
+            text-align: center;
+
+            color: #8b7b6d;
+
+        }
+
+
+        .family-search-no-result i {
+
+            display: block;
+
+            margin-bottom: 10px;
+
+            font-size: 24px;
+
+            color: #b27a4a;
+
+        }
+
+
+        .family-search-no-result strong {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #5a4433;
 
         }
 
@@ -343,16 +632,28 @@
 
         }
 
-        
-        .logout-button{
+
+        /* =====================================================
+           LOGOUT
+           ===================================================== */
+
+        .logout-button {
+
             color: red;
+
             height: 45px;
+
             font-size: 15px;
+
         }
 
-        .logout-button:hover{
+
+        .logout-button:hover {
+
             background-color: red;
+
             color: white;
+
         }
 
 
@@ -382,6 +683,17 @@
             .delete-member-button {
 
                 flex: 1;
+
+            }
+
+
+            #familySearch {
+
+                font-size: 14px;
+
+                padding-top: 14px;
+
+                padding-bottom: 14px;
 
             }
 
@@ -428,7 +740,6 @@
         </div>
 
 
-
         <!-- =================================================
              NAVIGATION
              ================================================= -->
@@ -457,7 +768,6 @@
                 </span>
 
             </a>
-
 
 
             <!-- CONTENT -->
@@ -531,7 +841,6 @@
             </a>
 
 
-
             <!-- MORE -->
 
             <div class="nav-section-title">
@@ -586,6 +895,7 @@
 
             </a>
 
+
             <!-- ADMIN -->
 
             <div class="nav-section-title">
@@ -595,7 +905,7 @@
 
             <a
                 href="./enquiries.html"
-                class="nav-item active"
+                class="nav-item"
             >
 
                 <span class="nav-icon">
@@ -625,7 +935,6 @@
             </a>
 
         </nav>
-
 
 
         <!-- =================================================
@@ -674,7 +983,6 @@
     </aside>
 
 
-
     <!-- =====================================================
          MAIN
          ===================================================== -->
@@ -709,7 +1017,6 @@
             </div>
 
 
-
             <!-- ADMIN -->
 
             <div class="admin-user">
@@ -737,13 +1044,11 @@
         </header>
 
 
-
         <!-- =================================================
              CONTENT
              ================================================= -->
 
         <section class="manager-layout">
-
 
 
             <!-- =================================================
@@ -763,7 +1068,6 @@
                             FAMILY MEMBER
                         </span>
 
-
                         <h2 id="formTitle">
                             Add Member
                         </h2>
@@ -773,13 +1077,11 @@
                 </div>
 
 
-
                 <!-- =================================================
                      FORM
                      ================================================= -->
 
                 <form id="familyForm">
-
 
 
                     <!-- =================================================
@@ -789,7 +1091,7 @@
                     <div class="form-group father-field">
 
 
-                        <label for="fatherId">
+                        <label for="fatherSearch">
 
                             Father ID
 
@@ -802,28 +1104,28 @@
 
                         <div class="father-search-wrapper">
 
-    <input
-        type="text"
-        id="fatherSearch"
-        placeholder="Search father by ID or name..."
-        autocomplete="off"
-    >
+                            <input
+                                type="text"
+                                id="fatherSearch"
+                                placeholder="Search father by ID or name..."
+                                autocomplete="off"
+                            >
 
-    <input
-        type="hidden"
-        id="fatherId"
-    >
 
-    <div
-        id="fatherSuggestions"
-        class="father-suggestions"
-    ></div>
+                            <input
+                                type="hidden"
+                                id="fatherId"
+                            >
 
-</div>
 
+                            <div
+                                id="fatherSuggestions"
+                                class="father-suggestions"
+                            ></div>
+
+                        </div>
 
                     </div>
-
 
 
                     <!-- =================================================
@@ -867,7 +1169,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          3. NAME
                          ================================================= -->
@@ -896,7 +1197,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          4. RELATION
                          ================================================= -->
@@ -918,7 +1218,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          5. MOTHER ID
                          ================================================= -->
@@ -934,13 +1233,12 @@
                         <select id="motherId">
 
                             <option value="">
-                                Select Mother
+                                None
                             </option>
 
                         </select>
 
                     </div>
-
 
 
                     <!-- =================================================
@@ -958,13 +1256,12 @@
                         <select id="spouseId">
 
                             <option value="">
-                                Select Spouse
+                                None
                             </option>
 
                         </select>
 
                     </div>
-
 
 
                     <!-- =================================================
@@ -1003,7 +1300,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          8. BIRTH YEAR
                          ================================================= -->
@@ -1023,7 +1319,6 @@
                         >
 
                     </div>
-
 
 
                     <!-- =================================================
@@ -1047,7 +1342,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          10. IMAGE URL
                          ================================================= -->
@@ -1067,7 +1361,6 @@
                         >
 
                     </div>
-
 
 
                     <!-- =================================================
@@ -1091,7 +1384,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          ACTIONS
                          ================================================= -->
@@ -1104,7 +1396,9 @@
                             class="primary-button"
                             id="saveButton"
                         >
+
                             Save Member
+
                         </button>
 
 
@@ -1113,11 +1407,12 @@
                             class="secondary-button"
                             id="cancelButton"
                         >
+
                             Cancel
+
                         </button>
 
                     </div>
-
 
 
                     <!-- =================================================
@@ -1133,7 +1428,6 @@
                 </form>
 
             </div>
-
 
 
             <!-- =================================================
@@ -1169,6 +1463,53 @@
                 </div>
 
 
+                <!-- =================================================
+                     FIRESTORE SEARCH
+                     ================================================= -->
+
+                <div class="family-search-wrapper">
+
+
+                    <i
+                        class="fa-solid fa-magnifying-glass"
+                    ></i>
+
+
+                    <input
+                        type="search"
+                        id="familySearch"
+                        placeholder="Search family members by name, ID or father..."
+                        autocomplete="off"
+                    >
+
+
+                    <button
+                        type="button"
+                        id="clearFamilySearch"
+                        class="family-search-clear"
+                        aria-label="Clear search"
+                        title="Clear search"
+                    >
+
+                        <i
+                            class="fa-solid fa-xmark"
+                        ></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- SEARCH INFORMATION -->
+
+                <div class="family-search-info">
+
+                    <span id="familySearchInfo">
+                        Showing all family members
+                    </span>
+
+                </div>
+
 
                 <!-- =================================================
                      FAMILY LIST
@@ -1188,7 +1529,6 @@
 
 
         </section>
-
 
 
         <!-- =====================================================
@@ -1212,7 +1552,6 @@
 
 
     </main>
-
 
 
     <!-- =====================================================
