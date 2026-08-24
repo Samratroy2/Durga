@@ -1,7 +1,11 @@
 /* =========================================================
-   ROY BARI — GALLERY ADMIN
-   FIRESTORE: gallery
-   ACTIVITY HISTORY: activityLogs
+   ROY BARI — GALLERY + VIDEOS ADMIN
+   FIRESTORE:
+   gallery
+   videos
+
+   ACTIVITY:
+   activityLogs
    ========================================================= */
 
 
@@ -74,6 +78,9 @@ const descriptionInput =
 const categoryInput =
     document.getElementById("category");
 
+const categoryGroup =
+    document.getElementById("categoryGroup");
+
 const galleryList =
     document.getElementById("galleryList");
 
@@ -82,6 +89,9 @@ const galleryCount =
 
 const formTitle =
     document.getElementById("formTitle");
+
+const formEyebrow =
+    document.getElementById("formEyebrow");
 
 const saveButton =
     document.getElementById("saveButton");
@@ -98,12 +108,47 @@ const logoutButton =
 const adminEmail =
     document.getElementById("adminEmail");
 
+const userAvatar =
+    document.getElementById("userAvatar");
+
+const galleryTab =
+    document.getElementById("galleryTab");
+
+const videosTab =
+    document.getElementById("videosTab");
+
+const pageTitle =
+    document.getElementById("pageTitle");
+
+const pageDescription =
+    document.getElementById("pageDescription");
+
+const listTitle =
+    document.getElementById("listTitle");
+
+const linkLabel =
+    document.getElementById("linkLabel");
+
+const linkHelp =
+    document.getElementById("linkHelp");
+
 
 /* =========================================================
    DATA
    ========================================================= */
 
-let gallery = [];
+let items = [];
+
+
+/*
+   Current Firestore collection.
+
+   Default:
+   gallery
+*/
+
+let currentCollection =
+    "gallery";
 
 
 /* =========================================================
@@ -134,17 +179,267 @@ onAuthStateChanged(
         }
 
 
-        await loadGallery();
+        if (userAvatar) {
+
+            userAvatar.textContent =
+                (
+                    user.email ||
+                    "A"
+                )
+                    .charAt(0)
+                    .toUpperCase();
+
+        }
+
+
+        await loadItems();
 
     }
 );
 
 
 /* =========================================================
-   LOAD GALLERY
+   SWITCH COLLECTION — GALLERY
    ========================================================= */
 
-async function loadGallery() {
+if (galleryTab) {
+
+    galleryTab.addEventListener(
+        "click",
+        async () => {
+
+            if (
+                currentCollection ===
+                "gallery"
+            ) {
+
+                return;
+
+            }
+
+
+            currentCollection =
+                "gallery";
+
+
+            updatePageMode();
+
+
+            resetForm();
+
+
+            await loadItems();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SWITCH COLLECTION — VIDEOS
+   ========================================================= */
+
+if (videosTab) {
+
+    videosTab.addEventListener(
+        "click",
+        async () => {
+
+            if (
+                currentCollection ===
+                "videos"
+            ) {
+
+                return;
+
+            }
+
+
+            currentCollection =
+                "videos";
+
+
+            updatePageMode();
+
+
+            resetForm();
+
+
+            await loadItems();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE PAGE MODE
+   ========================================================= */
+
+function updatePageMode() {
+
+    const isGallery =
+        currentCollection ===
+        "gallery";
+
+
+    /* =====================================================
+       TABS
+       ===================================================== */
+
+    if (galleryTab) {
+
+        galleryTab.classList.toggle(
+            "active",
+            isGallery
+        );
+
+    }
+
+
+    if (videosTab) {
+
+        videosTab.classList.toggle(
+            "active",
+            !isGallery
+        );
+
+    }
+
+
+    /* =====================================================
+       PAGE TITLE
+       ===================================================== */
+
+    if (pageTitle) {
+
+        pageTitle.textContent =
+            isGallery
+                ? "Gallery"
+                : "Videos";
+
+    }
+
+
+    if (pageDescription) {
+
+        pageDescription.textContent =
+            isGallery
+                ? "Manage photographs and visual memories."
+                : "Manage family videos and visual memories.";
+
+    }
+
+
+    /* =====================================================
+       FORM
+       ===================================================== */
+
+    if (formEyebrow) {
+
+        formEyebrow.textContent =
+            isGallery
+                ? "PHOTO"
+                : "VIDEO";
+
+    }
+
+
+    if (formTitle) {
+
+        formTitle.textContent =
+            isGallery
+                ? "Add Photograph"
+                : "Add Video";
+
+    }
+
+
+    if (linkLabel) {
+
+        linkLabel.textContent =
+            isGallery
+                ? "Image URL *"
+                : "Video URL *";
+
+    }
+
+
+    if (imageInput) {
+
+        imageInput.placeholder =
+            isGallery
+                ? "https://drive.google.com/..."
+                : "https://drive.google.com/...";
+
+    }
+
+
+    if (linkHelp) {
+
+        linkHelp.textContent =
+            isGallery
+                ? "Google Drive image links are supported."
+                : "Google Drive video links are supported.";
+
+    }
+
+
+    /* =====================================================
+       CATEGORY
+       ===================================================== */
+
+    if (categoryGroup) {
+
+        categoryGroup.style.display =
+            isGallery
+                ? "flex"
+                : "none";
+
+    }
+
+
+    /* =====================================================
+       LIST TITLE
+       ===================================================== */
+
+    if (listTitle) {
+
+        listTitle.textContent =
+            isGallery
+                ? "Gallery"
+                : "Videos";
+
+    }
+
+
+    updateCount();
+
+}
+
+
+/* =========================================================
+   LOAD CURRENT COLLECTION
+   ========================================================= */
+
+async function loadItems() {
+
+    if (galleryList) {
+
+        galleryList.innerHTML = `
+
+            <div class="gallery-loading">
+                Loading ${currentCollection === "gallery"
+                    ? "gallery"
+                    : "videos"}...
+            </div>
+
+        `;
+
+    }
+
 
     try {
 
@@ -152,18 +447,18 @@ async function loadGallery() {
             await getDocs(
                 collection(
                     db,
-                    "gallery"
+                    currentCollection
                 )
             );
 
 
-        gallery = [];
+        items = [];
 
 
         snapshot.forEach(
             item => {
 
-                gallery.push({
+                items.push({
 
                     id:
                         item.id,
@@ -176,25 +471,16 @@ async function loadGallery() {
         );
 
 
-        if (galleryCount) {
-
-            galleryCount.textContent =
-                `${gallery.length} photo${
-                    gallery.length === 1
-                        ? ""
-                        : "s"
-                }`;
-
-        }
+        updateCount();
 
 
-        renderGallery();
+        renderItems();
 
     }
     catch (error) {
 
         console.error(
-            "Gallery loading error:",
+            "Collection loading error:",
             error
         );
 
@@ -204,7 +490,11 @@ async function loadGallery() {
             galleryList.innerHTML = `
 
                 <p class="message error">
-                    Unable to load gallery.
+                    Unable to load ${
+                        currentCollection === "gallery"
+                            ? "gallery"
+                            : "videos"
+                    }.
                 </p>
 
             `;
@@ -217,10 +507,42 @@ async function loadGallery() {
 
 
 /* =========================================================
-   CONVERT GOOGLE DRIVE URL
+   UPDATE COUNT
    ========================================================= */
 
-function convertGoogleDriveUrl(url) {
+function updateCount() {
+
+    if (!galleryCount) {
+
+        return;
+
+    }
+
+
+    const count =
+        items.length;
+
+
+    const label =
+        currentCollection ===
+        "gallery"
+            ? "photo"
+            : "video";
+
+
+    galleryCount.textContent =
+        `${count} ${label}${count === 1 ? "" : "s"}`;
+
+}
+
+
+/* =========================================================
+   GOOGLE DRIVE URL CONVERTER
+   ========================================================= */
+
+function convertGoogleDriveUrl(
+    url
+) {
 
     if (!url) {
 
@@ -256,7 +578,10 @@ function convertGoogleDriveUrl(url) {
             fileMatch[1];
 
 
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+        return (
+            "https://drive.google.com/thumbnail" +
+            `?id=${fileId}&sz=w800`
+        );
 
     }
 
@@ -288,7 +613,10 @@ function convertGoogleDriveUrl(url) {
             )
         ) {
 
-            return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+            return (
+                "https://drive.google.com/thumbnail" +
+                `?id=${id}&sz=w800`
+            );
 
         }
 
@@ -296,7 +624,7 @@ function convertGoogleDriveUrl(url) {
     catch (error) {
 
         console.warn(
-            "Invalid image URL:",
+            "Invalid URL:",
             value
         );
 
@@ -304,7 +632,7 @@ function convertGoogleDriveUrl(url) {
 
 
     /*
-       Normal image URL
+       Normal URL
     */
 
     return value;
@@ -313,10 +641,10 @@ function convertGoogleDriveUrl(url) {
 
 
 /* =========================================================
-   RENDER GALLERY
+   RENDER ITEMS
    ========================================================= */
 
-function renderGallery() {
+function renderItems() {
 
     if (!galleryList) {
 
@@ -325,22 +653,45 @@ function renderGallery() {
     }
 
 
-    if (!gallery.length) {
+    if (!items.length) {
+
+        const isGallery =
+            currentCollection ===
+            "gallery";
+
 
         galleryList.innerHTML = `
 
             <div class="empty-state">
 
                 <div class="empty-icon">
-                    📷
+
+                    ${
+                        isGallery
+                            ? "📷"
+                            : "🎬"
+                    }
+
                 </div>
 
                 <h3>
-                    No photographs yet
+
+                    ${
+                        isGallery
+                            ? "No photographs yet"
+                            : "No videos yet"
+                    }
+
                 </h3>
 
                 <p>
-                    Add the first photograph.
+
+                    ${
+                        isGallery
+                            ? "Add the first photograph."
+                            : "Add the first video."
+                    }
+
                 </p>
 
             </div>
@@ -356,7 +707,7 @@ function renderGallery() {
         "";
 
 
-    gallery.forEach(
+    items.forEach(
         item => {
 
             const card =
@@ -369,66 +720,197 @@ function renderGallery() {
                 "manager-item";
 
 
-            /*
-               IMPORTANT
-
-               Your Firestore screenshot shows
-               the image URL is stored in:
-
-               link
-
-               So we use item.link first.
-
-               item.image is also supported
-               for older documents.
-            */
-
-            const originalImageUrl =
+            const originalUrl =
                 item.link ||
                 item.image ||
                 "";
 
 
-            const imageUrl =
-                convertGoogleDriveUrl(
-                    originalImageUrl
-                );
+            /*
+               GALLERY
+            */
+
+            let mediaHTML = "";
+
+
+            if (
+                currentCollection ===
+                "gallery"
+            ) {
+
+                const imageUrl =
+                    convertGoogleDriveUrl(
+                        originalUrl
+                    );
+
+
+                if (imageUrl) {
+
+                    mediaHTML = `
+
+                        <div
+                            class="manager-avatar gallery-thumbnail"
+                            title="Gallery photograph"
+                        >
+
+                            <img
+                                src="${escapeHtml(
+                                    imageUrl
+                                )}"
+                                alt="${escapeHtml(
+                                    item.title ||
+                                    "Photograph"
+                                )}"
+                                loading="lazy"
+                                onerror="
+                                    this.onerror=null;
+                                    this.style.display='none';
+                                    this.parentElement.innerHTML='<span>📷</span>';
+                                "
+                            >
+
+                        </div>
+
+                    `;
+
+                }
+                else {
+
+                    mediaHTML = `
+
+                        <div
+                            class="manager-avatar gallery-thumbnail"
+                            title="Gallery photograph"
+                        >
+
+                            <span>
+                                📷
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }
+
+            }
 
 
             /*
-               IMAGE HTML
+            VIDEOS
+            Show Google Drive video thumbnail
             */
 
-            const imageHTML =
-                imageUrl
+            else {
 
-                    ? `
+                const videoThumbnail =
+                    convertGoogleDriveUrl(
+                        originalUrl
+                    );
 
-                        <img
-                            src="${escapeHtml(
-                                imageUrl
-                            )}"
-                            alt="${escapeHtml(
-                                item.title ||
-                                "Photograph"
-                            )}"
-                            loading="lazy"
-                            onerror="
-                                this.onerror=null;
-                                this.style.display='none';
-                                this.parentElement.classList.add('image-error');
-                            "
+
+                if (videoThumbnail) {
+
+                    mediaHTML = `
+
+                        <div
+                            class="manager-avatar gallery-thumbnail video-thumbnail"
+                            title="Video thumbnail"
                         >
 
-                      `
+                            <img
+                                src="${escapeHtml(
+                                    videoThumbnail
+                                )}"
+                                alt="${escapeHtml(
+                                    item.title ||
+                                    "Video"
+                                )}"
+                                loading="lazy"
+                                onerror="
+                                    this.onerror=null;
+                                    this.style.display='none';
+                                    this.parentElement.innerHTML='<span><i class=&quot;fa-solid fa-video&quot;></i></span>';
+                                "
+                            >
 
-                    : `
+                        </div>
 
-                        <span>
-                            📷
-                        </span>
+                    `;
 
-                      `;
+                }
+
+                else {
+
+                    mediaHTML = `
+
+                        <div
+                            class="manager-avatar gallery-thumbnail video-thumbnail"
+                            title="Video"
+                        >
+
+                            <span>
+                                <i class="fa-solid fa-video"></i>
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }
+
+            }
+
+
+            /*
+               CATEGORY / YEAR
+            */
+
+            let metaText = "";
+
+
+            if (
+                currentCollection ===
+                "gallery"
+            ) {
+
+                if (item.category) {
+
+                    metaText =
+                        escapeHtml(
+                            item.category
+                        );
+
+                }
+
+
+                if (item.year) {
+
+                    metaText +=
+                        metaText
+                            ? " · " +
+                              escapeHtml(
+                                  item.year
+                              )
+                            : escapeHtml(
+                                item.year
+                            );
+
+                }
+
+            }
+            else {
+
+                if (item.year) {
+
+                    metaText =
+                        escapeHtml(
+                            item.year
+                        );
+
+                }
+
+            }
 
 
             card.innerHTML = `
@@ -436,23 +918,8 @@ function renderGallery() {
                 <div class="manager-item-main">
 
 
-                    <!-- =================================================
-                         SQUARE IMAGE
-                         ================================================= -->
+                    ${mediaHTML}
 
-                    <div
-                        class="manager-avatar gallery-thumbnail"
-                        title="Gallery photograph"
-                    >
-
-                        ${imageHTML}
-
-                    </div>
-
-
-                    <!-- =================================================
-                         DETAILS
-                         ================================================= -->
 
                     <div>
 
@@ -460,7 +927,12 @@ function renderGallery() {
 
                             ${escapeHtml(
                                 item.title ||
-                                "Untitled"
+                                (
+                                    currentCollection ===
+                                    "gallery"
+                                        ? "Untitled Photograph"
+                                        : "Untitled Video"
+                                )
                             )}
 
                         </h3>
@@ -468,19 +940,7 @@ function renderGallery() {
 
                         <span>
 
-                            ${escapeHtml(
-                                item.category ||
-                                ""
-                            )}
-
-                            ${
-                                item.year
-                                    ? " · " +
-                                      escapeHtml(
-                                          item.year
-                                      )
-                                    : ""
-                            }
+                            ${metaText}
 
                         </span>
 
@@ -498,10 +958,6 @@ function renderGallery() {
 
                 </div>
 
-
-                <!-- =================================================
-                     ACTIONS
-                     ================================================= -->
 
                 <div class="manager-actions">
 
@@ -545,7 +1001,7 @@ function renderGallery() {
     );
 
 
-    attachGalleryButtons();
+    attachButtons();
 
 }
 
@@ -554,7 +1010,7 @@ function renderGallery() {
    BUTTON EVENTS
    ========================================================= */
 
-function attachGalleryButtons() {
+function attachButtons() {
 
 
     document
@@ -568,7 +1024,7 @@ function attachGalleryButtons() {
                     "click",
                     () => {
 
-                        editGallery(
+                        editItem(
                             button.dataset.id
                         );
 
@@ -590,7 +1046,7 @@ function attachGalleryButtons() {
                     "click",
                     () => {
 
-                        deleteGallery(
+                        deleteItem(
                             button.dataset.id
                         );
 
@@ -604,7 +1060,7 @@ function attachGalleryButtons() {
 
 
 /* =========================================================
-   SAVE GALLERY
+   SAVE
    ========================================================= */
 
 if (form) {
@@ -616,6 +1072,11 @@ if (form) {
             event.preventDefault();
 
 
+            const isGallery =
+                currentCollection ===
+                "gallery";
+
+
             if (saveButton) {
 
                 saveButton.disabled =
@@ -623,21 +1084,27 @@ if (form) {
 
                 saveButton.textContent =
                     galleryId.value
-                        ? "Updating..."
-                        : "Saving...";
+                        ? (
+                            isGallery
+                                ? "Updating..."
+                                : "Updating..."
+                          )
+                        : (
+                            isGallery
+                                ? "Saving..."
+                                : "Saving..."
+                          );
 
             }
 
 
             try {
 
-
-                /* =================================================
+                /*
                    ADD
-                   ================================================= */
+                */
 
                 if (!galleryId.value) {
-
 
                     const data = {
 
@@ -651,28 +1118,11 @@ if (form) {
                                 )
                                 : null,
 
-
-                        /*
-                           Save URL in BOTH fields.
-
-                           "link" is the field used by
-                           your current Firestore documents.
-
-                           "image" keeps compatibility
-                           with your existing code.
-                        */
-
                         link:
-                            imageInput.value.trim(),
-
-                        image:
                             imageInput.value.trim(),
 
                         description:
                             descriptionInput.value.trim(),
-
-                        category:
-                            categoryInput.value.trim(),
 
                         createdAt:
                             serverTimestamp(),
@@ -683,11 +1133,28 @@ if (form) {
                     };
 
 
+                    /*
+                       Gallery has image + category.
+
+                       Videos only use link.
+                    */
+
+                    if (isGallery) {
+
+                        data.image =
+                            imageInput.value.trim();
+
+                        data.category =
+                            categoryInput.value.trim();
+
+                    }
+
+
                     const newDocument =
                         await addDoc(
                             collection(
                                 db,
-                                "gallery"
+                                currentCollection
                             ),
                             data
                         );
@@ -699,14 +1166,18 @@ if (form) {
                             "created",
 
                         collectionName:
-                            "gallery",
+                            currentCollection,
 
                         documentId:
                             newDocument.id,
 
                         title:
                             data.title ||
-                            "Untitled Photograph",
+                            (
+                                isGallery
+                                    ? "Untitled Photograph"
+                                    : "Untitled Video"
+                            ),
 
                         details:
                             buildCreatedDetails(
@@ -718,22 +1189,23 @@ if (form) {
 
 
                     showMessage(
-                        "Photograph added successfully.",
+                        isGallery
+                            ? "Photograph added successfully."
+                            : "Video added successfully.",
                         "success"
                     );
 
                 }
 
 
-                /* =================================================
+                /*
                    UPDATE
-                   ================================================= */
+                */
 
                 else {
 
-
                     const oldItem =
-                        gallery.find(
+                        items.find(
                             item =>
                                 item.id ===
                                 galleryId.value
@@ -743,7 +1215,9 @@ if (form) {
                     if (!oldItem) {
 
                         throw new Error(
-                            "Photograph not found."
+                            isGallery
+                                ? "Photograph not found."
+                                : "Video not found."
                         );
 
                     }
@@ -764,19 +1238,24 @@ if (form) {
                         link:
                             imageInput.value.trim(),
 
-                        image:
-                            imageInput.value.trim(),
-
                         description:
                             descriptionInput.value.trim(),
-
-                        category:
-                            categoryInput.value.trim(),
 
                         updatedAt:
                             serverTimestamp()
 
                     };
+
+
+                    if (isGallery) {
+
+                        newData.image =
+                            imageInput.value.trim();
+
+                        newData.category =
+                            categoryInput.value.trim();
+
+                    }
 
 
                     const changes =
@@ -789,7 +1268,7 @@ if (form) {
                     await updateDoc(
                         doc(
                             db,
-                            "gallery",
+                            currentCollection,
                             galleryId.value
                         ),
                         newData
@@ -802,27 +1281,37 @@ if (form) {
                             "updated",
 
                         collectionName:
-                            "gallery",
+                            currentCollection,
 
                         documentId:
                             galleryId.value,
 
                         title:
                             newData.title ||
-                            "Untitled Photograph",
+                            (
+                                isGallery
+                                    ? "Untitled Photograph"
+                                    : "Untitled Video"
+                            ),
 
                         details:
                             changes.length
                                 ? formatChanges(
                                     changes
                                   )
-                                : "Photograph saved without changing the main fields."
+                                : (
+                                    isGallery
+                                        ? "Photograph saved without changing the main fields."
+                                        : "Video saved without changing the main fields."
+                                  )
 
                     });
 
 
                     showMessage(
-                        "Photograph updated successfully.",
+                        isGallery
+                            ? "Photograph updated successfully."
+                            : "Video updated successfully.",
                         "success"
                     );
 
@@ -831,20 +1320,21 @@ if (form) {
 
                 resetForm();
 
-                await loadGallery();
+
+                await loadItems();
 
             }
             catch (error) {
 
                 console.error(
-                    "Gallery save error:",
+                    "Save error:",
                     error
                 );
 
 
                 showMessage(
                     error.message ||
-                    "Unable to save photograph.",
+                    "Unable to save item.",
                     "error"
                 );
 
@@ -857,7 +1347,10 @@ if (form) {
                     false;
 
                 saveButton.textContent =
-                    "Save Photograph";
+                    currentCollection ===
+                    "gallery"
+                        ? "Save Photograph"
+                        : "Save Video";
 
             }
 
@@ -879,16 +1372,25 @@ function getChangedFields(
     const changes = [];
 
 
-    const fields = [
+    const fields =
+        currentCollection ===
+        "gallery"
 
-        "title",
-        "year",
-        "link",
-        "image",
-        "description",
-        "category"
+            ? [
+                "title",
+                "year",
+                "link",
+                "image",
+                "description",
+                "category"
+            ]
 
-    ];
+            : [
+                "title",
+                "year",
+                "link",
+                "description"
+            ];
 
 
     fields.forEach(
@@ -967,7 +1469,9 @@ function formatChanges(
                         );
 
 
-                return `${field}: "${oldValue}" → "${newValue}"`;
+                return (
+                    `${field}: "${oldValue}" → "${newValue}"`
+                );
 
             }
         )
@@ -991,7 +1495,11 @@ function buildCreatedDetails(
 
 
     details.push(
-        `Created photograph with ID ${id}.`
+        `Created ${
+            currentCollection === "gallery"
+                ? "photograph"
+                : "video"
+        } with ID ${id}.`
     );
 
 
@@ -1021,15 +1529,15 @@ function buildCreatedDetails(
 
 
 /* =========================================================
-   EDIT GALLERY
+   EDIT ITEM
    ========================================================= */
 
-function editGallery(
+function editItem(
     id
 ) {
 
     const item =
-        gallery.find(
+        items.find(
             value =>
                 value.id ===
                 id
@@ -1058,8 +1566,11 @@ function editGallery(
 
 
     /*
-       Firestore uses "link".
-       Older documents may use "image".
+       Gallery:
+       link first, image second.
+
+       Videos:
+       link.
     */
 
     imageInput.value =
@@ -1078,10 +1589,17 @@ function editGallery(
         "";
 
 
+    const isGallery =
+        currentCollection ===
+        "gallery";
+
+
     if (formTitle) {
 
         formTitle.textContent =
-            "Edit Photograph";
+            isGallery
+                ? "Edit Photograph"
+                : "Edit Video";
 
     }
 
@@ -1089,14 +1607,22 @@ function editGallery(
     if (saveButton) {
 
         saveButton.textContent =
-            "Update Photograph";
+            isGallery
+                ? "Update Photograph"
+                : "Update Video";
 
     }
 
 
-    /*
-       Show edit form at top.
-    */
+    if (categoryGroup) {
+
+        categoryGroup.style.display =
+            isGallery
+                ? "flex"
+                : "none";
+
+    }
+
 
     window.scrollTo({
 
@@ -1110,15 +1636,15 @@ function editGallery(
 
 
 /* =========================================================
-   DELETE GALLERY
+   DELETE ITEM
    ========================================================= */
 
-async function deleteGallery(
+async function deleteItem(
     id
 ) {
 
     const item =
-        gallery.find(
+        items.find(
             value =>
                 value.id ===
                 id
@@ -1132,12 +1658,23 @@ async function deleteGallery(
     }
 
 
+    const isGallery =
+        currentCollection ===
+        "gallery";
+
+
+    const itemName =
+        item.title ||
+        (
+            isGallery
+                ? "this photograph"
+                : "this video"
+        );
+
+
     const confirmed =
         window.confirm(
-            `Delete "${
-                item.title ||
-                "this photograph"
-            }"?`
+            `Delete "${itemName}"?`
         );
 
 
@@ -1150,11 +1687,10 @@ async function deleteGallery(
 
     try {
 
-
         await deleteDoc(
             doc(
                 db,
-                "gallery",
+                currentCollection,
                 id
             )
         );
@@ -1166,14 +1702,18 @@ async function deleteGallery(
                 "deleted",
 
             collectionName:
-                "gallery",
+                currentCollection,
 
             documentId:
                 id,
 
             title:
                 item.title ||
-                "Untitled Photograph",
+                (
+                    isGallery
+                        ? "Untitled Photograph"
+                        : "Untitled Video"
+                ),
 
             details:
                 buildDeletedDetails(
@@ -1184,25 +1724,27 @@ async function deleteGallery(
 
 
         showMessage(
-            "Photograph deleted.",
+            isGallery
+                ? "Photograph deleted."
+                : "Video deleted.",
             "success"
         );
 
 
-        await loadGallery();
+        await loadItems();
 
     }
     catch (error) {
 
         console.error(
-            "Gallery delete error:",
+            "Delete error:",
             error
         );
 
 
         showMessage(
             error.message ||
-            "Unable to delete photograph.",
+            "Unable to delete item.",
             "error"
         );
 
@@ -1223,7 +1765,12 @@ function buildDeletedDetails(
 
 
     details.push(
-        `Deleted photograph ID ${item.id}.`
+        `Deleted ${
+            currentCollection ===
+            "gallery"
+                ? "photograph"
+                : "video"
+        } ID ${item.id}.`
     );
 
 
@@ -1292,10 +1839,27 @@ function resetForm() {
     }
 
 
+    const isGallery =
+        currentCollection ===
+        "gallery";
+
+
     if (formTitle) {
 
         formTitle.textContent =
-            "Add Photograph";
+            isGallery
+                ? "Add Photograph"
+                : "Add Video";
+
+    }
+
+
+    if (formEyebrow) {
+
+        formEyebrow.textContent =
+            isGallery
+                ? "PHOTO"
+                : "VIDEO";
 
     }
 
@@ -1303,7 +1867,30 @@ function resetForm() {
     if (saveButton) {
 
         saveButton.textContent =
-            "Save Photograph";
+            isGallery
+                ? "Save Photograph"
+                : "Save Video";
+
+    }
+
+
+    if (categoryGroup) {
+
+        categoryGroup.style.display =
+            isGallery
+                ? "flex"
+                : "none";
+
+    }
+
+
+    if (message) {
+
+        message.textContent =
+            "";
+
+        message.className =
+            "message";
 
     }
 
@@ -1389,7 +1976,7 @@ function formatFieldName(
         )
 
         .replace(
-            /[\_-]/g,
+            /[\\_-]/g,
             " "
         )
 
@@ -1453,6 +2040,9 @@ function escapeHtml(
    START
    ========================================================= */
 
+updatePageMode();
+
+
 console.log(
-    "Roy Bari Gallery Admin loaded successfully."
+    "Roy Bari Gallery + Videos Admin loaded successfully."
 );

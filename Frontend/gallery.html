@@ -10,14 +10,317 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Roy Bari Durga puja</title>
+    <title>
+        Roy Bari Durga Puja
+    </title>
 
     <meta
         name="description"
-        content="Photographs and films from the Roy Bari Durga puja family archive."
+        content="Photographs and films from the Roy Bari Durga Puja family archive."
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+    <!-- =====================================================
+         HORIZONTAL GALLERY CSS
+         ===================================================== -->
+
+    <style>
+
+        /* =================================================
+           GALLERY SLIDER
+           ================================================= */
+
+        .gallery-slider {
+
+            position: relative;
+
+            width: 100%;
+
+            overflow: visible;
+
+        }
+
+
+        /* =================================================
+           HORIZONTAL GALLERY
+           ================================================= */
+
+        #gallery-grid {
+
+            display: flex !important;
+
+            flex-direction: row !important;
+
+            flex-wrap: nowrap !important;
+
+            gap: 16px;
+
+            width: 100%;
+
+            overflow-x: auto !important;
+
+            overflow-y: hidden;
+
+            scroll-behavior: smooth;
+
+            scrollbar-width: thin;
+
+            -webkit-overflow-scrolling: touch;
+
+            padding-bottom: 12px;
+
+            scroll-snap-type: x proximity;
+
+        }
+
+
+        /* Chrome / Edge scrollbar */
+
+        #gallery-grid::-webkit-scrollbar {
+
+            height: 7px;
+
+        }
+
+
+        #gallery-grid::-webkit-scrollbar-track {
+
+            background: transparent;
+
+        }
+
+
+        #gallery-grid::-webkit-scrollbar-thumb {
+
+            background: #c8b5a3;
+
+            border-radius: 20px;
+
+        }
+
+
+        /* =================================================
+           FOUR CARDS VISIBLE ON DESKTOP
+           ================================================= */
+
+        #gallery-grid .gallery-card {
+
+            flex: 0 0 calc(
+                (100% - 48px) / 4
+            ) !important;
+
+            width: calc(
+                (100% - 48px) / 4
+            ) !important;
+
+            min-width: calc(
+                (100% - 48px) / 4
+            ) !important;
+
+            scroll-snap-align: start;
+
+        }
+
+
+        /* =================================================
+           GALLERY IMAGE
+           ================================================= */
+
+        #gallery-grid .gallery-image {
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        #gallery-grid .gallery-image img {
+
+            width: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+        }
+
+
+        /* =================================================
+           LEFT / RIGHT BUTTONS
+           ================================================= */
+
+        .gallery-arrow {
+
+            position: absolute;
+
+            top: 43%;
+
+            transform: translateY(-50%);
+
+            z-index: 50;
+
+            width: 44px;
+
+            height: 44px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: rgba(48, 40, 32, 0.90);
+
+            color: #ffffff;
+
+            font-size: 32px;
+
+            line-height: 1;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 18px rgba(0, 0, 0, 0.20);
+
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease,
+                background 0.2s ease;
+
+        }
+
+
+        .gallery-arrow:hover {
+
+            background: #795337;
+
+            transform:
+                translateY(-50%)
+                scale(1.05);
+
+        }
+
+
+        .gallery-arrow-left {
+
+            left: -22px;
+
+        }
+
+
+        .gallery-arrow-right {
+
+            right: -22px;
+
+        }
+
+
+        /* =================================================
+           HIDE ARROWS WHEN NOT NEEDED
+           ================================================= */
+
+        .gallery-arrow.is-hidden {
+
+            display: none;
+
+        }
+
+
+        /* =================================================
+           MOBILE
+           ================================================= */
+
+        @media (max-width: 900px) {
+
+            #gallery-grid .gallery-card {
+
+                flex: 0 0 calc(
+                    (100% - 16px) / 2
+                ) !important;
+
+                width: calc(
+                    (100% - 16px) / 2
+                ) !important;
+
+                min-width: calc(
+                    (100% - 16px) / 2
+                ) !important;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            #gallery-grid {
+
+                gap: 12px;
+
+            }
+
+
+            #gallery-grid .gallery-card {
+
+                flex: 0 0 86% !important;
+
+                width: 86% !important;
+
+                min-width: 86% !important;
+
+            }
+
+
+            .gallery-arrow {
+
+                width: 36px;
+
+                height: 36px;
+
+                font-size: 27px;
+
+            }
+
+
+            .gallery-arrow-left {
+
+                left: 5px;
+
+            }
+
+
+            .gallery-arrow-right {
+
+                right: 5px;
+
+            }
+
+        }
+
+
+        /* =================================================
+           GALLERY LOADING
+           ================================================= */
+
+        .gallery-loading {
+
+            width: 100%;
+
+            min-width: 100%;
+
+        }
+
+    </style>
 
 </head>
 
@@ -33,15 +336,18 @@
 
     <nav class="nav">
 
+
         <a
             href="index.html"
             class="brand"
         >
+
             ROY BARI
 
             <span>
                 Est. 1671 · Nohari
             </span>
+
         </a>
 
 
@@ -52,7 +358,9 @@
             aria-expanded="false"
             type="button"
         >
+
             ☰
+
         </button>
 
 
@@ -67,11 +375,13 @@
                 </a>
             </li>
 
+
             <li>
                 <a href="history.html">
                     The House
                 </a>
             </li>
+
 
             <li>
                 <a href="family-tree.html">
@@ -79,11 +389,13 @@
                 </a>
             </li>
 
+
             <li>
                 <a href="puja.html">
                     The puja
                 </a>
             </li>
+
 
             <li>
                 <a
@@ -94,11 +406,13 @@
                 </a>
             </li>
 
+
             <li>
                 <a href="events.html">
                     Events
                 </a>
             </li>
+
 
             <li>
                 <a href="archive.html">
@@ -106,13 +420,13 @@
                 </a>
             </li>
 
-            
 
             <li>
                 <a href="visit.html">
                     Visit
                 </a>
             </li>
+
 
             <li>
                 <a href="contact.html">
@@ -138,15 +452,20 @@
 
         <div class="hero-content">
 
+
             <div class="eyebrow">
                 Experience
             </div>
 
+
             <h1>
+
                 Gallery
                 <br>
                 &amp; Films
+
             </h1>
+
 
             <p class="tagline">
 
@@ -165,10 +484,15 @@
 
 
 <!-- =====================================================
-     PHOTO GALLERY
+     MAIN
      ===================================================== -->
 
 <main id="main-content">
+
+
+<!-- =====================================================
+     PHOTO GALLERY
+     ===================================================== -->
 
 <section class="gallery-section">
 
@@ -177,14 +501,19 @@
 
         <div class="section-head">
 
+
             <div class="eyebrow">
                 Photo Gallery
             </div>
 
+
             <h2>
+
                 The house, the idol,
                 the rituals
+
             </h2>
+
 
             <p class="lead">
 
@@ -198,23 +527,52 @@
 
 
         <!-- =================================================
-             FIRESTORE GALLERY
+             HORIZONTAL PHOTO SLIDER
              ================================================= -->
 
-        <div
-            class="gallery-grid"
-            id="gallery-grid"
-        >
+        <div class="gallery-slider">
 
-            <div class="gallery-loading">
 
-                <div class="loading-spinner"></div>
+            <button
+                type="button"
+                class="gallery-arrow gallery-arrow-left"
+                id="gallery-prev"
+                aria-label="Previous photographs"
+            >
 
-                <p>
-                    Loading photographs...
-                </p>
+                ‹
+
+            </button>
+
+
+            <div
+                class="gallery-grid"
+                id="gallery-grid"
+            >
+
+                <div class="gallery-loading">
+
+                    <div class="loading-spinner"></div>
+
+                    <p>
+                        Loading photographs...
+                    </p>
+
+                </div>
 
             </div>
+
+
+            <button
+                type="button"
+                class="gallery-arrow gallery-arrow-right"
+                id="gallery-next"
+                aria-label="Next photographs"
+            >
+
+                ›
+
+            </button>
 
         </div>
 
@@ -244,15 +602,20 @@
 
         <div class="section-head center">
 
+
             <div class="eyebrow">
                 Then &amp; Now
             </div>
 
+
             <h2>
+
                 The courtyard,
                 <br>
                 1962 and today
+
             </h2>
+
 
             <p class="lead">
 
@@ -262,7 +625,6 @@
             </p>
 
         </div>
-
 
 
         <div
@@ -277,7 +639,6 @@
             </div>
 
         </div>
-
 
     </div>
 
@@ -296,13 +657,16 @@
 
         <div class="section-head">
 
+
             <div class="eyebrow">
                 Films
             </div>
 
+
             <h2>
                 Watch the puja
             </h2>
+
 
             <p class="lead">
 
@@ -314,7 +678,6 @@
         </div>
 
 
-
         <div
             class="video-list"
             id="video-list"
@@ -322,15 +685,18 @@
 
             <div class="video-row">
 
+
                 <div class="play">
                     ▶
                 </div>
+
 
                 <div class="video-info">
 
                     <h4>
                         Loading films...
                     </h4>
+
 
                     <p class="dur">
                         Please wait
@@ -341,7 +707,6 @@
             </div>
 
         </div>
-
 
     </div>
 
@@ -369,6 +734,7 @@
                     Roy Bari
                 </h5>
 
+
                 <p>
 
                     V8J4+5FF,
@@ -380,12 +746,12 @@
             </div>
 
 
-
             <div>
 
                 <h5>
                     Explore
                 </h5>
+
 
                 <ul>
 
@@ -395,11 +761,13 @@
                         </a>
                     </li>
 
+
                     <li>
                         <a href="puja.html">
                             The puja
                         </a>
                     </li>
+
 
                     <li>
                         <a href="events.html">
@@ -407,11 +775,13 @@
                         </a>
                     </li>
 
+
                     <li>
                         <a href="gallery.html">
                             Gallery
                         </a>
                     </li>
+
 
                     <li>
                         <a href="archive.html">
@@ -424,12 +794,12 @@
             </div>
 
 
-
             <div>
 
                 <h5>
                     Visit
                 </h5>
+
 
                 <ul>
 
@@ -439,12 +809,9 @@
                         </a>
                     </li>
 
-                    
-
                 </ul>
 
             </div>
-
 
 
             <div>
@@ -452,6 +819,7 @@
                 <h5>
                     Contact
                 </h5>
+
 
                 <ul>
 
@@ -465,9 +833,7 @@
 
             </div>
 
-
         </div>
-
 
 
         <div class="footer-bottom">
@@ -482,19 +848,14 @@
 
         </div>
 
-
     </div>
 
 </footer>
 
 
-<!-- =====================================================
-     LIGHTBOX PORTAL
 
-     The gallery lightbox (fullscreen image viewer) is
-     injected here by gallery.js rather than into <body>
-     directly, so it always sits after the footer in the
-     DOM (correct stacking) and is easy to locate/inspect.
+<!-- =====================================================
+     LIGHTBOX
      ===================================================== -->
 
 <div id="lightbox-root"></div>
@@ -506,6 +867,7 @@
      ===================================================== -->
 
 <script src="main.js"></script>
+
 
 <script
     type="module"

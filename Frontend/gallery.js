@@ -1,6 +1,16 @@
 /* =========================================================
    ROY BARI — GALLERY
    FIRESTORE + GOOGLE DRIVE
+
+   COLLECTIONS:
+
+   gallery
+   videos
+   comparisons
+
+   GALLERY IMAGE FIELD:
+
+   image
    ========================================================= */
 
 
@@ -9,12 +19,17 @@
    ========================================================= */
 
 import {
+
     collection,
     getDocs
+
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
 import {
+
     db
+
 } from "./firebase.js";
 
 
@@ -35,6 +50,12 @@ console.log("=================================");
 
 const galleryGrid =
     document.getElementById("gallery-grid");
+
+const galleryPrev =
+    document.getElementById("gallery-prev");
+
+const galleryNext =
+    document.getElementById("gallery-next");
 
 const compareBox =
     document.getElementById("gallery-compare");
@@ -68,6 +89,9 @@ const lightboxState = {
 };
 
 
+let activeLightbox = null;
+
+
 /* =========================================================
    MOBILE NAVIGATION
    ========================================================= */
@@ -83,7 +107,9 @@ if (navToggle && navLinks) {
 
             navToggle.setAttribute(
                 "aria-expanded",
-                isOpen ? "true" : "false"
+                isOpen
+                    ? "true"
+                    : "false"
             );
 
         }
@@ -165,15 +191,13 @@ function getGoogleDriveFileId(link) {
         String(link).trim();
 
 
-    /*
-       FORMAT:
-
-       https://drive.google.com/file/d/FILE_ID/view
-    */
+    /* ---------------------------------------------
+       /file/d/FILE_ID/view
+       --------------------------------------------- */
 
     let match =
         url.match(
-            /drive\.google\.com\/file\/d\/([^/]+)/
+            /drive\.google\.com\/file\/d\/([^/?#]+)/
         );
 
 
@@ -184,15 +208,13 @@ function getGoogleDriveFileId(link) {
     }
 
 
-    /*
-       FORMAT:
-
-       https://drive.google.com/open?id=FILE_ID
-    */
+    /* ---------------------------------------------
+       open?id=FILE_ID
+       --------------------------------------------- */
 
     match =
         url.match(
-            /drive\.google\.com\/open\?id=([^&]+)/
+            /drive\.google\.com\/open\?id=([^&#]+)/
         );
 
 
@@ -203,15 +225,30 @@ function getGoogleDriveFileId(link) {
     }
 
 
-    /*
-       FORMAT:
-
-       https://drive.google.com/uc?id=FILE_ID
-    */
+    /* ---------------------------------------------
+       uc?id=FILE_ID
+       --------------------------------------------- */
 
     match =
         url.match(
-            /drive\.google\.com\/uc\?(?:[^#]*&)?id=([^&]+)/
+            /drive\.google\.com\/uc\?(?:[^#]*&)?id=([^&#]+)/
+        );
+
+
+    if (match) {
+
+        return match[1];
+
+    }
+
+
+    /* ---------------------------------------------
+       thumbnail?id=FILE_ID
+       --------------------------------------------- */
+
+    match =
+        url.match(
+            /drive\.google\.com\/thumbnail\?[^#]*id=([^&#]+)/
         );
 
 
@@ -228,7 +265,7 @@ function getGoogleDriveFileId(link) {
 
 
 /* =========================================================
-   GOOGLE DRIVE FULL IMAGE URL
+   GOOGLE DRIVE IMAGE URL
    ========================================================= */
 
 function getGoogleDriveImageUrl(link) {
@@ -245,8 +282,8 @@ function getGoogleDriveImageUrl(link) {
 
 
     /*
-       If Firestore already contains
-       a normal image URL.
+       If normal image URL,
+       return it directly.
     */
 
     if (!fileId) {
@@ -256,20 +293,19 @@ function getGoogleDriveImageUrl(link) {
     }
 
 
-    /*
-       Full image URL.
-    */
-
     return (
+
         "https://drive.google.com/uc?export=view&id=" +
+
         encodeURIComponent(fileId)
+
     );
 
 }
 
 
 /* =========================================================
-   GOOGLE DRIVE FALLBACK THUMBNAIL
+   GOOGLE DRIVE THUMBNAIL
    ========================================================= */
 
 function getGoogleDriveThumbnailUrl(link) {
@@ -293,10 +329,15 @@ function getGoogleDriveThumbnailUrl(link) {
 
 
     return (
+
         "https://drive.google.com/thumbnail" +
+
         "?id=" +
+
         encodeURIComponent(fileId) +
-        "&sz=w2000"
+
+        "&sz=w1600"
+
     );
 
 }
@@ -319,11 +360,6 @@ function getGoogleDriveVideoUrl(link) {
         getGoogleDriveFileId(link);
 
 
-    /*
-       If it isn't a Google Drive URL,
-       return the original URL.
-    */
-
     if (!fileId) {
 
         return String(link).trim();
@@ -331,14 +367,14 @@ function getGoogleDriveVideoUrl(link) {
     }
 
 
-    /*
-       Google Drive preview URL.
-    */
-
     return (
+
         "https://drive.google.com/file/d/" +
+
         encodeURIComponent(fileId) +
+
         "/preview"
+
     );
 
 }
@@ -435,6 +471,226 @@ function markImageLoaded(image) {
 
 
 /* =========================================================
+   HORIZONTAL GALLERY SCROLL
+   ========================================================= */
+
+function getGalleryScrollAmount() {
+
+    if (!galleryGrid) {
+
+        return 300;
+
+    }
+
+
+    const card =
+        galleryGrid.querySelector(
+            ".gallery-card"
+        );
+
+
+    if (!card) {
+
+        return 300;
+
+    }
+
+
+    const style =
+        window.getComputedStyle(
+            galleryGrid
+        );
+
+
+    const gap =
+        parseFloat(style.gap) || 16;
+
+
+    return (
+
+        card.getBoundingClientRect().width +
+
+        gap
+
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE GALLERY ARROWS
+   ========================================================= */
+
+function updateGalleryArrows() {
+
+    if (
+        !galleryGrid ||
+        !galleryPrev ||
+        !galleryNext
+    ) {
+
+        return;
+
+    }
+
+
+    const maxScroll =
+        galleryGrid.scrollWidth -
+        galleryGrid.clientWidth;
+
+
+    /*
+       If everything fits on screen,
+       hide both buttons.
+    */
+
+    if (maxScroll <= 5) {
+
+        galleryPrev.classList.add(
+            "is-hidden"
+        );
+
+        galleryNext.classList.add(
+            "is-hidden"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Previous
+    */
+
+    if (
+        galleryGrid.scrollLeft <= 5
+    ) {
+
+        galleryPrev.style.opacity =
+            "0.35";
+
+    }
+    else {
+
+        galleryPrev.style.opacity =
+            "1";
+
+    }
+
+
+    /*
+       Next
+    */
+
+    if (
+        galleryGrid.scrollLeft >=
+        maxScroll - 5
+    ) {
+
+        galleryNext.style.opacity =
+            "0.35";
+
+    }
+    else {
+
+        galleryNext.style.opacity =
+            "1";
+
+    }
+
+
+    galleryPrev.classList.remove(
+        "is-hidden"
+    );
+
+    galleryNext.classList.remove(
+        "is-hidden"
+    );
+
+}
+
+
+/* =========================================================
+   SETUP HORIZONTAL GALLERY
+   ========================================================= */
+
+function setupGalleryHorizontalScroll() {
+
+    if (!galleryGrid) {
+
+        return;
+
+    }
+
+
+    if (galleryPrev) {
+
+        galleryPrev.addEventListener(
+            "click",
+            function () {
+
+                galleryGrid.scrollBy({
+
+                    left:
+                        -getGalleryScrollAmount(),
+
+                    behavior:
+                        "smooth"
+
+                });
+
+            }
+        );
+
+    }
+
+
+    if (galleryNext) {
+
+        galleryNext.addEventListener(
+            "click",
+            function () {
+
+                galleryGrid.scrollBy({
+
+                    left:
+                        getGalleryScrollAmount(),
+
+                    behavior:
+                        "smooth"
+
+                });
+
+            }
+        );
+
+    }
+
+
+    galleryGrid.addEventListener(
+        "scroll",
+        updateGalleryArrows
+    );
+
+
+    window.addEventListener(
+        "resize",
+        updateGalleryArrows
+    );
+
+
+    /*
+       Mouse wheel support.
+       Shift + wheel / trackpad can scroll naturally.
+    */
+
+    updateGalleryArrows();
+
+}
+
+
+/* =========================================================
    LOAD GALLERY
    ========================================================= */
 
@@ -458,20 +714,12 @@ async function loadGallery() {
 
     try {
 
-        /*
-           FIRESTORE COLLECTION
-        */
-
         const galleryRef =
             collection(
                 db,
                 "gallery"
             );
 
-
-        /*
-           GET DOCUMENTS
-        */
 
         const snapshot =
             await getDocs(
@@ -484,10 +732,6 @@ async function loadGallery() {
             snapshot.size
         );
 
-
-        /*
-           EMPTY
-        */
 
         if (snapshot.empty) {
 
@@ -508,14 +752,12 @@ async function loadGallery() {
 
             `;
 
+            updateGalleryArrows();
+
             return;
 
         }
 
-
-        /*
-           CREATE ARRAY
-        */
 
         const galleryItems = [];
 
@@ -535,22 +777,58 @@ async function loadGallery() {
 
 
                 /*
-                   IMPORTANT
-
-                   If someone accidentally puts
-                   a video document inside the
-                   gallery collection, ignore it.
-
-                   Videos belong in "videos".
+                   Skip videos.
                 */
 
                 if (
                     data.type &&
-                    String(data.type).toLowerCase() === "video"
+                    String(
+                        data.type
+                    ).toLowerCase() === "video"
                 ) {
 
                     console.log(
-                        "Skipping video from gallery:",
+                        "Skipping video:",
+                        doc.id
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                   IMPORTANT
+
+                   Firestore now uses:
+
+                   image
+
+                   Old fields are kept as
+                   fallback for compatibility.
+                */
+
+                const imageLink =
+
+                    data.image ||
+
+                    data.imageUrl ||
+
+                    data.link ||
+
+                    data.url ||
+
+                    "";
+
+
+                /*
+                   Skip documents without image.
+                */
+
+                if (!imageLink) {
+
+                    console.warn(
+                        "Gallery image missing:",
                         doc.id
                     );
 
@@ -580,11 +858,8 @@ async function loadGallery() {
                         data.year ||
                         "",
 
-                    link:
-                        data.link ||
-                        data.imageUrl ||
-                        data.url ||
-                        ""
+                    image:
+                        imageLink
 
                 });
 
@@ -593,8 +868,8 @@ async function loadGallery() {
 
 
         /*
-           SORT
-           NEWEST YEAR FIRST
+           SORT BY YEAR
+           NEWEST FIRST
         */
 
         galleryItems.sort(
@@ -613,10 +888,6 @@ async function loadGallery() {
         );
 
 
-        /*
-           IF ALL DOCUMENTS WERE VIDEOS
-        */
-
         if (!galleryItems.length) {
 
             galleryGrid.innerHTML = `
@@ -628,13 +899,15 @@ async function loadGallery() {
                     </h3>
 
                     <p>
-                        Add photographs to the
-                        gallery collection.
+                        Add photographs with
+                        an image field.
                     </p>
 
                 </div>
 
             `;
+
+            updateGalleryArrows();
 
             return;
 
@@ -642,58 +915,63 @@ async function loadGallery() {
 
 
         /*
-           CREATE GALLERY HTML
+           RESET LIGHTBOX
         */
+
+        lightboxState.items = [];
+
 
         let html = "";
 
 
         /*
-           Reset lightbox list.
+           CREATE EVERY IMAGE
+
+           IMPORTANT:
+           There is NO limit of 4 here.
+
+           If Firestore has 5 images,
+           all 5 are created.
         */
-
-        lightboxState.items = [];
-
 
         galleryItems.forEach(
             function (item, index) {
 
                 const imageUrl =
                     getGoogleDriveImageUrl(
-                        item.link
+                        item.image
                     );
 
 
                 const thumbnailUrl =
                     getGoogleDriveThumbnailUrl(
-                        item.link
+                        item.image
                     );
 
 
-                /*
-                   Record item in lightbox.
-                */
+                if (!imageUrl) {
+
+                    return;
+
+                }
+
 
                 const lightboxIndex =
                     lightboxState.items.length;
 
 
-                if (imageUrl) {
+                lightboxState.items.push({
 
-                    lightboxState.items.push({
+                    fullImage:
+                        imageUrl,
 
-                        fullImage:
-                            imageUrl,
+                    fallbackImage:
+                        thumbnailUrl,
 
-                        fallbackImage:
-                            thumbnailUrl,
+                    title:
+                        item.title
 
-                        title:
-                            item.title
-
-                    });
-
-                }
+                });
 
 
                 html += `
@@ -704,99 +982,94 @@ async function loadGallery() {
                     >
 
 
-                        <!-- IMAGE -->
+                        <div
+                            class="gallery-image"
+                        >
 
-                        <div class="gallery-image">
+                            <img
+                                src="${escapeHTML(imageUrl)}"
 
-                            ${
-                                imageUrl
+                                data-full-image="${escapeHTML(imageUrl)}"
 
-                                ?
+                                data-fallback="${escapeHTML(thumbnailUrl)}"
 
-                                `
+                                data-lightbox-index="${lightboxIndex}"
 
-                                <img
-                                    src="${escapeHTML(imageUrl)}"
+                                alt="${escapeHTML(item.title)}"
 
-                                    data-full-image="${escapeHTML(imageUrl)}"
+                                loading="${
+                                    index < 4
+                                        ? "eager"
+                                        : "lazy"
+                                }"
 
-                                    data-fallback="${escapeHTML(thumbnailUrl)}"
+                                referrerpolicy="no-referrer"
 
-                                    data-lightbox-index="${lightboxIndex}"
-
-                                    alt="${escapeHTML(item.title)}"
-
-                                    loading="${index < 3 ? "eager" : "lazy"}"
-
-                                    referrerpolicy="no-referrer"
-
-                                    decoding="async"
-                                >
+                                decoding="async"
+                            >
 
 
-                                <button
-                                    type="button"
-                                    class="gallery-view-button"
+                            <button
+                                type="button"
 
-                                    data-lightbox-index="${lightboxIndex}"
+                                class="gallery-view-button"
 
-                                    aria-label="View ${escapeHTML(item.title)} at full size"
-                                >
-                                    View
-                                </button>
+                                data-lightbox-index="${lightboxIndex}"
 
-                                `
+                                aria-label="View ${escapeHTML(item.title)} at full size"
+                            >
 
-                                :
+                                View
 
-                                `
-
-                                <div class="gallery-no-image">
-
-                                    <span>
-                                        Image link missing
-                                    </span>
-
-                                </div>
-
-                                `
-
-                            }
+                            </button>
 
                         </div>
 
 
-                        <!-- CAPTION -->
+                        <div
+                            class="gallery-content"
+                        >
 
-                        <div class="gallery-content">
 
+                            <div
+                                class="gallery-meta"
+                            >
 
-                            <div class="gallery-meta">
-
-                                ${escapeHTML(item.category)}
+                                ${escapeHTML(
+                                    item.category
+                                )}
 
                                 ${
                                     item.year
                                     ?
 
                                     `
-                                    <span>
-                                        ·
-                                    </span>
 
-                                    ${escapeHTML(item.year)}
+                                        <span>
+                                            ·
+                                        </span>
+
+                                        ${escapeHTML(
+                                            item.year
+                                        )}
+
                                     `
 
                                     :
 
                                     ""
+
                                 }
 
                             </div>
 
 
                             <h3>
-                                ${escapeHTML(item.title)}
+
+                                ${escapeHTML(
+                                    item.title
+                                )}
+
                             </h3>
 
 
@@ -807,9 +1080,11 @@ async function loadGallery() {
 
                                 `
 
-                                <p>
-                                    ${escapeHTML(item.description)}
-                                </p>
+                                    <p>
+                                        ${escapeHTML(
+                                            item.description
+                                        )}
+                                    </p>
 
                                 `
 
@@ -819,9 +1094,7 @@ async function loadGallery() {
 
                             }
 
-
                         </div>
-
 
                     </article>
 
@@ -832,7 +1105,7 @@ async function loadGallery() {
 
 
         /*
-           INSERT GALLERY
+           INSERT ALL CARDS
         */
 
         galleryGrid.innerHTML =
@@ -854,7 +1127,7 @@ async function loadGallery() {
 
 
                 /*
-                   CHECK IF ALREADY LOADED
+                   Already loaded
                 */
 
                 if (
@@ -877,6 +1150,9 @@ async function loadGallery() {
                                 image
                             );
 
+                        },
+                        {
+                            once: true
                         }
                     );
 
@@ -886,7 +1162,7 @@ async function loadGallery() {
                 /*
                    IMAGE ERROR
 
-                   First try Drive thumbnail.
+                   Try Drive thumbnail.
                 */
 
                 image.addEventListener(
@@ -899,7 +1175,9 @@ async function loadGallery() {
 
                         if (
                             fallback &&
+
                             image.src !== fallback &&
+
                             !image.dataset.fallbackUsed
                         ) {
 
@@ -922,25 +1200,6 @@ async function loadGallery() {
                         }
 
 
-                        /*
-                           Stop shimmer.
-                        */
-
-                        const wrapper =
-                            image.closest(
-                                ".gallery-image"
-                            );
-
-
-                        if (wrapper) {
-
-                            wrapper.classList.add(
-                                "is-loaded"
-                            );
-
-                        }
-
-
                         imageError(
                             image
                         );
@@ -957,7 +1216,7 @@ async function loadGallery() {
                     "click",
                     function () {
 
-                        const lightboxIndex =
+                        const index =
                             parseInt(
                                 image.dataset.lightboxIndex,
                                 10
@@ -965,7 +1224,7 @@ async function loadGallery() {
 
 
                         openImageViewer(
-                            lightboxIndex,
+                            index,
                             image
                         );
 
@@ -977,7 +1236,7 @@ async function loadGallery() {
 
 
         /*
-           VIEW BUTTONS
+           VIEW BUTTON
         */
 
         const viewButtons =
@@ -996,7 +1255,7 @@ async function loadGallery() {
                         event.stopPropagation();
 
 
-                        const lightboxIndex =
+                        const index =
                             parseInt(
                                 button.dataset.lightboxIndex,
                                 10
@@ -1004,7 +1263,7 @@ async function loadGallery() {
 
 
                         openImageViewer(
-                            lightboxIndex,
+                            index,
                             button
                         );
 
@@ -1015,8 +1274,34 @@ async function loadGallery() {
         );
 
 
+        /*
+           SETUP HORIZONTAL SCROLL
+        */
+
+        updateGalleryArrows();
+
+
+        /*
+           Wait for image layout before
+           calculating scroll width.
+        */
+
+        requestAnimationFrame(
+            function () {
+
+                updateGalleryArrows();
+
+            }
+        );
+
+
         console.log(
             "Gallery loaded successfully."
+        );
+
+        console.log(
+            "Total gallery images:",
+            galleryItems.length
         );
 
     }
@@ -1039,7 +1324,9 @@ async function loadGallery() {
                 </h3>
 
                 <p>
-                    ${escapeHTML(error.message)}
+                    ${escapeHTML(
+                        error.message
+                    )}
                 </p>
 
             </div>
@@ -1054,9 +1341,6 @@ async function loadGallery() {
 /* =========================================================
    FULLSCREEN IMAGE VIEWER
    ========================================================= */
-
-let activeLightbox = null;
-
 
 function openImageViewer(
     index,
@@ -1080,12 +1364,17 @@ function openImageViewer(
 
 
     closeImageViewer({
-        skipFocusRestore: true
+
+        skipFocusRestore:
+            true
+
     });
 
 
     const lightbox =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     lightbox.id =
@@ -1118,7 +1407,8 @@ function openImageViewer(
 
         <div
             class="gallery-lightbox-backdrop"
-        ></div>
+        >
+        </div>
 
 
         <div
@@ -1128,46 +1418,68 @@ function openImageViewer(
 
             <button
                 type="button"
+
                 class="gallery-lightbox-close"
+
                 aria-label="Close image viewer"
             >
+
                 ×
+
             </button>
 
 
             <button
                 type="button"
+
                 class="gallery-lightbox-nav gallery-lightbox-prev"
+
                 aria-label="Previous photograph"
             >
+
                 ‹
+
             </button>
 
 
             <button
                 type="button"
+
                 class="gallery-lightbox-nav gallery-lightbox-next"
+
                 aria-label="Next photograph"
             >
+
                 ›
+
             </button>
 
 
-            <div class="gallery-lightbox-frame">
+            <div
+                class="gallery-lightbox-frame"
+            >
 
-                <div class="gallery-lightbox-spinner"></div>
+                <div
+                    class="gallery-lightbox-spinner"
+                >
+                </div>
+
 
                 <img
                     class="gallery-lightbox-image"
+
                     alt=""
+
                     referrerpolicy="no-referrer"
                 >
 
             </div>
 
 
-            <div class="gallery-lightbox-title"></div>
-
+            <div
+                class="gallery-lightbox-title"
+            >
+            </div>
 
         </div>
 
@@ -1190,10 +1502,6 @@ function openImageViewer(
     lightboxState.currentIndex =
         index;
 
-
-    /*
-       ELEMENT REFERENCES
-    */
 
     const closeButton =
         lightbox.querySelector(
@@ -1218,10 +1526,6 @@ function openImageViewer(
             ".gallery-lightbox-backdrop"
         );
 
-
-    /*
-       EVENTS
-    */
 
     closeButton.addEventListener(
         "click",
@@ -1272,10 +1576,6 @@ function openImageViewer(
         lightboxKeydownHandler
     );
 
-
-    /*
-       INITIAL RENDER
-    */
 
     renderLightboxItem(
         index
@@ -1337,14 +1637,18 @@ function renderLightboxItem(index) {
     );
 
 
+    frame.classList.remove(
+        "has-error"
+    );
+
+
     image.classList.remove(
         "is-loaded"
     );
 
 
-    image.removeAttribute(
-        "data-fallback-used"
-    );
+    image.dataset.fallbackUsed =
+        "";
 
 
     image.alt =
@@ -1357,68 +1661,58 @@ function renderLightboxItem(index) {
         "";
 
 
-    function handleLoad() {
-
-        frame.classList.remove(
-            "is-loading"
-        );
-
-
-        image.classList.add(
-            "is-loaded"
-        );
-
-    }
-
-
-    function handleError() {
-
-        const fallback =
-            item.fallbackImage;
-
-
-        if (
-            fallback &&
-            image.src !== fallback &&
-            !image.dataset.fallbackUsed
-        ) {
-
-            image.dataset.fallbackUsed =
-                "true";
-
-
-            image.src =
-                fallback;
-
-
-            return;
-
-        }
-
-
-        frame.classList.remove(
-            "is-loading"
-        );
-
-
-        frame.classList.add(
-            "has-error"
-        );
-
-    }
-
-
     image.onload =
-        handleLoad;
+        function () {
+
+            frame.classList.remove(
+                "is-loading"
+            );
+
+            image.classList.add(
+                "is-loaded"
+            );
+
+        };
 
 
     image.onerror =
-        handleError;
+        function () {
+
+            const fallback =
+                item.fallbackImage;
 
 
-    frame.classList.remove(
-        "has-error"
-    );
+            if (
+                fallback &&
+
+                image.src !== fallback &&
+
+                !image.dataset.fallbackUsed
+            ) {
+
+                image.dataset.fallbackUsed =
+                    "true";
+
+
+                image.src =
+                    fallback;
+
+
+                return;
+
+            }
+
+
+            frame.classList.remove(
+                "is-loading"
+            );
+
+
+            frame.classList.add(
+                "has-error"
+            );
+
+        };
 
 
     image.src =
@@ -1445,7 +1739,9 @@ function showLightboxItem(index) {
 
 
     const wrappedIndex =
-        (index + total) % total;
+        (
+            index + total
+        ) % total;
 
 
     lightboxState.currentIndex =
@@ -1463,7 +1759,7 @@ function showLightboxItem(index) {
 
 
 /* =========================================================
-   NAVIGATION VISIBILITY
+   LIGHTBOX NAVIGATION
    ========================================================= */
 
 function updateLightboxNavVisibility() {
@@ -1475,21 +1771,19 @@ function updateLightboxNavVisibility() {
     }
 
 
-    const showNav =
+    const show =
         lightboxState.items.length > 1;
 
 
     activeLightbox
-
         .querySelectorAll(
             ".gallery-lightbox-nav"
         )
-
         .forEach(
             function (button) {
 
                 button.style.display =
-                    showNav
+                    show
                         ? "flex"
                         : "none";
 
@@ -1500,12 +1794,14 @@ function updateLightboxNavVisibility() {
 
 
 /* =========================================================
-   KEYBOARD
+   LIGHTBOX KEYBOARD
    ========================================================= */
 
 function lightboxKeydownHandler(event) {
 
-    if (event.key === "Escape") {
+    if (
+        event.key === "Escape"
+    ) {
 
         event.preventDefault();
 
@@ -1516,7 +1812,9 @@ function lightboxKeydownHandler(event) {
     }
 
 
-    if (event.key === "ArrowLeft") {
+    if (
+        event.key === "ArrowLeft"
+    ) {
 
         event.preventDefault();
 
@@ -1529,7 +1827,9 @@ function lightboxKeydownHandler(event) {
     }
 
 
-    if (event.key === "ArrowRight") {
+    if (
+        event.key === "ArrowRight"
+    ) {
 
         event.preventDefault();
 
@@ -1542,7 +1842,9 @@ function lightboxKeydownHandler(event) {
     }
 
 
-    if (event.key === "Tab") {
+    if (
+        event.key === "Tab"
+    ) {
 
         trapLightboxFocus(
             event
@@ -1568,12 +1870,11 @@ function trapLightboxFocus(event) {
 
     const focusable =
         Array.from(
-
             activeLightbox.querySelectorAll(
                 "button"
             )
-
-        ).filter(
+        )
+        .filter(
             function (element) {
 
                 return (
@@ -1596,11 +1897,14 @@ function trapLightboxFocus(event) {
 
 
     const last =
-        focusable[focusable.length - 1];
+        focusable[
+            focusable.length - 1
+        ];
 
 
     if (
         event.shiftKey &&
+
         document.activeElement === first
     ) {
 
@@ -1609,9 +1913,9 @@ function trapLightboxFocus(event) {
         last.focus();
 
     }
-
     else if (
         !event.shiftKey &&
+
         document.activeElement === last
     ) {
 
@@ -1625,10 +1929,12 @@ function trapLightboxFocus(event) {
 
 
 /* =========================================================
-   CLOSE LIGHTBOX
+   CLOSE IMAGE VIEWER
    ========================================================= */
 
-function closeImageViewer(options) {
+function closeImageViewer(
+    options
+) {
 
     const settings =
         options || {};
@@ -1660,8 +1966,12 @@ function closeImageViewer(options) {
 
     if (
         !settings.skipFocusRestore &&
+
         lightboxState.triggerElement &&
-        typeof lightboxState.triggerElement.focus === "function"
+
+        typeof
+            lightboxState.triggerElement.focus ===
+            "function"
     ) {
 
         lightboxState.triggerElement.focus();
@@ -1735,9 +2045,13 @@ async function loadComparison() {
             getGoogleDriveImageUrl(
 
                 data.oldImage ||
+
                 data.before ||
+
                 data.oldLink ||
+
                 data.old ||
+
                 ""
 
             );
@@ -1747,9 +2061,13 @@ async function loadComparison() {
             getGoogleDriveImageUrl(
 
                 data.newImage ||
+
                 data.after ||
+
                 data.newLink ||
+
                 data.new ||
+
                 ""
 
             );
@@ -1782,20 +2100,26 @@ async function loadComparison() {
 
                 <img
                     src="${escapeHTML(newImage)}"
+
                     class="compare-after"
+
                     alt="Roy Bari today"
+
                     referrerpolicy="no-referrer"
                 >
 
 
                 <div
                     class="compare-before"
+
                     style="width:50%;"
                 >
 
                     <img
                         src="${escapeHTML(oldImage)}"
+
                         alt="Roy Bari historical photograph"
+
                         referrerpolicy="no-referrer"
                     >
 
@@ -1804,10 +2128,15 @@ async function loadComparison() {
 
                 <input
                     type="range"
+
                     min="0"
+
                     max="100"
+
                     value="50"
+
                     class="compare-slider"
+
                     aria-label="Compare historical and current photograph"
                 >
 
@@ -1815,14 +2144,18 @@ async function loadComparison() {
                 <span
                     class="compare-label compare-label-before"
                 >
+
                     Then
+
                 </span>
 
 
                 <span
                     class="compare-label compare-label-after"
                 >
+
                     Now
+
                 </span>
 
 
@@ -1866,8 +2199,6 @@ async function loadComparison() {
         );
 
     }
-
-
     catch (error) {
 
         console.error(
@@ -2001,28 +2332,23 @@ async function loadVideos() {
 
 
                 const link =
+
                     data.youtubeUrl ||
+
                     data.youtube ||
+
                     data.link ||
+
                     data.url ||
+
                     "";
 
-
-                /*
-                   Convert Google Drive link
-                   to preview URL.
-                */
 
                 const videoUrl =
                     getGoogleDriveVideoUrl(
                         link
                     );
 
-
-                /*
-                   If there is no URL,
-                   don't create a broken button.
-                */
 
                 if (!videoUrl) {
 
@@ -2069,9 +2395,11 @@ async function loadVideos() {
 
                                 `
 
-                                <p>
-                                    ${escapeHTML(description)}
-                                </p>
+                                    <p>
+                                        ${escapeHTML(
+                                            description
+                                        )}
+                                    </p>
 
                                 `
 
@@ -2089,9 +2417,11 @@ async function loadVideos() {
 
                                 `
 
-                                <p class="dur">
-                                    ${escapeHTML(year)}
-                                </p>
+                                    <p class="dur">
+                                        ${escapeHTML(
+                                            year
+                                        )}
+                                    </p>
 
                                 `
 
@@ -2109,9 +2439,11 @@ async function loadVideos() {
 
                                 `
 
-                                <p class="dur">
-                                    ${escapeHTML(duration)}
-                                </p>
+                                    <p class="dur">
+                                        ${escapeHTML(
+                                            duration
+                                        )}
+                                    </p>
 
                                 `
 
@@ -2121,9 +2453,7 @@ async function loadVideos() {
 
                             }
 
-
                         </div>
-
 
                     </button>
 
@@ -2132,11 +2462,6 @@ async function loadVideos() {
             }
         );
 
-
-        /*
-           If documents existed but none
-           had a usable link.
-        */
 
         if (!html) {
 
@@ -2174,10 +2499,6 @@ async function loadVideos() {
         videoList.innerHTML =
             html;
 
-
-        /*
-           VIDEO CLICK EVENTS
-        */
 
         const videoRows =
             videoList.querySelectorAll(
@@ -2217,8 +2538,6 @@ async function loadVideos() {
         );
 
     }
-
-
     catch (error) {
 
         console.error(
@@ -2276,10 +2595,6 @@ function openVideoViewer(
     }
 
 
-    /*
-       Remove an existing viewer if one exists.
-    */
-
     const existingViewer =
         document.querySelector(
             ".video-viewer"
@@ -2294,7 +2609,9 @@ function openVideoViewer(
 
 
     const viewer =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     viewer.className =
@@ -2315,7 +2632,8 @@ function openVideoViewer(
 
     viewer.setAttribute(
         "aria-label",
-        title || "Roy Bari film"
+        title ||
+        "Roy Bari film"
     );
 
 
@@ -2323,7 +2641,8 @@ function openVideoViewer(
 
         <div
             class="video-viewer-backdrop"
-        ></div>
+        >
+        </div>
 
 
         <div
@@ -2333,21 +2652,29 @@ function openVideoViewer(
 
             <button
                 type="button"
+
                 class="video-viewer-close"
+
                 aria-label="Close video"
             >
+
                 ×
+
             </button>
 
 
-            <div class="video-viewer-title">
+            <div
+                class="video-viewer-title"
+            >
 
                 ${escapeHTML(title)}
 
             </div>
 
 
-            <div class="video-frame">
+            <div
+                class="video-frame"
+            >
 
                 <iframe
                     src="${escapeHTML(videoUrl)}"
@@ -2359,10 +2686,10 @@ function openVideoViewer(
                     allowfullscreen
 
                     referrerpolicy="no-referrer"
-                ></iframe>
+                >
+                </iframe>
 
             </div>
-
 
         </div>
 
@@ -2407,7 +2734,9 @@ function openVideoViewer(
 
     function handleKeydown(event) {
 
-        if (event.key === "Escape") {
+        if (
+            event.key === "Escape"
+        ) {
 
             event.preventDefault();
 
@@ -2452,6 +2781,17 @@ async function initializeGallery() {
     );
 
 
+    /*
+       Setup arrows first.
+    */
+
+    setupGalleryHorizontalScroll();
+
+
+    /*
+       Load everything.
+    */
+
     await Promise.allSettled([
 
         loadGallery(),
@@ -2461,6 +2801,13 @@ async function initializeGallery() {
         loadVideos()
 
     ]);
+
+
+    /*
+       Recalculate after gallery loads.
+    */
+
+    updateGalleryArrows();
 
 
     console.log(

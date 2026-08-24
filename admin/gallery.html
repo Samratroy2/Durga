@@ -12,13 +12,12 @@
 
     <meta
         name="description"
-        content="Roy Bari Gallery Administration"
+        content="Roy Bari Gallery and Videos Administration"
     >
 
     <title>
-        Roy Bari — Gallery
+        Roy Bari — Gallery & Videos
     </title>
-
 
     <link
         rel="stylesheet"
@@ -33,7 +32,7 @@
     <style>
 
         /* =====================================================
-           GALLERY PAGE — SIDE BY SIDE LAYOUT
+           GALLERY / VIDEO MANAGEMENT
            ===================================================== */
 
         .manager-layout {
@@ -99,6 +98,81 @@
             border-radius: 14px;
 
             padding: 30px;
+
+        }
+
+
+        /* =====================================================
+           COLLECTION TABS
+           ===================================================== */
+
+        .collection-tabs {
+
+            display: flex;
+
+            gap: 8px;
+
+            margin-bottom: 24px;
+
+            padding: 5px;
+
+            background: #f4eee7;
+
+            border-radius: 10px;
+
+        }
+
+
+        .collection-tab {
+
+            flex: 1;
+
+            min-height: 42px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #795337;
+
+            font-family: inherit;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+
+        }
+
+
+        .collection-tab:hover {
+
+            background: #eadfd3;
+
+        }
+
+
+        .collection-tab.active {
+
+            background: #795337;
+
+            color: #ffffff;
+
+            box-shadow:
+                0 2px 7px
+                rgba(80, 55, 35, 0.12);
+
+        }
+
+
+        .collection-tab i {
+
+            margin-right: 7px;
 
         }
 
@@ -337,7 +411,7 @@
 
 
         /* =====================================================
-           GALLERY LIST
+           LIST
            ===================================================== */
 
         #galleryList {
@@ -352,7 +426,7 @@
 
 
         /* =====================================================
-           GALLERY ITEM
+           ITEM
            ===================================================== */
 
         .manager-item {
@@ -414,7 +488,7 @@
 
 
         /* =====================================================
-           SQUARE IMAGE
+           CIRCULAR GALLERY IMAGE
            ===================================================== */
 
         .manager-avatar.gallery-thumbnail {
@@ -425,7 +499,7 @@
 
             min-width: 70px;
 
-            border-radius: 10px;
+            border-radius: 50%;
 
             overflow: hidden;
 
@@ -441,6 +515,8 @@
 
             font-size: 25px;
 
+            border: 2px solid #e7ddd3;
+
         }
 
 
@@ -454,11 +530,53 @@
 
             object-fit: cover;
 
+            object-position: center;
+
+            border-radius: 50%;
+
         }
 
 
         /* =====================================================
-           GALLERY TEXT
+           VIDEO ICON
+           ===================================================== */
+
+        .manager-avatar.video-thumbnail {
+
+            width: 70px;
+
+            height: 70px;
+
+            min-width: 70px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #f3ece3;
+
+            color: #795337;
+
+            border: 2px solid #e7ddd3;
+
+            font-size: 25px;
+
+        }
+
+
+        .manager-avatar.video-thumbnail i {
+
+            color: #795337;
+
+        }
+
+
+        /* =====================================================
+           ITEM TEXT
            ===================================================== */
 
         .manager-item-main > div:last-child {
@@ -518,7 +636,7 @@
 
 
         /* =====================================================
-           ACTION BUTTONS
+           ACTIONS
            ===================================================== */
 
         .manager-actions {
@@ -656,26 +774,6 @@
 
 
         /* =====================================================
-           ERROR IMAGE
-           ===================================================== */
-
-        .manager-avatar.gallery-thumbnail.image-error {
-
-            background: #f3ece3;
-
-        }
-
-
-        .manager-avatar.gallery-thumbnail.image-error::after {
-
-            content: "📷";
-
-            font-size: 24px;
-
-        }
-
-
-        /* =====================================================
            HIDDEN ID
            ===================================================== */
 
@@ -718,7 +816,8 @@
             }
 
 
-            .manager-avatar.gallery-thumbnail {
+            .manager-avatar.gallery-thumbnail,
+            .manager-avatar.video-thumbnail {
 
                 width: 60px;
 
@@ -1103,11 +1202,11 @@
                     CONTENT MANAGEMENT
                 </span>
 
-                <h1>
+                <h1 id="pageTitle">
                     Gallery
                 </h1>
 
-                <p>
+                <p id="pageDescription">
                     Manage photographs and visual memories.
                 </p>
 
@@ -1150,14 +1249,48 @@
 
 
         <!-- =====================================================
-             GALLERY MANAGEMENT
+             COLLECTION TABS
+             ===================================================== -->
+
+        <div class="collection-tabs">
+
+            <button
+                type="button"
+                id="galleryTab"
+                class="collection-tab active"
+            >
+
+                <i class="fa-solid fa-images"></i>
+
+                Gallery
+
+            </button>
+
+
+            <button
+                type="button"
+                id="videosTab"
+                class="collection-tab"
+            >
+
+                <i class="fa-solid fa-video"></i>
+
+                Videos
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             MANAGEMENT
              ===================================================== -->
 
         <section class="manager-layout">
 
 
             <!-- =================================================
-                 LEFT — ADD / EDIT FORM
+                 LEFT — FORM
                  ================================================= -->
 
             <div class="manager-form-card">
@@ -1165,10 +1298,9 @@
 
                 <div class="section-heading">
 
-
                     <div>
 
-                        <span>
+                        <span id="formEyebrow">
                             PHOTO
                         </span>
 
@@ -1177,7 +1309,6 @@
                         </h2>
 
                     </div>
-
 
                 </div>
 
@@ -1216,7 +1347,7 @@
                                 type="text"
                                 id="title"
                                 name="title"
-                                placeholder="Enter photograph title"
+                                placeholder="Enter title"
                                 required
                             >
 
@@ -1243,11 +1374,11 @@
                         </div>
 
 
-                        <!-- IMAGE URL -->
+                        <!-- IMAGE / VIDEO URL -->
 
                         <div class="gallery-form-group full">
 
-                            <label for="image">
+                            <label for="image" id="linkLabel">
                                 Image URL *
                             </label>
 
@@ -1260,6 +1391,7 @@
                             >
 
                             <small
+                                id="linkHelp"
                                 style="
                                     color:#8b7b6d;
                                     font-size:11px;
@@ -1283,7 +1415,7 @@
                             <textarea
                                 id="description"
                                 name="description"
-                                placeholder="Describe this photograph..."
+                                placeholder="Describe this item..."
                             ></textarea>
 
                         </div>
@@ -1291,7 +1423,10 @@
 
                         <!-- CATEGORY -->
 
-                        <div class="gallery-form-group full">
+                        <div
+                            class="gallery-form-group full"
+                            id="categoryGroup"
+                        >
 
                             <label for="category">
                                 Category
@@ -1311,7 +1446,7 @@
 
 
                     <!-- =================================================
-                         FORM ACTIONS
+                         ACTIONS
                          ================================================= -->
 
                     <div class="gallery-form-actions">
@@ -1338,9 +1473,7 @@
                     </div>
 
 
-                    <!-- =================================================
-                         MESSAGE
-                         ================================================= -->
+                    <!-- MESSAGE -->
 
                     <p
                         id="galleryMessage"
@@ -1355,24 +1488,22 @@
 
 
             <!-- =================================================
-                 RIGHT — GALLERY LIST
+                 RIGHT — LIST
                  ================================================= -->
 
             <div class="manager-list-card">
 
-
-                <!-- HEADER -->
 
                 <div class="section-heading">
 
 
                     <div>
 
-                        <span>
+                        <span id="listEyebrow">
                             FIRESTORE
                         </span>
 
-                        <h2>
+                        <h2 id="listTitle">
                             Gallery
                         </h2>
 
@@ -1387,19 +1518,13 @@
                 </div>
 
 
-                <!-- =================================================
-                     GALLERY LIST
-                     ================================================= -->
+                <!-- LIST -->
 
                 <div id="galleryList">
 
-
                     <div class="gallery-loading">
-
                         Loading gallery...
-
                     </div>
-
 
                 </div>
 

@@ -6069,3 +6069,232 @@ p {
     font-weight: 600;
     color: var(--maroon);
 }
+
+/* =========================================================
+   HORIZONTAL IMAGE GALLERY
+   ========================================================= */
+
+.gallery-slider {
+    position: relative;
+    width: 100%;
+}
+
+
+/* =========================================================
+   HORIZONTAL SCROLL AREA
+   ========================================================= */
+
+.gallery-slider .gallery-grid {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    gap: 16px;
+
+    width: 100%;
+
+    overflow-x: auto !important;
+
+    overflow-y: hidden;
+
+    scroll-behavior: smooth;
+
+    scrollbar-width: thin;
+
+    -webkit-overflow-scrolling: touch;
+
+    padding-bottom: 12px;
+
+}
+
+
+/* Chrome / Edge scrollbar */
+
+.gallery-slider .gallery-grid::-webkit-scrollbar {
+    height: 6px;
+}
+
+.gallery-slider .gallery-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.gallery-slider .gallery-grid::-webkit-scrollbar-thumb {
+    background: #c7b29f;
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   DESKTOP
+   SHOW 4 IMAGES
+   ========================================================= */
+
+.gallery-slider .gallery-card {
+
+    flex: 0 0 calc(
+        (100% - 48px) / 4
+    ) !important;
+
+    width: calc(
+        (100% - 48px) / 4
+    ) !important;
+
+    min-width: calc(
+        (100% - 48px) / 4
+    ) !important;
+
+}
+
+
+/* =========================================================
+   ARROWS
+   ========================================================= */
+
+.gallery-arrow {
+
+    position: absolute;
+
+    top: 45%;
+
+    transform: translateY(-50%);
+
+    z-index: 20;
+
+    width: 44px;
+
+    height: 44px;
+
+    border: 1px solid rgba(255,255,255,.5);
+
+    border-radius: 50%;
+
+    background: rgba(48,40,32,.88);
+
+    color: #fff;
+
+    font-size: 32px;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 14px rgba(0,0,0,.18);
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+
+}
+
+
+.gallery-arrow:hover {
+
+    background: #795337;
+
+    transform:
+        translateY(-50%)
+        scale(1.05);
+
+}
+
+
+.gallery-arrow-left {
+
+    left: -20px;
+
+}
+
+
+.gallery-arrow-right {
+
+    right: -20px;
+
+}
+
+
+/* =========================================================
+   TABLET
+   SHOW 2 IMAGES
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .gallery-slider .gallery-card {
+
+        flex: 0 0 calc(
+            (100% - 16px) / 2
+        ) !important;
+
+        width: calc(
+            (100% - 16px) / 2
+        ) !important;
+
+        min-width: calc(
+            (100% - 16px) / 2
+        ) !important;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   SHOW 1 IMAGE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .gallery-slider .gallery-grid {
+
+        gap: 12px;
+
+    }
+
+
+    .gallery-slider .gallery-card {
+
+        flex: 0 0 88% !important;
+
+        width: 88% !important;
+
+        min-width: 88% !important;
+
+    }
+
+
+    .gallery-arrow {
+
+        width: 36px;
+
+        height: 36px;
+
+        font-size: 27px;
+
+    }
+
+
+    .gallery-arrow-left {
+
+        left: 5px;
+
+    }
+
+
+    .gallery-arrow-right {
+
+        right: 5px;
+
+    }
+
+}
