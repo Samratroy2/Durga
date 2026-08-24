@@ -2718,3 +2718,14 @@ input {
 
     font-size: 12px;
 }
+
+.logout-button{
+    color: red;
+    height: 45px;
+    font-size: 15px;
+}
+
+.logout-button:hover{
+    background-color: red;
+    color: white;
+}
