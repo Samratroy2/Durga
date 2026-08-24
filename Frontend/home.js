@@ -14,6 +14,7 @@ import {
 } from "./firebase.js";
 
 
+
 /* =========================================================
    ELEMENTS
    ========================================================= */
@@ -31,7 +32,13 @@ const eyeImage =
     document.getElementById("eye");
 
 
+
+/* =========================================================
+   COUNTDOWN STATE
+   ========================================================= */
+
 let countdownInterval = null;
+
 
 
 /* =========================================================
@@ -44,65 +51,101 @@ console.log("Home JS started");
 console.log("Firestore:", db);
 console.log("=================================");
 
-loadNextEvent();
+
+loadNextRitual();
 loadDurgaImage();
 
 
+
 /* =========================================================
-   LOAD NEXT EVENT
+   LOAD FIRST UPCOMING RITUAL
+   FIRESTORE:
+   rituals
    ========================================================= */
 
-async function loadNextEvent() {
+async function loadNextRitual() {
 
     if (!countdown) {
-        console.warn("#countdown element not found");
+
+        console.warn(
+            "ROY BARI: #countdown element not found"
+        );
+
         return;
+
     }
+
 
     try {
 
         console.log(
-            "ROY BARI: Loading Puja events..."
+            "ROY BARI: Loading rituals..."
         );
+
+
+        /* =================================================
+           GET RITUALS
+           ================================================= */
 
         const snapshot =
             await getDocs(
                 collection(
                     db,
-                    "events"
+                    "rituals"
                 )
             );
 
+
         console.log(
-            "ROY BARI: Events found:",
+            "ROY BARI: Rituals found:",
             snapshot.size
         );
 
-        const events = [];
+
+        const rituals = [];
+
+
+        /* =================================================
+           READ ALL RITUALS
+           ================================================= */
 
         snapshot.forEach(doc => {
 
-            const data = doc.data();
+            const data =
+                doc.data();
+
 
             console.log(
-                "Event:",
+                "Ritual:",
                 doc.id,
                 data
             );
 
-            const event = {
+
+            const ritual = {
+
                 id: doc.id,
+
                 ...data
+
             };
 
-            const eventDate =
-                getEventDate(event);
 
-            if (eventDate) {
+            const ritualDate =
+                getEventDate(
+                    ritual
+                );
 
-                events.push({
-                    ...event,
-                    eventDate
+
+            if (ritualDate) {
+
+                rituals.push({
+
+                    ...ritual,
+
+                    eventDate:
+                        ritualDate
+
                 });
 
             }
@@ -110,17 +153,21 @@ async function loadNextEvent() {
         });
 
 
+
         /* =================================================
-           FUTURE EVENTS
+           FIND UPCOMING RITUALS
            ================================================= */
 
-        const now = Date.now();
+        const now =
+            Date.now();
 
-        const upcomingEvents =
-            events
+
+        const upcomingRituals =
+            rituals
                 .filter(
-                    event =>
-                        event.eventDate.getTime() > now
+                    ritual =>
+                        ritual.eventDate.getTime() >
+                        now
                 )
                 .sort(
                     (a, b) =>
@@ -129,43 +176,93 @@ async function loadNextEvent() {
                 );
 
 
+
+        /* =================================================
+           NO UPCOMING RITUAL
+           ================================================= */
+
         if (
-            upcomingEvents.length === 0
+            upcomingRituals.length === 0
         ) {
 
+            console.log(
+                "ROY BARI: No upcoming rituals."
+            );
+
+
             showNoEvent();
+
             return;
 
         }
 
 
-        const nextEvent =
-            upcomingEvents[0];
+
+        /* =================================================
+           FIRST UPCOMING RITUAL
+           ================================================= */
+
+        const nextRitual =
+            upcomingRituals[0];
 
 
         console.log(
-            "ROY BARI: Next event:",
-            nextEvent
+            "ROY BARI: First upcoming ritual:",
+            nextRitual
         );
 
 
-        const eventName =
-            nextEvent.name ||
-            nextEvent.title ||
-            nextEvent.eventName ||
+        console.log(
+            "ROY BARI: Countdown date:",
+            nextRitual.eventDate
+        );
+
+
+
+        /* =================================================
+           COUNTDOWN LABEL
+           ================================================= */
+
+        /*
+         * Priority:
+         *
+         * 1. day
+         * 2. category
+         * 3. name
+         * 4. title
+         *
+         * Your current Firestore document:
+         *
+         * day: "Sashthi"
+         *
+         * Therefore:
+         *
+         * Counting down to Sashthi
+         */
+
+        const countdownName =
+            nextRitual.day ||
+            nextRitual.category ||
+            nextRitual.name ||
+            nextRitual.title ||
             "the next Puja event";
 
 
         if (countdownLabel) {
 
             countdownLabel.textContent =
-                `Counting down to ${eventName}`;
+                `Counting down to ${countdownName}`;
 
         }
 
 
+
+        /* =================================================
+           START COUNTDOWN
+           ================================================= */
+
         startCountdown(
-            nextEvent.eventDate
+            nextRitual.eventDate
         );
 
     }
@@ -173,9 +270,10 @@ async function loadNextEvent() {
     catch (error) {
 
         console.error(
-            "ROY BARI: EVENTS FIREBASE ERROR:",
+            "ROY BARI: RITUALS FIREBASE ERROR:",
             error
         );
+
 
         showError();
 
@@ -184,16 +282,24 @@ async function loadNextEvent() {
 }
 
 
+
 /* =========================================================
-   GET EVENT DATE
+   GET EVENT / RITUAL DATE
    ========================================================= */
 
 function getEventDate(event) {
 
     if (!event) {
+
         return null;
+
     }
 
+
+
+    /* =================================================
+       POSSIBLE DATE FIELDS
+       ================================================= */
 
     const rawDate =
         event.date ||
@@ -202,12 +308,18 @@ function getEventDate(event) {
         event.timestamp;
 
 
+
     if (!rawDate) {
+
         return null;
+
     }
 
 
-    /* Firestore Timestamp */
+
+    /* =================================================
+       FIRESTORE TIMESTAMP
+       ================================================= */
 
     if (
         typeof rawDate.toDate ===
@@ -216,6 +328,7 @@ function getEventDate(event) {
 
         const date =
             rawDate.toDate();
+
 
         return Number.isNaN(
             date.getTime()
@@ -226,7 +339,10 @@ function getEventDate(event) {
     }
 
 
-    /* JavaScript Date */
+
+    /* =================================================
+       JAVASCRIPT DATE
+       ================================================= */
 
     if (
         rawDate instanceof Date
@@ -241,7 +357,10 @@ function getEventDate(event) {
     }
 
 
-    /* Firestore timestamp-like object */
+
+    /* =================================================
+       FIRESTORE TIMESTAMP-LIKE OBJECT
+       ================================================= */
 
     if (
         typeof rawDate === "object" &&
@@ -253,6 +372,7 @@ function getEventDate(event) {
                 Number(rawDate.seconds) * 1000
             );
 
+
         return Number.isNaN(
             date.getTime()
         )
@@ -262,7 +382,10 @@ function getEventDate(event) {
     }
 
 
-    /* String / number */
+
+    /* =================================================
+       STRING / NUMBER
+       ================================================= */
 
     const date =
         new Date(rawDate);
@@ -275,18 +398,21 @@ function getEventDate(event) {
     ) {
 
         console.warn(
-            "ROY BARI: Invalid event date:",
+            "ROY BARI: Invalid ritual date:",
             rawDate
         );
+
 
         return null;
 
     }
 
 
+
     return date;
 
 }
+
 
 
 /* =========================================================
@@ -296,6 +422,10 @@ function getEventDate(event) {
 function startCountdown(
     targetDate
 ) {
+
+    /* =================================================
+       CLEAR PREVIOUS TIMER
+       ================================================= */
 
     if (countdownInterval) {
 
@@ -308,12 +438,22 @@ function startCountdown(
     }
 
 
+
+    /* =================================================
+       UPDATE COUNTDOWN
+       ================================================= */
+
     function update() {
 
         let difference =
             targetDate.getTime() -
             Date.now();
 
+
+
+        /* =================================================
+           RITUAL HAS STARTED
+           ================================================= */
 
         if (
             difference <= 0
@@ -348,58 +488,116 @@ function startCountdown(
                 countdownInterval
             );
 
+
             countdownInterval = null;
+
+
+            /*
+             * Reload rituals after the current
+             * ritual reaches its date.
+             *
+             * This allows the next ritual
+             * to become the countdown target.
+             */
+
+            setTimeout(
+                loadNextRitual,
+                1000
+            );
+
 
             return;
 
         }
 
 
+
+        /* =================================================
+           TIME UNITS
+           ================================================= */
+
         const day =
-            1000 * 60 * 60 * 24;
+            1000 *
+            60 *
+            60 *
+            24;
+
 
         const hour =
-            1000 * 60 * 60;
+            1000 *
+            60 *
+            60;
+
 
         const minute =
-            1000 * 60;
+            1000 *
+            60;
+
 
         const second =
             1000;
 
+
+
+        /* =================================================
+           DAYS
+           ================================================= */
 
         const days =
             Math.floor(
                 difference / day
             );
 
+
         difference -=
             days * day;
 
+
+
+        /* =================================================
+           HOURS
+           ================================================= */
 
         const hours =
             Math.floor(
                 difference / hour
             );
 
+
         difference -=
             hours * hour;
 
+
+
+        /* =================================================
+           MINUTES
+           ================================================= */
 
         const minutes =
             Math.floor(
                 difference / minute
             );
 
+
         difference -=
             minutes * minute;
 
+
+
+        /* =================================================
+           SECONDS
+           ================================================= */
 
         const seconds =
             Math.floor(
                 difference / second
             );
 
+
+
+        /* =================================================
+           UPDATE HTML
+           ================================================= */
 
         countdown.innerHTML = `
 
@@ -415,6 +613,7 @@ function startCountdown(
 
             </div>
 
+
             <div class="box">
 
                 <span class="n">
@@ -427,6 +626,7 @@ function startCountdown(
 
             </div>
 
+
             <div class="box">
 
                 <span class="n">
@@ -438,6 +638,7 @@ function startCountdown(
                 </span>
 
             </div>
+
 
             <div class="box">
 
@@ -456,8 +657,18 @@ function startCountdown(
     }
 
 
+
+    /* =================================================
+       RUN IMMEDIATELY
+       ================================================= */
+
     update();
 
+
+
+    /* =================================================
+       UPDATE EVERY SECOND
+       ================================================= */
 
     countdownInterval =
         setInterval(
@@ -468,14 +679,15 @@ function startCountdown(
 }
 
 
+
 /* =========================================================
-   NO UPCOMING EVENT
+   NO UPCOMING RITUAL
    ========================================================= */
 
 function showNoEvent() {
 
     console.log(
-        "ROY BARI: No upcoming Puja event."
+        "ROY BARI: No upcoming ritual."
     );
 
 
@@ -496,7 +708,7 @@ function showNoEvent() {
             </span>
 
             <span class="u">
-                No upcoming event
+                No upcoming ritual
             </span>
 
         </div>
@@ -504,6 +716,7 @@ function showNoEvent() {
     `;
 
 }
+
 
 
 /* =========================================================
@@ -539,6 +752,7 @@ function showError() {
 }
 
 
+
 /* =========================================================
    LOAD DURGA IMAGE
    FROM:
@@ -572,6 +786,11 @@ async function loadDurgaImage() {
         let durgaImageURL = "";
 
 
+
+        /* =================================================
+           FIND DURGA IMAGE
+           ================================================= */
+
         snapshot.forEach(doc => {
 
             const data =
@@ -601,6 +820,11 @@ async function loadDurgaImage() {
         });
 
 
+
+        /* =================================================
+           IMAGE NOT FOUND
+           ================================================= */
+
         if (
             !durgaImageURL
         ) {
@@ -614,11 +838,17 @@ async function loadDurgaImage() {
         }
 
 
+
         console.log(
             "ROY BARI: Drive URL:",
             durgaImageURL
         );
 
+
+
+        /* =================================================
+           CONVERT DRIVE URL
+           ================================================= */
 
         const imageURL =
             convertGoogleDriveURL(
@@ -632,8 +862,9 @@ async function loadDurgaImage() {
         );
 
 
+
         /* =================================================
-           HERO
+           HERO IMAGE
            ================================================= */
 
         if (heroImage) {
@@ -641,14 +872,16 @@ async function loadDurgaImage() {
             heroImage.src =
                 imageURL;
 
+
             heroImage.alt =
                 "Roy Bari Durga";
 
         }
 
 
+
         /* =================================================
-           FAMILY WORDS
+           FAMILY WORDS IMAGE
            ================================================= */
 
         if (eyeImage) {
@@ -656,10 +889,12 @@ async function loadDurgaImage() {
             eyeImage.src =
                 imageURL;
 
+
             eyeImage.alt =
                 "Roy Bari Durga";
 
         }
+
 
 
         console.log(
@@ -680,6 +915,7 @@ async function loadDurgaImage() {
 }
 
 
+
 /* =========================================================
    GOOGLE DRIVE URL
    ========================================================= */
@@ -689,14 +925,21 @@ function convertGoogleDriveURL(
 ) {
 
     if (!url) {
+
         return "";
+
     }
 
 
-    /*
-     * Example:
-     * https://drive.google.com/file/d/ABC123/view
-     */
+
+    /* =================================================
+       GOOGLE DRIVE FILE URL
+       =================================================
+
+       Example:
+
+       https://drive.google.com/file/d/ABC123/view
+    */
 
     const fileMatch =
         url.match(
@@ -713,12 +956,6 @@ function convertGoogleDriveURL(
             fileMatch[1];
 
 
-        /*
-         * Thumbnail endpoint is generally
-         * more reliable for displaying
-         * Google Drive images.
-         */
-
         return (
             "https://drive.google.com/thumbnail?id=" +
             fileId +
@@ -728,10 +965,15 @@ function convertGoogleDriveURL(
     }
 
 
-    /*
-     * Example:
-     * https://drive.google.com/open?id=ABC123
-     */
+
+    /* =================================================
+       GOOGLE DRIVE OPEN URL
+       =================================================
+
+       Example:
+
+       https://drive.google.com/open?id=ABC123
+    */
 
     const idMatch =
         url.match(
@@ -757,9 +999,10 @@ function convertGoogleDriveURL(
     }
 
 
-    /*
-     * Googleusercontent
-     */
+
+    /* =================================================
+       GOOGLE USER CONTENT
+       ================================================= */
 
     if (
         url.includes(
@@ -772,13 +1015,15 @@ function convertGoogleDriveURL(
     }
 
 
-    /*
-     * Already a direct URL
-     */
+
+    /* =================================================
+       ALREADY DIRECT URL
+       ================================================= */
 
     return url;
 
 }
+
 
 
 /* =========================================================
@@ -796,6 +1041,7 @@ window.addEventListener(
             clearInterval(
                 countdownInterval
             );
+
 
             countdownInterval = null;
 
