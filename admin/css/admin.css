@@ -13,11 +13,9 @@
     box-sizing: border-box;
 }
 
-
 html {
     scroll-behavior: smooth;
 }
-
 
 body {
     font-family:
@@ -28,12 +26,10 @@ body {
         sans-serif;
 
     color: #302820;
-
     background: #f6f1e9;
 
     -webkit-font-smoothing: antialiased;
 }
-
 
 button,
 input,
@@ -48,19 +44,15 @@ textarea {
    ========================================================= */
 
 .login-page {
-
     min-height: 100vh;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     padding: 30px;
 
     position: relative;
-
     overflow: hidden;
 
     background:
@@ -75,7 +67,6 @@ textarea {
             transparent 30%
         ),
         #f5eee4;
-
 }
 
 
@@ -84,47 +75,33 @@ textarea {
    ========================================================= */
 
 .login-decoration {
-
     position: absolute;
-
     border-radius: 50%;
-
     pointer-events: none;
-
 }
 
-
 .decoration-one {
-
     width: 500px;
-
     height: 500px;
 
     top: -280px;
-
     right: -150px;
 
     border:
         1px solid
         rgba(111, 78, 55, 0.10);
-
 }
 
-
 .decoration-two {
-
     width: 400px;
-
     height: 400px;
 
     bottom: -240px;
-
     left: -130px;
 
     border:
         1px solid
         rgba(111, 78, 55, 0.10);
-
 }
 
 
@@ -133,20 +110,14 @@ textarea {
    ========================================================= */
 
 .login-wrapper {
-
     width: 100%;
-
     max-width: 450px;
 
     position: relative;
-
     z-index: 2;
-
 }
 
-
 .login-card {
-
     background:
         rgba(255, 255, 255, 0.96);
 
@@ -161,7 +132,6 @@ textarea {
     box-shadow:
         0 25px 80px
         rgba(69, 48, 29, 0.13);
-
 }
 
 
@@ -170,32 +140,23 @@ textarea {
    ========================================================= */
 
 .login-logo {
-
     display: flex;
-
     justify-content: center;
 
     margin-bottom: 22px;
-
 }
 
-
 .logo-symbol {
-
     width: 72px;
-
     height: 72px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     border-radius: 50%;
 
-    background:
-        #f5eadb;
+    background: #f5eadb;
 
     border:
         1px solid
@@ -206,7 +167,6 @@ textarea {
     box-shadow:
         0 8px 20px
         rgba(111, 78, 55, 0.10);
-
 }
 
 
@@ -215,36 +175,25 @@ textarea {
    ========================================================= */
 
 .login-heading {
-
     text-align: center;
-
     margin-bottom: 32px;
-
 }
 
-
 .login-label {
-
     display: block;
 
     margin-bottom: 6px;
 
-    color:
-        #9a7755;
+    color: #9a7755;
 
     font-size: 11px;
-
     font-weight: 700;
 
     letter-spacing: 3px;
-
 }
 
-
 .login-heading h1 {
-
-    color:
-        #35271e;
+    color: #35271e;
 
     font-family:
         Georgia,
@@ -252,23 +201,16 @@ textarea {
         serif;
 
     font-size: 32px;
-
     font-weight: 600;
 
     margin-bottom: 9px;
-
 }
 
-
 .login-heading p {
-
-    color:
-        #8a7c70;
+    color: #8a7c70;
 
     font-size: 13px;
-
     line-height: 1.6;
-
 }
 
 
@@ -277,34 +219,23 @@ textarea {
    ========================================================= */
 
 .form-group {
-
     margin-bottom: 20px;
-
 }
 
-
 .form-group label {
-
     display: block;
 
     margin-bottom: 8px;
 
-    color:
-        #493a2f;
+    color: #493a2f;
 
     font-size: 12px;
-
     font-weight: 700;
-
 }
 
-
 .label-row {
-
     display: flex;
-
     justify-content: space-between;
-
 }
 
 
@@ -313,36 +244,25 @@ textarea {
    ========================================================= */
 
 .input-wrapper {
-
     position: relative;
-
 }
 
-
 .input-icon {
-
     position: absolute;
 
     left: 15px;
-
     top: 50%;
 
-    transform:
-        translateY(-50%);
+    transform: translateY(-50%);
 
     font-size: 14px;
-
     opacity: 0.55;
 
     pointer-events: none;
-
 }
 
-
 .input-wrapper input {
-
     width: 100%;
-
     height: 52px;
 
     padding:
@@ -353,11 +273,8 @@ textarea {
 
     border-radius: 11px;
 
-    background:
-        #fcfaf7;
-
-    color:
-        #302820;
+    background: #fcfaf7;
+    color: #302820;
 
     outline: none;
 
@@ -367,30 +284,20 @@ textarea {
         border-color 0.2s,
         box-shadow 0.2s,
         background 0.2s;
-
 }
-
 
 .input-wrapper input::placeholder {
-
-    color:
-        #aaa096;
-
+    color: #aaa096;
 }
 
-
 .input-wrapper input:focus {
+    background: #fff;
 
-    background:
-        #fff;
-
-    border-color:
-        #96704e;
+    border-color: #96704e;
 
     box-shadow:
         0 0 0 4px
         rgba(150, 112, 78, 0.10);
-
 }
 
 
@@ -399,32 +306,24 @@ textarea {
    ========================================================= */
 
 .primary-button {
-
     width: 100%;
-
     height: 52px;
 
     margin-top: 8px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     gap: 12px;
 
     border: none;
-
     border-radius: 11px;
 
-    background:
-        #684832;
-
+    background: #684832;
     color: white;
 
     font-size: 14px;
-
     font-weight: 700;
 
     cursor: pointer;
@@ -437,52 +336,31 @@ textarea {
         transform 0.2s,
         background 0.2s,
         box-shadow 0.2s;
-
 }
 
-
 .primary-button:hover {
+    background: #543823;
 
-    background:
-        #543823;
-
-    transform:
-        translateY(-1px);
+    transform: translateY(-1px);
 
     box-shadow:
         0 11px 22px
         rgba(104, 72, 50, 0.25);
-
 }
-
 
 .primary-button:active {
-
-    transform:
-        translateY(0);
-
+    transform: translateY(0);
 }
-
 
 .primary-button:disabled {
-
     opacity: 0.6;
-
-    cursor:
-        not-allowed;
-
-    transform:
-        none;
-
+    cursor: not-allowed;
+    transform: none;
 }
 
-
 .button-arrow {
-
     font-size: 18px;
-
     line-height: 1;
-
 }
 
 
@@ -491,7 +369,6 @@ textarea {
    ========================================================= */
 
 .message {
-
     min-height: 22px;
 
     margin-top: 14px;
@@ -499,25 +376,15 @@ textarea {
     text-align: center;
 
     font-size: 12px;
-
     line-height: 1.5;
-
 }
-
 
 .message.error {
-
-    color:
-        #c24e42;
-
+    color: #c24e42;
 }
 
-
 .message.success {
-
-    color:
-        #318255;
-
+    color: #318255;
 }
 
 
@@ -526,7 +393,6 @@ textarea {
    ========================================================= */
 
 .login-footer {
-
     margin-top: 25px;
 
     padding-top: 18px;
@@ -536,25 +402,19 @@ textarea {
 
     text-align: center;
 
-    color:
-        #a0968c;
+    color: #a0968c;
 
     font-size: 11px;
-
 }
 
-
 .login-brand {
-
     margin-top: 20px;
 
     text-align: center;
 
-    color:
-        #9c8e80;
+    color: #9c8e80;
 
     font-size: 11px;
-
 }
 
 
@@ -563,12 +423,8 @@ textarea {
    ========================================================= */
 
 .dashboard-page {
-
     min-height: 100vh;
-
-    background:
-        #f6f2eb;
-
+    background: #f6f2eb;
 }
 
 
@@ -577,30 +433,22 @@ textarea {
    ========================================================= */
 
 .sidebar {
-
     width: 265px;
-
     min-height: 100vh;
 
     position: fixed;
 
     left: 0;
-
     top: 0;
-
     bottom: 0;
 
     display: flex;
-
     flex-direction: column;
 
-    background:
-        #302923;
-
+    background: #302923;
     color: white;
 
     z-index: 100;
-
 }
 
 
@@ -609,11 +457,9 @@ textarea {
    ========================================================= */
 
 .sidebar-brand {
-
     min-height: 90px;
 
     display: flex;
-
     align-items: center;
 
     gap: 13px;
@@ -623,62 +469,46 @@ textarea {
 
     border-bottom:
         1px solid
-        rgba(255,255,255,0.07);
-
+        rgba(255, 255, 255, 0.07);
 }
 
-
 .sidebar-logo {
-
     width: 44px;
-
     height: 44px;
 
     flex-shrink: 0;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     border-radius: 12px;
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     font-size: 22px;
-
 }
 
-
 .sidebar-brand-text h2 {
-
     font-family:
         Georgia,
         "Times New Roman",
         serif;
 
     font-size: 19px;
-
     font-weight: 600;
-
 }
 
-
 .sidebar-brand-text span {
-
     display: block;
 
     margin-top: 3px;
 
-    color:
-        #aaa097;
+    color: #aaa097;
 
     font-size: 10px;
-
     letter-spacing: 0.4px;
-
 }
 
 
@@ -687,57 +517,41 @@ textarea {
    ========================================================= */
 
 .sidebar-nav {
-
     flex: 1;
 
     padding:
         20px 12px;
 
     overflow-y: auto;
-
 }
-
 
 .sidebar-nav::-webkit-scrollbar {
-
     width: 4px;
-
 }
-
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-
     background:
-        rgba(255,255,255,0.12);
+        rgba(255, 255, 255, 0.12);
 
     border-radius: 10px;
-
 }
 
-
 .nav-section-title {
-
     padding:
         13px 12px 8px;
 
-    color:
-        #827970;
+    color: #827970;
 
     font-size: 9px;
-
     font-weight: 800;
 
     letter-spacing: 1.5px;
-
 }
 
-
 .nav-item {
-
     min-height: 44px;
 
     display: flex;
-
     align-items: center;
 
     gap: 12px;
@@ -749,8 +563,7 @@ textarea {
 
     border-radius: 9px;
 
-    color:
-        #c8beb5;
+    color: #c8beb5;
 
     text-decoration: none;
 
@@ -759,51 +572,26 @@ textarea {
     transition:
         background 0.2s,
         color 0.2s;
-
 }
-
 
 .nav-item:hover {
-
     background:
-        rgba(255,255,255,0.06);
+        rgba(255, 255, 255, 0.06);
 
-    color:
-        #fff;
-
+    color: #fff;
 }
-
 
 .nav-item.active {
-
-    background:
-        #684832;
-
-    color:
-        #fff;
-
+    background: #684832;
+    color: #fff;
 }
 
 
-/* Font Awesome icons */
+/* =========================================================
+   FONT AWESOME NAV ICON
+   ========================================================= */
 
 .nav-item > i {
-
-    width: 25px;
-
-    flex-shrink: 0;
-
-    text-align: center;
-
-    font-size: 16px;
-
-}
-
-
-/* Custom nav icon such as ॐ */
-
-.nav-icon {
-
     width: 25px;
 
     flex-shrink: 0;
@@ -811,13 +599,37 @@ textarea {
     display: inline-flex;
 
     align-items: center;
-
     justify-content: center;
 
     text-align: center;
 
     font-size: 16px;
+}
 
+
+/* =========================================================
+   CUSTOM NAV ICON — ॐ ETC.
+   ========================================================= */
+
+.nav-icon {
+    width: 25px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    color: inherit;
 }
 
 
@@ -826,19 +638,14 @@ textarea {
    ========================================================= */
 
 .sidebar-bottom {
-
-    padding:
-        15px;
+    padding: 15px;
 
     border-top:
         1px solid
-        rgba(255,255,255,0.07);
-
+        rgba(255, 255, 255, 0.07);
 }
 
-
 .sidebar-note {
-
     display: flex;
 
     align-items: center;
@@ -847,56 +654,42 @@ textarea {
 
     margin-bottom: 12px;
 
-    padding:
-        10px;
+    padding: 10px;
 
     border-radius: 9px;
 
     background:
-        rgba(255,255,255,0.04);
-
+        rgba(255, 255, 255, 0.04);
 }
 
-
 .sidebar-note > i {
-
     width: 20px;
 
     flex-shrink: 0;
 
     text-align: center;
 
-    color:
-        #d8d0c8;
+    color: #d8d0c8;
 
     font-size: 15px;
-
 }
-
 
 .sidebar-note strong {
-
     display: block;
 
-    color:
-        #d8d0c8;
+    color: #d8d0c8;
 
     font-size: 11px;
-
 }
 
-
 .sidebar-note small {
-
     display: block;
 
     margin-top: 2px;
 
-    color:
-        #81776f;
+    color: #81776f;
 
     font-size: 9px;
-
 }
 
 
@@ -907,65 +700,51 @@ textarea {
    ========================================================= */
 
 .logout-button {
-
     width: 100%;
-
     height: 42px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     gap: 8px;
 
     border:
         1px solid
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     border-radius: 9px;
 
     background:
-        rgba(255,255,255,0.04);
+        rgba(255, 255, 255, 0.04);
 
-    color:
-        #c9c0b8;
+    color: #c9c0b8;
 
     cursor: pointer;
 
     font-size: 12px;
-
     font-weight: 500;
 
     transition:
         background 0.2s,
         color 0.2s,
         border-color 0.2s;
-
 }
-
 
 .logout-button i {
-
     font-size: 15px;
-
     line-height: 1;
-
 }
 
 
+/* =========================================================
+   LOGOUT HOVER — RED
+   ========================================================= */
+
 .logout-button:hover {
-
-    background:
-        rgba(190, 78, 65, 0.18);
-
-    border-color:
-        rgba(190, 78, 65, 0.25);
-
-    color:
-        #fff;
-
+    background: red;
+    border-color: red;
+    color: white;
 }
 
 
@@ -974,14 +753,12 @@ textarea {
    ========================================================= */
 
 .dashboard-main {
-
     min-height: 100vh;
 
     margin-left: 265px;
 
     padding:
         35px 42px 25px;
-
 }
 
 
@@ -990,44 +767,32 @@ textarea {
    ========================================================= */
 
 .topbar {
-
     min-height: 70px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 25px;
 
     margin-bottom: 28px;
-
 }
 
-
 .page-eyebrow {
-
     display: block;
 
     margin-bottom: 5px;
 
-    color:
-        #9c7653;
+    color: #9c7653;
 
     font-size: 9px;
-
     font-weight: 800;
 
     letter-spacing: 2px;
-
 }
 
-
 .topbar h1 {
-
-    color:
-        #33271f;
+    color: #33271f;
 
     font-family:
         Georgia,
@@ -1035,28 +800,19 @@ textarea {
         serif;
 
     font-size: 30px;
-
     font-weight: 600;
-
 }
-
 
 .topbar-left p {
-
     margin-top: 5px;
 
-    color:
-        #8d8176;
+    color: #8d8176;
 
     font-size: 12px;
-
 }
 
-
 .admin-user {
-
     display: flex;
-
     align-items: center;
 
     gap: 10px;
@@ -1070,40 +826,27 @@ textarea {
     border-radius: 30px;
 
     background:
-        rgba(255,255,255,0.70);
-
+        rgba(255, 255, 255, 0.70);
 }
 
-
 .user-avatar {
-
     width: 38px;
-
     height: 38px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     border-radius: 50%;
 
-    background:
-        #684832;
-
-    color:
-        #fff;
+    background: #684832;
+    color: #fff;
 
     font-size: 13px;
-
     font-weight: 700;
-
 }
 
-
 .user-details strong {
-
     display: block;
 
     max-width: 210px;
@@ -1114,35 +857,25 @@ textarea {
 
     white-space: nowrap;
 
-    color:
-        #44362c;
+    color: #44362c;
 
     font-size: 11px;
-
 }
 
-
 .user-details span {
-
     display: block;
 
     margin-top: 2px;
 
-    color:
-        #9b9086;
+    color: #9b9086;
 
     font-size: 9px;
-
 }
 
-
 .user-status {
-
-    color:
-        #3d9561;
+    color: #3d9561;
 
     font-size: 9px;
-
 }
 
 
@@ -1151,15 +884,12 @@ textarea {
    ========================================================= */
 
 .welcome-card {
-
     min-height: 190px;
 
     position: relative;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     overflow: hidden;
@@ -1178,179 +908,134 @@ textarea {
             #806046
         );
 
-    color:
-        white;
+    color: white;
 
     box-shadow:
         0 15px 35px
         rgba(91, 61, 38, 0.14);
-
 }
 
-
 .welcome-card::before {
-
     content: "";
 
     position: absolute;
 
     width: 300px;
-
     height: 300px;
 
     right: -110px;
-
     top: -140px;
 
     border:
         1px solid
-        rgba(255,255,255,0.12);
+        rgba(255, 255, 255, 0.12);
 
     border-radius: 50%;
-
 }
 
-
 .welcome-card::after {
-
     content: "";
 
     position: absolute;
 
     width: 200px;
-
     height: 200px;
 
     right: 40px;
-
     bottom: -140px;
 
     border:
         1px solid
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     border-radius: 50%;
-
 }
 
-
 .welcome-content {
-
     max-width: 650px;
 
     position: relative;
-
     z-index: 2;
-
 }
 
-
 .welcome-label {
-
     display: block;
 
     margin-bottom: 9px;
 
-    color:
-        #e6d3bd;
+    color: #e6d3bd;
 
     font-size: 9px;
-
     font-weight: 800;
 
     letter-spacing: 2px;
-
 }
 
-
 .welcome-card h2 {
-
     font-family:
         Georgia,
         "Times New Roman",
         serif;
 
     font-size: 28px;
-
     font-weight: 500;
 
     margin-bottom: 9px;
-
 }
 
-
 .welcome-card p {
-
     max-width: 580px;
 
     color:
-        rgba(255,255,255,0.78);
+        rgba(255, 255, 255, 0.78);
 
     font-size: 12px;
-
     line-height: 1.7;
-
 }
 
-
 .welcome-art {
-
     width: 120px;
-
     height: 120px;
 
     position: relative;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     z-index: 2;
-
 }
 
-
 .welcome-circle {
-
     width: 92px;
-
     height: 92px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     border:
         1px solid
-        rgba(255,255,255,0.22);
+        rgba(255, 255, 255, 0.22);
 
     border-radius: 50%;
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     font-size: 42px;
-
 }
 
-
 .welcome-flower {
-
     position: absolute;
 
     top: 0;
-
     right: 0;
 
     color:
-        rgba(255,255,255,0.35);
+        rgba(255, 255, 255, 0.35);
 
     font-size: 18px;
-
 }
 
 
@@ -1359,7 +1044,6 @@ textarea {
    ========================================================= */
 
 .stats-grid {
-
     display: grid;
 
     grid-template-columns:
@@ -1368,22 +1052,17 @@ textarea {
     gap: 14px;
 
     margin-bottom: 38px;
-
 }
 
-
 .stat-card {
-
     min-height: 82px;
 
     display: flex;
-
     align-items: center;
 
     gap: 12px;
 
-    padding:
-        14px;
+    padding: 14px;
 
     border:
         1px solid #e7dfd6;
@@ -1391,80 +1070,58 @@ textarea {
     border-radius: 13px;
 
     background:
-        rgba(255,255,255,0.78);
+        rgba(255, 255, 255, 0.78);
 
     transition:
         transform 0.2s,
         box-shadow 0.2s;
-
 }
 
-
 .stat-card:hover {
-
-    transform:
-        translateY(-2px);
+    transform: translateY(-2px);
 
     box-shadow:
         0 8px 20px
         rgba(72, 49, 30, 0.07);
-
 }
 
-
 .stat-icon {
-
     width: 43px;
-
     height: 43px;
 
     flex-shrink: 0;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     border-radius: 10px;
 
-    background:
-        #f1e7da;
+    background: #f1e7da;
 
     font-size: 19px;
-
 }
-
 
 .stat-content {
-
     flex: 1;
-
 }
 
-
 .stat-content span {
-
     display: block;
 
     margin-bottom: 2px;
 
-    color:
-        #9a8e83;
+    color: #9a8e83;
 
     font-size: 9px;
 
     text-transform: uppercase;
 
     letter-spacing: 0.7px;
-
 }
 
-
 .stat-content strong {
-
-    color:
-        #44362b;
+    color: #44362b;
 
     font-family:
         Georgia,
@@ -1472,19 +1129,12 @@ textarea {
         serif;
 
     font-size: 14px;
-
     font-weight: 600;
-
 }
 
-
 .stat-arrow {
-
-    color:
-        #a58d75;
-
+    color: #a58d75;
     font-size: 15px;
-
 }
 
 
@@ -1494,47 +1144,33 @@ textarea {
 
 .content-section,
 .system-section {
-
     margin-bottom: 38px;
-
 }
 
-
 .section-heading {
-
     display: flex;
 
     align-items: end;
-
     justify-content: space-between;
 
     margin-bottom: 17px;
-
 }
 
-
 .section-heading span {
-
     display: block;
 
     margin-bottom: 5px;
 
-    color:
-        #a0876d;
+    color: #a0876d;
 
     font-size: 9px;
-
     font-weight: 800;
 
     letter-spacing: 1.5px;
-
 }
 
-
 .section-heading h2 {
-
-    color:
-        #3c3028;
+    color: #3c3028;
 
     font-family:
         Georgia,
@@ -1542,9 +1178,7 @@ textarea {
         serif;
 
     font-size: 22px;
-
     font-weight: 600;
-
 }
 
 
@@ -1553,27 +1187,21 @@ textarea {
    ========================================================= */
 
 .admin-grid {
-
     display: grid;
 
     grid-template-columns:
         repeat(3, 1fr);
 
     gap: 16px;
-
 }
 
-
 .admin-card {
-
     min-height: 265px;
 
     display: flex;
-
     flex-direction: column;
 
-    padding:
-        22px;
+    padding: 22px;
 
     border:
         1px solid #e6ddd3;
@@ -1581,7 +1209,7 @@ textarea {
     border-radius: 15px;
 
     background:
-        rgba(255,255,255,0.88);
+        rgba(255, 255, 255, 0.88);
 
     box-shadow:
         0 4px 15px
@@ -1591,125 +1219,78 @@ textarea {
         transform 0.2s,
         box-shadow 0.2s,
         border-color 0.2s;
-
 }
 
-
 .admin-card:hover {
+    transform: translateY(-3px);
 
-    transform:
-        translateY(-3px);
-
-    border-color:
-        #d8c7b5;
+    border-color: #d8c7b5;
 
     box-shadow:
         0 12px 28px
         rgba(68, 48, 31, 0.07);
-
 }
 
-
 .card-top {
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     margin-bottom: 17px;
-
 }
 
-
 .card-icon {
-
     width: 50px;
-
     height: 50px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     border-radius: 12px;
 
     font-size: 23px;
-
 }
-
 
 .family-icon {
-
-    background:
-        #eee5d8;
-
+    background: #eee5d8;
 }
-
 
 .event-icon {
-
-    background:
-        #f2e4d7;
-
+    background: #f2e4d7;
 }
-
 
 .bhog-icon {
-
-    background:
-        #eee8d9;
-
+    background: #eee8d9;
 }
-
 
 .archive-icon {
-
-    background:
-        #e9e2da;
-
+    background: #e9e2da;
 }
-
 
 .gallery-icon {
-
-    background:
-        #e7e3dc;
-
+    background: #e7e3dc;
 }
 
-
 .card-badge {
-
     padding:
         5px 8px;
 
     border-radius: 20px;
 
-    background:
-        #f5f0e9;
-
-    color:
-        #a18d79;
+    background: #f5f0e9;
+    color: #a18d79;
 
     font-size: 8px;
-
     font-weight: 800;
 
     letter-spacing: 0.8px;
-
 }
 
-
 .admin-card h3 {
-
     margin-bottom: 8px;
 
-    color:
-        #3c3028;
+    color: #3c3028;
 
     font-family:
         Georgia,
@@ -1717,36 +1298,24 @@ textarea {
         serif;
 
     font-size: 19px;
-
     font-weight: 600;
-
 }
-
 
 .admin-card p {
-
     flex: 1;
 
-    color:
-        #8b7f74;
+    color: #8b7f74;
 
     font-size: 11px;
-
     line-height: 1.7;
-
 }
 
-
 .card-button {
-
     width: 100%;
-
     min-height: 40px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     margin-top: 18px;
@@ -1759,42 +1328,27 @@ textarea {
 
     border-radius: 9px;
 
-    background:
-        #fff;
-
-    color:
-        #684832;
+    background: #fff;
+    color: #684832;
 
     font-size: 11px;
-
     font-weight: 700;
 
     cursor: pointer;
 
-    transition:
-        0.2s;
-
+    transition: 0.2s;
 }
-
 
 .card-button span {
-
     font-size: 15px;
-
 }
 
-
 .card-button:hover {
+    background: #684832;
 
-    background:
-        #684832;
+    border-color: #684832;
 
-    border-color:
-        #684832;
-
-    color:
-        #fff;
-
+    color: #fff;
 }
 
 
@@ -1803,11 +1357,9 @@ textarea {
    ========================================================= */
 
 .status-card {
-
     min-height: 70px;
 
     display: flex;
-
     align-items: center;
 
     gap: 13px;
@@ -1821,81 +1373,55 @@ textarea {
     border-radius: 12px;
 
     background:
-        rgba(255,255,255,0.85);
-
+        rgba(255, 255, 255, 0.85);
 }
 
-
 .status-dot {
-
     width: 10px;
-
     height: 10px;
 
     flex-shrink: 0;
 
     border-radius: 50%;
 
-    background:
-        #d25a50;
-
+    background: #d25a50;
 }
 
-
 .status-dot.online {
-
-    background:
-        #3e9762;
+    background: #3e9762;
 
     box-shadow:
         0 0 0 5px
-        rgba(62,151,98,0.10);
-
+        rgba(62, 151, 98, 0.10);
 }
-
 
 .status-content {
-
     flex: 1;
-
 }
-
 
 .status-content strong {
-
     display: block;
 
-    color:
-        #44362c;
+    color: #44362c;
 
     font-size: 12px;
-
 }
 
-
 .status-content span {
-
     display: block;
 
     margin-top: 3px;
 
-    color:
-        #9a8e83;
+    color: #9a8e83;
 
     font-size: 9px;
-
 }
 
-
 .status-right {
-
-    color:
-        #3d9561;
+    color: #3d9561;
 
     font-size: 9px;
-
     font-weight: 700;
-
 }
 
 
@@ -1904,11 +1430,8 @@ textarea {
    ========================================================= */
 
 .dashboard-footer {
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     padding:
@@ -1917,21 +1440,14 @@ textarea {
     border-top:
         1px solid #e4dbd1;
 
-    color:
-        #a0958a;
+    color: #a0958a;
 
     font-size: 9px;
-
 }
 
-
 .dashboard-footer span:first-child {
-
-    color:
-        #806a56;
-
+    color: #806a56;
     font-weight: 700;
-
 }
 
 
@@ -1940,7 +1456,6 @@ textarea {
    ========================================================= */
 
 .manager-layout {
-
     display: grid;
 
     grid-template-columns:
@@ -1950,13 +1465,10 @@ textarea {
     gap: 20px;
 
     align-items: start;
-
 }
-
 
 .manager-form-card,
 .manager-list-card {
-
     padding: 25px;
 
     border:
@@ -1965,35 +1477,25 @@ textarea {
     border-radius: 15px;
 
     background:
-        rgba(255,255,255,0.88);
-
+        rgba(255, 255, 255, 0.88);
 }
 
-
 .form-grid {
-
     display: grid;
 
     grid-template-columns:
         repeat(2, 1fr);
 
     gap: 16px;
-
 }
-
 
 .full-width {
-
-    grid-column:
-        1 / -1;
-
+    grid-column: 1 / -1;
 }
-
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-
     width: 100%;
 
     border:
@@ -2001,11 +1503,9 @@ textarea {
 
     border-radius: 9px;
 
-    background:
-        #fcfaf7;
+    background: #fcfaf7;
 
-    color:
-        #302820;
+    color: #302820;
 
     padding: 12px;
 
@@ -2016,53 +1516,36 @@ textarea {
     transition:
         border-color 0.2s,
         box-shadow 0.2s;
-
 }
-
 
 .form-group textarea {
-
     resize: vertical;
-
     line-height: 1.6;
-
 }
-
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-
-    border-color:
-        #96704e;
+    border-color: #96704e;
 
     box-shadow:
         0 0 0 4px
-        rgba(150,112,78,0.10);
-
+        rgba(150, 112, 78, 0.10);
 }
 
-
 .form-actions {
-
     display: flex;
 
     gap: 10px;
 
     margin-top: 20px;
-
 }
-
 
 .form-actions .primary-button {
-
     flex: 1;
-
 }
 
-
 .secondary-button {
-
     min-height: 52px;
 
     padding:
@@ -2073,44 +1556,35 @@ textarea {
 
     border-radius: 11px;
 
-    background:
-        white;
+    background: white;
 
-    color:
-        #684832;
+    color: #684832;
 
     font-weight: 700;
 
     cursor: pointer;
-
 }
-
 
 .secondary-button:hover {
-
-    background:
-        #f5eee6;
-
+    background: #f5eee6;
 }
 
 
+/* =========================================================
+   MANAGER LIST
+   ========================================================= */
+
 .manager-list {
-
     display: flex;
-
     flex-direction: column;
 
     gap: 10px;
-
 }
 
-
 .manager-item {
-
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 15px;
@@ -2122,68 +1596,48 @@ textarea {
 
     border-radius: 12px;
 
-    background:
-        #fff;
-
+    background: #fff;
 }
 
-
 .manager-item-main {
-
     min-width: 0;
 
     display: flex;
-
     align-items: center;
 
     gap: 12px;
-
 }
 
-
 .manager-avatar {
-
     width: 48px;
-
     height: 48px;
 
     flex-shrink: 0;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     overflow: hidden;
 
     border-radius: 10px;
 
-    background:
-        #f1e7da;
+    background: #f1e7da;
 
     font-size: 20px;
-
 }
 
-
 .manager-avatar img {
-
     width: 100%;
-
     height: 100%;
 
     object-fit: cover;
-
 }
 
-
 .manager-item-main h3 {
-
     margin-bottom: 3px;
 
-    color:
-        #44362c;
+    color: #44362c;
 
     font-family:
         Georgia,
@@ -2191,24 +1645,17 @@ textarea {
         serif;
 
     font-size: 14px;
-
 }
-
 
 .manager-item-main span {
-
     display: block;
 
-    color:
-        #927e6c;
+    color: #927e6c;
 
     font-size: 10px;
-
 }
 
-
 .manager-item-main small {
-
     display: block;
 
     max-width: 380px;
@@ -2221,28 +1668,21 @@ textarea {
 
     white-space: nowrap;
 
-    color:
-        #a1978d;
+    color: #a1978d;
 
     font-size: 9px;
-
 }
 
-
 .manager-actions {
-
     display: flex;
 
     flex-shrink: 0;
 
     gap: 6px;
-
 }
-
 
 .edit-button,
 .delete-button {
-
     min-height: 34px;
 
     padding:
@@ -2251,89 +1691,61 @@ textarea {
     border-radius: 7px;
 
     font-size: 10px;
-
     font-weight: 700;
 
     cursor: pointer;
-
 }
 
-
 .edit-button {
-
     border:
         1px solid #d9c8b5;
 
-    background:
-        #f8f1e8;
+    background: #f8f1e8;
 
-    color:
-        #684832;
-
+    color: #684832;
 }
-
 
 .edit-button:hover {
-
-    background:
-        #684832;
-
-    color:
-        white;
-
+    background: #684832;
+    color: white;
 }
 
-
 .delete-button {
-
     border:
         1px solid #e5c8c4;
 
-    background:
-        #fff7f6;
+    background: #fff7f6;
 
-    color:
-        #b24e45;
-
+    color: #b24e45;
 }
-
 
 .delete-button:hover {
-
-    background:
-        #b24e45;
-
-    color:
-        white;
-
+    background: #b24e45;
+    color: white;
 }
 
 
-.empty-state {
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
+.empty-state {
     padding:
         50px 20px;
 
     text-align: center;
-
 }
 
-
 .empty-icon {
-
     margin-bottom: 12px;
 
     font-size: 35px;
-
 }
 
-
 .empty-state h3 {
-
     margin-bottom: 6px;
 
-    color:
-        #4a3b30;
+    color: #4a3b30;
 
     font-family:
         Georgia,
@@ -2341,53 +1753,38 @@ textarea {
         serif;
 
     font-size: 17px;
-
 }
-
 
 .empty-state p {
-
-    color:
-        #9b9086;
+    color: #9b9086;
 
     font-size: 11px;
-
 }
 
 
-/* =====================================================
+/* =========================================================
    FATHER SEARCH
-   ===================================================== */
+   ========================================================= */
 
 .father-search-wrapper {
-
     position: relative;
-
 }
-
 
 #fatherSearch {
-
     width: 100%;
-
     box-sizing: border-box;
-
 }
 
-
 .father-suggestions {
-
     position: absolute;
 
     top:
         calc(100% + 5px);
 
     left: 0;
-
     right: 0;
 
-    background:
-        #fff;
+    background: #fff;
 
     border:
         1px solid #ddd1c6;
@@ -2405,12 +1802,9 @@ textarea {
     z-index: 1000;
 
     display: none;
-
 }
 
-
 .father-suggestion {
-
     padding:
         11px 13px;
 
@@ -2418,96 +1812,66 @@ textarea {
 
     border-bottom:
         1px solid #eee5dc;
-
 }
-
 
 .father-suggestion:last-child {
-
     border-bottom: none;
-
 }
-
 
 .father-suggestion:hover {
-
-    background:
-        #f4ece4;
-
+    background: #f4ece4;
 }
-
 
 .father-suggestion strong {
-
     display: block;
 
-    color:
-        #4f3828;
+    color: #4f3828;
 
     margin-bottom: 3px;
-
 }
-
 
 .father-suggestion small {
-
-    color:
-        #8b7b6d;
-
+    color: #8b7b6d;
 }
 
-
 .father-no-result {
-
     padding: 14px;
 
-    color:
-        #8b7b6d;
+    color: #8b7b6d;
 
     text-align: center;
 
     font-size: 12px;
-
 }
 
 
-/* =====================================================
+/* =========================================================
    FIRESTORE FAMILY SEARCH
-   ===================================================== */
+   ========================================================= */
 
 .family-search-wrapper {
-
     position: relative;
 
     margin:
         18px 0 8px;
-
 }
 
-
 .family-search-wrapper i {
-
     position: absolute;
 
     left: 15px;
-
     top: 50%;
 
-    transform:
-        translateY(-50%);
+    transform: translateY(-50%);
 
-    color:
-        #8b7b6d;
+    color: #8b7b6d;
 
     font-size: 14px;
 
     pointer-events: none;
-
 }
 
-
 #familySearch {
-
     width: 100%;
 
     box-sizing: border-box;
@@ -2520,11 +1884,9 @@ textarea {
 
     border-radius: 8px;
 
-    background:
-        #fff;
+    background: #fff;
 
-    color:
-        #3b3028;
+    color: #3b3028;
 
     font-size: 13px;
 
@@ -2533,83 +1895,56 @@ textarea {
     transition:
         border-color 0.2s,
         box-shadow 0.2s;
-
 }
-
 
 #familySearch::placeholder {
-
-    color:
-        #9a8b7e;
-
+    color: #9a8b7e;
 }
 
-
 #familySearch:focus {
-
-    border-color:
-        #b27a4a;
+    border-color: #b27a4a;
 
     box-shadow:
         0 0 0 3px
         rgba(178, 122, 74, 0.10);
-
 }
 
-
 .family-search-clear {
-
     position: absolute;
 
     right: 10px;
-
     top: 50%;
 
-    transform:
-        translateY(-50%);
+    transform: translateY(-50%);
 
     width: 28px;
-
     height: 28px;
 
     border: none;
 
     border-radius: 50%;
 
-    background:
-        transparent;
+    background: transparent;
 
-    color:
-        #8b7b6d;
+    color: #8b7b6d;
 
     cursor: pointer;
 
     display: none;
 
     align-items: center;
-
     justify-content: center;
-
 }
-
 
 .family-search-clear:hover {
-
-    background:
-        #eee5dc;
-
-    color:
-        #704a31;
-
+    background: #eee5dc;
+    color: #704a31;
 }
 
-
 .family-search-info {
-
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
 
     min-height: 18px;
@@ -2621,36 +1956,26 @@ textarea {
 
     font-size: 11px;
 
-    color:
-        #8b7b6d;
-
+    color: #8b7b6d;
 }
 
-
 .family-search-no-result {
-
     padding:
         35px 15px;
 
     text-align: center;
 
-    color:
-        #8b7b6d;
-
+    color: #8b7b6d;
 }
 
-
 .family-search-no-result i {
-
     display: block;
 
     margin-bottom: 10px;
 
     font-size: 24px;
 
-    color:
-        #b27a4a;
-
+    color: #b27a4a;
 }
 
 
@@ -2661,160 +1986,18 @@ textarea {
 @media (max-width: 1100px) {
 
     .dashboard-main {
-
-        padding:
-            30px;
-
+        padding: 30px;
     }
-
 
     .stats-grid {
-
         grid-template-columns:
             repeat(2, 1fr);
-
     }
-
 
     .admin-grid {
-
         grid-template-columns:
             repeat(2, 1fr);
-
     }
-
-}
-
-
-/* =========================================================
-   LOGOUT BUTTON
-   DESKTOP = ICON + TEXT
-   MOBILE = ICON ONLY
-   ========================================================= */
-
-.logout-button {
-
-    width: 100%;
-
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 8px;
-
-    border:
-        1px solid
-        rgba(255,255,255,0.08);
-
-    border-radius: 9px;
-
-    background:
-        rgba(255,255,255,0.04);
-
-    color:
-        #c9c0b8;
-
-    cursor: pointer;
-
-    font-size: 12px;
-
-    font-weight: 500;
-
-    transition:
-        background 0.2s,
-        color 0.2s,
-        border-color 0.2s;
-
-}
-
-
-.logout-button i {
-
-    font-size: 15px;
-
-    line-height: 1;
-
-}
-
-
-/* RED HOVER */
-
-.logout-button:hover {
-
-    background:
-        red;
-
-    border-color:
-        red;
-
-    color:
-        white;
-
-}
-
-
-/* =========================================================
-   MOBILE — ICON ONLY
-   ========================================================= */
-
-@media (max-width: 800px) {
-
-    .logout-button {
-
-        width: 48px;
-
-        height: 48px;
-
-        margin:
-            0 auto;
-
-        padding: 0;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        gap: 0;
-
-        border-radius: 10px;
-
-        font-size: 0;
-
-    }
-
-
-    .logout-button i {
-
-        display: block;
-
-        font-size: 18px;
-
-        line-height: 1;
-
-    }
-
-
-    /* KEEP RED HOVER ON MOBILE */
-
-    .logout-button:hover {
-
-        background:
-            red;
-
-        border-color:
-            red;
-
-        color:
-            white;
-
-    }
-
 }
 
 
@@ -2825,12 +2008,8 @@ textarea {
 @media (max-width: 950px) {
 
     .manager-layout {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
-
 }
 
 
@@ -2840,129 +2019,86 @@ textarea {
 
 @media (max-width: 800px) {
 
-    /* -----------------------------------------
-       SIDEBAR
-       ----------------------------------------- */
+    /* SIDEBAR */
 
     .sidebar {
-
         width: 72px;
-
     }
 
-
     .sidebar-brand {
-
         justify-content: center;
 
         padding:
             18px 8px;
-
     }
-
 
     .sidebar-brand-text {
-
         display: none;
-
     }
-
 
     .sidebar-logo {
-
         width: 42px;
-
         height: 42px;
-
     }
 
 
-    /* -----------------------------------------
-       NAV
-       ----------------------------------------- */
+    /* NAV */
 
     .nav-section-title {
-
         display: none;
-
     }
 
-
     .nav-item {
-
         justify-content: center;
 
         gap: 0;
 
         padding:
             12px 5px;
-
     }
-
 
     .nav-item span:not(.nav-icon) {
-
         display: none;
-
     }
-
 
     .nav-item > i {
-
         width: auto;
 
         font-size: 18px;
-
     }
-
 
     .nav-icon {
-
         width: auto;
 
-        font-size: 18px;
-
+        font-size: 19px;
+        font-weight: 700;
     }
 
 
-    /* -----------------------------------------
-       SIDEBAR NOTE
-       ----------------------------------------- */
+    /* SIDEBAR NOTE */
 
     .sidebar-note {
-
         justify-content: center;
 
         padding:
             9px 5px;
-
     }
-
 
     .sidebar-note > div {
-
         display: none;
-
     }
 
-
     .sidebar-note > i {
-
         width: auto;
 
         font-size: 17px;
-
     }
 
 
-    /* -----------------------------------------
-       LOGOUT — ICON ONLY
-       ----------------------------------------- */
+    /* LOGOUT — ICON ONLY */
 
     .logout-button {
-
         width: 48px;
-
         height: 48px;
 
         margin:
@@ -2973,7 +2109,6 @@ textarea {
         display: flex;
 
         align-items: center;
-
         justify-content: center;
 
         gap: 0;
@@ -2981,87 +2116,61 @@ textarea {
         border-radius: 10px;
 
         font-size: 0;
-
     }
 
-
     .logout-button i {
-
         display: block;
 
         font-size: 18px;
 
         line-height: 1;
-
     }
 
+    /* KEEP RED HOVER */
 
     .logout-button:hover {
+        background: red;
 
-        background:red;
+        border-color: red;
 
         color: #fff;
-
     }
 
 
-    /* -----------------------------------------
-       MAIN
-       ----------------------------------------- */
+    /* MAIN */
 
     .dashboard-main {
-
         margin-left: 72px;
 
         padding:
             25px 20px;
-
     }
 
 
-    /* -----------------------------------------
-       TOP USER
-       ----------------------------------------- */
+    /* TOP USER */
 
     .admin-user {
-
         padding: 5px;
-
     }
-
 
     .user-details {
-
         display: none;
-
     }
-
 
     .user-status {
-
         display: none;
-
     }
 
 
-    /* -----------------------------------------
-       WELCOME
-       ----------------------------------------- */
+    /* WELCOME */
 
     .welcome-card {
-
-        padding:
-            28px;
-
+        padding: 28px;
     }
-
 
     .welcome-art {
-
         display: none;
-
     }
-
 }
 
 
@@ -3072,172 +2181,108 @@ textarea {
 @media (max-width: 600px) {
 
     .login-page {
-
-        padding:
-            15px;
-
+        padding: 15px;
     }
 
-
     .login-card {
-
         padding:
             30px 22px;
 
-        border-radius:
-            18px;
-
+        border-radius: 18px;
     }
-
 
     .login-heading h1 {
-
-        font-size:
-            28px;
-
+        font-size: 28px;
     }
 
+
+    /* MAIN */
 
     .dashboard-main {
-
         padding:
             20px 14px;
-
     }
-
 
     .topbar {
-
-        align-items:
-            flex-start;
-
+        align-items: flex-start;
     }
-
 
     .topbar h1 {
-
-        font-size:
-            25px;
-
+        font-size: 25px;
     }
 
+
+    /* STATS */
 
     .stats-grid {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
-
 
     .admin-grid {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
 
+
+    /* WELCOME */
 
     .welcome-card {
+        min-height: 175px;
 
-        min-height:
-            175px;
-
-        padding:
-            24px;
-
+        padding: 24px;
     }
-
 
     .welcome-card h2 {
-
-        font-size:
-            23px;
-
+        font-size: 23px;
     }
 
+
+    /* FOOTER */
 
     .dashboard-footer {
+        flex-direction: column;
 
-        flex-direction:
-            column;
-
-        align-items:
-            flex-start;
+        align-items: flex-start;
 
         gap: 5px;
-
     }
-
 
     .status-right {
-
         display: none;
-
     }
 
 
-    /* -----------------------------------------
-       MANAGEMENT
-       ----------------------------------------- */
+    /* MANAGEMENT */
 
     .form-grid {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
-
 
     .full-width {
-
-        grid-column:
-            auto;
-
+        grid-column: auto;
     }
-
 
     .manager-form-card,
     .manager-list-card {
-
-        padding:
-            18px;
-
+        padding: 18px;
     }
-
 
     .manager-item {
+        align-items: flex-start;
 
-        align-items:
-            flex-start;
-
-        flex-direction:
-            column;
-
+        flex-direction: column;
     }
-
 
     .manager-actions {
-
         width: 100%;
-
     }
-
 
     .manager-actions button {
-
         flex: 1;
-
     }
-
 
     .form-actions {
-
-        flex-direction:
-            column;
-
+        flex-direction: column;
     }
-
 }
 
 
@@ -3248,63 +2293,42 @@ textarea {
 @media (max-width: 400px) {
 
     .sidebar {
-
         width: 64px;
-
     }
 
-
     .dashboard-main {
-
         margin-left: 64px;
 
         padding:
             18px 12px;
-
     }
-
 
     .sidebar-brand {
-
         padding:
             15px 5px;
-
     }
-
 
     .sidebar-logo {
-
         width: 40px;
-
         height: 40px;
-
     }
-
 
     .nav-item {
-
-        min-height:
-            42px;
-
+        min-height: 42px;
     }
 
+    .nav-icon {
+        font-size: 18px;
+    }
 
     .logout-button {
-
         width: 44px;
-
         height: 44px;
-
     }
-
 
     .logout-button i {
-
-        font-size:
-            17px;
-
+        font-size: 17px;
     }
-
 }
 
 
@@ -3315,16 +2339,9 @@ textarea {
 @media (max-width: 700px) {
 
     #familySearch {
+        font-size: 14px;
 
-        font-size:
-            14px;
-
-        padding-top:
-            14px;
-
-        padding-bottom:
-            14px;
-
+        padding-top: 14px;
+        padding-bottom: 14px;
     }
-
 }
