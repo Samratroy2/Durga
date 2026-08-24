@@ -1,5 +1,7 @@
 /* =========================================================
    ROY BARI — ADMIN PANEL
+   RESPONSIVE DESIGN
+   Desktop Sidebar + Mobile Bottom Navigation
    ========================================================= */
 
 
@@ -29,6 +31,7 @@ body {
     background: #f6f1e9;
 
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 button,
@@ -38,6 +41,18 @@ textarea {
     font-family: inherit;
 }
 
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+img {
+    max-width: 100%;
+}
+
 
 /* =========================================================
    LOGIN PAGE
@@ -45,6 +60,7 @@ textarea {
 
 .login-page {
     min-height: 100vh;
+    min-height: 100dvh;
 
     display: flex;
     align-items: center;
@@ -76,7 +92,9 @@ textarea {
 
 .login-decoration {
     position: absolute;
+
     border-radius: 50%;
+
     pointer-events: none;
 }
 
@@ -114,6 +132,7 @@ textarea {
     max-width: 450px;
 
     position: relative;
+
     z-index: 2;
 }
 
@@ -176,6 +195,7 @@ textarea {
 
 .login-heading {
     text-align: center;
+
     margin-bottom: 32px;
 }
 
@@ -207,6 +227,11 @@ textarea {
 }
 
 .login-heading p {
+    max-width: 360px;
+
+    margin-left: auto;
+    margin-right: auto;
+
     color: #8a7c70;
 
     font-size: 13px;
@@ -235,6 +260,8 @@ textarea {
 
 .label-row {
     display: flex;
+
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -245,6 +272,9 @@ textarea {
 
 .input-wrapper {
     position: relative;
+
+    display: flex;
+    align-items: center;
 }
 
 .input-icon {
@@ -256,6 +286,7 @@ textarea {
     transform: translateY(-50%);
 
     font-size: 14px;
+
     opacity: 0.55;
 
     pointer-events: none;
@@ -307,7 +338,7 @@ textarea {
 
 .primary-button {
     width: 100%;
-    height: 52px;
+    min-height: 52px;
 
     margin-top: 8px;
 
@@ -354,7 +385,9 @@ textarea {
 
 .primary-button:disabled {
     opacity: 0.6;
+
     cursor: not-allowed;
+
     transform: none;
 }
 
@@ -424,12 +457,14 @@ textarea {
 
 .dashboard-page {
     min-height: 100vh;
+    min-height: 100dvh;
+
     background: #f6f2eb;
 }
 
 
 /* =========================================================
-   SIDEBAR
+   DESKTOP SIDEBAR
    ========================================================= */
 
 .sidebar {
@@ -482,12 +517,21 @@ textarea {
     align-items: center;
     justify-content: center;
 
+    overflow: hidden;
+
     border-radius: 12px;
 
     background:
         rgba(255, 255, 255, 0.08);
 
     font-size: 22px;
+}
+
+.sidebar-logo img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
 }
 
 .sidebar-brand-text h2 {
@@ -508,6 +552,7 @@ textarea {
     color: #aaa097;
 
     font-size: 10px;
+
     letter-spacing: 0.4px;
 }
 
@@ -571,7 +616,8 @@ textarea {
 
     transition:
         background 0.2s,
-        color 0.2s;
+        color 0.2s,
+        transform 0.15s;
 }
 
 .nav-item:hover {
@@ -581,8 +627,13 @@ textarea {
     color: #fff;
 }
 
+.nav-item:active {
+    transform: scale(0.98);
+}
+
 .nav-item.active {
     background: #684832;
+
     color: #fff;
 }
 
@@ -608,7 +659,7 @@ textarea {
 
 
 /* =========================================================
-   CUSTOM NAV ICON — ॐ ETC.
+   CUSTOM NAV ICON
    ========================================================= */
 
 .nav-icon {
@@ -695,8 +746,6 @@ textarea {
 
 /* =========================================================
    LOGOUT BUTTON
-   DESKTOP = ICON + TEXT
-   MOBILE = ICON ONLY
    ========================================================= */
 
 .logout-button {
@@ -704,6 +753,7 @@ textarea {
     height: 42px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -718,11 +768,11 @@ textarea {
     background:
         rgba(255, 255, 255, 0.04);
 
-    color: red;
+    color: #ef8b83;
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
 
     transition:
@@ -736,14 +786,11 @@ textarea {
     line-height: 1;
 }
 
-
-/* =========================================================
-   LOGOUT HOVER — RED
-   ========================================================= */
-
 .logout-button:hover {
-    background: red;
-    border-color: red;
+    background: #c84339;
+
+    border-color: #c84339;
+
     color: white;
 }
 
@@ -770,12 +817,17 @@ textarea {
     min-height: 70px;
 
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
     gap: 25px;
 
     margin-bottom: 28px;
+}
+
+.topbar-left {
+    min-width: 0;
 }
 
 .page-eyebrow {
@@ -801,6 +853,8 @@ textarea {
 
     font-size: 30px;
     font-weight: 600;
+
+    line-height: 1.15;
 }
 
 .topbar-left p {
@@ -809,9 +863,13 @@ textarea {
     color: #8d8176;
 
     font-size: 12px;
+
+    line-height: 1.5;
 }
 
 .admin-user {
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
 
@@ -833,6 +891,8 @@ textarea {
     width: 38px;
     height: 38px;
 
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -840,6 +900,7 @@ textarea {
     border-radius: 50%;
 
     background: #684832;
+
     color: #fff;
 
     font-size: 13px;
@@ -889,6 +950,7 @@ textarea {
     position: relative;
 
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -955,6 +1017,7 @@ textarea {
     max-width: 650px;
 
     position: relative;
+
     z-index: 2;
 }
 
@@ -980,6 +1043,8 @@ textarea {
     font-size: 28px;
     font-weight: 500;
 
+    line-height: 1.2;
+
     margin-bottom: 9px;
 }
 
@@ -990,6 +1055,7 @@ textarea {
         rgba(255, 255, 255, 0.78);
 
     font-size: 12px;
+
     line-height: 1.7;
 }
 
@@ -1000,8 +1066,11 @@ textarea {
     position: relative;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
+
+    flex-shrink: 0;
 
     z-index: 2;
 }
@@ -1011,8 +1080,11 @@ textarea {
     height: 92px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
+
+    overflow: hidden;
 
     border:
         1px solid
@@ -1024,6 +1096,13 @@ textarea {
         rgba(255, 255, 255, 0.08);
 
     font-size: 42px;
+}
+
+.welcome-circle img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
 }
 
 .welcome-flower {
@@ -1058,6 +1137,7 @@ textarea {
     min-height: 82px;
 
     display: flex;
+
     align-items: center;
 
     gap: 12px;
@@ -1092,6 +1172,7 @@ textarea {
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -1104,6 +1185,8 @@ textarea {
 
 .stat-content {
     flex: 1;
+
+    min-width: 0;
 }
 
 .stat-content span {
@@ -1134,6 +1217,7 @@ textarea {
 
 .stat-arrow {
     color: #a58d75;
+
     font-size: 15px;
 }
 
@@ -1152,6 +1236,8 @@ textarea {
 
     align-items: end;
     justify-content: space-between;
+
+    gap: 15px;
 
     margin-bottom: 17px;
 }
@@ -1233,6 +1319,7 @@ textarea {
 
 .card-top {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -1244,6 +1331,7 @@ textarea {
     height: 50px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -1307,6 +1395,7 @@ textarea {
     color: #8b7f74;
 
     font-size: 11px;
+
     line-height: 1.7;
 }
 
@@ -1315,6 +1404,7 @@ textarea {
     min-height: 40px;
 
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -1360,6 +1450,7 @@ textarea {
     min-height: 70px;
 
     display: flex;
+
     align-items: center;
 
     gap: 13px;
@@ -1426,11 +1517,12 @@ textarea {
 
 
 /* =========================================================
-   FOOTER
+   DASHBOARD FOOTER
    ========================================================= */
 
 .dashboard-footer {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -1447,6 +1539,7 @@ textarea {
 
 .dashboard-footer span:first-child {
     color: #806a56;
+
     font-weight: 700;
 }
 
@@ -1493,10 +1586,17 @@ textarea {
     grid-column: 1 / -1;
 }
 
+
+/* =========================================================
+   GENERAL FORM CONTROLS
+   ========================================================= */
+
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
+
+    min-height: 48px;
 
     border:
         1px solid #ddd2c5;
@@ -1515,23 +1615,43 @@ textarea {
 
     transition:
         border-color 0.2s,
-        box-shadow 0.2s;
+        box-shadow 0.2s,
+        background 0.2s;
 }
 
 .form-group textarea {
+    min-height: 110px;
+
     resize: vertical;
+
     line-height: 1.6;
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #aaa096;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
+    background: #fff;
+
     border-color: #96704e;
 
     box-shadow:
         0 0 0 4px
         rgba(150, 112, 78, 0.10);
 }
+
+
+/* =========================================================
+   FORM ACTIONS
+   ========================================================= */
 
 .form-actions {
     display: flex;
@@ -1563,6 +1683,10 @@ textarea {
     font-weight: 700;
 
     cursor: pointer;
+
+    transition:
+        background 0.2s,
+        transform 0.2s;
 }
 
 .secondary-button:hover {
@@ -1576,6 +1700,7 @@ textarea {
 
 .manager-list {
     display: flex;
+
     flex-direction: column;
 
     gap: 10px;
@@ -1603,6 +1728,7 @@ textarea {
     min-width: 0;
 
     display: flex;
+
     align-items: center;
 
     gap: 12px;
@@ -1615,6 +1741,7 @@ textarea {
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -1707,6 +1834,7 @@ textarea {
 
 .edit-button:hover {
     background: #684832;
+
     color: white;
 }
 
@@ -1721,6 +1849,7 @@ textarea {
 
 .delete-button:hover {
     background: #b24e45;
+
     color: white;
 }
 
@@ -1772,6 +1901,7 @@ textarea {
 
 #fatherSearch {
     width: 100%;
+
     box-sizing: border-box;
 }
 
@@ -1938,6 +2068,7 @@ textarea {
 
 .family-search-clear:hover {
     background: #eee5dc;
+
     color: #704a31;
 }
 
@@ -1986,7 +2117,8 @@ textarea {
 @media (max-width: 1100px) {
 
     .dashboard-main {
-        padding: 30px;
+        padding:
+            30px;
     }
 
     .stats-grid {
@@ -1997,6 +2129,17 @@ textarea {
     .admin-grid {
         grid-template-columns:
             repeat(2, 1fr);
+    }
+
+    .welcome-card {
+        padding:
+            30px;
+    }
+
+    .manager-layout {
+        grid-template-columns:
+            minmax(280px, 0.8fr)
+            minmax(320px, 1.2fr);
     }
 }
 
@@ -2010,99 +2153,270 @@ textarea {
     .manager-layout {
         grid-template-columns: 1fr;
     }
+
+    .manager-list-card {
+        min-width: 0;
+    }
 }
 
 
 /* =========================================================
-   MOBILE SIDEBAR
+   MOBILE / TABLET NAVIGATION
+   =========================================================
+   IMPORTANT:
+   Desktop:
+       Left sidebar
+
+   Mobile:
+       Fixed bottom navigation
    ========================================================= */
 
 @media (max-width: 800px) {
 
-    /* SIDEBAR */
+    /* -----------------------------------------------------
+       SIDEBAR → BOTTOM NAVIGATION
+       ----------------------------------------------------- */
 
     .sidebar {
-        width: 72px;
+
+        width: 100%;
+        height: 70px;
+
+        min-height: 70px;
+
+        position: fixed;
+
+        left: 0;
+        right: 0;
+
+        top: auto;
+        bottom: 0;
+
+        display: flex;
+        flex-direction: row;
+
+        background: #302923;
+
+        border-top:
+            1px solid
+            rgba(255, 255, 255, 0.08);
+
+        z-index: 1000;
+
+        padding-bottom:
+            env(safe-area-inset-bottom);
     }
+
+
+    /* -----------------------------------------------------
+       HIDE BRAND ON MOBILE
+       ----------------------------------------------------- */
 
     .sidebar-brand {
-        justify-content: center;
-
-        padding:
-            18px 8px;
-    }
-
-    .sidebar-brand-text {
         display: none;
     }
 
-    .sidebar-logo {
-        width: 42px;
-        height: 42px;
+
+    /* -----------------------------------------------------
+       NAV
+       ----------------------------------------------------- */
+
+    .sidebar-nav {
+
+        flex: 1;
+
+        width: auto;
+
+        min-width: 0;
+
+        height: 70px;
+
+        display: flex;
+
+        align-items: stretch;
+
+        justify-content: space-around;
+
+        gap: 2px;
+
+        padding:
+            6px 5px;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        scrollbar-width: none;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+        display: none;
     }
 
 
-    /* NAV */
+    /* -----------------------------------------------------
+       HIDE SECTION TITLES
+       ----------------------------------------------------- */
 
     .nav-section-title {
         display: none;
     }
 
+
+    /* -----------------------------------------------------
+       NAV ITEM
+       ----------------------------------------------------- */
+
     .nav-item {
+
+        min-width: 58px;
+
+        width: 58px;
+
+        min-height: 56px;
+
+        flex: 0 0 58px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
         justify-content: center;
 
-        gap: 0;
+        gap: 4px;
+
+        margin: 0;
 
         padding:
-            12px 5px;
+            5px 3px;
+
+        border-radius: 11px;
+
+        color: #bdb3aa;
+
+        font-size: 9px;
+
+        line-height: 1;
+
+        text-align: center;
     }
 
-    .nav-item span:not(.nav-icon) {
-        display: none;
+    .nav-item:hover {
+        background:
+            rgba(255, 255, 255, 0.05);
     }
+
+    .nav-item.active {
+        background: #684832;
+
+        color: #fff;
+    }
+
+
+    /* -----------------------------------------------------
+       FONT AWESOME ICON
+       ----------------------------------------------------- */
 
     .nav-item > i {
+
         width: auto;
 
-        font-size: 18px;
-    }
+        height: 22px;
 
-    .nav-icon {
-        width: auto;
+        display: flex;
 
-        font-size: 19px;
-        font-weight: 700;
-    }
-
-
-    /* SIDEBAR NOTE */
-
-    .sidebar-note {
+        align-items: center;
         justify-content: center;
-
-        padding:
-            9px 5px;
-    }
-
-    .sidebar-note > div {
-        display: none;
-    }
-
-    .sidebar-note > i {
-        width: auto;
 
         font-size: 17px;
     }
 
 
-    /* LOGOUT — ICON ONLY */
+    /* -----------------------------------------------------
+       CUSTOM ICON
+       ----------------------------------------------------- */
+
+    .nav-icon {
+
+        width: auto;
+
+        height: 22px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 17px;
+    }
+
+
+    /* -----------------------------------------------------
+       NAV TEXT
+       ----------------------------------------------------- */
+
+    .nav-item span:not(.nav-icon) {
+
+        display: block;
+
+        max-width: 56px;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+
+        font-size: 8px;
+    }
+
+
+    /* -----------------------------------------------------
+       SIDEBAR BOTTOM
+       ----------------------------------------------------- */
+
+    .sidebar-bottom {
+
+        width: 66px;
+
+        height: 70px;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 5px 4px;
+
+        border-top: none;
+
+        border-left:
+            1px solid
+            rgba(255, 255, 255, 0.06);
+    }
+
+
+    /* -----------------------------------------------------
+       HIDE SECURITY NOTE
+       ----------------------------------------------------- */
+
+    .sidebar-note {
+        display: none;
+    }
+
+
+    /* -----------------------------------------------------
+       LOGOUT
+       ----------------------------------------------------- */
 
     .logout-button {
+
         width: 48px;
         height: 48px;
 
-        margin:
-            0 auto;
+        margin: 0;
 
         padding: 0;
 
@@ -2113,63 +2427,189 @@ textarea {
 
         gap: 0;
 
-        border-radius: 10px;
+        border-radius: 12px;
 
         font-size: 0;
     }
 
     .logout-button i {
-        display: block;
-
         font-size: 18px;
-
-        line-height: 1;
-    }
-
-    /* KEEP RED HOVER */
-
-    .logout-button:hover {
-        background: red;
-
-        border-color: red;
-
-        color: #fff;
     }
 
 
-    /* MAIN */
+    /* -----------------------------------------------------
+       MAIN
+       ----------------------------------------------------- */
 
     .dashboard-main {
-        margin-left: 72px;
+
+        width: 100%;
+
+        min-height: 100vh;
+        min-height: 100dvh;
+
+        margin-left: 0;
 
         padding:
-            25px 20px;
+            24px 20px
+            calc(95px + env(safe-area-inset-bottom));
     }
 
 
-    /* TOP USER */
+    /* -----------------------------------------------------
+       TOPBAR
+       ----------------------------------------------------- */
+
+    .topbar {
+
+        min-height: auto;
+
+        align-items: center;
+
+        margin-bottom: 24px;
+
+        gap: 15px;
+    }
+
+    .page-eyebrow {
+        margin-bottom: 5px;
+
+        font-size: 8px;
+
+        letter-spacing: 1.7px;
+    }
+
+    .topbar h1 {
+        font-size: 28px;
+
+        line-height: 1.1;
+    }
+
+    .topbar-left p {
+        margin-top: 6px;
+
+        font-size: 11px;
+    }
+
+
+    /* -----------------------------------------------------
+       ADMIN USER
+       ----------------------------------------------------- */
 
     .admin-user {
+
         padding: 5px;
+
+        border-radius: 50%;
     }
 
-    .user-details {
-        display: none;
-    }
-
+    .user-details,
     .user-status {
         display: none;
     }
 
+    .user-avatar {
 
-    /* WELCOME */
+        width: 42px;
+        height: 42px;
+
+        font-size: 14px;
+    }
+
+
+    /* -----------------------------------------------------
+       WELCOME
+       ----------------------------------------------------- */
 
     .welcome-card {
-        padding: 28px;
+
+        min-height: 170px;
+
+        padding:
+            26px 28px;
+
+        border-radius: 16px;
     }
 
     .welcome-art {
         display: none;
+    }
+
+    .welcome-content {
+        max-width: 100%;
+    }
+
+    .welcome-card h2 {
+        font-size: 25px;
+    }
+
+    .welcome-card p {
+        font-size: 11px;
+    }
+
+
+    /* -----------------------------------------------------
+       STATS
+       ----------------------------------------------------- */
+
+    .stats-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+
+        min-height: 78px;
+
+        padding: 12px;
+
+        border-radius: 11px;
+    }
+
+    .stat-icon {
+
+        width: 38px;
+        height: 38px;
+
+        font-size: 17px;
+    }
+
+
+    /* -----------------------------------------------------
+       ADMIN CARDS
+       ----------------------------------------------------- */
+
+    .admin-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 12px;
+    }
+
+    .admin-card {
+
+        min-height: 230px;
+
+        padding: 18px;
+    }
+
+
+    /* -----------------------------------------------------
+       MANAGEMENT
+       ----------------------------------------------------- */
+
+    .manager-form-card,
+    .manager-list-card {
+
+        padding: 22px;
+
+        border-radius: 14px;
     }
 }
 
@@ -2180,11 +2620,18 @@ textarea {
 
 @media (max-width: 600px) {
 
+    /* -----------------------------------------------------
+       LOGIN
+       ----------------------------------------------------- */
+
     .login-page {
-        padding: 15px;
+
+        padding:
+            15px;
     }
 
     .login-card {
+
         padding:
             30px 22px;
 
@@ -2196,49 +2643,173 @@ textarea {
     }
 
 
-    /* MAIN */
+    /* -----------------------------------------------------
+       DASHBOARD
+       ----------------------------------------------------- */
 
     .dashboard-main {
+
         padding:
-            20px 14px;
+            20px 14px
+            calc(94px + env(safe-area-inset-bottom));
     }
 
+
+    /* -----------------------------------------------------
+       TOPBAR
+       ----------------------------------------------------- */
+
     .topbar {
-        align-items: flex-start;
+
+        align-items: center;
+
+        margin-bottom: 20px;
     }
 
     .topbar h1 {
-        font-size: 25px;
+
+        font-size: 27px;
+    }
+
+    .topbar-left p {
+
+        max-width: 280px;
+
+        font-size: 11px;
+
+        line-height: 1.45;
     }
 
 
-    /* STATS */
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    /* WELCOME */
+    /* -----------------------------------------------------
+       WELCOME
+       ----------------------------------------------------- */
 
     .welcome-card {
-        min-height: 175px;
 
-        padding: 24px;
+        min-height: 160px;
+
+        padding:
+            23px 20px;
+
+        margin-bottom: 18px;
+
+        border-radius: 15px;
+    }
+
+    .welcome-label {
+        font-size: 8px;
+
+        letter-spacing: 1.7px;
     }
 
     .welcome-card h2 {
+
         font-size: 23px;
+
+        margin-bottom: 7px;
+    }
+
+    .welcome-card p {
+
+        font-size: 11px;
+
+        line-height: 1.6;
     }
 
 
-    /* FOOTER */
+    /* -----------------------------------------------------
+       STATS
+       ----------------------------------------------------- */
+
+    .stats-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 9px;
+
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+
+        min-height: 68px;
+
+        padding: 11px 13px;
+    }
+
+    .stat-icon {
+
+        width: 38px;
+        height: 38px;
+    }
+
+
+    /* -----------------------------------------------------
+       SECTIONS
+       ----------------------------------------------------- */
+
+    .content-section,
+    .system-section {
+
+        margin-bottom: 30px;
+    }
+
+    .section-heading {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 2px;
+
+        margin-bottom: 13px;
+    }
+
+    .section-heading h2 {
+
+        font-size: 20px;
+    }
+
+
+    /* -----------------------------------------------------
+       ADMIN CARDS
+       ----------------------------------------------------- */
+
+    .admin-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 11px;
+    }
+
+    .admin-card {
+
+        min-height: 210px;
+
+        padding: 18px;
+    }
+
+
+    /* -----------------------------------------------------
+       STATUS
+       ----------------------------------------------------- */
+
+    .status-card {
+
+        padding:
+            13px;
+
+        min-height: 65px;
+    }
+
+
+    /* -----------------------------------------------------
+       FOOTER
+       ----------------------------------------------------- */
 
     .dashboard-footer {
+
         flex-direction: column;
 
         align-items: flex-start;
@@ -2251,37 +2822,171 @@ textarea {
     }
 
 
-    /* MANAGEMENT */
+    /* -----------------------------------------------------
+       MANAGEMENT
+       ----------------------------------------------------- */
 
-    .form-grid {
+    .manager-layout {
+
         grid-template-columns: 1fr;
-    }
 
-    .full-width {
-        grid-column: auto;
+        gap: 14px;
     }
 
     .manager-form-card,
     .manager-list-card {
-        padding: 18px;
+
+        padding:
+            18px 16px;
+
+        border-radius: 14px;
     }
 
+
+    /* -----------------------------------------------------
+       FORM GRID
+       ----------------------------------------------------- */
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+    }
+
+    .full-width {
+
+        grid-column: auto;
+    }
+
+
+    /* -----------------------------------------------------
+       FORM GROUP
+       ----------------------------------------------------- */
+
+    .form-group {
+
+        margin-bottom: 17px;
+    }
+
+    .form-group label {
+
+        margin-bottom: 7px;
+
+        font-size: 12px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+
+        min-height: 50px;
+
+        padding:
+            12px 13px;
+
+        font-size: 14px;
+
+        border-radius: 10px;
+    }
+
+
+    /* -----------------------------------------------------
+       FORM ACTIONS
+       ----------------------------------------------------- */
+
+    .form-actions {
+
+        flex-direction: column;
+
+        margin-top: 18px;
+    }
+
+    .form-actions .primary-button,
+    .form-actions .secondary-button {
+
+        width: 100%;
+    }
+
+
+    /* -----------------------------------------------------
+       MANAGER ITEM
+       ----------------------------------------------------- */
+
     .manager-item {
+
         align-items: flex-start;
 
         flex-direction: column;
+
+        gap: 12px;
+
+        padding: 13px;
+    }
+
+    .manager-item-main {
+
+        width: 100%;
+    }
+
+    .manager-item-main small {
+
+        max-width: 240px;
     }
 
     .manager-actions {
+
         width: 100%;
     }
 
     .manager-actions button {
+
         flex: 1;
     }
 
-    .form-actions {
-        flex-direction: column;
+
+    /* -----------------------------------------------------
+       FAMILY SEARCH
+       ----------------------------------------------------- */
+
+    .family-search-wrapper {
+
+        margin-top: 14px;
+    }
+
+    #familySearch {
+
+        height: 50px;
+
+        padding:
+            0 42px;
+
+        font-size: 14px;
+
+        border-radius: 10px;
+    }
+
+    .family-search-info {
+
+        font-size: 10px;
+    }
+
+
+    /* -----------------------------------------------------
+       FATHER SEARCH
+       ----------------------------------------------------- */
+
+    .father-suggestions {
+
+        max-height: 230px;
+
+        border-radius: 10px;
+    }
+
+    .father-suggestion {
+
+        padding:
+            12px;
     }
 }
 
@@ -2292,42 +2997,126 @@ textarea {
 
 @media (max-width: 400px) {
 
+    /* -----------------------------------------------------
+       BOTTOM NAV
+       ----------------------------------------------------- */
+
     .sidebar {
-        width: 64px;
+
+        height: 66px;
+
+        min-height: 66px;
     }
 
-    .dashboard-main {
-        margin-left: 64px;
+    .sidebar-nav {
+
+        height: 66px;
 
         padding:
-            18px 12px;
-    }
-
-    .sidebar-brand {
-        padding:
-            15px 5px;
-    }
-
-    .sidebar-logo {
-        width: 40px;
-        height: 40px;
+            5px 3px;
     }
 
     .nav-item {
-        min-height: 42px;
+
+        min-width: 52px;
+
+        width: 52px;
+
+        flex-basis: 52px;
+
+        min-height: 54px;
     }
 
+    .nav-item > i,
     .nav-icon {
-        font-size: 18px;
+
+        font-size: 16px;
+    }
+
+    .nav-item span:not(.nav-icon) {
+
+        font-size: 7px;
+    }
+
+    .sidebar-bottom {
+
+        width: 58px;
+
+        height: 66px;
     }
 
     .logout-button {
-        width: 44px;
-        height: 44px;
+
+        width: 42px;
+        height: 42px;
+
+        border-radius: 10px;
     }
 
     .logout-button i {
-        font-size: 17px;
+
+        font-size: 16px;
+    }
+
+
+    /* -----------------------------------------------------
+       MAIN
+       ----------------------------------------------------- */
+
+    .dashboard-main {
+
+        padding:
+            18px 12px
+            calc(88px + env(safe-area-inset-bottom));
+    }
+
+
+    /* -----------------------------------------------------
+       TOPBAR
+       ----------------------------------------------------- */
+
+    .topbar h1 {
+
+        font-size: 25px;
+    }
+
+    .topbar-left p {
+
+        font-size: 10px;
+    }
+
+    .user-avatar {
+
+        width: 38px;
+        height: 38px;
+    }
+
+
+    /* -----------------------------------------------------
+       WELCOME
+       ----------------------------------------------------- */
+
+    .welcome-card {
+
+        padding:
+            21px 17px;
+    }
+
+    .welcome-card h2 {
+
+        font-size: 21px;
+    }
+
+
+    /* -----------------------------------------------------
+       FORM
+       ----------------------------------------------------- */
+
+    .manager-form-card,
+    .manager-list-card {
+
+        padding:
+            16px 13px;
     }
 }
 
@@ -2339,6 +3128,7 @@ textarea {
 @media (max-width: 700px) {
 
     #familySearch {
+
         font-size: 14px;
 
         padding-top: 14px;
@@ -2352,13 +3142,17 @@ textarea {
    ========================================================= */
 
 .change-password-page {
+
     min-height: 100vh;
+    min-height: 100dvh;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    padding: 40px 20px;
+    padding:
+        40px 20px;
 
     background:
         linear-gradient(
@@ -2368,29 +3162,32 @@ textarea {
         );
 }
 
-
 .change-password-card {
+
     width: 100%;
     max-width: 520px;
 
     background: #ffffff;
 
-    border: 1px solid #eadfce;
+    border:
+        1px solid #eadfce;
 
     border-radius: 20px;
 
     padding: 34px;
 
     box-shadow:
-        0 15px 45px rgba(66, 45, 25, 0.10);
+        0 15px 45px
+        rgba(66, 45, 25, 0.10);
 }
 
 
 /* =========================================================
-   HEADER
+   CHANGE PASSWORD HEADER
    ========================================================= */
 
 .change-password-header {
+
     display: flex;
 
     align-items: center;
@@ -2400,14 +3197,15 @@ textarea {
     margin-bottom: 30px;
 }
 
-
 .change-password-icon {
+
     width: 58px;
     height: 58px;
 
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -2420,9 +3218,10 @@ textarea {
     font-size: 23px;
 }
 
-
 .change-password-header h1 {
-    margin: 0 0 5px;
+
+    margin:
+        0 0 5px;
 
     color: #302820;
 
@@ -2431,8 +3230,8 @@ textarea {
     font-weight: 700;
 }
 
-
 .change-password-header p {
+
     margin: 0;
 
     color: #817468;
@@ -2442,11 +3241,13 @@ textarea {
 
 
 /* =========================================================
-   MESSAGE
+   PASSWORD MESSAGE
    ========================================================= */
 
 .password-message {
-    padding: 12px 14px;
+
+    padding:
+        12px 14px;
 
     margin-bottom: 20px;
 
@@ -2457,35 +3258,38 @@ textarea {
     line-height: 1.5;
 }
 
-
 .password-message.success {
+
     background: #edf8f0;
 
     color: #276738;
 
-    border: 1px solid #cde8d3;
+    border:
+        1px solid #cde8d3;
 }
 
-
 .password-message.error {
+
     background: #fff1f0;
 
     color: #a33b35;
 
-    border: 1px solid #f0cfcc;
+    border:
+        1px solid #f0cfcc;
 }
 
 
 /* =========================================================
-   FORM
+   PASSWORD FORM
    ========================================================= */
 
 .password-field {
+
     margin-bottom: 21px;
 }
 
-
 .password-field label {
+
     display: block;
 
     margin-bottom: 8px;
@@ -2497,8 +3301,8 @@ textarea {
     font-weight: 600;
 }
 
-
 .password-input-wrap {
+
     position: relative;
 
     display: flex;
@@ -2506,8 +3310,8 @@ textarea {
     align-items: center;
 }
 
-
 .password-input-wrap > i {
+
     position: absolute;
 
     left: 15px;
@@ -2519,15 +3323,17 @@ textarea {
     pointer-events: none;
 }
 
-
 .password-input-wrap input {
+
     width: 100%;
 
     height: 50px;
 
-    padding: 0 48px 0 43px;
+    padding:
+        0 48px 0 43px;
 
-    border: 1px solid #ded3c5;
+    border:
+        1px solid #ded3c5;
 
     border-radius: 10px;
 
@@ -2547,23 +3353,24 @@ textarea {
         background 0.2s ease;
 }
 
-
 .password-input-wrap input::placeholder {
+
     color: #aaa096;
 }
 
-
 .password-input-wrap input:focus {
+
     border-color: #9a6b3e;
 
     background: #ffffff;
 
     box-shadow:
-        0 0 0 3px rgba(154, 107, 62, 0.10);
+        0 0 0 3px
+        rgba(154, 107, 62, 0.10);
 }
 
-
 .toggle-password {
+
     position: absolute;
 
     right: 5px;
@@ -2572,6 +3379,7 @@ textarea {
     height: 40px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -2588,8 +3396,8 @@ textarea {
     font-size: 15px;
 }
 
-
 .toggle-password:hover {
+
     background: #f5eee5;
 
     color: #6e4c2f;
@@ -2601,6 +3409,7 @@ textarea {
    ========================================================= */
 
 .password-hint {
+
     display: flex;
 
     align-items: center;
@@ -2614,8 +3423,8 @@ textarea {
     font-size: 12px;
 }
 
-
 .password-hint i {
+
     font-size: 11px;
 }
 
@@ -2625,13 +3434,14 @@ textarea {
    ========================================================= */
 
 .password-strength {
+
     margin-top: -7px;
 
     margin-bottom: 20px;
 }
 
-
 .strength-bar {
+
     width: 100%;
 
     height: 5px;
@@ -2643,8 +3453,8 @@ textarea {
     background: #eee7df;
 }
 
-
 #strength-progress {
+
     display: block;
 
     width: 0%;
@@ -2659,8 +3469,8 @@ textarea {
         width 0.25s ease;
 }
 
-
 #strength-text {
+
     display: block;
 
     margin-top: 6px;
@@ -2672,10 +3482,11 @@ textarea {
 
 
 /* =========================================================
-   ACTIONS
+   CHANGE PASSWORD ACTIONS
    ========================================================= */
 
 .change-password-actions {
+
     display: flex;
 
     align-items: center;
@@ -2687,20 +3498,20 @@ textarea {
     margin-top: 28px;
 }
 
-
 .cancel-password-btn,
 .change-password-btn {
+
     min-height: 48px;
 
     display: inline-flex;
 
     align-items: center;
-
     justify-content: center;
 
     gap: 8px;
 
-    padding: 0 18px;
+    padding:
+        0 18px;
 
     border-radius: 10px;
 
@@ -2720,24 +3531,25 @@ textarea {
         background 0.2s ease;
 }
 
-
 .cancel-password-btn {
-    border: 1px solid #ded3c5;
+
+    border:
+        1px solid #ded3c5;
 
     background: #ffffff;
 
     color: #6f6257;
 }
 
-
 .cancel-password-btn:hover {
+
     background: #f8f3ec;
 
     color: #4d4035;
 }
 
-
 .change-password-btn {
+
     border: 0;
 
     background: #8b5e34;
@@ -2745,18 +3557,19 @@ textarea {
     color: #ffffff;
 }
 
-
 .change-password-btn:hover {
+
     background: #754b27;
 
     transform: translateY(-1px);
 
     box-shadow:
-        0 6px 15px rgba(117, 75, 39, 0.20);
+        0 6px 15px
+        rgba(117, 75, 39, 0.20);
 }
 
-
 .change-password-btn:disabled {
+
     opacity: 0.65;
 
     cursor: not-allowed;
@@ -2772,6 +3585,7 @@ textarea {
    ========================================================= */
 
 .password-security-note {
+
     display: flex;
 
     gap: 12px;
@@ -2784,13 +3598,14 @@ textarea {
 
     background: #faf6f0;
 
-    border: 1px solid #eee3d5;
+    border:
+        1px solid #eee3d5;
 
     color: #77695d;
 }
 
-
 .password-security-note > i {
+
     margin-top: 2px;
 
     color: #96704b;
@@ -2798,8 +3613,8 @@ textarea {
     font-size: 16px;
 }
 
-
 .password-security-note strong {
+
     display: block;
 
     margin-bottom: 3px;
@@ -2809,8 +3624,8 @@ textarea {
     font-size: 13px;
 }
 
-
 .password-security-note p {
+
     margin: 0;
 
     font-size: 12px;
@@ -2820,38 +3635,114 @@ textarea {
 
 
 /* =========================================================
-   MOBILE
+   CHANGE PASSWORD MOBILE
    ========================================================= */
 
 @media (max-width: 600px) {
 
     .change-password-page {
-        padding: 20px 14px;
+
+        align-items: flex-start;
+
+        padding:
+            20px 14px;
     }
 
-
     .change-password-card {
-        padding: 24px 20px;
+
+        padding:
+            24px 20px;
 
         border-radius: 16px;
     }
 
+    .change-password-header {
+
+        gap: 12px;
+
+        margin-bottom: 24px;
+    }
+
+    .change-password-icon {
+
+        width: 50px;
+        height: 50px;
+
+        border-radius: 13px;
+
+        font-size: 20px;
+    }
 
     .change-password-header h1 {
+
         font-size: 22px;
     }
 
+    .change-password-header p {
+
+        font-size: 12px;
+    }
 
     .change-password-actions {
+
         flex-direction: column-reverse;
 
         align-items: stretch;
-    }
 
+        margin-top: 22px;
+    }
 
     .cancel-password-btn,
     .change-password-btn {
+
         width: 100%;
     }
 
+    .password-security-note {
+
+        margin-top: 22px;
+
+        padding: 12px;
+    }
+}
+
+
+/* =========================================================
+   TOUCH DEVICES
+   ========================================================= */
+
+@media (hover: none) {
+
+    .nav-item:hover,
+    .stat-card:hover,
+    .admin-card:hover,
+    .primary-button:hover,
+    .card-button:hover,
+    .logout-button:hover,
+    .edit-button:hover,
+    .delete-button:hover {
+
+        transform: none;
+    }
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
+
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+    }
 }
