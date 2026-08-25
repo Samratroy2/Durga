@@ -17,7 +17,6 @@ console.log(
 );
 
 
-
 /* =========================================================
    GLOBAL DATA
    ========================================================= */
@@ -42,7 +41,6 @@ let lightboxItems = [];
 let currentLightboxIndex = 0;
 
 let lastFocusedElement = null;
-
 
 
 /* =========================================================
@@ -76,7 +74,6 @@ async function initializeAboutPage() {
 }
 
 
-
 /* =========================================================
    HELPERS
    ========================================================= */
@@ -103,13 +100,11 @@ function escapeHTML(value) {
 }
 
 
-
 function escapeAttribute(value) {
 
     return escapeHTML(value);
 
 }
-
 
 
 /* =========================================================
@@ -198,7 +193,6 @@ function getDriveFileId(url) {
 }
 
 
-
 /* =========================================================
    IMAGE URL
    ========================================================= */
@@ -245,7 +239,6 @@ function getImageUrl(value) {
 }
 
 
-
 /* =========================================================
    LARGE IMAGE URL
    ========================================================= */
@@ -288,7 +281,6 @@ function getLargeImageUrl(value) {
 }
 
 
-
 /* =========================================================
    GET FIRST AVAILABLE VALUE
    ========================================================= */
@@ -320,7 +312,6 @@ function firstValue(
 }
 
 
-
 /* =========================================================
    NUMBER
    ========================================================= */
@@ -343,7 +334,6 @@ function getNumber(value) {
     return null;
 
 }
-
 
 
 /* =========================================================
@@ -371,6 +361,10 @@ function getDateValue(data) {
     }
 
 
+    /*
+     * Firebase Firestore Timestamp
+     */
+
     if (
         typeof value.toDate === "function"
     ) {
@@ -380,6 +374,10 @@ function getDateValue(data) {
     }
 
 
+    /*
+     * JavaScript Date
+     */
+
     if (
         value instanceof Date
     ) {
@@ -388,6 +386,10 @@ function getDateValue(data) {
 
     }
 
+
+    /*
+     * Firestore-like object
+     */
 
     if (
         typeof value === "object" &&
@@ -400,6 +402,10 @@ function getDateValue(data) {
 
     }
 
+
+    /*
+     * String / number date
+     */
 
     const date =
         new Date(value);
@@ -421,6 +427,9 @@ function getDateValue(data) {
 }
 
 
+/* =========================================================
+   FORMAT DATE
+   ========================================================= */
 
 function formatDate(date) {
 
@@ -441,7 +450,6 @@ function formatDate(date) {
     ).format(date);
 
 }
-
 
 
 /* =========================================================
@@ -465,13 +473,13 @@ async function getCollectionData(
 
 
     snapshot.forEach(
-        doc => {
+        item => {
 
             result.push({
 
-                id: doc.id,
+                id: item.id,
 
-                ...doc.data()
+                ...item.data()
 
             });
 
@@ -482,7 +490,6 @@ async function getCollectionData(
     return result;
 
 }
-
 
 
 /* =========================================================
@@ -539,10 +546,11 @@ async function loadIdolMakers() {
 
         if (feature) {
 
-            feature.innerHTML = errorBox(
-                "Unable to load idol maker information.",
-                error
-            );
+            feature.innerHTML =
+                errorBox(
+                    "Unable to load idol maker information.",
+                    error
+                );
 
         }
 
@@ -556,7 +564,6 @@ async function loadIdolMakers() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -609,7 +616,6 @@ function sortByOrder(
 }
 
 
-
 /* =========================================================
    CURRENT MAKER
    ========================================================= */
@@ -638,7 +644,6 @@ function getCurrentMaker() {
         idolMakers[0];
 
 }
-
 
 
 /* =========================================================
@@ -879,9 +884,8 @@ function renderCurrentIdolMaker() {
 }
 
 
-
 /* =========================================================
-   MAKER GALLERY
+   IDOL MAKER GALLERY
    ========================================================= */
 
 function renderIdolMakerGallery() {
@@ -1049,7 +1053,6 @@ function renderIdolMakerGallery() {
 }
 
 
-
 /* =========================================================
    =========================================================
    RITUALS
@@ -1110,7 +1113,6 @@ async function loadRituals() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -1410,7 +1412,6 @@ function renderRituals() {
 }
 
 
-
 /* =========================================================
    RITUAL ACCORDION
    ========================================================= */
@@ -1556,7 +1557,6 @@ function setupRitualAccordion() {
 }
 
 
-
 /* =========================================================
    =========================================================
    OLD PICTURES
@@ -1632,7 +1632,6 @@ async function loadOldPictures() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -1839,7 +1838,6 @@ function renderOldPictures() {
 }
 
 
-
 /* =========================================================
    =========================================================
    NEWSPAPER ARTICLES
@@ -1847,12 +1845,6 @@ function renderOldPictures() {
    ========================================================= */
 
 async function loadNewspaperArticles() {
-
-    /*
-     * IMPORTANT:
-     *
-     * HTML uses #newspaper-grid
-     */
 
     const grid =
         document.getElementById(
@@ -1884,33 +1876,17 @@ async function loadNewspaperArticles() {
             );
 
 
+        /*
+         * Sort newest first.
+         *
+         * Firestore Timestamp is supported.
+         */
+
         newspaperArticles.sort(
-            (
-                a,
-                b
-            ) => {
-
-                const yearA =
-                    getNumber(a.year);
-
-
-                const yearB =
-                    getNumber(b.year);
-
-
-                if (
-                    yearA !== null &&
-                    yearB !== null
-                ) {
-
-                    return yearB - yearA;
-
-                }
-
+            (a, b) => {
 
                 const dateA =
                     getDateValue(a);
-
 
                 const dateB =
                     getDateValue(b);
@@ -1925,6 +1901,42 @@ async function loadNewspaperArticles() {
                         dateB.getTime() -
                         dateA.getTime()
                     );
+
+                }
+
+
+                if (dateA) {
+
+                    return -1;
+
+                }
+
+
+                if (dateB) {
+
+                    return 1;
+
+                }
+
+
+                /*
+                 * Fallback for records
+                 * containing only year.
+                 */
+
+                const yearA =
+                    getNumber(a.year);
+
+                const yearB =
+                    getNumber(b.year);
+
+
+                if (
+                    yearA !== null &&
+                    yearB !== null
+                ) {
+
+                    return yearB - yearA;
 
                 }
 
@@ -1956,7 +1968,6 @@ async function loadNewspaperArticles() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -2006,16 +2017,29 @@ function renderNewspaperArticles() {
     newspaperArticles.forEach(
         article => {
 
+            /*
+             * =================================================
+             * IMAGE
+             * =================================================
+             */
+
             const image =
                 firstValue(
                     article,
                     [
                         "image",
                         "photo",
-                        "imageUrl"
+                        "imageUrl",
+                        "url"
                     ]
                 );
 
+
+            /*
+             * =================================================
+             * TITLE
+             * =================================================
+             */
 
             const title =
                 firstValue(
@@ -2027,6 +2051,12 @@ function renderNewspaperArticles() {
                 "Roy Bari Durga Puja";
 
 
+            /*
+             * =================================================
+             * HEADLINE
+             * =================================================
+             */
+
             const headline =
                 firstValue(
                     article,
@@ -2036,6 +2066,12 @@ function renderNewspaperArticles() {
                     ]
                 );
 
+
+            /*
+             * =================================================
+             * NEWSPAPER / PUBLICATION
+             * =================================================
+             */
 
             const newspaper =
                 firstValue(
@@ -2047,14 +2083,11 @@ function renderNewspaperArticles() {
                 );
 
 
-            const source =
-                firstValue(
-                    article,
-                    [
-                        "source"
-                    ]
-                );
-
+            /*
+             * =================================================
+             * PAGE
+             * =================================================
+             */
 
             const page =
                 firstValue(
@@ -2065,7 +2098,51 @@ function renderNewspaperArticles() {
                 );
 
 
-            const year =
+            /*
+             * =================================================
+             * FIRESTORE DATE
+             * =================================================
+             */
+
+            const articleDate =
+                getDateValue(
+                    article
+                );
+
+
+            /*
+             * =================================================
+             * DISPLAY DATE
+             *
+             * Firestore Timestamp:
+             * 4 Oct 2024
+             * =================================================
+             */
+
+            const displayDate =
+                articleDate
+                    ? formatDate(
+                        articleDate
+                    )
+                    : firstValue(
+                        article,
+                        [
+                            "dateText",
+                            "displayDate"
+                        ]
+                    );
+
+
+            /*
+             * =================================================
+             * YEAR
+             *
+             * If year is not stored separately,
+             * get it from Firestore Timestamp.
+             * =================================================
+             */
+
+            let year =
                 firstValue(
                     article,
                     [
@@ -2074,14 +2151,37 @@ function renderNewspaperArticles() {
                 );
 
 
-            const date =
+            if (
+                !year &&
+                articleDate
+            ) {
+
+                year =
+                    articleDate.getFullYear();
+
+            }
+
+
+            /*
+             * =================================================
+             * SOURCE
+             * =================================================
+             */
+
+            const source =
                 firstValue(
                     article,
                     [
-                        "date"
+                        "source"
                     ]
                 );
 
+
+            /*
+             * =================================================
+             * SOURCE URL
+             * =================================================
+             */
 
             const sourceUrl =
                 firstValue(
@@ -2094,6 +2194,12 @@ function renderNewspaperArticles() {
                 );
 
 
+            /*
+             * =================================================
+             * CARD
+             * =================================================
+             */
+
             const card =
                 document.createElement(
                     "article"
@@ -2104,30 +2210,49 @@ function renderNewspaperArticles() {
                 "newspaper-card";
 
 
+            /*
+             * =================================================
+             * IMAGE HTML
+             * =================================================
+             */
+
+            const imageHTML =
+                image
+                    ? createImageButtonHTML(
+                        image,
+                        title,
+                        "newspaper-image"
+                    )
+                    : `
+                        <div class="newspaper-no-image">
+                            Newspaper Archive
+                        </div>
+                    `;
+
+
+            /*
+             * =================================================
+             * CARD CONTENT
+             * =================================================
+             */
+
             card.innerHTML = `
 
-                ${
-                    image
-                        ? createImageButtonHTML(
-                            image,
-                            title,
-                            "newspaper-image"
-                        )
-                        : `
-                            <div class="newspaper-no-image">
-                                Newspaper Archive
-                            </div>
-                          `
-                }
+                ${imageHTML}
 
 
                 <div class="newspaper-content">
+
 
                     ${
                         newspaper
                             ? `
                                 <div class="small-caps">
-                                    ${escapeHTML(newspaper)}
+
+                                    ${escapeHTML(
+                                        newspaper
+                                    )}
+
                                 </div>
                               `
                             : ""
@@ -2135,7 +2260,11 @@ function renderNewspaperArticles() {
 
 
                     <h3>
-                        ${escapeHTML(title)}
+
+                        ${escapeHTML(
+                            title
+                        )}
+
                     </h3>
 
 
@@ -2143,7 +2272,11 @@ function renderNewspaperArticles() {
                         headline
                             ? `
                                 <p>
-                                    ${escapeHTML(headline)}
+
+                                    ${escapeHTML(
+                                        headline
+                                    )}
+
                                 </p>
                               `
                             : ""
@@ -2152,11 +2285,16 @@ function renderNewspaperArticles() {
 
                     <div class="newspaper-meta">
 
+
                         ${
                             year
                                 ? `
                                     <span>
-                                        ${escapeHTML(year)}
+
+                                        ${escapeHTML(
+                                            year
+                                        )}
+
                                     </span>
                                   `
                                 : ""
@@ -2164,10 +2302,14 @@ function renderNewspaperArticles() {
 
 
                         ${
-                            date
+                            displayDate
                                 ? `
                                     <span>
-                                        ${escapeHTML(date)}
+
+                                        ${escapeHTML(
+                                            displayDate
+                                        )}
+
                                     </span>
                                   `
                                 : ""
@@ -2178,7 +2320,12 @@ function renderNewspaperArticles() {
                             page
                                 ? `
                                     <span>
-                                        Page ${escapeHTML(page)}
+
+                                        Page
+                                        ${escapeHTML(
+                                            page
+                                        )}
+
                                     </span>
                                   `
                                 : ""
@@ -2189,11 +2336,16 @@ function renderNewspaperArticles() {
                             source
                                 ? `
                                     <span>
-                                        ${escapeHTML(source)}
+
+                                        ${escapeHTML(
+                                            source
+                                        )}
+
                                     </span>
                                   `
                                 : ""
                         }
+
 
                     </div>
 
@@ -2202,16 +2354,21 @@ function renderNewspaperArticles() {
                         sourceUrl
                             ? `
                                 <a
-                                    href="${escapeAttribute(sourceUrl)}"
+                                    href="${escapeAttribute(
+                                        sourceUrl
+                                    )}"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     class="newspaper-source-link"
                                 >
+
                                     View Source
+
                                 </a>
                               `
                             : ""
                     }
+
 
                 </div>
 
@@ -2226,12 +2383,16 @@ function renderNewspaperArticles() {
     );
 
 
+    /*
+     * Initialize full-image lightbox
+     * for newspaper images.
+     */
+
     initializeImageButtons(
         grid
     );
 
 }
-
 
 
 /* =========================================================
@@ -2309,7 +2470,6 @@ async function loadMemories() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -2510,7 +2670,6 @@ function renderMemories() {
 }
 
 
-
 /* =========================================================
    IMAGE BUTTON HTML
    ========================================================= */
@@ -2563,7 +2722,6 @@ function createImageButtonHTML(
     `;
 
 }
-
 
 
 /* =========================================================
@@ -2642,7 +2800,6 @@ function initializeImageButtons(
     );
 
 }
-
 
 
 /* =========================================================
@@ -2803,7 +2960,6 @@ function setupLightbox() {
 }
 
 
-
 /* =========================================================
    OPEN LIGHTBOX
    ========================================================= */
@@ -2945,7 +3101,6 @@ function openLightbox(
 }
 
 
-
 /* =========================================================
    SHOW LIGHTBOX IMAGE
    ========================================================= */
@@ -3062,7 +3217,6 @@ function showLightboxImage(
 }
 
 
-
 /* =========================================================
    CLOSE LIGHTBOX
    ========================================================= */
@@ -3083,11 +3237,9 @@ function closeLightbox() {
 
 
     /*
-     * IMPORTANT:
-     *
      * Remove focus BEFORE aria-hidden=true.
      *
-     * This fixes the Chrome warning:
+     * This prevents the Chrome warning:
      *
      * "Blocked aria-hidden on an element because
      * its descendant retained focus."
@@ -3191,7 +3343,6 @@ function closeLightbox() {
 }
 
 
-
 /* =========================================================
    ERROR BOX
    ========================================================= */
@@ -3229,7 +3380,6 @@ function errorBox(
 }
 
 
-
 /* =========================================================
    IMAGE ERROR DEBUGGING
    ========================================================= */
@@ -3257,7 +3407,6 @@ document.addEventListener(
     },
     true
 );
-
 
 
 /* =========================================================
