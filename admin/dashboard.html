@@ -29,11 +29,13 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
+
     <style>
 
         /* =====================================================
            DASHBOARD ADDITIONAL STYLES
            ===================================================== */
+
         .activity-section {
             margin-top: 42px;
         }
@@ -289,8 +291,276 @@
 
 
         /* =====================================================
+           NEW MANAGEMENT CARDS
+           ===================================================== */
+
+        .new-admin-section {
+            margin-top: 42px;
+        }
+
+
+        .new-admin-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        .new-admin-card {
+            display: flex;
+            flex-direction: column;
+
+            min-height: 250px;
+
+            padding: 22px;
+
+            background: #fff;
+
+            border: 1px solid #e8e0d7;
+
+            border-radius: 12px;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .new-admin-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px
+                rgba(70, 45, 30, .08);
+        }
+
+
+        .new-card-top {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .new-card-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: #f4ece3;
+
+            color: #6f4b35;
+
+            font-size: 20px;
+        }
+
+
+        .new-card-badge {
+            font-size: 8px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            color: #a67c52;
+        }
+
+
+        .new-admin-card h3 {
+            margin: 0 0 9px;
+
+            color: #3b3029;
+
+            font-family: Georgia, serif;
+
+            font-size: 18px;
+        }
+
+
+        .new-admin-card p {
+            margin: 0;
+
+            color: #777;
+
+            font-size: 12px;
+
+            line-height: 1.65;
+
+            flex: 1;
+        }
+
+
+        .new-card-button {
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            color: #6f4b35;
+
+            font-family: inherit;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            transition: .2s ease;
+        }
+
+
+        .new-card-button:hover {
+            background: #6f4b35;
+
+            border-color: #6f4b35;
+
+            color: #fff;
+        }
+
+
+        /* =====================================================
+           NEW QUICK STATS
+           ===================================================== */
+
+        .additional-stat-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-top: 18px;
+        }
+
+
+        .additional-stat {
+            background: #fff;
+
+            border: 1px solid #e8e0d7;
+
+            border-radius: 10px;
+
+            padding: 16px;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+
+        .additional-stat:hover {
+            transform: translateY(-2px);
+        }
+
+
+        .additional-stat-top {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        .additional-stat-icon {
+            font-size: 18px;
+        }
+
+
+        .additional-stat-label {
+            display: block;
+
+            margin-top: 10px;
+
+            color: #777;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .7px;
+        }
+
+
+        .additional-stat-number {
+            display: block;
+
+            margin-top: 4px;
+
+            color: #3b3029;
+
+            font-family: Georgia, serif;
+
+            font-size: 22px;
+        }
+
+
+        /* =====================================================
            MOBILE
            ===================================================== */
+
+        @media (max-width: 1200px) {
+
+            .new-admin-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+
+            .additional-stat-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .new-admin-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .additional-stat-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
 
         @media (max-width: 700px) {
 
@@ -307,6 +577,21 @@
 
             .activity-time {
                 width: 100%;
+            }
+
+
+            .new-admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .additional-stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .status-card {
+                align-items: flex-start;
             }
 
         }
@@ -326,13 +611,16 @@
     <aside class="sidebar">
 
 
-        <!-- BRAND -->
+        <!-- =================================================
+             BRAND
+             ================================================= -->
 
         <div class="sidebar-brand">
 
             <div class="sidebar-logo">
                 🪔
             </div>
+
 
             <div class="sidebar-brand-text">
 
@@ -349,7 +637,6 @@
         </div>
 
 
-
         <!-- =================================================
              NAVIGATION
              ================================================= -->
@@ -357,7 +644,9 @@
         <nav class="sidebar-nav">
 
 
-            <!-- MAIN -->
+            <!-- =================================================
+                 MAIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 MAIN
@@ -379,8 +668,9 @@
             </a>
 
 
-
-            <!-- CONTENT -->
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -447,8 +737,97 @@
             </a>
 
 
+            <!-- =================================================
+                 HOMEPAGE
+                 ================================================= -->
 
-            <!-- MORE -->
+            <div class="nav-section-title">
+                HOMEPAGE
+            </div>
+
+
+            <a
+                href="./homepage-countdown.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-hourglass-half"></i>
+
+                <span>
+                    Homepage Countdown
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MEDIA & ARCHIVE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MEDIA &amp; ARCHIVE
+            </div>
+
+
+            <a
+                href="./comparisons.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-code-compare"></i>
+
+                <span>
+                    Comparisons
+                </span>
+
+            </a>
+
+
+            <a
+                href="./idol-makers.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-user-gear"></i>
+
+                <span>
+                    Idol Makers
+                </span>
+
+            </a>
+
+
+            <a
+                href="./newspaper-articles.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-newspaper"></i>
+
+                <span>
+                    Newspaper Articles
+                </span>
+
+            </a>
+
+
+            <a
+                href="./old-pictures.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-images"></i>
+
+                <span>
+                    Old Pictures
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MORE
+                 ================================================= -->
 
             <div class="nav-section-title">
                 MORE
@@ -502,8 +881,9 @@
             </a>
 
 
-
-            <!-- ADMIN -->
+            <!-- =================================================
+                 ADMIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -539,10 +919,11 @@
 
             </a>
 
+
             <a
                 href="./change-password.html"
                 class="nav-item"
-                id="activityNav"
+                id="changePasswordNav"
             >
 
                 <i class="fa-solid fa-key"></i>
@@ -554,9 +935,7 @@
             </a>
 
 
-
         </nav>
-
 
 
         <!-- =================================================
@@ -600,9 +979,7 @@
 
         </div>
 
-
     </aside>
-
 
 
     <!-- =====================================================
@@ -645,6 +1022,7 @@
                     A
                 </div>
 
+
                 <div class="user-details">
 
                     <strong id="adminEmail">
@@ -657,15 +1035,14 @@
 
                 </div>
 
+
                 <span class="user-status">
                     ●
                 </span>
 
             </div>
 
-
         </header>
-
 
 
         <!-- =================================================
@@ -710,7 +1087,6 @@
         </section>
 
 
-
         <!-- =================================================
              QUICK STATS
              ================================================= -->
@@ -748,7 +1124,6 @@
             </article>
 
 
-
             <!-- EVENTS -->
 
             <article
@@ -777,7 +1152,6 @@
                 </span>
 
             </article>
-
 
 
             <!-- ARCHIVE -->
@@ -810,7 +1184,6 @@
             </article>
 
 
-
             <!-- GALLERY -->
 
             <article
@@ -839,7 +1212,6 @@
                 </span>
 
             </article>
-
 
 
             <!-- TIMELINE -->
@@ -872,7 +1244,6 @@
             </article>
 
 
-
             <!-- ENQUIRIES -->
 
             <article
@@ -901,7 +1272,6 @@
                 </span>
 
             </article>
-
 
 
             <!-- ACTIVITY -->
@@ -937,6 +1307,180 @@
         </section>
 
 
+        <!-- =================================================
+             ADDITIONAL COLLECTION STATS
+             ================================================= -->
+
+        <section class="additional-stat-grid">
+
+
+            <!-- HOMEPAGE COUNTDOWN -->
+
+            <article
+                class="additional-stat"
+                id="homepageCountdownStatCard"
+            >
+
+                <div class="additional-stat-top">
+
+                    <span class="additional-stat-icon">
+                        ⏳
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </div>
+
+                <span class="additional-stat-label">
+                    Homepage Countdown
+                </span>
+
+                <strong
+                    class="additional-stat-number"
+                    id="homepageCountdownCount"
+                >
+                    —
+                </strong>
+
+            </article>
+
+
+            <!-- COMPARISONS -->
+
+            <article
+                class="additional-stat"
+                id="comparisonsStatCard"
+            >
+
+                <div class="additional-stat-top">
+
+                    <span class="additional-stat-icon">
+                        ⇄
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </div>
+
+                <span class="additional-stat-label">
+                    Comparisons
+                </span>
+
+                <strong
+                    class="additional-stat-number"
+                    id="comparisonsCount"
+                >
+                    —
+                </strong>
+
+            </article>
+
+
+            <!-- IDOL MAKERS -->
+
+            <article
+                class="additional-stat"
+                id="idolMakersStatCard"
+            >
+
+                <div class="additional-stat-top">
+
+                    <span class="additional-stat-icon">
+                        🧑‍🎨
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </div>
+
+                <span class="additional-stat-label">
+                    Idol Makers
+                </span>
+
+                <strong
+                    class="additional-stat-number"
+                    id="idolMakersCount"
+                >
+                    —
+                </strong>
+
+            </article>
+
+
+            <!-- NEWSPAPER ARTICLES -->
+
+            <article
+                class="additional-stat"
+                id="newspaperArticlesStatCard"
+            >
+
+                <div class="additional-stat-top">
+
+                    <span class="additional-stat-icon">
+                        📰
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </div>
+
+                <span class="additional-stat-label">
+                    Newspaper Articles
+                </span>
+
+                <strong
+                    class="additional-stat-number"
+                    id="newspaperArticlesCount"
+                >
+                    —
+                </strong>
+
+            </article>
+
+
+            <!-- OLD PICTURES -->
+
+            <article
+                class="additional-stat"
+                id="oldPicturesStatCard"
+            >
+
+                <div class="additional-stat-top">
+
+                    <span class="additional-stat-icon">
+                        🖼️
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </div>
+
+                <span class="additional-stat-label">
+                    Old Pictures
+                </span>
+
+                <strong
+                    class="additional-stat-number"
+                    id="oldPicturesCount"
+                >
+                    —
+                </strong>
+
+            </article>
+
+
+        </section>
+
 
         <!-- =================================================
              CONTENT MANAGEMENT
@@ -960,7 +1504,6 @@
                 </div>
 
             </div>
-
 
 
             <div class="admin-grid">
@@ -1011,7 +1554,6 @@
                 </article>
 
 
-
                 <!-- EVENTS -->
 
                 <article class="admin-card">
@@ -1055,7 +1597,6 @@
                     </button>
 
                 </article>
-
 
 
                 <!-- ARCHIVE -->
@@ -1103,7 +1644,6 @@
                 </article>
 
 
-
                 <!-- GALLERY -->
 
                 <article class="admin-card">
@@ -1147,7 +1687,6 @@
                     </button>
 
                 </article>
-
 
 
                 <!-- MEMORIES -->
@@ -1194,7 +1733,6 @@
                 </article>
 
 
-
                 <!-- RITUALS -->
 
                 <article class="admin-card">
@@ -1237,7 +1775,6 @@
                     </button>
 
                 </article>
-
 
 
                 <!-- TIMELINE -->
@@ -1288,6 +1825,257 @@
 
         </section>
 
+
+        <!-- =================================================
+             NEW CONTENT MANAGEMENT
+             ================================================= -->
+
+        <section class="new-admin-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>
+                        HERITAGE &amp; MEDIA
+                    </span>
+
+                    <h2>
+                        Additional Content
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="new-admin-grid">
+
+
+                <!-- HOMEPAGE COUNTDOWN -->
+
+                <article class="new-admin-card">
+
+                    <div class="new-card-top">
+
+                        <div class="new-card-icon">
+                            ⏳
+                        </div>
+
+                        <span class="new-card-badge">
+                            HOMEPAGE
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        Homepage Countdown
+                    </h3>
+
+                    <p>
+                        Set the title and date/time displayed
+                        in the homepage countdown.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="new-card-button"
+                        id="homepageCountdownButton"
+                    >
+
+                        <span>
+                            Manage Countdown
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </article>
+
+
+                <!-- COMPARISONS -->
+
+                <article class="new-admin-card">
+
+                    <div class="new-card-top">
+
+                        <div class="new-card-icon">
+                            ⇄
+                        </div>
+
+                        <span class="new-card-badge">
+                            VISUAL
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        Comparisons
+                    </h3>
+
+                    <p>
+                        Manage then-and-now comparison images
+                        from the Roy Bari archive.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="new-card-button"
+                        id="comparisonsButton"
+                    >
+
+                        <span>
+                            Manage Comparisons
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </article>
+
+
+                <!-- IDOL MAKERS -->
+
+                <article class="new-admin-card">
+
+                    <div class="new-card-top">
+
+                        <div class="new-card-icon">
+                            🧑‍🎨
+                        </div>
+
+                        <span class="new-card-badge">
+                            PUJA
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        Idol Makers
+                    </h3>
+
+                    <p>
+                        Manage the artisans and idol makers
+                        connected with the Puja.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="new-card-button"
+                        id="idolMakersButton"
+                    >
+
+                        <span>
+                            Manage Idol Makers
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </article>
+
+
+                <!-- NEWSPAPER ARTICLES -->
+
+                <article class="new-admin-card">
+
+                    <div class="new-card-top">
+
+                        <div class="new-card-icon">
+                            📰
+                        </div>
+
+                        <span class="new-card-badge">
+                            PRESS
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        Newspaper Articles
+                    </h3>
+
+                    <p>
+                        Preserve newspaper coverage and
+                        published articles about Roy Bari.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="new-card-button"
+                        id="newspaperArticlesButton"
+                    >
+
+                        <span>
+                            Manage Articles
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </article>
+
+
+                <!-- OLD PICTURES -->
+
+                <article class="new-admin-card">
+
+                    <div class="new-card-top">
+
+                        <div class="new-card-icon">
+                            🖼️
+                        </div>
+
+                        <span class="new-card-badge">
+                            ARCHIVE
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        Old Pictures
+                    </h3>
+
+                    <p>
+                        Manage historical photographs and
+                        descriptions from the family archive.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="new-card-button"
+                        id="oldPicturesButton"
+                    >
+
+                        <span>
+                            Manage Old Pictures
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </article>
+
+
+            </div>
+
+        </section>
 
 
         <!-- =================================================
@@ -1362,7 +2150,6 @@
                 </article>
 
 
-
                 <!-- ACTIVITY -->
 
                 <article class="admin-card">
@@ -1410,7 +2197,6 @@
             </div>
 
         </section>
-
 
 
         <!-- =================================================
@@ -1485,7 +2271,6 @@
         </section>
 
 
-
         <!-- =================================================
              FIREBASE STATUS
              ================================================= -->
@@ -1546,7 +2331,6 @@
         </section>
 
 
-
         <!-- =================================================
              FOOTER
              ================================================= -->
@@ -1565,7 +2349,6 @@
 
 
     </main>
-
 
 
     <!-- =====================================================

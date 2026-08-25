@@ -10,14 +10,21 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="description"
+        content="Roy Bari Administration — Puja Events"
+    >
+
     <title>
         Roy Bari — Puja Events
     </title>
+
 
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
+
 
     <link
         rel="stylesheet"
@@ -30,22 +37,21 @@
 <body class="dashboard-page">
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          SIDEBAR
-         ========================================================= -->
+         ===================================================== -->
 
     <aside class="sidebar">
 
 
-        <!-- =====================================================
-             BRAND
-             ===================================================== -->
+        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
             <div class="sidebar-logo">
                 🪔
             </div>
+
 
             <div class="sidebar-brand-text">
 
@@ -62,9 +68,9 @@
         </div>
 
 
-        <!-- =====================================================
+        <!-- =================================================
              NAVIGATION
-             ===================================================== -->
+             ================================================= -->
 
         <nav class="sidebar-nav">
 
@@ -84,13 +90,12 @@
             >
 
                 <i class="fa-solid fa-display"></i>
-                
+
                 <span>
                     Dashboard
                 </span>
 
             </a>
-
 
 
             <!-- =================================================
@@ -134,7 +139,6 @@
             </a>
 
 
-
             <!-- ARCHIVE -->
 
             <a
@@ -167,6 +171,93 @@
             </a>
 
 
+            <!-- =================================================
+                 HOMEPAGE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                HOMEPAGE
+            </div>
+
+
+            <a
+                href="./homepage-countdown.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-hourglass-half"></i>
+
+                <span>
+                    Homepage Countdown
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MEDIA & ARCHIVE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MEDIA &amp; ARCHIVE
+            </div>
+
+
+            <a
+                href="./comparisons.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-code-compare"></i>
+
+                <span>
+                    Comparisons
+                </span>
+
+            </a>
+
+
+            <a
+                href="./idol-makers.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-user-gear"></i>
+
+                <span>
+                    Idol Makers
+                </span>
+
+            </a>
+
+
+            <a
+                href="./newspaper-articles.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-newspaper"></i>
+
+                <span>
+                    Newspaper Articles
+                </span>
+
+            </a>
+
+
+            <a
+                href="./old-pictures.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-images"></i>
+
+                <span>
+                    Old Pictures
+                </span>
+
+            </a>
+
 
             <!-- =================================================
                  MORE
@@ -176,8 +267,6 @@
                 MORE
             </div>
 
-
-            <!-- MEMORIES -->
 
             <a
                 href="./memories.html"
@@ -192,8 +281,6 @@
 
             </a>
 
-
-            <!-- RITUALS -->
 
             <a
                 href="./rituals.html"
@@ -211,8 +298,6 @@
             </a>
 
 
-            <!-- TIMELINE -->
-
             <a
                 href="./timeline.html"
                 class="nav-item"
@@ -227,7 +312,9 @@
             </a>
 
 
-            <!-- ADMIN -->
+            <!-- =================================================
+                 ADMIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -255,18 +342,17 @@
 
                 <i class="fa-solid fa-book"></i>
 
-
                 <span>
                     Activity History
                 </span>
 
             </a>
 
-            
+
             <a
                 href="./change-password.html"
                 class="nav-item"
-                id="activityNav"
+                id="changePasswordNav"
             >
 
                 <i class="fa-solid fa-key"></i>
@@ -281,10 +367,9 @@
         </nav>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              SIDEBAR BOTTOM
-             ===================================================== -->
+             ================================================= -->
 
         <div class="sidebar-bottom">
 
@@ -324,22 +409,22 @@
 
             </button>
 
+
         </div>
 
     </aside>
 
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN CONTENT
-         ========================================================= -->
+         ===================================================== -->
 
     <main class="dashboard-main">
 
 
-        <!-- =====================================================
+        <!-- =================================================
              TOPBAR
-             ===================================================== -->
+             ================================================= -->
 
         <header class="topbar">
 
@@ -369,6 +454,7 @@
                     A
                 </div>
 
+
                 <div class="user-details">
 
                     <strong id="adminEmail">
@@ -386,10 +472,9 @@
         </header>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              EVENT MANAGEMENT
-             ===================================================== -->
+             ================================================= -->
 
         <section class="manager-layout">
 
@@ -418,19 +503,17 @@
                 </div>
 
 
-
                 <!-- FORM -->
 
                 <form id="eventForm">
 
 
-                    <!-- Hidden document ID -->
+                    <!-- Hidden Firestore document ID -->
 
                     <input
                         type="hidden"
                         id="eventId"
                     >
-
 
 
                     <div class="form-grid">
@@ -454,7 +537,6 @@
                         </div>
 
 
-
                         <!-- DATE -->
 
                         <div class="form-group">
@@ -469,7 +551,6 @@
                             >
 
                         </div>
-
 
 
                         <!-- TIME -->
@@ -489,7 +570,6 @@
                         </div>
 
 
-
                         <!-- LOCATION -->
 
                         <div class="form-group">
@@ -507,7 +587,6 @@
                         </div>
 
 
-
                         <!-- DESCRIPTION -->
 
                         <div class="form-group full-width">
@@ -523,7 +602,6 @@
                             ></textarea>
 
                         </div>
-
 
 
                         <!-- IMAGE -->
@@ -545,7 +623,6 @@
                     </div>
 
 
-
                     <!-- FORM BUTTONS -->
 
                     <div class="form-actions">
@@ -556,9 +633,7 @@
                             class="primary-button"
                             id="saveButton"
                         >
-
                             Save Event
-
                         </button>
 
 
@@ -567,13 +642,11 @@
                             class="secondary-button"
                             id="cancelButton"
                         >
-
                             Cancel
-
                         </button>
 
-                    </div>
 
+                    </div>
 
 
                     <!-- MESSAGE -->
@@ -587,7 +660,6 @@
                 </form>
 
             </div>
-
 
 
             <!-- =================================================
@@ -621,14 +693,11 @@
                 </div>
 
 
-
                 <div
                     id="eventList"
                     class="manager-list"
                 >
-
                     Loading...
-
                 </div>
 
 
@@ -638,10 +707,9 @@
         </section>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              FOOTER
-             ===================================================== -->
+             ================================================= -->
 
         <footer class="dashboard-footer">
 
@@ -659,10 +727,9 @@
     </main>
 
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          JAVASCRIPT
-         ========================================================= -->
+         ===================================================== -->
 
     <script
         type="module"

@@ -10,9 +10,15 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="description"
+        content="Roy Bari Administration — Rituals and Traditions"
+    >
+
     <title>
         Roy Bari — Rituals
     </title>
+
 
     <link
         rel="stylesheet"
@@ -23,6 +29,7 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
+
 
     <style>
 
@@ -46,6 +53,10 @@
 
         }
 
+
+        /* =====================================================
+           CONTENT CARD
+           ===================================================== */
 
         .content-card {
 
@@ -225,6 +236,13 @@
         }
 
 
+        .secondary-button:hover {
+
+            background: #f7f0e9;
+
+        }
+
+
         /* =====================================================
            MESSAGE
            ===================================================== */
@@ -271,7 +289,8 @@
 
             padding: 20px 0;
 
-            border-bottom: 1px solid #e8dfd6;
+            border-bottom:
+                1px solid #e8dfd6;
 
         }
 
@@ -603,6 +622,14 @@
 
             }
 
+
+            .edit-button,
+            .delete-button {
+
+                flex: 1;
+
+            }
+
         }
 
     </style>
@@ -619,6 +646,8 @@
 
     <aside class="sidebar">
 
+
+        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
@@ -641,8 +670,14 @@
         </div>
 
 
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
         <nav class="sidebar-nav">
 
+
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -662,6 +697,10 @@
 
             </a>
 
+
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -724,6 +763,98 @@
             </a>
 
 
+            <!-- =================================================
+                 HOMEPAGE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                HOMEPAGE
+            </div>
+
+
+            <a
+                href="./homepage-countdown.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-hourglass-half"></i>
+
+                <span>
+                    Homepage Countdown
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MEDIA & ARCHIVE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MEDIA &amp; ARCHIVE
+            </div>
+
+
+            <a
+                href="./comparisons.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-code-compare"></i>
+
+                <span>
+                    Comparisons
+                </span>
+
+            </a>
+
+
+            <a
+                href="./idol-makers.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-user-gear"></i>
+
+                <span>
+                    Idol Makers
+                </span>
+
+            </a>
+
+
+            <a
+                href="./newspaper-articles.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-newspaper"></i>
+
+                <span>
+                    Newspaper Articles
+                </span>
+
+            </a>
+
+
+            <a
+                href="./old-pictures.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-images"></i>
+
+                <span>
+                    Old Pictures
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MORE
+                 ================================================= -->
+
             <div class="nav-section-title">
                 MORE
             </div>
@@ -746,7 +877,6 @@
             <a
                 href="./rituals.html"
                 class="nav-item active"
-                style="font-weight: 900;"
             >
 
                 <span class="nav-icon">
@@ -773,6 +903,10 @@
 
             </a>
 
+
+            <!-- =================================================
+                 ADMIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -806,11 +940,10 @@
 
             </a>
 
-            
+
             <a
                 href="./change-password.html"
                 class="nav-item"
-                id="activityNav"
             >
 
                 <i class="fa-solid fa-key"></i>
@@ -822,9 +955,12 @@
             </a>
 
 
-
         </nav>
 
+
+        <!-- =================================================
+             SIDEBAR BOTTOM
+             ================================================= -->
 
         <div class="sidebar-bottom">
 
@@ -873,6 +1009,8 @@
     <main class="dashboard-main">
 
 
+        <!-- TOPBAR -->
+
         <header class="topbar">
 
 
@@ -913,12 +1051,11 @@
 
             </div>
 
-
         </header>
 
 
         <!-- =================================================
-             SIDE BY SIDE CONTENT
+             RITUAL MANAGEMENT
              ================================================= -->
 
         <section class="ritual-manager-layout">
@@ -954,6 +1091,8 @@
                     <div class="form-grid">
 
 
+                        <!-- NAME -->
+
                         <div class="form-group">
 
                             <label for="name">
@@ -970,6 +1109,8 @@
                         </div>
 
 
+                        <!-- DAY -->
+
                         <div class="form-group">
 
                             <label for="day">
@@ -985,6 +1126,8 @@
                         </div>
 
 
+                        <!-- DATE -->
+
                         <div class="form-group">
 
                             <label for="date">
@@ -998,6 +1141,8 @@
 
                         </div>
 
+
+                        <!-- TIME -->
 
                         <div class="form-group">
 
@@ -1014,6 +1159,8 @@
                         </div>
 
 
+                        <!-- CATEGORY -->
+
                         <div class="form-group">
 
                             <label for="category">
@@ -1028,6 +1175,8 @@
 
                         </div>
 
+
+                        <!-- TYPE -->
 
                         <div class="form-group">
 
@@ -1066,6 +1215,8 @@
                         </div>
 
 
+                        <!-- LOCATION -->
+
                         <div class="form-group">
 
                             <label for="location">
@@ -1081,6 +1232,8 @@
                         </div>
 
 
+                        <!-- PRIEST -->
+
                         <div class="form-group">
 
                             <label for="priest">
@@ -1095,6 +1248,8 @@
 
                         </div>
 
+
+                        <!-- ORDER -->
 
                         <div class="form-group">
 
@@ -1112,6 +1267,8 @@
                         </div>
 
 
+                        <!-- DESCRIPTION -->
+
                         <div class="form-group full-width">
 
                             <label for="description">
@@ -1128,6 +1285,8 @@
 
                     </div>
 
+
+                    <!-- ACTIONS -->
 
                     <div class="form-actions">
 
@@ -1151,9 +1310,7 @@
                     </div>
 
 
-                    <p
-                        id="ritualMessage"
-                    ></p>
+                    <p id="ritualMessage"></p>
 
 
                 </form>
@@ -1170,6 +1327,7 @@
 
 
                 <div class="section-heading">
+
 
                     <div>
 
@@ -1188,6 +1346,7 @@
                         0 rituals
                     </span>
 
+
                 </div>
 
 
@@ -1204,9 +1363,9 @@
         </section>
 
 
-        <!-- =================================================
+        <!-- =====================================================
              FOOTER
-             ================================================= -->
+             ===================================================== -->
 
         <footer class="dashboard-footer">
 
@@ -1223,6 +1382,10 @@
 
     </main>
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
 
     <script
         type="module"

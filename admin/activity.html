@@ -14,15 +14,18 @@
         Roy Bari — Activity History
     </title>
 
+
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
 
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
+
 
     <style>
 
@@ -353,7 +356,6 @@
 
         /* =====================================================
            ACTION CELL
-           SAME STYLE AS DASHBOARD RECENT ACTIVITY
            ===================================================== */
 
         .activity-action-cell {
@@ -450,7 +452,7 @@
 
         .activity-section-cell {
 
-            min-width: 150px;
+            min-width: 180px;
 
         }
 
@@ -689,7 +691,9 @@
     <aside class="sidebar">
 
 
-        <!-- BRAND -->
+        <!-- =================================================
+             BRAND
+             ================================================= -->
 
         <div class="sidebar-brand">
 
@@ -713,7 +717,6 @@
         </div>
 
 
-
         <!-- =================================================
              NAVIGATION
              ================================================= -->
@@ -721,7 +724,9 @@
         <nav class="sidebar-nav">
 
 
-            <!-- MAIN -->
+            <!-- =================================================
+                 MAIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 MAIN
@@ -742,8 +747,9 @@
             </a>
 
 
-
-            <!-- CONTENT -->
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -806,8 +812,97 @@
             </a>
 
 
+            <!-- =================================================
+                 HOMEPAGE
+                 ================================================= -->
 
-            <!-- MORE -->
+            <div class="nav-section-title">
+                HOMEPAGE
+            </div>
+
+
+            <a
+                href="./homepage-countdown.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-hourglass-half"></i>
+
+                <span>
+                    Homepage Countdown
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 ARCHIVE / MEDIA
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MEDIA &amp; ARCHIVE
+            </div>
+
+
+            <a
+                href="./comparisons.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-code-compare"></i>
+
+                <span>
+                    Comparisons
+                </span>
+
+            </a>
+
+
+            <a
+                href="./idol-makers.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-user-gear"></i>
+
+                <span>
+                    Idol Makers
+                </span>
+
+            </a>
+
+
+            <a
+                href="./newspaper-articles.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-newspaper"></i>
+
+                <span>
+                    Newspaper Articles
+                </span>
+
+            </a>
+
+
+            <a
+                href="./old-pictures.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-images"></i>
+
+                <span>
+                    Old Pictures
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MORE
+                 ================================================= -->
 
             <div class="nav-section-title">
                 MORE
@@ -858,8 +953,9 @@
             </a>
 
 
-
-            <!-- ADMIN -->
+            <!-- =================================================
+                 ADMIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -892,11 +988,11 @@
                 </span>
 
             </a>
-            
+
+
             <a
                 href="./change-password.html"
                 class="nav-item"
-                id="activityNav"
             >
 
                 <i class="fa-solid fa-key"></i>
@@ -908,9 +1004,7 @@
             </a>
 
 
-
         </nav>
-
 
 
         <!-- =================================================
@@ -955,8 +1049,8 @@
 
         </div>
 
-    </aside>
 
+    </aside>
 
 
     <!-- =====================================================
@@ -1011,8 +1105,8 @@
 
             </div>
 
-        </header>
 
+        </header>
 
 
         <!-- =================================================
@@ -1025,7 +1119,9 @@
             <div class="manager-list-card">
 
 
-                <!-- HEADER -->
+                <!-- =================================================
+                     HEADER
+                     ================================================= -->
 
                 <div class="activity-heading">
 
@@ -1054,7 +1150,6 @@
                 </div>
 
 
-
                 <!-- =================================================
                      FILTERS
                      ================================================= -->
@@ -1078,7 +1173,6 @@
                         >
 
                     </div>
-
 
 
                     <!-- ACTION -->
@@ -1112,7 +1206,6 @@
                     </div>
 
 
-
                     <!-- SECTION -->
 
                     <div class="activity-filter-group">
@@ -1126,6 +1219,9 @@
                             <option value="">
                                 All Sections
                             </option>
+
+
+                            <!-- EXISTING COLLECTIONS -->
 
                             <option value="familyMembers">
                                 Family
@@ -1163,6 +1259,29 @@
                                 Enquiries
                             </option>
 
+
+                            <!-- NEW COLLECTIONS -->
+
+                            <option value="homepageCountdown">
+                                Homepage Countdown
+                            </option>
+
+                            <option value="comparisons">
+                                Comparisons
+                            </option>
+
+                            <option value="idolMakers">
+                                Idol Makers
+                            </option>
+
+                            <option value="newspaperArticles">
+                                Newspaper Articles
+                            </option>
+
+                            <option value="oldPictures">
+                                Old Pictures
+                            </option>
+
                         </select>
 
                     </div>
@@ -1171,14 +1290,14 @@
                 </div>
 
 
-
-                <!-- MESSAGE -->
+                <!-- =================================================
+                     MESSAGE
+                     ================================================= -->
 
                 <p
                     id="activityMessage"
                     class="message"
                 ></p>
-
 
 
                 <!-- =================================================
@@ -1216,7 +1335,7 @@
                                 </th>
 
                                 <th>
-                                    Date & Time
+                                    Date &amp; Time
                                 </th>
 
                                 <th>
@@ -1258,7 +1377,6 @@
         </section>
 
 
-
         <!-- =================================================
              FOOTER
              ================================================= -->
@@ -1277,7 +1395,6 @@
 
 
     </main>
-
 
 
     <!-- =====================================================

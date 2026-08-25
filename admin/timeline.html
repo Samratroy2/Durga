@@ -10,283 +10,599 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Roy Bari — Timeline
-    </title>
-
     <meta
         name="description"
         content="Manage the Roy Bari historical timeline."
     >
+
+    <title>
+        Roy Bari — Timeline
+    </title>
+
+
+    <!-- ADMIN CSS -->
 
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
 
+
+    <!-- FONT AWESOME -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
+
     <style>
 
-        .timeline-form-card,
-        .timeline-list-card {
-            background: #fff;
-            border: 1px solid #e7ddd3;
-            border-radius: 12px;
-            padding: 24px;
-        }
+        /* =====================================================
+           TIMELINE LAYOUT
+           ===================================================== */
 
+        .manager-layout {
 
-        .timeline-form-card,
-        .timeline-list-card {
+            display: grid;
+
+            grid-template-columns:
+                minmax(420px, 0.9fr)
+                minmax(520px, 1.35fr);
+
+            gap: 24px;
+
             width: 100%;
-            box-sizing: border-box;
+
+            align-items: start;
+
         }
 
+
+        /* =====================================================
+           CARDS
+           ===================================================== */
+
+        .timeline-form-card,
+        .timeline-list-card {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            background: #fff;
+
+            border: 1px solid #e7ddd3;
+
+            border-radius: 12px;
+
+            padding: 24px;
+
+        }
+
+
+        /* =====================================================
+           FORM GRID
+           ===================================================== */
 
         .timeline-form-grid {
+
             display: grid;
+
             grid-template-columns:
                 repeat(2, minmax(0, 1fr));
+
             gap: 16px;
+
         }
 
 
         .full-width {
+
             grid-column: 1 / -1;
+
         }
 
 
         .form-group {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 7px;
+
         }
 
 
         .form-group label {
+
             font-size: 12px;
+
             font-weight: 700;
+
             color: #67584c;
+
         }
 
 
         .form-group input,
         .form-group select,
         .form-group textarea {
+
             width: 100%;
+
             padding: 11px 12px;
+
             border: 1px solid #ddd1c6;
+
             border-radius: 7px;
+
             background: #fffdf9;
+
             color: #3c3028;
+
             font-family: inherit;
+
             outline: none;
+
             box-sizing: border-box;
+
         }
 
 
         .form-group textarea {
+
             resize: vertical;
+
             min-height: 120px;
+
+            line-height: 1.6;
+
         }
 
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
+
             border-color: #795337;
+
             box-shadow:
                 0 0 0 2px
                 rgba(121, 83, 55, 0.08);
+
         }
 
 
+        /* =====================================================
+           FORM ACTIONS
+           ===================================================== */
+
         .form-actions {
+
             display: flex;
+
             gap: 10px;
+
             margin-top: 20px;
+
         }
 
 
         .primary-button,
         .secondary-button {
+
             border-radius: 7px;
+
             padding: 11px 18px;
+
             font-family: inherit;
+
             font-weight: 600;
+
             cursor: pointer;
+
         }
 
 
         .primary-button {
+
             border: none;
+
             background: #795337;
+
             color: white;
+
         }
 
 
         .primary-button:hover {
+
             background: #633f29;
+
+        }
+
+
+        .primary-button:disabled {
+
+            opacity: .6;
+
+            cursor: wait;
+
         }
 
 
         .secondary-button {
+
             border: 1px solid #ddd1c6;
+
             background: white;
+
             color: #5d4b3d;
+
         }
 
 
+        .secondary-button:hover {
+
+            background: #f5eee8;
+
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        #timelineMessage {
+
+            min-height: 20px;
+
+            margin-top: 12px;
+
+            font-size: 13px;
+
+        }
+
+
+        .message-success {
+
+            color: #39734a;
+
+        }
+
+
+        .message-error {
+
+            color: #a33d3d;
+
+        }
+
+
+        .message-info {
+
+            color: #735b48;
+
+        }
+
+
+        /* =====================================================
+           TIMELINE LIST
+           ===================================================== */
+
         .timeline-list {
+
             margin-top: 10px;
+
         }
 
 
         .timeline-item {
+
             position: relative;
+
             display: grid;
+
             grid-template-columns:
                 80px 1fr auto;
+
             gap: 18px;
+
             padding: 20px 0;
+
             border-bottom:
                 1px solid #e8dfd6;
+
         }
 
 
         .timeline-item:last-child {
+
             border-bottom: none;
+
         }
 
 
+        /* =====================================================
+           YEAR
+           ===================================================== */
+
         .timeline-year {
+
             font-family: Georgia, serif;
+
             font-size: 21px;
+
             font-weight: 600;
+
             color: #70442f;
+
+        }
+
+
+        /* =====================================================
+           CONTENT
+           ===================================================== */
+
+        .timeline-content {
+
+            min-width: 0;
+
         }
 
 
         .timeline-content h3 {
+
             margin: 0 0 5px;
+
             font-family: Georgia, serif;
+
             font-size: 18px;
+
             color: #3f2920;
+
         }
 
 
         .timeline-content p {
+
             margin: 0;
+
             color: #74675d;
+
             line-height: 1.6;
+
             font-size: 13px;
+
         }
 
 
+        /* =====================================================
+           META
+           ===================================================== */
+
         .timeline-meta {
+
             display: flex;
+
             flex-wrap: wrap;
+
             gap: 6px;
+
             margin-bottom: 8px;
+
         }
 
 
         .timeline-tag {
+
             display: inline-block;
+
             padding: 4px 8px;
+
             border-radius: 20px;
+
             background: #f1e8df;
+
             color: #795337;
+
             font-size: 9px;
+
             font-weight: 700;
+
             text-transform: uppercase;
+
             letter-spacing: 0.05em;
+
         }
 
 
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
         .timeline-actions {
+
             display: flex;
+
             gap: 6px;
+
             align-items: flex-start;
+
+            flex-shrink: 0;
+
         }
 
 
         .timeline-edit,
         .timeline-delete {
+
             padding: 7px 10px;
+
             border-radius: 6px;
+
             background: white;
+
             border: 1px solid #ddd1c6;
+
             cursor: pointer;
+
             font-size: 11px;
+
         }
 
 
         .timeline-edit:hover {
+
             background: #f3ebe4;
+
         }
 
 
         .timeline-delete {
+
             color: #a13c3c;
+
         }
 
 
         .timeline-delete:hover {
+
             background: #f9e8e8;
+
         }
 
 
-        #timelineMessage {
-            min-height: 20px;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-
-
-        .message-success {
-            color: #39734a;
-        }
-
-
-        .message-error {
-            color: #a33d3d;
-        }
-
-
-        .message-info {
-            color: #735b48;
-        }
-
+        /* =====================================================
+           EMPTY LIST
+           ===================================================== */
 
         .empty-list {
+
             padding: 40px 10px;
+
             text-align: center;
+
             color: #8b7b6d;
+
+        }
+
+
+        .empty-list i {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            font-size: 28px;
+
+            color: #795337;
+
+        }
+
+
+        .empty-list h3 {
+
+            margin: 0 0 6px;
+
+            font-family: Georgia, serif;
+
+            color: #59483c;
+
+        }
+
+
+        .empty-list p {
+
+            margin: 0;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .manager-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
         }
 
 
         @media (max-width: 850px) {
 
             .timeline-form-grid {
+
                 grid-template-columns: 1fr;
+
             }
+
 
             .full-width {
+
                 grid-column: auto;
+
             }
+
 
             .timeline-item {
+
                 grid-template-columns: 1fr;
+
                 gap: 8px;
+
             }
 
+
             .timeline-actions {
+
                 margin-top: 8px;
+
+                width: 100%;
+
+            }
+
+
+            .timeline-edit,
+            .timeline-delete {
+
+                flex: 1;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .timeline-form-card,
+            .timeline-list-card {
+
+                padding: 18px;
+
+            }
+
+
+            .form-actions {
+
+                flex-direction: column;
+
+            }
+
+
+            .primary-button,
+            .secondary-button {
+
+                width: 100%;
+
             }
 
         }
@@ -306,11 +622,14 @@
     <aside class="sidebar">
 
 
+        <!-- BRAND -->
+
         <div class="sidebar-brand">
 
             <div class="sidebar-logo">
                 🪔
             </div>
+
 
             <div class="sidebar-brand-text">
 
@@ -327,6 +646,10 @@
         </div>
 
 
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
         <nav class="sidebar-nav">
 
 
@@ -341,15 +664,19 @@
                 href="./dashboard.html"
                 class="nav-item"
             >
+
                 <i class="fa-solid fa-display"></i>
 
                 <span>
                     Dashboard
                 </span>
+
             </a>
 
 
-            <!-- CONTENT -->
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -360,11 +687,13 @@
                 href="./family.html"
                 class="nav-item"
             >
+
                 <i class="fa-solid fa-people-roof"></i>
 
                 <span>
                     Family Tree
                 </span>
+
             </a>
 
 
@@ -372,11 +701,13 @@
                 href="./events.html"
                 class="nav-item"
             >
+
                 <i class="fa-solid fa-calendar-days"></i>
 
                 <span>
                     Puja Events
                 </span>
+
             </a>
 
 
@@ -384,11 +715,13 @@
                 href="./archive.html"
                 class="nav-item"
             >
+
                 <i class="fa-solid fa-clock-rotate-left"></i>
 
                 <span>
                     Archive
                 </span>
+
             </a>
 
 
@@ -396,15 +729,107 @@
                 href="./gallery.html"
                 class="nav-item"
             >
+
                 <i class="fa-solid fa-image"></i>
 
                 <span>
                     Gallery
                 </span>
+
             </a>
 
 
-            <!-- MORE -->
+            <!-- =================================================
+                 HOMEPAGE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                HOMEPAGE
+            </div>
+
+
+            <a
+                href="./homepage-countdown.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-hourglass-half"></i>
+
+                <span>
+                    Homepage Countdown
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MEDIA & ARCHIVE
+                 ================================================= -->
+
+            <div class="nav-section-title">
+                MEDIA &amp; ARCHIVE
+            </div>
+
+
+            <a
+                href="./comparisons.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-code-compare"></i>
+
+                <span>
+                    Comparisons
+                </span>
+
+            </a>
+
+
+            <a
+                href="./idol-makers.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-user-gear"></i>
+
+                <span>
+                    Idol Makers
+                </span>
+
+            </a>
+
+
+            <a
+                href="./newspaper-articles.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-newspaper"></i>
+
+                <span>
+                    Newspaper Articles
+                </span>
+
+            </a>
+
+
+            <a
+                href="./old-pictures.html"
+                class="nav-item"
+            >
+
+                <i class="fa-solid fa-images"></i>
+
+                <span>
+                    Old Pictures
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MORE
+                 ================================================= -->
 
             <div class="nav-section-title">
                 MORE
@@ -415,11 +840,13 @@
                 href="./memories.html"
                 class="nav-item"
             >
+
                 <i class="fa-solid fa-heart"></i>
 
                 <span>
                     Memories
                 </span>
+
             </a>
 
 
@@ -427,6 +854,7 @@
                 href="./rituals.html"
                 class="nav-item"
             >
+
                 <span class="nav-icon">
                     ॐ
                 </span>
@@ -434,6 +862,7 @@
                 <span>
                     Rituals
                 </span>
+
             </a>
 
 
@@ -441,15 +870,19 @@
                 href="./timeline.html"
                 class="nav-item active"
             >
+
                 <i class="fa-solid fa-timeline"></i>
 
                 <span>
                     Timeline
                 </span>
+
             </a>
 
 
-            <!-- ADMIN -->
+            <!-- =================================================
+                 ADMIN
+                 ================================================= -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -483,11 +916,10 @@
 
             </a>
 
-            
+
             <a
                 href="./change-password.html"
                 class="nav-item"
-                id="activityNav"
             >
 
                 <i class="fa-solid fa-key"></i>
@@ -502,7 +934,9 @@
         </nav>
 
 
-        <!-- SIDEBAR BOTTOM -->
+        <!-- =================================================
+             SIDEBAR BOTTOM
+             ================================================= -->
 
         <div class="sidebar-bottom">
 
@@ -538,6 +972,7 @@
 
             </button>
 
+
         </div>
 
     </aside>
@@ -549,6 +984,8 @@
 
     <main class="dashboard-main">
 
+
+        <!-- TOPBAR -->
 
         <header class="topbar">
 
@@ -569,6 +1006,8 @@
 
             </div>
 
+
+            <!-- ADMIN USER -->
 
             <div class="admin-user">
 
@@ -600,7 +1039,9 @@
         <section class="manager-layout">
 
 
-            <!-- ADD / EDIT -->
+            <!-- =================================================
+                 ADD / EDIT
+                 ================================================= -->
 
             <div class="timeline-form-card">
 
@@ -628,6 +1069,8 @@
                     <div class="timeline-form-grid">
 
 
+                        <!-- YEAR -->
+
                         <div class="form-group">
 
                             <label for="year">
@@ -642,6 +1085,8 @@
 
                         </div>
 
+
+                        <!-- ERA -->
 
                         <div class="form-group">
 
@@ -658,6 +1103,8 @@
                         </div>
 
 
+                        <!-- TITLE -->
+
                         <div class="form-group full-width">
 
                             <label for="title">
@@ -673,6 +1120,8 @@
 
                         </div>
 
+
+                        <!-- TYPE -->
 
                         <div class="form-group">
 
@@ -715,6 +1164,8 @@
                         </div>
 
 
+                        <!-- DESCRIPTION -->
+
                         <div class="form-group full-width">
 
                             <label for="description">
@@ -732,14 +1183,19 @@
                     </div>
 
 
+                    <!-- ACTIONS -->
+
                     <div class="form-actions">
+
 
                         <button
                             type="submit"
                             class="primary-button"
                             id="saveTimelineButton"
                         >
+
                             Save Timeline Event
+
                         </button>
 
 
@@ -748,11 +1204,16 @@
                             class="secondary-button"
                             id="cancelTimelineButton"
                         >
+
                             Cancel
+
                         </button>
+
 
                     </div>
 
+
+                    <!-- MESSAGE -->
 
                     <p id="timelineMessage"></p>
 
@@ -762,12 +1223,15 @@
             </div>
 
 
-            <!-- LIST -->
+            <!-- =================================================
+                 LIST
+                 ================================================= -->
 
             <div class="timeline-list-card">
 
 
                 <div class="section-heading">
+
 
                     <div>
 
@@ -786,6 +1250,7 @@
                         0 entries
                     </span>
 
+
                 </div>
 
 
@@ -793,7 +1258,9 @@
                     id="timelineList"
                     class="timeline-list"
                 >
+
                     Loading...
+
                 </div>
 
 
@@ -803,7 +1270,9 @@
         </section>
 
 
-        <!-- FOOTER -->
+        <!-- =====================================================
+             FOOTER
+             ===================================================== -->
 
         <footer class="dashboard-footer">
 
@@ -820,6 +1289,10 @@
 
     </main>
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
 
     <script
         type="module"

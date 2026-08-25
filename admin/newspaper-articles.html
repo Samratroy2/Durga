@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roy Bari — Newspaper Articles</title>
+    <meta name="description" content="Manage newspaper archive articles.">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .content-manager {
+            display:grid;
+            grid-template-columns:minmax(260px,340px) 1fr;
+            gap:22px;
+            align-items:start;
+        }
+        .manager-card {
+            background:#fff;
+            border:1px solid #ddd1c6;
+            border-radius:12px;
+            overflow:hidden;
+        }
+        .manager-card-header {
+            padding:20px;
+            border-bottom:1px solid #eee5dc;
+        }
+        .manager-card-header span {
+            font-size:10px;font-weight:800;letter-spacing:.12em;color:#8b6a50;
+        }
+        .manager-card-header h2 {margin:5px 0 0;}
+        .manager-list {padding:10px;max-height:680px;overflow:auto;}
+        .manager-list-item {
+            width:100%;text-align:left;background:#fff;border:1px solid transparent;
+            border-radius:9px;padding:13px;margin-bottom:6px;cursor:pointer;color:#3b3028;
+        }
+        .manager-list-item:hover,.manager-list-item.active {background:#f4ece4;border-color:#dcc8b5;}
+        .manager-list-item strong {display:block;margin-bottom:5px;}
+        .manager-list-item small {display:block;color:#8b7b6d;word-break:break-all;}
+        .manager-form {padding:22px;}
+        .form-group {margin-bottom:18px;}
+        .form-group label {display:block;margin-bottom:7px;font-weight:700;font-size:13px;}
+        .form-group input,.form-group textarea,.form-group select {
+            width:100%;box-sizing:border-box;padding:12px;border:1px solid #ddd1c6;
+            border-radius:8px;background:#fff;color:#3b3028;font:inherit;outline:none;
+        }
+        .form-group textarea {min-height:130px;resize:vertical;}
+        .form-group input:focus,.form-group textarea:focus,.form-group select:focus {
+            border-color:#b27a4a;box-shadow:0 0 0 3px rgba(178,122,74,.1);
+        }
+        .field-help {display:block;margin-top:6px;color:#8b7b6d;font-size:11px;line-height:1.45;}
+        .checkbox-row {display:flex;align-items:center;gap:10px;}
+        .checkbox-row input {width:auto;}
+        .form-actions {display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
+        .primary-button,.secondary-button,.danger-button {
+            border:1px solid #ddd1c6;padding:11px 16px;border-radius:7px;cursor:pointer;font-weight:700;
+        }
+        .primary-button {background:#704a31;color:#fff;border-color:#704a31;}
+        .secondary-button {background:#fff;color:#4b392d;}
+        .danger-button {background:#fff;color:#a33d3d;border-color:#e2bcbc;}
+        button:disabled {opacity:.5;cursor:not-allowed;}
+        .message {min-height:20px;margin-top:12px;font-size:13px;}
+        .message-success {color:#39734a;} .message-error {color:#a33d3d;} .message-info {color:#735b48;}
+        .empty-list {padding:30px;text-align:center;color:#8b7b6d;}
+        .doc-tools {padding:10px;}
+        .doc-tools button {width:100%;}
+        .preview {
+            max-width:220px;max-height:160px;display:block;margin-top:10px;border-radius:8px;
+            object-fit:cover;border:1px solid #ddd1c6;
+        }
+        @media(max-width:850px) {
+            .content-manager {grid-template-columns:1fr;}
+            .manager-list {max-height:320px;}
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="sidebar-logo">🪔</div>
+        <div class="sidebar-brand-text">
+            <h2>Roy Bari</h2>
+            <span>Administration</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">MAIN</div>
+        <a href="./dashboard.html" class="nav-item">
+            <i class="fa-solid fa-display"></i><span>Dashboard</span>
+        </a>
+
+        <div class="nav-section-title">CONTENT</div>
+        <a href="./family.html" class="nav-item">
+            <i class="fa-solid fa-people-roof"></i><span>Family Tree</span>
+        </a>
+        <a href="./events.html" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i><span>Puja Events</span>
+        </a>
+        <a href="./archive.html" class="nav-item">
+            <i class="fa-solid fa-clock-rotate-left"></i><span>Archive</span>
+        </a>
+        <a href="./gallery.html" class="nav-item">
+            <i class="fa-solid fa-image"></i><span>Gallery</span>
+        </a>
+
+        <a href="./homepage-countdown.html" class="nav-item">
+            <i class="fa-solid fa-hourglass-half"></i><span>Homepage Countdown</span>
+        </a>
+        <a href="./comparisons.html" class="nav-item">
+            <i class="fa-solid fa-images"></i><span>Comparisons</span>
+        </a>
+        <a href="./idol-makers.html" class="nav-item">
+            <i class="fa-solid fa-palette"></i><span>Idol Makers</span>
+        </a>
+        <a href="./newspaper-articles.html" class="nav-item" active>
+            <i class="fa-regular fa-newspaper"></i><span>Newspaper Articles</span>
+        </a>
+        <a href="./old-pictures.html" class="nav-item">
+            <i class="fa-solid fa-camera-retro"></i><span>Old Pictures</span>
+        </a>
+
+        <div class="nav-section-title">MORE</div>
+        <a href="./memories.html" class="nav-item">
+            <i class="fa-solid fa-heart"></i><span>Memories</span>
+        </a>
+        <a href="./rituals.html" class="nav-item">
+            <span class="nav-icon">ॐ</span><span>Rituals</span>
+        </a>
+        <a href="./timeline.html" class="nav-item">
+            <i class="fa-solid fa-timeline"></i><span>Timeline</span>
+        </a>
+
+        <div class="nav-section-title">ADMIN</div>
+        <a href="./enquiries.html" class="nav-item">
+            <i class="fa-regular fa-circle-question"></i><span>Enquiries</span>
+        </a>
+        <a href="./activity.html" class="nav-item">
+            <i class="fa-solid fa-book"></i><span>Activity History</span>
+        </a>
+        <a href="./change-password.html" class="nav-item">
+            <i class="fa-solid fa-key"></i><span>Change Password</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="sidebar-note">
+            <i class="fa-solid fa-lock"></i>
+            <div><strong>Admin Access</strong><small>Protected area</small></div>
+        </div>
+        <button id="logoutButton" class="logout-button" type="button">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</aside>
+
+
+<main class="dashboard-main">
+    <header class="topbar">
+        <div class="topbar-left">
+            <span class="page-eyebrow">CONTENT MANAGEMENT</span>
+            <h1>Newspaper Articles</h1>
+            <p>Manage newspaper titles, headlines, dates, sources, pages, descriptions and images.</p>
+        </div>
+        <div class="admin-user">
+            <div class="user-avatar">A</div>
+            <div class="user-details">
+                <strong id="adminEmail">Admin</strong>
+                <span>Administrator</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="content-manager">
+        <div class="manager-card">
+            <div class="manager-card-header">
+                <span>FIRESTORE</span>
+                <h2 id="listTitle">Newspaper Articles</h2>
+                <small id="documentCount">Loading...</small>
+            </div>
+            <div class="doc-tools">
+                <button type="button" class="secondary-button" id="newButton">+ New Document</button>
+            </div>
+            <div id="documentList" class="manager-list">Loading...</div>
+        </div>
+
+        <div class="manager-card">
+            <div class="manager-card-header">
+                <span>EDITOR</span>
+                <h2 id="formTitle">Select a document</h2>
+                <small id="documentId">No document selected</small>
+            </div>
+            <form id="editorForm" class="manager-form">
+                <div id="fields"></div>
+                <div class="form-actions">
+                    <button type="submit" class="primary-button" id="saveButton">Save Changes</button>
+                    <button type="button" class="danger-button" id="deleteButton">Delete</button>
+                    <button type="button" class="secondary-button" id="cancelButton">Cancel</button>
+                </div>
+                <p id="message" class="message"></p>
+            </form>
+        </div>
+    </section>
+
+    <footer class="dashboard-footer">
+        <span>Roy Bari</span>
+        <span>Newspaper Articles Management</span>
+    </footer>
+</main>
+
+<script type="module" src="./js/newspaper-articles.js"></script>
+</body>
+</html>

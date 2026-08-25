@@ -37,28 +37,20 @@ import {
 } from "../firebase.js";
 
 
-
 /* =========================================================
    DOM — ADMIN
    ========================================================= */
 
 const adminEmail =
-    document.getElementById(
-        "adminEmail"
-    );
+    document.getElementById("adminEmail");
 
 
 const userAvatar =
-    document.getElementById(
-        "userAvatar"
-    );
+    document.getElementById("userAvatar");
 
 
 const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
-
+    document.getElementById("logoutButton");
 
 
 /* =========================================================
@@ -66,46 +58,66 @@ const logoutButton =
    ========================================================= */
 
 const familyCount =
-    document.getElementById(
-        "familyCount"
-    );
+    document.getElementById("familyCount");
 
 
 const eventsCount =
-    document.getElementById(
-        "eventsCount"
-    );
+    document.getElementById("eventsCount");
 
 
 const archiveCount =
-    document.getElementById(
-        "archiveCount"
-    );
+    document.getElementById("archiveCount");
 
 
 const galleryCount =
-    document.getElementById(
-        "galleryCount"
-    );
+    document.getElementById("galleryCount");
 
 
 const timelineCount =
-    document.getElementById(
-        "timelineCount"
-    );
+    document.getElementById("timelineCount");
 
 
 const enquiriesCount =
-    document.getElementById(
-        "enquiriesCount"
-    );
+    document.getElementById("enquiriesCount");
 
 
 const activityCount =
-    document.getElementById(
-        "activityCount"
-    );
+    document.getElementById("activityCount");
 
+
+/*
+ * Optional new counts.
+ *
+ * These will only be used if the corresponding
+ * elements exist in dashboard.html.
+ */
+
+const memoriesCount =
+    document.getElementById("memoriesCount");
+
+
+const ritualsCount =
+    document.getElementById("ritualsCount");
+
+
+const homepageCountdownCount =
+    document.getElementById("homepageCountdownCount");
+
+
+const comparisonsCount =
+    document.getElementById("comparisonsCount");
+
+
+const idolMakersCount =
+    document.getElementById("idolMakersCount");
+
+
+const newspaperArticlesCount =
+    document.getElementById("newspaperArticlesCount");
+
+
+const oldPicturesCount =
+    document.getElementById("oldPicturesCount");
 
 
 /* =========================================================
@@ -113,16 +125,11 @@ const activityCount =
    ========================================================= */
 
 const recentActivityList =
-    document.getElementById(
-        "recentActivityList"
-    );
+    document.getElementById("recentActivityList");
 
 
 const activitySummary =
-    document.getElementById(
-        "activitySummary"
-    );
-
+    document.getElementById("activitySummary");
 
 
 /* =========================================================
@@ -130,22 +137,15 @@ const activitySummary =
    ========================================================= */
 
 const statusDot =
-    document.getElementById(
-        "statusDot"
-    );
+    document.getElementById("statusDot");
 
 
 const statusText =
-    document.getElementById(
-        "statusText"
-    );
+    document.getElementById("statusText");
 
 
 const statusRight =
-    document.getElementById(
-        "statusRight"
-    );
-
+    document.getElementById("statusRight");
 
 
 /* =========================================================
@@ -156,9 +156,11 @@ onAuthStateChanged(
     auth,
     async (user) => {
 
-        /* -------------------------------------------------
-           USER NOT LOGGED IN
-           ------------------------------------------------- */
+        /*
+         * -------------------------------------------------
+         * USER NOT LOGGED IN
+         * -------------------------------------------------
+         */
 
         if (!user) {
 
@@ -171,9 +173,11 @@ onAuthStateChanged(
         }
 
 
-        /* -------------------------------------------------
-           ADMIN EMAIL
-           ------------------------------------------------- */
+        /*
+         * -------------------------------------------------
+         * ADMIN EMAIL
+         * -------------------------------------------------
+         */
 
         if (adminEmail) {
 
@@ -184,9 +188,11 @@ onAuthStateChanged(
         }
 
 
-        /* -------------------------------------------------
-           USER AVATAR
-           ------------------------------------------------- */
+        /*
+         * -------------------------------------------------
+         * USER AVATAR
+         * -------------------------------------------------
+         */
 
         if (userAvatar) {
 
@@ -202,15 +208,16 @@ onAuthStateChanged(
         }
 
 
-        /* -------------------------------------------------
-           LOAD DASHBOARD
-           ------------------------------------------------- */
+        /*
+         * -------------------------------------------------
+         * LOAD DASHBOARD
+         * -------------------------------------------------
+         */
 
         await loadDashboard();
 
     }
 );
-
 
 
 /* =========================================================
@@ -229,6 +236,8 @@ async function loadDashboard() {
 
 
         await Promise.all([
+
+            /* CORE CONTENT */
 
             loadCollectionCount(
                 "familyMembers",
@@ -255,6 +264,22 @@ async function loadDashboard() {
                 timelineCount
             ),
 
+
+            /* MORE */
+
+            loadCollectionCount(
+                "memories",
+                memoriesCount
+            ),
+
+            loadCollectionCount(
+                "rituals",
+                ritualsCount
+            ),
+
+
+            /* ADMIN */
+
             loadCollectionCount(
                 "enquiries",
                 enquiriesCount
@@ -265,11 +290,46 @@ async function loadDashboard() {
                 activityCount
             ),
 
+
+            /* OPTIONAL MEDIA COLLECTIONS */
+
+            loadCollectionCount(
+                "comparisons",
+                comparisonsCount
+            ),
+
+            loadCollectionCount(
+                "idolMakers",
+                idolMakersCount
+            ),
+
+            loadCollectionCount(
+                "newspaperArticles",
+                newspaperArticlesCount
+            ),
+
+            loadCollectionCount(
+                "oldPictures",
+                oldPicturesCount
+            ),
+
+
+            /* HOMEPAGE */
+
+            loadCollectionCount(
+                "homepageCountdown",
+                homepageCountdownCount
+            ),
+
+
+            /* RECENT ACTIVITY */
+
             loadRecentActivity()
 
         ]);
 
     }
+
     catch (error) {
 
         console.error(
@@ -289,7 +349,6 @@ async function loadDashboard() {
 }
 
 
-
 /* =========================================================
    LOAD COLLECTION COUNT
    ========================================================= */
@@ -299,8 +358,15 @@ async function loadCollectionCount(
     element
 ) {
 
+    /*
+     * If the dashboard does not have this
+     * counter element, simply skip it.
+     */
+
     if (!element) {
+
         return;
+
     }
 
 
@@ -319,6 +385,7 @@ async function loadCollectionCount(
             snapshot.size;
 
     }
+
     catch (error) {
 
         console.error(
@@ -334,6 +401,7 @@ async function loadCollectionCount(
 
 }
 
+
 /* =========================================================
    LOAD RECENT ACTIVITY
    SHOW ONLY LATEST 4
@@ -342,7 +410,9 @@ async function loadCollectionCount(
 async function loadRecentActivity() {
 
     if (!recentActivityList) {
+
         return;
+
     }
 
 
@@ -356,13 +426,9 @@ async function loadRecentActivity() {
 
 
         /*
-         * ACTIVITY LOGGER USES performedAt
-         *
-         * Therefore we first try:
-         *
-         * performedAt DESC
-         *
-         * and only show the latest 4 records.
+         * -------------------------------------------------
+         * FIRST TRY performedAt
+         * -------------------------------------------------
          */
 
         let snapshot;
@@ -393,9 +459,9 @@ async function loadRecentActivity() {
 
 
         /*
-         * FALLBACK
-         *
-         * Some older records may use createdAt.
+         * -------------------------------------------------
+         * FALLBACK TO createdAt
+         * -------------------------------------------------
          */
 
         catch (performedAtError) {
@@ -428,6 +494,12 @@ async function loadRecentActivity() {
         }
 
 
+        /*
+         * -------------------------------------------------
+         * CONVERT SNAPSHOT
+         * -------------------------------------------------
+         */
+
         const activities = [];
 
 
@@ -448,7 +520,9 @@ async function loadRecentActivity() {
 
 
         /*
-         * SHOW ONLY LATEST 4
+         * -------------------------------------------------
+         * SHOW ONLY 4
+         * -------------------------------------------------
          */
 
         renderRecentActivity(
@@ -457,7 +531,6 @@ async function loadRecentActivity() {
                 4
             )
         );
-
 
     }
 
@@ -471,9 +544,9 @@ async function loadRecentActivity() {
 
 
         /*
+         * -------------------------------------------------
          * FINAL FALLBACK
-         *
-         * Load all records and sort manually.
+         * -------------------------------------------------
          */
 
         try {
@@ -507,18 +580,17 @@ async function loadRecentActivity() {
 
 
             /*
-             * SORT USING performedAt FIRST
-             * THEN createdAt
+             * -------------------------------------------------
+             * SORT MANUALLY
+             * -------------------------------------------------
              */
 
             activities.sort(
                 (a, b) => {
 
-                    return getActivityTime(
-                        b
-                    ) -
-                    getActivityTime(
-                        a
+                    return (
+                        getActivityTime(b) -
+                        getActivityTime(a)
                     );
 
                 }
@@ -526,7 +598,9 @@ async function loadRecentActivity() {
 
 
             /*
-             * ONLY TOP 4
+             * -------------------------------------------------
+             * SHOW TOP 4
+             * -------------------------------------------------
              */
 
             renderRecentActivity(
@@ -535,7 +609,6 @@ async function loadRecentActivity() {
                     4
                 )
             );
-
 
         }
 
@@ -563,6 +636,78 @@ async function loadRecentActivity() {
             }
 
         }
+
+    }
+
+}
+
+
+/* =========================================================
+   GET ACTIVITY TIME
+   ========================================================= */
+
+function getActivityTime(
+    activity
+) {
+
+    const value =
+        activity?.performedAt ||
+        activity?.createdAt ||
+        activity?.timestamp;
+
+
+    if (!value) {
+
+        return 0;
+
+    }
+
+
+    try {
+
+        if (value?.toDate) {
+
+            return value
+                .toDate()
+                .getTime();
+
+        }
+
+
+        if (
+            typeof value === "object" &&
+            value?.seconds !== undefined
+        ) {
+
+            return Number(
+                value.seconds
+            ) * 1000;
+
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return 0;
+
+        }
+
+
+        return date.getTime();
+
+    }
+
+    catch {
+
+        return 0;
 
     }
 
@@ -626,9 +771,11 @@ function renderRecentActivity(
                 "activity-item";
 
 
-            /* ---------------------------------------------
-               ICON
-               --------------------------------------------- */
+            /*
+             * -------------------------------------------------
+             * ICON
+             * -------------------------------------------------
+             */
 
             const icon =
                 getActivityIcon(
@@ -636,9 +783,11 @@ function renderRecentActivity(
                 );
 
 
-            /* ---------------------------------------------
-               ACTION
-               --------------------------------------------- */
+            /*
+             * -------------------------------------------------
+             * ACTION
+             * -------------------------------------------------
+             */
 
             const action =
                 String(
@@ -659,9 +808,11 @@ function renderRecentActivity(
                 );
 
 
-            /* ---------------------------------------------
-               TITLE
-               --------------------------------------------- */
+            /*
+             * -------------------------------------------------
+             * TITLE
+             * -------------------------------------------------
+             */
 
             const title =
                 activity.title ||
@@ -670,9 +821,11 @@ function renderRecentActivity(
                 "Website content";
 
 
-            /* ---------------------------------------------
-               SECTION
-               --------------------------------------------- */
+            /*
+             * -------------------------------------------------
+             * SECTION
+             * -------------------------------------------------
+             */
 
             const section =
                 activity.section ||
@@ -680,9 +833,11 @@ function renderRecentActivity(
                 "Admin";
 
 
-            /* ---------------------------------------------
-               USER
-               --------------------------------------------- */
+            /*
+             * -------------------------------------------------
+             * USER
+             * -------------------------------------------------
+             */
 
             const user =
                 activity.userEmail ||
@@ -690,16 +845,29 @@ function renderRecentActivity(
                 "Administrator";
 
 
-            /* ---------------------------------------------
-               DATE
-               --------------------------------------------- */
+            /*
+             * -------------------------------------------------
+             * DATE
+             * -------------------------------------------------
+             *
+             * IMPORTANT:
+             * Use performedAt first because that is the
+             * field used by the activity logger.
+             */
 
             const date =
                 formatActivityDate(
+                    activity.performedAt ||
                     activity.createdAt ||
                     activity.timestamp
                 );
 
+
+            /*
+             * -------------------------------------------------
+             * HTML
+             * -------------------------------------------------
+             */
 
             item.innerHTML = `
 
@@ -724,9 +892,11 @@ function renderRecentActivity(
                         <span
                             class="activity-action ${actionClass}"
                         >
+
                             ${escapeHTML(
                                 actionLabel
                             )}
+
                         </span>
 
 
@@ -752,9 +922,11 @@ function renderRecentActivity(
                         <span
                             class="activity-time"
                         >
+
                             ${escapeHTML(
                                 date
                             )}
+
                         </span>
 
                     </div>
@@ -772,7 +944,6 @@ function renderRecentActivity(
     );
 
 }
-
 
 
 /* =========================================================
@@ -829,10 +1000,19 @@ function getActivityIcon(
     }
 
 
+    if (
+        value.includes("logout") ||
+        value.includes("signout")
+    ) {
+
+        return "🚪";
+
+    }
+
+
     return "📝";
 
 }
-
 
 
 /* =========================================================
@@ -883,7 +1063,6 @@ function getActionClass(
     return "other";
 
 }
-
 
 
 /* =========================================================
@@ -940,10 +1119,19 @@ function getActionLabel(
     }
 
 
+    if (
+        value.includes("logout") ||
+        value.includes("signout")
+    ) {
+
+        return "Logout";
+
+    }
+
+
     return "Activity";
 
 }
-
 
 
 /* =========================================================
@@ -966,6 +1154,10 @@ function formatActivityDate(
         let date;
 
 
+        /*
+         * Firestore Timestamp
+         */
+
         if (
             value?.toDate
         ) {
@@ -974,8 +1166,14 @@ function formatActivityDate(
                 value.toDate();
 
         }
+
+
+        /*
+         * Firestore Timestamp-like object
+         */
+
         else if (
-            value?.seconds
+            value?.seconds !== undefined
         ) {
 
             date =
@@ -986,6 +1184,12 @@ function formatActivityDate(
                 );
 
         }
+
+
+        /*
+         * JavaScript Date / ISO string
+         */
+
         else {
 
             date =
@@ -1016,6 +1220,7 @@ function formatActivityDate(
         );
 
     }
+
     catch {
 
         return "Date unavailable";
@@ -1023,7 +1228,6 @@ function formatActivityDate(
     }
 
 }
-
 
 
 /* =========================================================
@@ -1044,13 +1248,16 @@ function setFirebaseStatus(
         );
 
 
-        if (state === "online") {
+        if (
+            state === "online"
+        ) {
 
             statusDot.classList.add(
                 "online"
             );
 
         }
+
         else {
 
             statusDot.classList.add(
@@ -1080,12 +1287,23 @@ function setFirebaseStatus(
 }
 
 
-
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
 const navigation = {
+
+    /*
+     * MAIN
+     */
+
+    dashboardButton:
+        "./dashboard.html",
+
+
+    /*
+     * CONTENT
+     */
 
     familyButton:
         "./family.html",
@@ -1099,6 +1317,36 @@ const navigation = {
     galleryButton:
         "./gallery.html",
 
+
+    /*
+     * HOMEPAGE
+     */
+
+    homepageCountdownButton:
+        "./homepage-countdown.html",
+
+
+    /*
+     * MEDIA & ARCHIVE
+     */
+
+    comparisonsButton:
+        "./comparisons.html",
+
+    idolMakersButton:
+        "./idol-makers.html",
+
+    newspaperArticlesButton:
+        "./newspaper-articles.html",
+
+    oldPicturesButton:
+        "./old-pictures.html",
+
+
+    /*
+     * MORE
+     */
+
     memoriesButton:
         "./memories.html",
 
@@ -1108,15 +1356,26 @@ const navigation = {
     timelineButton:
         "./timeline.html",
 
+
+    /*
+     * ADMIN
+     */
+
     enquiriesButton:
         "./enquiries.html",
 
     activityButton:
-        "./activity.html"
+        "./activity.html",
+
+    changePasswordButton:
+        "./change-password.html"
 
 };
 
 
+/* =========================================================
+   NAVIGATION EVENTS
+   ========================================================= */
 
 Object.entries(
     navigation
@@ -1130,7 +1389,9 @@ Object.entries(
 
 
         if (!button) {
+
             return;
+
         }
 
 
@@ -1146,7 +1407,6 @@ Object.entries(
 
     }
 );
-
 
 
 /* =========================================================
@@ -1174,11 +1434,42 @@ const statNavigation = {
         "./enquiries.html",
 
     activityStatCard:
-        "./activity.html"
+        "./activity.html",
+
+
+    /*
+     * Optional new stat cards.
+     * They work only if the corresponding
+     * IDs exist in dashboard.html.
+     */
+
+    memoriesStatCard:
+        "./memories.html",
+
+    ritualsStatCard:
+        "./rituals.html",
+
+    homepageCountdownStatCard:
+        "./homepage-countdown.html",
+
+    comparisonsStatCard:
+        "./comparisons.html",
+
+    idolMakersStatCard:
+        "./idol-makers.html",
+
+    newspaperArticlesStatCard:
+        "./newspaper-articles.html",
+
+    oldPicturesStatCard:
+        "./old-pictures.html"
 
 };
 
 
+/* =========================================================
+   STAT CARD EVENTS
+   ========================================================= */
 
 Object.entries(
     statNavigation
@@ -1192,7 +1483,51 @@ Object.entries(
 
 
         if (!card) {
+
             return;
+
+        }
+
+
+        /*
+         * Make non-button cards keyboard accessible.
+         */
+
+        if (
+            card.tagName !== "BUTTON" &&
+            card.tagName !== "A"
+        ) {
+
+            card.setAttribute(
+                "role",
+                "link"
+            );
+
+            card.setAttribute(
+                "tabindex",
+                "0"
+            );
+
+
+            card.addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
+
+                        event.preventDefault();
+
+                        window.location.href =
+                            page;
+
+                    }
+
+                }
+            );
+
         }
 
 
@@ -1208,7 +1543,6 @@ Object.entries(
 
     }
 );
-
 
 
 /* =========================================================
@@ -1241,6 +1575,7 @@ if (logoutButton) {
                 );
 
             }
+
             catch (error) {
 
                 console.error(
@@ -1253,8 +1588,14 @@ if (logoutButton) {
                     false;
 
 
-                logoutButton.textContent =
-                    "Logout";
+                /*
+                 * Restore icon + text
+                 */
+
+                logoutButton.innerHTML = `
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                `;
 
             }
 
@@ -1262,7 +1603,6 @@ if (logoutButton) {
     );
 
 }
-
 
 
 /* =========================================================
@@ -1303,7 +1643,6 @@ function escapeHTML(
         );
 
 }
-
 
 
 /* =========================================================
