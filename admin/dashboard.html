@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,6 +19,10 @@
     <title>
         Roy Bari — Admin Dashboard
     </title>
+
+    <!-- =====================================================
+         STYLES
+         ===================================================== -->
 
     <link
         rel="stylesheet"
@@ -72,6 +77,12 @@
         }
 
 
+        .activity-view-all:hover {
+            background: #6f4b35;
+            color: #fff;
+        }
+
+
         .activity-view-all {
             border: 1px solid #ddd;
             background: #fff;
@@ -83,12 +94,6 @@
             font-weight: 600;
             white-space: nowrap;
             transition: .2s ease;
-        }
-
-
-        .activity-view-all:hover {
-            background: #6f4b35;
-            color: #fff;
         }
 
 
@@ -240,6 +245,10 @@
         }
 
 
+        /* =====================================================
+           CARDS
+           ===================================================== */
+
         .stat-card {
             cursor: pointer;
         }
@@ -254,6 +263,9 @@
 
         .admin-card:hover {
             transform: translateY(-2px);
+            box-shadow:
+                0 10px 25px
+                rgba(70, 45, 30, .07);
         }
 
 
@@ -275,11 +287,15 @@
 
         .status-dot.online {
             background: #3b9b55;
+            box-shadow:
+                0 0 0 4px rgba(59, 155, 85, .10);
         }
 
 
         .status-dot.offline {
             background: #c44;
+            box-shadow:
+                0 0 0 4px rgba(204, 68, 68, .10);
         }
 
 
@@ -291,7 +307,7 @@
 
 
         /* =====================================================
-           NEW MANAGEMENT CARDS
+           ADDITIONAL MANAGEMENT CARDS
            ===================================================== */
 
         .new-admin-section {
@@ -303,7 +319,6 @@
             display: grid;
             grid-template-columns:
                 repeat(5, minmax(0, 1fr));
-
             gap: 18px;
         }
 
@@ -311,17 +326,11 @@
         .new-admin-card {
             display: flex;
             flex-direction: column;
-
             min-height: 250px;
-
             padding: 22px;
-
             background: #fff;
-
             border: 1px solid #e8e0d7;
-
             border-radius: 12px;
-
             transition:
                 transform .2s ease,
                 box-shadow .2s ease;
@@ -330,7 +339,6 @@
 
         .new-admin-card:hover {
             transform: translateY(-3px);
-
             box-shadow:
                 0 10px 25px
                 rgba(70, 45, 30, .08);
@@ -339,13 +347,9 @@
 
         .new-card-top {
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             gap: 10px;
-
             margin-bottom: 18px;
         }
 
@@ -353,140 +357,101 @@
         .new-card-icon {
             width: 45px;
             height: 45px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             border-radius: 10px;
-
             background: #f4ece3;
-
             color: #6f4b35;
-
             font-size: 20px;
         }
 
 
         .new-card-badge {
             font-size: 8px;
-
             font-weight: 800;
-
             letter-spacing: 1px;
-
             color: #a67c52;
         }
 
 
         .new-admin-card h3 {
             margin: 0 0 9px;
-
             color: #3b3029;
-
             font-family: Georgia, serif;
-
             font-size: 18px;
         }
 
 
         .new-admin-card p {
             margin: 0;
-
             color: #777;
-
             font-size: 12px;
-
             line-height: 1.65;
-
             flex: 1;
         }
 
 
         .new-card-button {
             width: 100%;
-
             margin-top: 20px;
-
             padding: 10px 12px;
-
             border: 1px solid #ddd;
-
             border-radius: 8px;
-
             background: #fff;
-
             color: #6f4b35;
-
             font-family: inherit;
-
             font-size: 11px;
-
             font-weight: 700;
-
             cursor: pointer;
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             transition: .2s ease;
         }
 
 
         .new-card-button:hover {
             background: #6f4b35;
-
             border-color: #6f4b35;
-
             color: #fff;
         }
 
 
         /* =====================================================
-           NEW QUICK STATS
+           ADDITIONAL QUICK STATS
            ===================================================== */
 
         .additional-stat-grid {
             display: grid;
-
             grid-template-columns:
                 repeat(5, minmax(0, 1fr));
-
             gap: 16px;
-
             margin-top: 18px;
         }
 
 
         .additional-stat {
             background: #fff;
-
             border: 1px solid #e8e0d7;
-
             border-radius: 10px;
-
             padding: 16px;
-
             cursor: pointer;
-
             transition: .2s ease;
         }
 
 
         .additional-stat:hover {
             transform: translateY(-2px);
+            box-shadow:
+                0 8px 20px
+                rgba(70, 45, 30, .06);
         }
 
 
         .additional-stat-top {
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
         }
 
@@ -498,31 +463,30 @@
 
         .additional-stat-label {
             display: block;
-
             margin-top: 10px;
-
             color: #777;
-
             font-size: 10px;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: .7px;
         }
 
 
         .additional-stat-number {
             display: block;
-
             margin-top: 4px;
-
             color: #3b3029;
-
             font-family: Georgia, serif;
-
             font-size: 22px;
+        }
+
+
+        /* =====================================================
+           WELCOME
+           ===================================================== */
+
+        .welcome-circle {
+            overflow: hidden;
         }
 
 
@@ -592,6 +556,13 @@
 
             .status-card {
                 align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+
+            .status-right {
+                width: 100%;
+                margin-left: 24px;
             }
 
         }
@@ -606,14 +577,13 @@
 
     <!-- =====================================================
          SIDEBAR
+         UNCHANGED
          ===================================================== -->
 
     <aside class="sidebar">
 
 
-        <!-- =================================================
-             BRAND
-             ================================================= -->
+        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
@@ -637,16 +607,12 @@
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <nav class="sidebar-nav">
 
 
-            <!-- =================================================
-                 MAIN
-                 ================================================= -->
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -668,9 +634,7 @@
             </a>
 
 
-            <!-- =================================================
-                 CONTENT
-                 ================================================= -->
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
@@ -707,7 +671,6 @@
             </a>
 
 
-
             <a
                 href="./gallery.html"
                 class="nav-item"
@@ -723,9 +686,7 @@
             </a>
 
 
-            <!-- =================================================
-                 HOMEPAGE
-                 ================================================= -->
+            <!-- HOMEPAGE -->
 
             <div class="nav-section-title">
                 HOMEPAGE
@@ -746,9 +707,7 @@
             </a>
 
 
-            <!-- =================================================
-                 MEDIA & ARCHIVE
-                 ================================================= -->
+            <!-- MEDIA & ARCHIVE -->
 
             <div class="nav-section-title">
                 MEDIA &amp; ARCHIVE
@@ -811,9 +770,7 @@
             </a>
 
 
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
+            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
@@ -852,9 +809,7 @@
             </a>
 
 
-            <!-- =================================================
-                 ADMIN
-                 ================================================= -->
+            <!-- ADMIN -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -909,9 +864,7 @@
         </nav>
 
 
-        <!-- =================================================
-             SIDEBAR BOTTOM
-             ================================================= -->
+        <!-- SIDEBAR BOTTOM -->
 
         <div class="sidebar-bottom">
 
@@ -954,7 +907,7 @@
 
 
     <!-- =====================================================
-         MAIN
+         MAIN DASHBOARD
          ===================================================== -->
 
     <main class="dashboard-main">
@@ -1059,7 +1012,7 @@
 
 
         <!-- =================================================
-             QUICK STATS
+             MAIN QUICK STATS
              ================================================= -->
 
         <section class="stats-grid">
@@ -1070,6 +1023,8 @@
             <article
                 class="stat-card"
                 id="familyStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="stat-icon">
@@ -1100,6 +1055,8 @@
             <article
                 class="stat-card"
                 id="eventsStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="stat-icon">
@@ -1130,6 +1087,8 @@
             <article
                 class="stat-card"
                 id="galleryStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="stat-icon">
@@ -1155,13 +1114,13 @@
             </article>
 
 
-
-
             <!-- ENQUIRIES -->
 
             <article
                 class="stat-card"
                 id="enquiriesStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="stat-icon">
@@ -1192,6 +1151,8 @@
             <article
                 class="stat-card"
                 id="activityStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="stat-icon">
@@ -1232,6 +1193,8 @@
             <article
                 class="additional-stat"
                 id="homepageCountdownStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="additional-stat-top">
@@ -1265,6 +1228,8 @@
             <article
                 class="additional-stat"
                 id="comparisonsStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="additional-stat-top">
@@ -1298,6 +1263,8 @@
             <article
                 class="additional-stat"
                 id="idolMakersStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="additional-stat-top">
@@ -1331,6 +1298,8 @@
             <article
                 class="additional-stat"
                 id="newspaperArticlesStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="additional-stat-top">
@@ -1364,6 +1333,8 @@
             <article
                 class="additional-stat"
                 id="oldPicturesStatCard"
+                tabindex="0"
+                role="button"
             >
 
                 <div class="additional-stat-top">
@@ -1406,7 +1377,7 @@
 
                 <div>
 
-                    <span>
+                    <span style="font-size: 15px; margin-top: 20px;">
                         CONTENT MANAGEMENT
                     </span>
 
@@ -1645,14 +1616,13 @@
                 </article>
 
 
-
             </div>
 
         </section>
 
 
         <!-- =================================================
-             NEW CONTENT MANAGEMENT
+             HERITAGE & MEDIA
              ================================================= -->
 
         <section class="new-admin-section">
@@ -1662,7 +1632,7 @@
 
                 <div>
 
-                    <span>
+                    <span  style="font-size: 15px; margin-top: 20px;">
                         HERITAGE &amp; MEDIA
                     </span>
 
@@ -1864,6 +1834,10 @@
                             🖼️
                         </div>
 
+                        <span class="new-card-badge">
+                            ARCHIVE
+                        </span>
+
                     </div>
 
                     <h3>
@@ -1910,7 +1884,7 @@
 
                 <div>
 
-                    <span>
+                    <span  style="font-size: 15px; margin-top: 20px;">
                         ADMINISTRATION
                     </span>
 
@@ -1981,7 +1955,7 @@
                             🕘
                         </div>
 
-                        <span class="card-badge">
+                        <span class="card-badge" >
                             AUDIT TRAIL
                         </span>
 
@@ -2032,7 +2006,7 @@
 
                 <div class="activity-header-left">
 
-                    <span>
+                    <span  style="font-size: 15px; margin-top: 20px;">
                         AUDIT TRAIL
                     </span>
 
@@ -2103,7 +2077,7 @@
 
                 <div>
 
-                    <span>
+                    <span  style="font-size: 15px; margin-top: 20px;">
                         SYSTEM
                     </span>
 
@@ -2185,3 +2159,4 @@
 </body>
 
 </html>
+```

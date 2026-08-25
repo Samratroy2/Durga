@@ -3634,6 +3634,178 @@ img {
 }
 
 
+/* =====================================================
+   EQUAL CARD SIZING
+   ===================================================== */
+
+/* Main statistics */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.stats-grid .stat-card {
+    min-height: 105px;
+    height: 105px;
+}
+
+
+/* Main content management cards */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+
+.admin-grid .admin-card {
+    min-height: 275px;
+    height: 275px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-grid .admin-card .card-button {
+    margin-top: auto;
+}
+
+
+/* Additional content management cards */
+.new-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+
+.new-admin-grid .new-admin-card {
+    min-height: 270px;
+    height: 270px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.new-admin-grid .new-card-button {
+    margin-top: auto;
+}
+
+
+/* Additional small statistics */
+.additional-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.additional-stat-grid .additional-stat {
+    min-height: 115px;
+    height: 115px;
+}
+
+
+/* =====================================================
+   SAME-TYPE CARD CONSISTENCY
+   ===================================================== */
+
+/* All cards in the same grid stretch equally */
+.stats-grid > *,
+.additional-stat-grid > *,
+.admin-grid > *,
+.new-admin-grid > * {
+    width: 100%;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 1200px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .new-admin-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .additional-stat-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .new-admin-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .additional-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .new-admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .additional-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .stats-grid .stat-card {
+        height: 100px;
+        min-height: 100px;
+    }
+
+
+    .admin-grid .admin-card {
+        height: 260px;
+        min-height: 260px;
+    }
+
+
+    .new-admin-grid .new-admin-card {
+        height: 260px;
+        min-height: 260px;
+    }
+
+
+    .additional-stat-grid .additional-stat {
+        height: 105px;
+        min-height: 105px;
+    }
+
+}
+
+
 /* =========================================================
    CHANGE PASSWORD MOBILE
    ========================================================= */

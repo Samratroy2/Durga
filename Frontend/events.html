@@ -24,6 +24,536 @@
         href="style.css"
     >
 
+
+    <!-- =====================================================
+         EVENT PAGE ADDITIONAL STYLES
+         ===================================================== -->
+
+    <style>
+
+        /* =====================================================
+           EVENT CATEGORIES
+           ===================================================== */
+
+        .event-categories {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 7px;
+
+            margin:
+                12px 0 14px;
+
+        }
+
+
+        .event-category {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding:
+                5px 10px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .16);
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(120, 82, 52, .07);
+
+            color:
+                #765236;
+
+            font-size:
+                10px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                .3px;
+
+            text-transform:
+                capitalize;
+
+        }
+
+
+        /* =====================================================
+           EVENT URL
+           ===================================================== */
+
+        .event-link {
+
+            margin:
+                16px 0 4px;
+
+        }
+
+
+        .event-url {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
+
+            padding:
+                8px 13px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .22);
+
+            border-radius:
+                8px;
+
+            color:
+                #765236;
+
+            background:
+                rgba(120, 82, 52, .05);
+
+            text-decoration:
+                none;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease,
+                transform .2s ease;
+
+        }
+
+
+        .event-url:hover {
+
+            background:
+                rgba(120, 82, 52, .10);
+
+            border-color:
+                rgba(120, 82, 52, .38);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* =====================================================
+           NEXT EVENT META
+           ===================================================== */
+
+        .next-event-meta {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            flex-wrap:
+                wrap;
+
+            gap:
+                5px;
+
+            margin:
+                10px 0 0;
+
+            color:
+                #7b6b60;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .next-event-link {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            margin-top:
+                18px;
+
+            padding:
+                10px 16px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .25);
+
+            border-radius:
+                8px;
+
+            color:
+                #765236;
+
+            background:
+                transparent;
+
+            text-decoration:
+                none;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            transition:
+                all .2s ease;
+
+        }
+
+
+        .next-event-link:hover {
+
+            background:
+                rgba(120, 82, 52, .07);
+
+        }
+
+
+        .next-event-link[hidden] {
+
+            display:
+                none;
+
+        }
+
+
+        /* =====================================================
+           EVENT DETAILS
+           ===================================================== */
+
+        .event-details {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap:
+                12px;
+
+            margin-top:
+                16px;
+
+        }
+
+
+        .event-details > div {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                4px;
+
+            padding:
+                11px 12px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .10);
+
+            border-radius:
+                8px;
+
+            background:
+                rgba(120, 82, 52, .035);
+
+        }
+
+
+        .event-details span {
+
+            color:
+                #95877c;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                .7px;
+
+            text-transform:
+                uppercase;
+
+        }
+
+
+        .event-details strong {
+
+            color:
+                #4c4037;
+
+            font-size:
+                12px;
+
+            font-weight:
+                600;
+
+            line-height:
+                1.45;
+
+        }
+
+
+        /* =====================================================
+           ABOUT
+           ===================================================== */
+
+        .event-about {
+
+            margin-top:
+                16px;
+
+            border-top:
+                1px solid
+                rgba(120, 82, 52, .10);
+
+            padding-top:
+                12px;
+
+        }
+
+
+        .event-about-toggle {
+
+            width:
+                100%;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                0;
+
+            border:
+                0;
+
+            background:
+                transparent;
+
+            color:
+                #765236;
+
+            font-family:
+                inherit;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            text-align:
+                left;
+
+            cursor:
+                pointer;
+
+        }
+
+
+        .about-icon {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            width:
+                22px;
+
+            height:
+                22px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .18);
+
+            border-radius:
+                50%;
+
+            font-size:
+                15px;
+
+            line-height:
+                1;
+
+        }
+
+
+        .event-about-content {
+
+            padding-top:
+                10px;
+
+        }
+
+
+        .event-about-content p {
+
+            margin:
+                0;
+
+            color:
+                #6f645c;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.75;
+
+        }
+
+
+        /* =====================================================
+           TODAY
+           ===================================================== */
+
+        .event-card.today {
+
+            position:
+                relative;
+
+        }
+
+
+        .event-card.today::before {
+
+            content:
+                "TODAY";
+
+            position:
+                absolute;
+
+            top:
+                14px;
+
+            right:
+                14px;
+
+            padding:
+                4px 8px;
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(120, 82, 52, .10);
+
+            color:
+                #765236;
+
+            font-size:
+                8px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                1px;
+
+        }
+
+
+        /* =====================================================
+           UPCOMING
+           ===================================================== */
+
+        .event-card.upcoming {
+
+            border-color:
+                rgba(120, 82, 52, .16);
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (
+            max-width: 650px
+        ) {
+
+            .event-details {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .event-card.today::before {
+
+                position:
+                    static;
+
+                display:
+                    inline-block;
+
+                margin-bottom:
+                    10px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
@@ -39,9 +569,7 @@
     <nav class="nav">
 
 
-        <!-- =================================================
-             BRAND
-             ================================================= -->
+        <!-- BRAND -->
 
         <a
             href="index.html"
@@ -57,9 +585,7 @@
         </a>
 
 
-        <!-- =================================================
-             MOBILE MENU
-             ================================================= -->
+        <!-- MOBILE MENU -->
 
         <button
             type="button"
@@ -67,15 +593,16 @@
             aria-label="Toggle navigation"
             aria-expanded="false"
         >
+
             ☰
+
         </button>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <ul class="nav-links">
+
 
             <li>
 
@@ -120,7 +647,9 @@
                     class="active"
                     aria-current="page"
                 >
+
                     Events
+
                 </a>
 
             </li>
@@ -143,11 +672,14 @@
 
             </li>
 
+
         </ul>
+
 
     </nav>
 
 </header>
+
 
 
 <!-- =====================================================
@@ -191,6 +723,7 @@
 </section>
 
 
+
 <!-- =====================================================
      NEXT EVENT
      ===================================================== -->
@@ -201,6 +734,7 @@
 
 
         <div class="section-head">
+
 
             <div class="eyebrow">
                 Next at the Bari
@@ -216,10 +750,53 @@
                 class="lead"
                 id="next-event-description"
             >
+
                 Loading the next Puja event...
+
             </p>
 
+
+            <!-- NEXT EVENT DATE + TIME -->
+
+            <div
+                class="next-event-meta"
+                aria-live="polite"
+            >
+
+                <span
+                    id="next-event-date"
+                ></span>
+
+
+                <span
+                    id="next-event-time"
+                ></span>
+
+            </div>
+
+
+            <!-- NEXT EVENT URL -->
+
+            <a
+                id="next-event-link"
+                class="next-event-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+            >
+
+                View Event
+
+                <span aria-hidden="true">
+                    ↗
+                </span>
+
+            </a>
+
+
         </div>
+
 
 
         <!-- =================================================
@@ -315,6 +892,7 @@
 </section>
 
 
+
 <!-- =====================================================
      PUJA EVENTS
      ===================================================== -->
@@ -324,11 +902,10 @@
     <div class="container">
 
 
-        <!-- =================================================
-             SECTION HEADER
-             ================================================= -->
+        <!-- SECTION HEADER -->
 
         <div class="section-head">
+
 
             <div class="eyebrow">
                 The Calendar
@@ -348,7 +925,9 @@
 
             </p>
 
+
         </div>
+
 
 
         <!-- =================================================
@@ -362,6 +941,8 @@
         >
 
 
+            <!-- ALL -->
+
             <button
                 type="button"
                 class="pill event-filter active"
@@ -372,6 +953,8 @@
 
             </button>
 
+
+            <!-- RITUAL -->
 
             <button
                 type="button"
@@ -384,6 +967,8 @@
             </button>
 
 
+            <!-- FAMILY -->
+
             <button
                 type="button"
                 class="pill event-filter"
@@ -395,10 +980,12 @@
             </button>
 
 
+            <!-- VISITORS -->
+
             <button
                 type="button"
                 class="pill event-filter"
-                data-filter="visitor"
+                data-filter="visitors"
             >
 
                 Visitors
@@ -406,7 +993,21 @@
             </button>
 
 
+            <!-- CULTURALS -->
+
+            <button
+                type="button"
+                class="pill event-filter"
+                data-filter="culturals"
+            >
+
+                Culturals
+
+            </button>
+
+
         </div>
+
 
 
         <!-- =================================================
@@ -418,6 +1019,8 @@
             id="events-grid"
         >
 
+
+            <!-- INITIAL LOADING -->
 
             <div class="event-card">
 
@@ -442,9 +1045,11 @@
 
         </div>
 
+
     </div>
 
 </section>
+
 
 
 <!-- =====================================================
@@ -459,9 +1064,7 @@
         <div class="footer-grid">
 
 
-            <!-- =================================================
-                 ROY BARI
-                 ================================================= -->
+            <!-- ROY BARI -->
 
             <div>
 
@@ -481,9 +1084,8 @@
             </div>
 
 
-            <!-- =================================================
-                 EXPLORE
-                 ================================================= -->
+
+            <!-- EXPLORE -->
 
             <div>
 
@@ -528,7 +1130,9 @@
                             href="events.html"
                             aria-current="page"
                         >
+
                             Events
+
                         </a>
 
                     </li>
@@ -539,9 +1143,8 @@
             </div>
 
 
-            <!-- =================================================
-                 VISIT
-                 ================================================= -->
+
+            <!-- VISIT -->
 
             <div>
 
@@ -576,9 +1179,8 @@
             </div>
 
 
-            <!-- =================================================
-                 CONTACT
-                 ================================================= -->
+
+            <!-- CONTACT -->
 
             <div>
 
@@ -607,9 +1209,8 @@
         </div>
 
 
-        <!-- =================================================
-             FOOTER BOTTOM
-             ================================================= -->
+
+        <!-- FOOTER BOTTOM -->
 
         <div class="footer-bottom">
 
@@ -629,12 +1230,18 @@
 </footer>
 
 
+
 <!-- =====================================================
-     JAVASCRIPT
+     MAIN WEBSITE JAVASCRIPT
      ===================================================== -->
 
 <script src="main.js"></script>
 
+
+
+<!-- =====================================================
+     FIREBASE EVENTS JAVASCRIPT
+     ===================================================== -->
 
 <script
     type="module"

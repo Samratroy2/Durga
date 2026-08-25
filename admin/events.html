@@ -20,16 +20,921 @@
     </title>
 
 
+    <!-- =====================================================
+         ADMIN CSS
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
 
 
+    <!-- =====================================================
+         FONT AWESOME
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
+
+
+    <style>
+
+        /* =====================================================
+           EVENT MANAGEMENT LAYOUT
+           ===================================================== */
+
+        .manager-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(420px, 0.9fr)
+                minmax(500px, 1.5fr);
+
+            gap: 24px;
+
+            align-items: start;
+
+        }
+
+
+        .manager-form-card,
+        .manager-list-card {
+
+            background: #fff;
+
+            border: 1px solid #e8e0d7;
+
+            border-radius: 16px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 4px 18px
+                rgba(70, 45, 30, .035);
+
+        }
+
+
+        .manager-form-card {
+
+            min-height: 700px;
+
+        }
+
+
+        /* =====================================================
+           FORM GRID
+           ===================================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+
+            margin-top: 24px;
+
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            min-width: 0;
+
+        }
+
+
+        .form-group.full-width {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .form-group label {
+
+            color: #3b3029;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .form-group label .required {
+
+            color: #b13a35;
+
+        }
+
+
+        .form-group input,
+        .form-group textarea {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #ddd2c8;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: #302820;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+
+            border-color: #8a5c3c;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(111, 75, 53, .08);
+
+        }
+
+
+        .form-group textarea {
+
+            min-height: 115px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================================
+           CATEGORY
+           ===================================================== */
+
+        .category-box {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 10px;
+
+            padding: 12px;
+
+            border: 1px solid #ddd2c8;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+        }
+
+
+        .category-option {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 9px 10px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            color: #51463f;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            transition:
+                background .2s ease;
+
+        }
+
+
+        .category-option:hover {
+
+            background: #f7f1eb;
+
+        }
+
+
+        .category-option input {
+
+            width: 16px;
+
+            height: 16px;
+
+            margin: 0;
+
+            accent-color: #6f4b35;
+
+            cursor: pointer;
+
+        }
+
+
+        /* =====================================================
+           TIME INPUT
+           ===================================================== */
+
+        #time {
+
+            cursor: pointer;
+
+        }
+
+
+        /* =====================================================
+           URL REQUIRED NOTICE
+           ===================================================== */
+
+        .field-help {
+
+            margin-top: 2px;
+
+            color: #92877f;
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+        }
+
+
+        .required-note {
+
+            color: #a33b3b;
+
+            font-size: 10px;
+
+        }
+
+
+        /* =====================================================
+           FORM BUTTONS
+           ===================================================== */
+
+        .form-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+
+            gap: 12px;
+
+            margin-top: 26px;
+
+        }
+
+
+        .primary-button,
+        .secondary-button {
+
+            min-height: 48px;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .primary-button {
+
+            border: 1px solid #6f4b35;
+
+            background: #6f4b35;
+
+            color: #fff;
+
+        }
+
+
+        .primary-button:hover {
+
+            background: #5c3d2b;
+
+        }
+
+
+        .primary-button:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .secondary-button {
+
+            min-width: 100px;
+
+            border: 1px solid #ddd2c8;
+
+            background: #fff;
+
+            color: #6f4b35;
+
+        }
+
+
+        .secondary-button:hover {
+
+            background: #f7f1eb;
+
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        .message {
+
+            min-height: 20px;
+
+            margin-top: 14px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .message.success {
+
+            color: #327442;
+
+        }
+
+
+        .message.error {
+
+            color: #a33b3b;
+
+        }
+
+
+        /* =====================================================
+           LIST HEADER
+           ===================================================== */
+
+        .manager-list-card
+        .section-heading {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .manager-list-card
+        .section-heading > span {
+
+            color: #8c715e;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           EVENT LIST
+           ===================================================== */
+
+        .manager-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+        .manager-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 18px;
+
+            border: 1px solid #e8e0d7;
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .manager-item:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 7px 20px
+                rgba(70, 45, 30, .06);
+
+        }
+
+
+        .manager-item-main {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            min-width: 0;
+
+            flex: 1;
+
+        }
+
+
+        /* =====================================================
+           EVENT AVATAR
+           ===================================================== */
+
+        .manager-avatar {
+
+            width: 56px;
+
+            height: 56px;
+
+            min-width: 56px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: #f2e7da;
+
+            font-size: 22px;
+
+        }
+
+
+        /* =====================================================
+           EVENT CONTENT
+           ===================================================== */
+
+        .manager-item-content {
+
+            min-width: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        .manager-item-content h3 {
+
+            margin: 0 0 6px;
+
+            color: #3b3029;
+
+            font-family: Georgia, serif;
+
+            font-size: 18px;
+
+            line-height: 1.25;
+
+        }
+
+
+        .event-date {
+
+            display: flex;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            color: #8b8179;
+
+            font-size: 11px;
+
+        }
+
+
+        .event-date i {
+
+            margin-right: 3px;
+
+        }
+
+
+        .event-time {
+
+            display: inline-flex;
+
+            align-items: center;
+
+        }
+
+
+        .manager-item-content small {
+
+            display: block;
+
+            margin-top: 6px;
+
+            color: #777;
+
+            font-size: 10px;
+
+            line-height: 1.45;
+
+        }
+
+
+        .event-description {
+
+            max-width: 520px;
+
+            display: -webkit-box !important;
+
+            -webkit-line-clamp: 2;
+
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================================
+           CATEGORY TAGS
+           ===================================================== */
+
+        .event-categories {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            margin-top: 8px;
+
+        }
+
+
+        .category-tag {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 4px 8px;
+
+            border-radius: 20px;
+
+            background: #f3e9df;
+
+            color: #6f4b35;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            text-transform: capitalize;
+
+        }
+
+
+        /* =====================================================
+           URL
+           ===================================================== */
+
+        .event-url {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            width: fit-content;
+
+            margin-top: 8px;
+
+            color: #6f4b35;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+        }
+
+
+        .event-url:hover {
+
+            text-decoration: underline;
+
+        }
+
+
+        .event-url-missing {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            margin-top: 8px;
+
+            color: #a33b3b;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
+        .manager-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .edit-button,
+        .delete-button {
+
+            padding: 9px 13px;
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            font-family: inherit;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .edit-button {
+
+            border: 1px solid #d9c6b5;
+
+            color: #6f4b35;
+
+        }
+
+
+        .edit-button:hover {
+
+            background: #f6eee7;
+
+        }
+
+
+        .delete-button {
+
+            border: 1px solid #edc8c3;
+
+            color: #a33b3b;
+
+        }
+
+
+        .delete-button:hover {
+
+            background: #fdebea;
+
+        }
+
+
+        /* =====================================================
+           EMPTY / LOADING
+           ===================================================== */
+
+        .loading-state,
+        .empty-state {
+
+            padding: 50px 20px;
+
+            text-align: center;
+
+            color: #888;
+
+        }
+
+
+        .empty-icon {
+
+            margin-bottom: 12px;
+
+            font-size: 32px;
+
+        }
+
+
+        .empty-state h3 {
+
+            margin: 0 0 6px;
+
+            color: #3b3029;
+
+            font-family: Georgia, serif;
+
+        }
+
+
+        .empty-state p {
+
+            margin: 0;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .manager-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .manager-form-card,
+            .manager-list-card {
+
+                padding: 20px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-group.full-width {
+
+                grid-column: auto;
+
+            }
+
+
+            .category-box {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-actions {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .manager-item {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+
+            .manager-item-main {
+
+                width: 100%;
+
+            }
+
+
+            .manager-actions {
+
+                width: 100%;
+
+            }
+
+
+            .edit-button,
+            .delete-button {
+
+                flex: 1;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -68,16 +973,12 @@
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <nav class="sidebar-nav">
 
 
-            <!-- =================================================
-                 MAIN
-                 ================================================= -->
+            <!-- MAIN -->
 
             <div class="nav-section-title">
                 MAIN
@@ -98,16 +999,12 @@
             </a>
 
 
-            <!-- =================================================
-                 CONTENT
-                 ================================================= -->
+            <!-- CONTENT -->
 
             <div class="nav-section-title">
                 CONTENT
             </div>
 
-
-            <!-- FAMILY TREE -->
 
             <a
                 href="./family.html"
@@ -123,8 +1020,6 @@
             </a>
 
 
-            <!-- PUJA EVENTS -->
-
             <a
                 href="./events.html"
                 class="nav-item active"
@@ -138,8 +1033,6 @@
 
             </a>
 
-
-            <!-- GALLERY -->
 
             <a
                 href="./gallery.html"
@@ -155,9 +1048,7 @@
             </a>
 
 
-            <!-- =================================================
-                 HOMEPAGE
-                 ================================================= -->
+            <!-- HOMEPAGE -->
 
             <div class="nav-section-title">
                 HOMEPAGE
@@ -178,9 +1069,7 @@
             </a>
 
 
-            <!-- =================================================
-                 MEDIA & ARCHIVE
-                 ================================================= -->
+            <!-- MEDIA -->
 
             <div class="nav-section-title">
                 MEDIA &amp; ARCHIVE
@@ -243,9 +1132,7 @@
             </a>
 
 
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
+            <!-- MORE -->
 
             <div class="nav-section-title">
                 MORE
@@ -282,9 +1169,7 @@
             </a>
 
 
-            <!-- =================================================
-                 ADMIN
-                 ================================================= -->
+            <!-- ADMIN -->
 
             <div class="nav-section-title">
                 ADMIN
@@ -337,14 +1222,10 @@
         </nav>
 
 
-        <!-- =================================================
-             SIDEBAR BOTTOM
-             ================================================= -->
+        <!-- SIDEBAR BOTTOM -->
 
         <div class="sidebar-bottom">
 
-
-            <!-- ADMIN STATUS -->
 
             <div class="sidebar-note">
 
@@ -364,8 +1245,6 @@
 
             </div>
 
-
-            <!-- LOGOUT -->
 
             <button
                 id="logoutButton"
@@ -392,9 +1271,7 @@
     <main class="dashboard-main">
 
 
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
+        <!-- TOPBAR -->
 
         <header class="topbar">
 
@@ -420,7 +1297,10 @@
 
             <div class="admin-user">
 
-                <div class="user-avatar">
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
                     A
                 </div>
 
@@ -473,12 +1353,10 @@
                 </div>
 
 
-                <!-- FORM -->
-
                 <form id="eventForm">
 
 
-                    <!-- Hidden Firestore document ID -->
+                    <!-- DOCUMENT ID -->
 
                     <input
                         type="hidden"
@@ -494,7 +1372,10 @@
                         <div class="form-group">
 
                             <label for="title">
-                                Title *
+                                Title
+                                <span class="required">
+                                    *
+                                </span>
                             </label>
 
                             <input
@@ -502,6 +1383,7 @@
                                 id="title"
                                 required
                                 placeholder="Event title"
+                                autocomplete="off"
                             >
 
                         </div>
@@ -513,11 +1395,15 @@
 
                             <label for="date">
                                 Date
+                                <span class="required">
+                                    *
+                                </span>
                             </label>
 
                             <input
                                 type="date"
                                 id="date"
+                                required
                             >
 
                         </div>
@@ -529,13 +1415,20 @@
 
                             <label for="time">
                                 Time
+                                <span class="required">
+                                    *
+                                </span>
                             </label>
 
                             <input
-                                type="text"
+                                type="time"
                                 id="time"
-                                placeholder="e.g. 7:00 PM"
+                                required
                             >
+
+                            <span class="field-help">
+                                Stored as a readable time such as 7:00 PM.
+                            </span>
 
                         </div>
 
@@ -552,7 +1445,113 @@
                                 type="text"
                                 id="location"
                                 placeholder="Event location"
+                                autocomplete="off"
                             >
+
+                        </div>
+
+
+                        <!-- ABOUT -->
+
+                        <div class="form-group full-width">
+
+                            <label for="about">
+                                About
+                            </label>
+
+                            <textarea
+                                id="about"
+                                rows="4"
+                                placeholder="Explain the event..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- CATEGORY -->
+
+                        <div class="form-group full-width">
+
+                            <label>
+                                Category
+                                <span class="required">
+                                    *
+                                </span>
+                            </label>
+
+
+                            <div class="category-box">
+
+
+                                <label
+                                    class="category-option"
+                                >
+
+                                    <input
+                                        type="checkbox"
+                                        name="category"
+                                        value="ritual"
+                                    >
+
+                                    <span>
+                                        Ritual
+                                    </span>
+
+                                </label>
+
+
+                                <label
+                                    class="category-option"
+                                >
+
+                                    <input
+                                        type="checkbox"
+                                        name="category"
+                                        value="family"
+                                    >
+
+                                    <span>
+                                        Family
+                                    </span>
+
+                                </label>
+
+
+                                <label
+                                    class="category-option"
+                                >
+
+                                    <input
+                                        type="checkbox"
+                                        name="category"
+                                        value="visitors"
+                                    >
+
+                                    <span>
+                                        Visitors
+                                    </span>
+
+                                </label>
+
+
+                                <label
+                                    class="category-option"
+                                >
+
+                                    <input
+                                        type="checkbox"
+                                        name="category"
+                                        value="culturals"
+                                    >
+
+                                    <span>
+                                        Culturals
+                                    </span>
+
+                                </label>
+
+
+                            </div>
 
                         </div>
 
@@ -567,33 +1566,56 @@
 
                             <textarea
                                 id="description"
-                                rows="5"
+                                rows="4"
                                 placeholder="Describe the event..."
                             ></textarea>
 
                         </div>
 
 
-                        <!-- IMAGE -->
+                        <!-- URL -->
 
                         <div class="form-group full-width">
 
-                            <label for="image">
-                                Image URL
+                            <label for="url">
+
+                                URL
+
+                                <span class="required">
+                                    *
+                                </span>
+
                             </label>
+
 
                             <input
                                 type="url"
-                                id="image"
-                                placeholder="https://..."
+                                id="url"
+                                required
+                                placeholder="https://example.com/..."
+                                autocomplete="off"
                             >
 
+
+                            <span class="field-help">
+
+                                <span class="required-note">
+                                    URL is required.
+                                </span>
+
+                                Use a complete URL beginning with
+                                <strong>https://</strong> or
+                                <strong>http://</strong>.
+
+                            </span>
+
                         </div>
+
 
                     </div>
 
 
-                    <!-- FORM BUTTONS -->
+                    <!-- FORM ACTIONS -->
 
                     <div class="form-actions">
 
@@ -624,10 +1646,12 @@
                     <p
                         id="eventMessage"
                         class="message"
+                        aria-live="polite"
                     ></p>
 
 
                 </form>
+
 
             </div>
 
@@ -667,7 +1691,9 @@
                     id="eventList"
                     class="manager-list"
                 >
+
                     Loading...
+
                 </div>
 
 

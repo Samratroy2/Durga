@@ -1,7 +1,30 @@
 /* =========================================================
    ROY BARI — EVENTS ADMIN
-   FIRESTORE: events
-   ACTIVITY HISTORY: activityLogs
+   =========================================================
+
+   FIRESTORE COLLECTION:
+   events
+
+   FIELDS:
+   - title
+   - about
+   - category       -> Array
+   - date           -> Firestore Timestamp
+   - time           -> String
+   - description
+   - location
+   - url            -> REQUIRED String
+   - createdAt
+   - updatedAt
+
+   ACTIVITY HISTORY:
+   activityLogs
+
+   ========================================================= */
+
+
+/* =========================================================
+   FIREBASE AUTH
    ========================================================= */
 
 import {
@@ -10,6 +33,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
+/* =========================================================
+   FIRESTORE
+   ========================================================= */
+
 import {
     collection,
     getDocs,
@@ -17,15 +44,25 @@ import {
     updateDoc,
     deleteDoc,
     doc,
-    serverTimestamp
+    serverTimestamp,
+    Timestamp,
+    deleteField
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
 
 import {
     auth,
     db
 } from "../firebase.js";
 
+
+/* =========================================================
+   ACTIVITY LOGGER
+   ========================================================= */
 
 import {
     logActivity
@@ -48,6 +85,10 @@ const titleInput =
     document.getElementById("title");
 
 
+const aboutInput =
+    document.getElementById("about");
+
+
 const dateInput =
     document.getElementById("date");
 
@@ -56,16 +97,22 @@ const timeInput =
     document.getElementById("time");
 
 
-const locationInput =
-    document.getElementById("location");
-
-
 const descriptionInput =
     document.getElementById("description");
 
 
-const imageInput =
-    document.getElementById("image");
+const locationInput =
+    document.getElementById("location");
+
+
+const urlInput =
+    document.getElementById("url");
+
+
+const categoryInputs =
+    document.querySelectorAll(
+        'input[name="category"]'
+    );
 
 
 const eventList =
@@ -100,6 +147,10 @@ const adminEmail =
     document.getElementById("adminEmail");
 
 
+const userAvatar =
+    document.getElementById("userAvatar");
+
+
 /* =========================================================
    DATA
    ========================================================= */
@@ -126,12 +177,7 @@ onAuthStateChanged(
         }
 
 
-        if (adminEmail) {
-
-            adminEmail.textContent =
-                user.email || "Admin";
-
-        }
+        updateAdminUser(user);
 
 
         await loadEvents();
@@ -141,15 +187,55 @@ onAuthStateChanged(
 
 
 /* =========================================================
+   UPDATE ADMIN USER
+   ========================================================= */
+
+function updateAdminUser(user) {
+
+    const email =
+        user.email || "Admin";
+
+
+    if (adminEmail) {
+
+        adminEmail.textContent =
+            email;
+
+    }
+
+
+    if (userAvatar) {
+
+        userAvatar.textContent =
+            email
+                .charAt(0)
+                .toUpperCase() || "A";
+
+    }
+
+}
+
+
+/* =========================================================
    LOAD EVENTS
    ========================================================= */
 
 async function loadEvents() {
 
+    if (!eventList) {
+
+        return;
+
+    }
+
+
     try {
 
-        eventList.innerHTML =
-            "Loading events...";
+        eventList.innerHTML = `
+            <div class="loading-state">
+                Loading events...
+            </div>
+        `;
 
 
         const snapshot =
@@ -165,14 +251,14 @@ async function loadEvents() {
 
 
         snapshot.forEach(
-            item => {
+            documentSnapshot => {
 
                 events.push({
 
                     id:
-                        item.id,
+                        documentSnapshot.id,
 
-                    ...item.data()
+                    ...documentSnapshot.data()
 
                 });
 
@@ -181,26 +267,48 @@ async function loadEvents() {
 
 
         /*
-           Sort newest created records first.
+           Sort events by date first,
+           then time where possible.
         */
 
         events.sort(
-            (a, b) =>
-                getTimestamp(
-                    b.createdAt
-                ) -
-                getTimestamp(
-                    a.createdAt
-                )
+            (a, b) => {
+
+                const dateA =
+                    getDateTimestamp(
+                        a.date
+                    );
+
+                const dateB =
+                    getDateTimestamp(
+                        b.date
+                    );
+
+
+                if (
+                    dateA !==
+                    dateB
+                ) {
+
+                    return dateA - dateB;
+
+                }
+
+
+                return (
+                    getTimeMinutes(
+                        a.time
+                    ) -
+                    getTimeMinutes(
+                        b.time
+                    )
+                );
+
+            }
         );
 
 
-        eventCount.textContent =
-            `${events.length} event${
-                events.length === 1
-                    ? ""
-                    : "s"
-            }`;
+        updateEventCount();
 
 
         renderEvents();
@@ -220,7 +328,38 @@ async function loadEvents() {
             </p>
         `;
 
+
+        if (eventCount) {
+
+            eventCount.textContent =
+                "0 events";
+
+        }
+
     }
+
+}
+
+
+/* =========================================================
+   EVENT COUNT
+   ========================================================= */
+
+function updateEventCount() {
+
+    if (!eventCount) {
+
+        return;
+
+    }
+
+
+    const count =
+        events.length;
+
+
+    eventCount.textContent =
+        `${count} event${count === 1 ? "" : "s"}`;
 
 }
 
@@ -230,6 +369,13 @@ async function loadEvents() {
    ========================================================= */
 
 function renderEvents() {
+
+    if (!eventList) {
+
+        return;
+
+    }
+
 
     if (!events.length) {
 
@@ -272,14 +418,67 @@ function renderEvents() {
                 "manager-item";
 
 
-            const eventDate =
-                event.date || "";
+            const formattedDate =
+                formatEventDate(
+                    event.date
+                );
 
 
-            const eventTime =
-                event.time
-                    ? ` · ${event.time}`
+            const formattedTime =
+                formatEventTime(
+                    event.time
+                );
+
+
+            const categories =
+                getCategories(
+                    event.category
+                );
+
+
+            const categoryHTML =
+                categories.length
+                    ? `
+                        <div class="event-categories">
+
+                            ${categories
+                                .map(
+                                    category => `
+                                        <span class="category-tag">
+                                            ${escapeHtml(
+                                                category
+                                            )}
+                                        </span>
+                                    `
+                                )
+                                .join("")}
+
+                        </div>
+                      `
                     : "";
+
+
+            const urlHTML =
+                event.url
+                    ? `
+                        <a
+                            class="event-url"
+                            href="${escapeHtml(
+                                event.url
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            Open URL
+                        </a>
+                      `
+                    : `
+                        <span class="event-url-missing">
+                            <i class="fa-solid fa-link-slash"></i>
+                            URL not set
+                        </span>
+                      `;
 
 
             item.innerHTML = `
@@ -291,7 +490,7 @@ function renderEvents() {
                     </div>
 
 
-                    <div>
+                    <div class="manager-item-content">
 
                         <h3>
                             ${escapeHtml(
@@ -301,13 +500,27 @@ function renderEvents() {
                         </h3>
 
 
-                        <span>
+                        <span class="event-date">
+
+                            <i class="fa-regular fa-calendar"></i>
+
                             ${escapeHtml(
-                                eventDate
+                                formattedDate
                             )}
-                            ${escapeHtml(
-                                eventTime
-                            )}
+
+                            ${
+                                formattedTime
+                                    ? `
+                                        <span class="event-time">
+                                            <i class="fa-regular fa-clock"></i>
+                                            ${escapeHtml(
+                                                formattedTime
+                                            )}
+                                        </span>
+                                      `
+                                    : ""
+                            }
+
                         </span>
 
 
@@ -315,6 +528,7 @@ function renderEvents() {
                             event.location
                                 ? `
                                     <small>
+                                        <i class="fa-solid fa-location-dot"></i>
                                         ${escapeHtml(
                                             event.location
                                         )}
@@ -327,7 +541,7 @@ function renderEvents() {
                         ${
                             event.description
                                 ? `
-                                    <small>
+                                    <small class="event-description">
                                         ${escapeHtml(
                                             event.description
                                         )}
@@ -335,6 +549,12 @@ function renderEvents() {
                                   `
                                 : ""
                         }
+
+
+                        ${categoryHTML}
+
+
+                        ${urlHTML}
 
                     </div>
 
@@ -383,7 +603,7 @@ function renderEvents() {
 
 
 /* =========================================================
-   ATTACH BUTTONS
+   ATTACH EVENT BUTTONS
    ========================================================= */
 
 function attachEventButtons() {
@@ -435,6 +655,104 @@ function attachEventButtons() {
 
 
 /* =========================================================
+   GET SELECTED CATEGORIES
+   ========================================================= */
+
+function getSelectedCategories() {
+
+    const categories = [];
+
+
+    categoryInputs.forEach(
+        input => {
+
+            if (input.checked) {
+
+                categories.push(
+                    input.value
+                );
+
+            }
+
+        }
+    );
+
+
+    return categories;
+
+}
+
+
+/* =========================================================
+   SET SELECTED CATEGORIES
+   ========================================================= */
+
+function setSelectedCategories(
+    categories
+) {
+
+    const selected =
+        getCategories(
+            categories
+        );
+
+
+    categoryInputs.forEach(
+        input => {
+
+            input.checked =
+                selected.includes(
+                    input.value
+                );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CATEGORY NORMALIZATION
+   ========================================================= */
+
+function getCategories(
+    category
+) {
+
+    if (
+        Array.isArray(
+            category
+        )
+    ) {
+
+        return category;
+
+    }
+
+
+    /*
+       Backwards compatibility if an
+       older document has a string.
+    */
+
+    if (
+        typeof category === "string" &&
+        category.trim()
+    ) {
+
+        return [
+            category.trim()
+        ];
+
+    }
+
+
+    return [];
+
+}
+
+
+/* =========================================================
    SAVE EVENT
    ========================================================= */
 
@@ -447,166 +765,218 @@ if (form) {
             event.preventDefault();
 
 
-            saveButton.disabled =
-                true;
+            if (saveButton) {
 
+                saveButton.disabled =
+                    true;
 
-            saveButton.textContent =
-                eventId.value
-                    ? "Updating..."
-                    : "Saving...";
+                saveButton.textContent =
+                    eventId &&
+                    eventId.value
+                        ? "Updating..."
+                        : "Saving...";
+
+            }
 
 
             try {
 
-                /*
-                   Collect form values.
-                */
+                /* =================================================
+                   GET FORM VALUES
+                   ================================================= */
 
-                const rawData = {
-
-                    title:
-                        titleInput.value.trim(),
-
-                    date:
-                        dateInput.value.trim(),
-
-                    time:
-                        timeInput.value.trim(),
-
-                    location:
-                        locationInput.value.trim(),
-
-                    description:
-                        descriptionInput.value.trim(),
-
-                    image:
-                        imageInput.value.trim()
-
-                };
+                const title =
+                    titleInput
+                        ? titleInput.value.trim()
+                        : "";
 
 
-                /*
-                   Remove empty fields.
+                const about =
+                    aboutInput
+                        ? aboutInput.value.trim()
+                        : "";
 
-                   Example:
 
-                   location: ""
+                const date =
+                    dateInput
+                        ? dateInput.value.trim()
+                        : "";
 
-                   will NOT be stored.
-                */
 
-                const data =
-                    removeEmptyFields(
-                        rawData
-                    );
+                const time =
+                    timeInput
+                        ? timeInput.value.trim()
+                        : "";
+
+
+                const description =
+                    descriptionInput
+                        ? descriptionInput.value.trim()
+                        : "";
+
+
+                const location =
+                    locationInput
+                        ? locationInput.value.trim()
+                        : "";
+
+
+                const url =
+                    urlInput
+                        ? urlInput.value.trim()
+                        : "";
+
+
+                const categories =
+                    getSelectedCategories();
 
 
                 /* =================================================
-                   UPDATE EXISTING EVENT
+                   VALIDATION — TITLE
                    ================================================= */
 
-                if (eventId.value) {
-
-                    const existingEvent =
-                        events.find(
-                            item =>
-                                item.id ===
-                                eventId.value
-                        );
-
-
-                    if (!existingEvent) {
-
-                        throw new Error(
-                            "Event not found."
-                        );
-
-                    }
-
-
-                    /*
-                       Find exactly what changed.
-                    */
-
-                    const changes =
-                        getChangedFields(
-                            existingEvent,
-                            data
-                        );
-
-
-                    /*
-                       Always update updatedAt.
-                    */
-
-                    data.updatedAt =
-                        serverTimestamp();
-
-
-                    await updateDoc(
-                        doc(
-                            db,
-                            "events",
-                            eventId.value
-                        ),
-                        data
-                    );
-
-
-                    /*
-                       Save activity history.
-                    */
-
-                    const changeDescription =
-                        formatChanges(
-                            changes
-                        );
-
-
-                    await logActivity({
-
-                        action:
-                            "updated",
-
-                        collectionName:
-                            "events",
-
-                        documentId:
-                            eventId.value,
-
-                        title:
-                            data.title ||
-                            existingEvent.title ||
-                            "Untitled Event",
-
-                        details:
-                            changeDescription ||
-                            "Event information updated."
-
-                    });
-
+                if (!title) {
 
                     showMessage(
-                        "Event updated successfully.",
-                        "success"
+                        "Please enter an event title.",
+                        "error"
                     );
+
+                    return;
 
                 }
 
 
                 /* =================================================
-                   ADD NEW EVENT
+                   VALIDATION — DATE
                    ================================================= */
 
-                else {
+                if (!date) {
 
-                    data.createdAt =
-                        serverTimestamp();
+                    showMessage(
+                        "Please select an event date.",
+                        "error"
+                    );
+
+                    return;
+
+                }
 
 
-                    data.updatedAt =
-                        serverTimestamp();
+                /* =================================================
+                   VALIDATION — TIME
+                   ================================================= */
+
+                if (!time) {
+
+                    showMessage(
+                        "Please select an event time.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   VALIDATION — URL
+                   ================================================= */
+
+                if (!url) {
+
+                    showMessage(
+                        "URL is required.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!isValidUrl(url)) {
+
+                    showMessage(
+                        "Please enter a valid URL beginning with https:// or http://.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   VALIDATION — CATEGORY
+                   ================================================= */
+
+                if (!categories.length) {
+
+                    showMessage(
+                        "Please select at least one category.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   CREATE FIRESTORE DATE
+                   ================================================= */
+
+                const firestoreDate =
+                    createFirestoreDate(
+                        date
+                    );
+
+
+                /* =================================================
+                   NEW EVENT
+                   ================================================= */
+
+                if (
+                    !eventId ||
+                    !eventId.value
+                ) {
+
+                    const data = {
+
+                        title:
+                            title,
+
+                        about:
+                            about,
+
+                        category:
+                            categories,
+
+                        date:
+                            firestoreDate,
+
+                        time:
+                            formatTimeForStorage(
+                                time
+                            ),
+
+                        description:
+                            description,
+
+                        location:
+                            location,
+
+                        url:
+                            url,
+
+                        createdAt:
+                            serverTimestamp(),
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    };
 
 
                     const newEvent =
@@ -619,11 +989,7 @@ if (form) {
                         );
 
 
-                    /*
-                       Save activity history.
-                    */
-
-                    await logActivity({
+                    await safeLogActivity({
 
                         action:
                             "created",
@@ -635,11 +1001,26 @@ if (form) {
                             newEvent.id,
 
                         title:
-                            data.title ||
-                            "Untitled Event",
+                            title,
 
                         details:
-                            `Created new Puja event "${data.title || "Untitled Event"}".`
+                            buildEventDetails(
+                                {
+                                    title,
+                                    about,
+                                    category:
+                                        categories,
+                                    date:
+                                        firestoreDate,
+                                    time:
+                                        formatTimeForStorage(
+                                            time
+                                        ),
+                                    description,
+                                    location,
+                                    url
+                                }
+                            )
 
                     });
 
@@ -652,7 +1033,191 @@ if (form) {
                 }
 
 
+                /* =================================================
+                   UPDATE EVENT
+                   ================================================= */
+
+                else {
+
+                    const id =
+                        eventId.value;
+
+
+                    const existingEvent =
+                        events.find(
+                            item =>
+                                item.id ===
+                                id
+                        );
+
+
+                    if (!existingEvent) {
+
+                        throw new Error(
+                            "Event not found."
+                        );
+
+                    }
+
+
+                    const storedTime =
+                        formatTimeForStorage(
+                            time
+                        );
+
+
+                    const newEventData = {
+
+                        title:
+                            title,
+
+                        about:
+                            about,
+
+                        category:
+                            categories,
+
+                        date:
+                            firestoreDate,
+
+                        time:
+                            storedTime,
+
+                        description:
+                            description,
+
+                        location:
+                            location,
+
+                        url:
+                            url
+
+                    };
+
+
+                    const changes =
+                        getChangedFields(
+                            existingEvent,
+                            newEventData
+                        );
+
+
+                    const updateData = {
+
+                        title:
+                            title,
+
+                        category:
+                            categories,
+
+                        date:
+                            firestoreDate,
+
+                        time:
+                            storedTime,
+
+                        url:
+                            url,
+
+                        updatedAt:
+                            serverTimestamp()
+
+                    };
+
+
+                    /* =================================================
+                       ABOUT
+                       ================================================= */
+
+                    if (about) {
+
+                        updateData.about =
+                            about;
+
+                    } else {
+
+                        updateData.about =
+                            deleteField();
+
+                    }
+
+
+                    /* =================================================
+                       DESCRIPTION
+                       ================================================= */
+
+                    if (description) {
+
+                        updateData.description =
+                            description;
+
+                    } else {
+
+                        updateData.description =
+                            deleteField();
+
+                    }
+
+
+                    /* =================================================
+                       LOCATION
+                       ================================================= */
+
+                    if (location) {
+
+                        updateData.location =
+                            location;
+
+                    } else {
+
+                        updateData.location =
+                            deleteField();
+
+                    }
+
+
+                    await updateDoc(
+                        doc(
+                            db,
+                            "events",
+                            id
+                        ),
+                        updateData
+                    );
+
+
+                    await safeLogActivity({
+
+                        action:
+                            "updated",
+
+                        collectionName:
+                            "events",
+
+                        documentId:
+                            id,
+
+                        title:
+                            title,
+
+                        details:
+                            formatChanges(
+                                changes
+                            )
+
+                    });
+
+
+                    showMessage(
+                        "Event updated successfully.",
+                        "success"
+                    );
+
+                }
+
+
                 resetForm();
+
 
                 await loadEvents();
 
@@ -666,21 +1231,344 @@ if (form) {
 
 
                 showMessage(
-                    "Unable to save event.",
+                    getFirestoreErrorMessage(
+                        error
+                    ),
                     "error"
                 );
 
+            } finally {
+
+                if (saveButton) {
+
+                    saveButton.disabled =
+                        false;
+
+                    saveButton.textContent =
+                        "Save Event";
+
+                }
+
             }
 
-
-            saveButton.disabled =
-                false;
-
-
-            saveButton.textContent =
-                "Save Event";
-
         }
+    );
+
+}
+
+
+/* =========================================================
+   CREATE FIRESTORE DATE
+   ========================================================= */
+
+function createFirestoreDate(
+    dateString
+) {
+
+    const parts =
+        dateString.split("-");
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        throw new Error(
+            "Invalid event date."
+        );
+
+    }
+
+
+    const year =
+        Number(
+            parts[0]
+        );
+
+
+    const month =
+        Number(
+            parts[1]
+        );
+
+
+    const day =
+        Number(
+            parts[2]
+        );
+
+
+    const date =
+        new Date(
+            year,
+            month - 1,
+            day,
+            0,
+            0,
+            0,
+            0
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        throw new Error(
+            "Invalid event date."
+        );
+
+    }
+
+
+    return Timestamp.fromDate(
+        date
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT TIME FOR FIRESTORE
+   =========================================================
+
+   HTML time input gives:
+
+   19:00
+
+   Firestore stores:
+
+   7:00 PM
+
+   ========================================================= */
+
+function formatTimeForStorage(
+    time
+) {
+
+    if (!time) {
+
+        return "";
+
+    }
+
+
+    const parts =
+        time.split(":");
+
+
+    if (
+        parts.length < 2
+    ) {
+
+        return time;
+
+    }
+
+
+    let hour =
+        Number(
+            parts[0]
+        );
+
+
+    const minute =
+        Number(
+            parts[1]
+        );
+
+
+    if (
+        Number.isNaN(hour) ||
+        Number.isNaN(minute)
+    ) {
+
+        return time;
+
+    }
+
+
+    const period =
+        hour >= 12
+            ? "PM"
+            : "AM";
+
+
+    hour =
+        hour % 12 || 12;
+
+
+    return (
+        `${hour}:${String(minute).padStart(2, "0")} ${period}`
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT EVENT TIME
+   ========================================================= */
+
+function formatEventTime(
+    time
+) {
+
+    if (!time) {
+
+        return "";
+
+    }
+
+
+    /*
+       Existing records may already contain
+       values such as:
+
+       7:00 PM
+       Evening
+       19:00
+    */
+
+    if (
+        /AM|PM/i.test(
+            time
+        )
+    ) {
+
+        return time;
+
+    }
+
+
+    const parts =
+        time.split(":");
+
+
+    if (
+        parts.length < 2
+    ) {
+
+        return time;
+
+    }
+
+
+    let hour =
+        Number(
+            parts[0]
+        );
+
+
+    const minute =
+        Number(
+            parts[1]
+        );
+
+
+    if (
+        Number.isNaN(hour) ||
+        Number.isNaN(minute)
+    ) {
+
+        return time;
+
+    }
+
+
+    const period =
+        hour >= 12
+            ? "PM"
+            : "AM";
+
+
+    hour =
+        hour % 12 || 12;
+
+
+    return (
+        `${hour}:${String(minute).padStart(2, "0")} ${period}`
+    );
+
+}
+
+
+/* =========================================================
+   GET TIME MINUTES
+   ========================================================= */
+
+function getTimeMinutes(
+    time
+) {
+
+    if (!time) {
+
+        return 0;
+
+    }
+
+
+    const value =
+        String(
+            time
+        )
+        .trim()
+        .toUpperCase();
+
+
+    const match =
+        value.match(
+            /^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/
+        );
+
+
+    if (!match) {
+
+        return 0;
+
+    }
+
+
+    let hour =
+        Number(
+            match[1]
+        );
+
+
+    const minute =
+        Number(
+            match[2]
+        );
+
+
+    const period =
+        match[3];
+
+
+    if (
+        period === "PM" &&
+        hour !== 12
+    ) {
+
+        hour += 12;
+
+    }
+
+
+    if (
+        period === "AM" &&
+        hour === 12
+    ) {
+
+        hour = 0;
+
+    }
+
+
+    return (
+        hour * 60 +
+        minute
     );
 
 }
@@ -701,45 +1589,143 @@ function editEvent(id) {
 
     if (!event) {
 
+        showMessage(
+            "Event could not be found.",
+            "error"
+        );
+
         return;
 
     }
 
 
-    eventId.value =
-        event.id;
+    /* =====================================================
+       ID
+       ===================================================== */
+
+    if (eventId) {
+
+        eventId.value =
+            event.id;
+
+    }
 
 
-    titleInput.value =
-        event.title || "";
+    /* =====================================================
+       TITLE
+       ===================================================== */
+
+    if (titleInput) {
+
+        titleInput.value =
+            event.title || "";
+
+    }
 
 
-    dateInput.value =
-        event.date || "";
+    /* =====================================================
+       ABOUT
+       ===================================================== */
+
+    if (aboutInput) {
+
+        aboutInput.value =
+            event.about || "";
+
+    }
 
 
-    timeInput.value =
-        event.time || "";
+    /* =====================================================
+       DATE
+       ===================================================== */
+
+    if (dateInput) {
+
+        dateInput.value =
+            formatDateForInput(
+                event.date
+            );
+
+    }
 
 
-    locationInput.value =
-        event.location || "";
+    /* =====================================================
+       TIME
+       ===================================================== */
+
+    if (timeInput) {
+
+        timeInput.value =
+            formatTimeForInput(
+                event.time
+            );
+
+    }
 
 
-    descriptionInput.value =
-        event.description || "";
+    /* =====================================================
+       DESCRIPTION
+       ===================================================== */
+
+    if (descriptionInput) {
+
+        descriptionInput.value =
+            event.description || "";
+
+    }
 
 
-    imageInput.value =
-        event.image || "";
+    /* =====================================================
+       LOCATION
+       ===================================================== */
+
+    if (locationInput) {
+
+        locationInput.value =
+            event.location || "";
+
+    }
 
 
-    formTitle.textContent =
-        "Edit Event";
+    /* =====================================================
+       URL
+       ===================================================== */
+
+    if (urlInput) {
+
+        urlInput.value =
+            event.url || "";
+
+    }
 
 
-    saveButton.textContent =
-        "Update Event";
+    /* =====================================================
+       CATEGORY
+       ===================================================== */
+
+    setSelectedCategories(
+        event.category
+    );
+
+
+    /* =====================================================
+       FORM TITLE
+       ===================================================== */
+
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Edit Event";
+
+    }
+
+
+    if (saveButton) {
+
+        saveButton.textContent =
+            "Update Event";
+
+    }
 
 
     window.scrollTo({
@@ -751,6 +1737,110 @@ function editEvent(id) {
             "smooth"
 
     });
+
+}
+
+
+/* =========================================================
+   FORMAT TIME FOR HTML INPUT
+   =========================================================
+
+   Firestore:
+
+   7:00 PM
+
+   HTML:
+
+   19:00
+
+   ========================================================= */
+
+function formatTimeForInput(
+    time
+) {
+
+    if (!time) {
+
+        return "";
+
+    }
+
+
+    const value =
+        String(
+            time
+        )
+        .trim()
+        .toUpperCase();
+
+
+    const match =
+        value.match(
+            /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
+        );
+
+
+    if (!match) {
+
+        /*
+           Already looks like 19:00
+        */
+
+        if (
+            /^\d{1,2}:\d{2}$/.test(
+                value
+            )
+        ) {
+
+            return value;
+
+        }
+
+
+        return "";
+
+    }
+
+
+    let hour =
+        Number(
+            match[1]
+        );
+
+
+    const minute =
+        Number(
+            match[2]
+        );
+
+
+    const period =
+        match[3];
+
+
+    if (
+        period === "PM" &&
+        hour !== 12
+    ) {
+
+        hour += 12;
+
+    }
+
+
+    if (
+        period === "AM" &&
+        hour === 12
+    ) {
+
+        hour = 0;
+
+    }
+
+
+    return (
+        `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`
+    );
 
 }
 
@@ -777,12 +1867,14 @@ async function deleteEvent(
     }
 
 
+    const title =
+        event.title ||
+        "this event";
+
+
     const confirmed =
         window.confirm(
-            `Delete "${
-                event.title ||
-                "this event"
-            }"?`
+            `Delete "${title}"?`
         );
 
 
@@ -795,10 +1887,6 @@ async function deleteEvent(
 
     try {
 
-        /*
-           Delete from events collection.
-        */
-
         await deleteDoc(
             doc(
                 db,
@@ -808,12 +1896,7 @@ async function deleteEvent(
         );
 
 
-        /*
-           IMPORTANT:
-           Log BEFORE refreshing the list.
-        */
-
-        await logActivity({
+        await safeLogActivity({
 
             action:
                 "deleted",
@@ -825,11 +1908,10 @@ async function deleteEvent(
                 id,
 
             title:
-                event.title ||
-                "Untitled Event",
+                title,
 
             details:
-                buildDeletedEventDetails(
+                buildEventDetails(
                     event
                 )
 
@@ -840,6 +1922,9 @@ async function deleteEvent(
             "Event deleted successfully.",
             "success"
         );
+
+
+        resetForm();
 
 
         await loadEvents();
@@ -854,7 +1939,9 @@ async function deleteEvent(
 
 
         showMessage(
-            "Unable to delete event.",
+            getFirestoreErrorMessage(
+                error
+            ),
             "error"
         );
 
@@ -886,16 +1973,795 @@ function resetForm() {
     }
 
 
-    eventId.value =
-        "";
+    if (eventId) {
+
+        eventId.value =
+            "";
+
+    }
 
 
-    formTitle.textContent =
-        "Add Event";
+    setSelectedCategories(
+        []
+    );
 
 
-    saveButton.textContent =
-        "Save Event";
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Add Event";
+
+    }
+
+
+    if (saveButton) {
+
+        saveButton.textContent =
+            "Save Event";
+
+    }
+
+
+    if (message) {
+
+        message.textContent =
+            "";
+
+        message.className =
+            "message";
+
+    }
+
+}
+
+
+/* =========================================================
+   ACTIVITY LOGGING
+   ========================================================= */
+
+async function safeLogActivity(
+    activity
+) {
+
+    try {
+
+        await logActivity(
+            activity
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Activity logging failed:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BUILD EVENT DETAILS
+   ========================================================= */
+
+function buildEventDetails(
+    event
+) {
+
+    const details = [];
+
+
+    if (event.title) {
+
+        details.push(
+            `Title: ${event.title}`
+        );
+
+    }
+
+
+    if (event.about) {
+
+        details.push(
+            `About: ${event.about}`
+        );
+
+    }
+
+
+    const categories =
+        getCategories(
+            event.category
+        );
+
+
+    if (categories.length) {
+
+        details.push(
+            `Category: ${categories.join(", ")}`
+        );
+
+    }
+
+
+    if (event.date) {
+
+        details.push(
+            `Date: ${formatEventDate(
+                event.date
+            )}`
+        );
+
+    }
+
+
+    if (event.time) {
+
+        details.push(
+            `Time: ${formatEventTime(
+                event.time
+            )}`
+        );
+
+    }
+
+
+    if (event.description) {
+
+        details.push(
+            `Description: ${event.description}`
+        );
+
+    }
+
+
+    if (event.location) {
+
+        details.push(
+            `Location: ${event.location}`
+        );
+
+    }
+
+
+    if (event.url) {
+
+        details.push(
+            `URL: ${event.url}`
+        );
+
+    }
+
+
+    return details.length
+        ? details.join(". ")
+        : "Event information.";
+
+}
+
+
+/* =========================================================
+   GET CHANGED FIELDS
+   ========================================================= */
+
+function getChangedFields(
+    oldData,
+    newData
+) {
+
+    const changes = [];
+
+
+    compareField(
+        changes,
+        "title",
+        oldData.title || "",
+        newData.title || ""
+    );
+
+
+    compareField(
+        changes,
+        "about",
+        oldData.about || "",
+        newData.about || ""
+    );
+
+
+    /* =====================================================
+       CATEGORY
+       ===================================================== */
+
+    const oldCategories =
+        getCategories(
+            oldData.category
+        );
+
+
+    const newCategories =
+        getCategories(
+            newData.category
+        );
+
+
+    if (
+        JSON.stringify(
+            [...oldCategories].sort()
+        ) !==
+        JSON.stringify(
+            [...newCategories].sort()
+        )
+    ) {
+
+        changes.push({
+
+            field:
+                "category",
+
+            oldValue:
+                oldCategories.join(
+                    ", "
+                ),
+
+            newValue:
+                newCategories.join(
+                    ", "
+                )
+
+        });
+
+    }
+
+
+    /* =====================================================
+       DATE
+       ===================================================== */
+
+    const oldDate =
+        getDateTimestamp(
+            oldData.date
+        );
+
+
+    const newDate =
+        getDateTimestamp(
+            newData.date
+        );
+
+
+    if (
+        oldDate !==
+        newDate
+    ) {
+
+        changes.push({
+
+            field:
+                "date",
+
+            oldValue:
+                formatEventDate(
+                    oldData.date
+                ),
+
+            newValue:
+                formatEventDate(
+                    newData.date
+                )
+
+        });
+
+    }
+
+
+    /* =====================================================
+       TIME
+       ===================================================== */
+
+    compareField(
+        changes,
+        "time",
+        formatEventTime(
+            oldData.time || ""
+        ),
+        formatEventTime(
+            newData.time || ""
+        )
+    );
+
+
+    /* =====================================================
+       DESCRIPTION
+       ===================================================== */
+
+    compareField(
+        changes,
+        "description",
+        oldData.description || "",
+        newData.description || ""
+    );
+
+
+    /* =====================================================
+       LOCATION
+       ===================================================== */
+
+    compareField(
+        changes,
+        "location",
+        oldData.location || "",
+        newData.location || ""
+    );
+
+
+    /* =====================================================
+       URL
+       ===================================================== */
+
+    compareField(
+        changes,
+        "url",
+        oldData.url || "",
+        newData.url || ""
+    );
+
+
+    return changes;
+
+}
+
+
+/* =========================================================
+   COMPARE FIELD
+   ========================================================= */
+
+function compareField(
+    changes,
+    field,
+    oldValue,
+    newValue
+) {
+
+    if (
+        String(oldValue) !==
+        String(newValue)
+    ) {
+
+        changes.push({
+
+            field:
+                field,
+
+            oldValue:
+                oldValue,
+
+            newValue:
+                newValue
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMAT CHANGES
+   ========================================================= */
+
+function formatChanges(
+    changes
+) {
+
+    if (
+        !changes ||
+        !changes.length
+    ) {
+
+        return "Event information updated.";
+
+    }
+
+
+    return changes
+        .map(
+            change => {
+
+                const field =
+                    formatFieldName(
+                        change.field
+                    );
+
+
+                const oldValue =
+                    change.oldValue === ""
+                        ? "(empty)"
+                        : String(
+                            change.oldValue
+                        );
+
+
+                const newValue =
+                    change.newValue === ""
+                        ? "(empty)"
+                        : String(
+                            change.newValue
+                        );
+
+
+                return (
+                    `${field}: "${oldValue}" → "${newValue}"`
+                );
+
+            }
+        )
+        .join(
+            " | "
+        );
+
+}
+
+
+/* =========================================================
+   FORMAT EVENT DATE
+   ========================================================= */
+
+function formatEventDate(
+    value
+) {
+
+    const date =
+        convertToDate(
+            value
+        );
+
+
+    if (!date) {
+
+        return "Date not set";
+
+    }
+
+
+    return new Intl.DateTimeFormat(
+        "en-IN",
+        {
+            day:
+                "2-digit",
+
+            month:
+                "long",
+
+            year:
+                "numeric"
+        }
+    ).format(
+        date
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT DATE FOR INPUT
+   ========================================================= */
+
+function formatDateForInput(
+    value
+) {
+
+    const date =
+        convertToDate(
+            value
+        );
+
+
+    if (!date) {
+
+        return "";
+
+    }
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        `${year}-${month}-${day}`
+    );
+
+}
+
+
+/* =========================================================
+   CONVERT TO DATE
+   ========================================================= */
+
+function convertToDate(
+    value
+) {
+
+    if (!value) {
+
+        return null;
+
+    }
+
+
+    if (
+        typeof value.toDate ===
+        "function"
+    ) {
+
+        return value.toDate();
+
+    }
+
+
+    if (
+        typeof value === "object" &&
+        typeof value.seconds === "number"
+    ) {
+
+        return new Date(
+            value.seconds * 1000
+        );
+
+    }
+
+
+    if (
+        value instanceof Date
+    ) {
+
+        return value;
+
+    }
+
+
+    if (
+        typeof value === "string"
+    ) {
+
+        const simpleDate =
+            /^(\d{4})-(\d{2})-(\d{2})$/
+                .exec(
+                    value
+                );
+
+
+        if (simpleDate) {
+
+            return new Date(
+
+                Number(
+                    simpleDate[1]
+                ),
+
+                Number(
+                    simpleDate[2]
+                ) - 1,
+
+                Number(
+                    simpleDate[3]
+                )
+
+            );
+
+        }
+
+
+        const parsed =
+            new Date(
+                value
+            );
+
+
+        if (
+            !Number.isNaN(
+                parsed.getTime()
+            )
+        ) {
+
+            return parsed;
+
+        }
+
+    }
+
+
+    if (
+        typeof value === "number"
+    ) {
+
+        const date =
+            new Date(
+                value
+            );
+
+
+        if (
+            !Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return date;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   GET DATE TIMESTAMP
+   ========================================================= */
+
+function getDateTimestamp(
+    value
+) {
+
+    const date =
+        convertToDate(
+            value
+        );
+
+
+    if (!date) {
+
+        return Number.MAX_SAFE_INTEGER;
+
+    }
+
+
+    return date.getTime();
+
+}
+
+
+/* =========================================================
+   URL VALIDATION
+   ========================================================= */
+
+function isValidUrl(
+    value
+) {
+
+    try {
+
+        const url =
+            new URL(
+                value
+            );
+
+
+        return (
+            url.protocol ===
+                "http:" ||
+            url.protocol ===
+                "https:"
+        );
+
+    } catch {
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMAT FIELD NAME
+   ========================================================= */
+
+function formatFieldName(
+    field
+) {
+
+    return String(
+        field
+    )
+
+        .replace(
+            /([A-Z])/g,
+            " $1"
+        )
+
+        .replace(
+            /[_-]/g,
+            " "
+        )
+
+        .replace(
+            /\s+/g,
+            " "
+        )
+
+        .trim()
+
+        .replace(
+            /^./,
+            character =>
+                character.toUpperCase()
+        );
+
+}
+
+
+/* =========================================================
+   FIRESTORE ERROR MESSAGE
+   ========================================================= */
+
+function getFirestoreErrorMessage(
+    error
+) {
+
+    if (!error) {
+
+        return "Something went wrong.";
+
+    }
+
+
+    switch (
+        error.code
+    ) {
+
+        case "permission-denied":
+
+            return (
+                "Permission denied. Check your Firebase security rules."
+            );
+
+
+        case "unauthenticated":
+
+            return (
+                "Your admin session has expired. Please login again."
+            );
+
+
+        case "network-request-failed":
+
+            return (
+                "Network error. Please check your internet connection."
+            );
+
+
+        default:
+
+            return (
+                error.message ||
+                "Unable to complete the operation."
+            );
+
+    }
 
 }
 
@@ -922,6 +2788,27 @@ function showMessage(
 
     message.className =
         `message ${type}`;
+
+
+    window.setTimeout(
+        () => {
+
+            if (
+                message.textContent ===
+                text
+            ) {
+
+                message.textContent =
+                    "";
+
+                message.className =
+                    "message";
+
+            }
+
+        },
+        5000
+    );
 
 }
 
@@ -964,347 +2851,6 @@ if (logoutButton) {
 
 
 /* =========================================================
-   REMOVE EMPTY FIELDS
-   ========================================================= */
-
-function removeEmptyFields(
-    data
-) {
-
-    const cleaned = {};
-
-
-    Object.entries(
-        data
-    ).forEach(
-        ([key, value]) => {
-
-            /*
-               Do not store:
-
-               ""
-               null
-               undefined
-               whitespace
-            */
-
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                typeof value === "string" &&
-                value.trim() === ""
-            ) {
-
-                return;
-
-            }
-
-
-            cleaned[key] =
-                value;
-
-        }
-    );
-
-
-    return cleaned;
-
-}
-
-
-/* =========================================================
-   FIND CHANGED FIELDS
-   ========================================================= */
-
-function getChangedFields(
-    oldData,
-    newData
-) {
-
-    const changes = [];
-
-
-    const fields = [
-
-        "title",
-
-        "date",
-
-        "time",
-
-        "location",
-
-        "description",
-
-        "image"
-
-    ];
-
-
-    fields.forEach(
-        field => {
-
-            const oldValue =
-                oldData[field] ?? "";
-
-
-            const newValue =
-                newData[field] ?? "";
-
-
-            if (
-                String(oldValue) !==
-                String(newValue)
-            ) {
-
-                changes.push({
-
-                    field:
-                        field,
-
-                    oldValue:
-                        oldValue,
-
-                    newValue:
-                        newValue
-
-                });
-
-            }
-
-        }
-    );
-
-
-    return changes;
-
-}
-
-
-/* =========================================================
-   FORMAT CHANGES
-   ========================================================= */
-
-function formatChanges(
-    changes
-) {
-
-    if (
-        !changes ||
-        changes.length === 0
-    ) {
-
-        return "Event information saved without changing the event fields.";
-
-    }
-
-
-    return changes
-        .map(
-            change => {
-
-                const field =
-                    formatFieldName(
-                        change.field
-                    );
-
-
-                const oldValue =
-                    change.oldValue === ""
-                        ? "(empty)"
-                        : String(
-                            change.oldValue
-                        );
-
-
-                const newValue =
-                    change.newValue === ""
-                        ? "(empty)"
-                        : String(
-                            change.newValue
-                        );
-
-
-                return `${field}: "${oldValue}" → "${newValue}"`;
-
-            }
-        )
-        .join(
-            " | "
-        );
-
-}
-
-
-/* =========================================================
-   DELETED EVENT DETAILS
-   ========================================================= */
-
-function buildDeletedEventDetails(
-    event
-) {
-
-    const details = [];
-
-
-    if (event.title) {
-
-        details.push(
-            `Title: ${event.title}`
-        );
-
-    }
-
-
-    if (event.date) {
-
-        details.push(
-            `Date: ${event.date}`
-        );
-
-    }
-
-
-    if (event.time) {
-
-        details.push(
-            `Time: ${event.time}`
-        );
-
-    }
-
-
-    if (event.location) {
-
-        details.push(
-            `Location: ${event.location}`
-        );
-
-    }
-
-
-    if (event.description) {
-
-        details.push(
-            `Description: ${event.description}`
-        );
-
-    }
-
-
-    if (event.image) {
-
-        details.push(
-            `Image: ${event.image}`
-        );
-
-    }
-
-
-    return details.length
-        ? `Deleted event. ${details.join(". ")}`
-        : "Deleted event.";
-
-}
-
-
-/* =========================================================
-   FORMAT FIELD NAME
-   ========================================================= */
-
-function formatFieldName(
-    field
-) {
-
-    return String(field)
-
-        .replace(
-            /([A-Z])/g,
-            " $1"
-        )
-
-        .replace(
-            /[_-]/g,
-            " "
-        )
-
-        .replace(
-            /\s+/g,
-            " "
-        )
-
-        .trim()
-
-        .replace(
-            /^./,
-            character =>
-                character.toUpperCase()
-        );
-
-}
-
-
-/* =========================================================
-   TIMESTAMP
-   ========================================================= */
-
-function getTimestamp(
-    value
-) {
-
-    if (!value) {
-
-        return 0;
-
-    }
-
-
-    if (
-        value?.toDate
-    ) {
-
-        return value
-            .toDate()
-            .getTime();
-
-    }
-
-
-    if (
-        value?.seconds
-    ) {
-
-        return Number(
-            value.seconds
-        ) * 1000;
-
-    }
-
-
-    const time =
-        new Date(
-            value
-        ).getTime();
-
-
-    return Number.isNaN(
-        time
-    )
-        ? 0
-        : time;
-
-}
-
-
-/* =========================================================
    ESCAPE HTML
    ========================================================= */
 
@@ -1342,3 +2888,15 @@ function escapeHtml(
         );
 
 }
+
+
+/* =========================================================
+   DEBUG HELPERS
+   ========================================================= */
+
+window.reloadRoyBariEvents =
+    loadEvents;
+
+
+window.resetRoyBariEventForm =
+    resetForm;
