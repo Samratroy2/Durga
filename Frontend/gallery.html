@@ -11,7 +11,7 @@
     >
 
     <title>
-        Roy Bari Durga Puja
+        Gallery | Roy Bari Durga Puja
     </title>
 
     <meta
@@ -26,297 +26,511 @@
 
 
     <!-- =====================================================
-         HORIZONTAL GALLERY CSS
+         SIMPLE THEN & NOW CSS
          ===================================================== -->
 
     <style>
 
-        /* =================================================
-           GALLERY SLIDER
-           ================================================= */
+        /* -----------------------------------------------------
+           COMPARISON SECTION
+           ----------------------------------------------------- */
 
-        .gallery-slider {
+        .simple-comparison {
+            width: 100%;
+            margin-top: 40px;
+        }
 
-            position: relative;
+
+        /* -----------------------------------------------------
+           ONE COMPARISON
+           ----------------------------------------------------- */
+
+        .comparison-item {
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+
+        /* -----------------------------------------------------
+           TWO IMAGES SIDE BY SIDE
+           ----------------------------------------------------- */
+
+        .comparison-images {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
 
             width: 100%;
-
-            overflow: visible;
-
         }
 
 
-        /* =================================================
-           HORIZONTAL GALLERY
-           ================================================= */
+        /* -----------------------------------------------------
+           IMAGE BOX
+           ----------------------------------------------------- */
 
-        #gallery-grid {
-
-            display: flex !important;
-
-            flex-direction: row !important;
-
-            flex-wrap: nowrap !important;
-
-            gap: 16px;
-
+        .comparison-photo {
             width: 100%;
 
-            overflow-x: auto !important;
-
-            overflow-y: hidden;
-
-            scroll-behavior: smooth;
-
-            scrollbar-width: thin;
-
-            -webkit-overflow-scrolling: touch;
-
-            padding-bottom: 12px;
-
-            scroll-snap-type: x proximity;
-
-        }
-
-
-        /* Chrome / Edge scrollbar */
-
-        #gallery-grid::-webkit-scrollbar {
-
-            height: 7px;
-
-        }
-
-
-        #gallery-grid::-webkit-scrollbar-track {
-
-            background: transparent;
-
-        }
-
-
-        #gallery-grid::-webkit-scrollbar-thumb {
-
-            background: #c8b5a3;
-
-            border-radius: 20px;
-
-        }
-
-
-        /* =================================================
-           FOUR CARDS VISIBLE ON DESKTOP
-           ================================================= */
-
-        #gallery-grid .gallery-card {
-
-            flex: 0 0 calc(
-                (100% - 48px) / 4
-            ) !important;
-
-            width: calc(
-                (100% - 48px) / 4
-            ) !important;
-
-            min-width: calc(
-                (100% - 48px) / 4
-            ) !important;
-
-            scroll-snap-align: start;
-
-        }
-
-
-        /* =================================================
-           GALLERY IMAGE
-           ================================================= */
-
-        #gallery-grid .gallery-image {
-
-            position: relative;
+            background:
+                #eee7d9;
 
             overflow: hidden;
 
+            border:
+                1px solid
+                rgba(101, 28, 36, 0.18);
         }
 
 
-        #gallery-grid .gallery-image img {
+        .comparison-photo img {
+            display: block;
 
             width: 100%;
 
-            display: block;
+            height: 420px;
 
-            object-fit: cover;
+            object-fit: contain;
+
+            object-position: center;
+
+            background:
+                #eee7d9;
+        }
+
+
+        /* -----------------------------------------------------
+           THEN / NOW LABEL
+           ----------------------------------------------------- */
+
+        .comparison-label {
+            padding:
+                10px
+                14px;
+
+            background:
+                #651c24;
+
+            color:
+                #ffffff;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing:
+                0.12em;
+
+            text-transform:
+                uppercase;
+
+            text-align:
+                center;
+        }
+
+
+        /* -----------------------------------------------------
+           INFORMATION
+           ----------------------------------------------------- */
+
+        .comparison-info {
+            padding:
+                18px
+                4px
+                0;
+        }
+
+
+        .comparison-info h3 {
+            margin:
+                0
+                0
+                8px;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size:
+                26px;
+
+            font-weight:
+                500;
+
+            color:
+                #3d1117;
+        }
+
+
+        .comparison-info p {
+            margin:
+                0;
+
+            color:
+                #756d63;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.6;
+        }
+
+
+        .comparison-year {
+            margin-top:
+                8px;
+
+            color:
+                #b58a45;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                0.12em;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        /* -----------------------------------------------------
+           MULTIPLE COMPARISONS
+           ----------------------------------------------------- */
+
+        .comparison-navigation {
+            display: flex;
+
+            justify-content:
+                center;
+
+            gap: 10px;
+
+            margin-top:
+                20px;
+        }
+
+
+        .comparison-navigation button {
+            border:
+                1px solid
+                rgba(101, 28, 36, 0.25);
+
+            background:
+                #651c24;
+
+            color:
+                #ffffff;
+
+            padding:
+                9px
+                16px;
+
+            cursor:
+                pointer;
+
+            font-size:
+                12px;
+
+            border-radius:
+                3px;
+        }
+
+
+        .comparison-navigation button:hover {
+            background:
+                #b58a45;
+        }
+
+
+        /* -----------------------------------------------------
+           LOADING
+           ----------------------------------------------------- */
+
+        .comparison-loading {
+            width: 100%;
+
+            min-height:
+                200px;
+
+            display: flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                #756d63;
+        }
+
+
+        /* -----------------------------------------------------
+           ERROR
+           ----------------------------------------------------- */
+
+        .comparison-error {
+            padding:
+                30px;
+
+            text-align:
+                center;
+
+            border:
+                1px solid
+                rgba(101, 28, 36, 0.15);
+
+            background:
+                #fffdf7;
+
+            color:
+                #756d63;
+        }
+
+
+        /* -----------------------------------------------------
+           MOBILE
+           ----------------------------------------------------- */
+
+        @media (max-width: 700px) {
+
+            .comparison-images {
+
+                grid-template-columns:
+                    1fr;
+
+                gap: 15px;
+
+            }
+
+
+            .comparison-photo img {
+
+                height: 300px;
+
+            }
+
+
+            .comparison-info h3 {
+
+                font-size: 22px;
+
+            }
 
         }
 
 
-        /* =================================================
-           LEFT / RIGHT BUTTONS
-           ================================================= */
+        /* =====================================================
+           SIMPLE LIGHTBOX
+           ===================================================== */
 
-        .gallery-arrow {
+        #simple-lightbox {
 
-            position: absolute;
+            position: fixed;
 
-            top: 43%;
+            inset: 0;
 
-            transform: translateY(-50%);
+            z-index: 99999;
 
-            z-index: 50;
-
-            width: 44px;
-
-            height: 44px;
-
-            border: none;
-
-            border-radius: 50%;
-
-            background: rgba(48, 40, 32, 0.90);
-
-            color: #ffffff;
-
-            font-size: 32px;
-
-            line-height: 1;
-
-            display: flex;
+            display: none;
 
             align-items: center;
 
             justify-content: center;
 
-            cursor: pointer;
+            padding: 20px;
 
-            box-shadow:
-                0 5px 18px rgba(0, 0, 0, 0.20);
-
-            transition:
-                opacity 0.2s ease,
-                transform 0.2s ease,
-                background 0.2s ease;
+            background:
+                rgba(0, 0, 0, 0.92);
 
         }
 
 
-        .gallery-arrow:hover {
+        #simple-lightbox.open {
 
-            background: #795337;
-
-            transform:
-                translateY(-50%)
-                scale(1.05);
+            display: flex;
 
         }
 
 
-        .gallery-arrow-left {
+        #simple-lightbox img {
 
-            left: -22px;
+            max-width:
+                95vw;
+
+            max-height:
+                90vh;
+
+            width:
+                auto;
+
+            height:
+                auto;
+
+            object-fit:
+                contain;
 
         }
 
 
-        .gallery-arrow-right {
+        #simple-lightbox-close {
 
-            right: -22px;
+            position: fixed;
+
+            top: 15px;
+
+            right: 20px;
+
+            width: 45px;
+
+            height: 45px;
+
+            border: 0;
+
+            border-radius: 50%;
+
+            background:
+                #ffffff;
+
+            color:
+                #3d1117;
+
+            font-size:
+                30px;
+
+            cursor:
+                pointer;
 
         }
 
 
-        /* =================================================
-           HIDE ARROWS WHEN NOT NEEDED
-           ================================================= */
+        #simple-lightbox-title {
 
-        .gallery-arrow.is-hidden {
+            position: fixed;
+
+            left: 20px;
+
+            right: 20px;
+
+            bottom: 18px;
+
+            text-align:
+                center;
+
+            color:
+                #ffffff;
+
+            font-size:
+                14px;
+
+        }
+
+
+        /* =====================================================
+           VIDEO VIEWER
+           ===================================================== */
+
+        #video-viewer {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 99998;
 
             display: none;
 
-        }
+            align-items: center;
 
+            justify-content: center;
 
-        /* =================================================
-           MOBILE
-           ================================================= */
+            padding: 20px;
 
-        @media (max-width: 900px) {
-
-            #gallery-grid .gallery-card {
-
-                flex: 0 0 calc(
-                    (100% - 16px) / 2
-                ) !important;
-
-                width: calc(
-                    (100% - 16px) / 2
-                ) !important;
-
-                min-width: calc(
-                    (100% - 16px) / 2
-                ) !important;
-
-            }
+            background:
+                rgba(0, 0, 0, 0.92);
 
         }
 
 
-        @media (max-width: 600px) {
+        #video-viewer.open {
 
-            #gallery-grid {
-
-                gap: 12px;
-
-            }
-
-
-            #gallery-grid .gallery-card {
-
-                flex: 0 0 86% !important;
-
-                width: 86% !important;
-
-                min-width: 86% !important;
-
-            }
-
-
-            .gallery-arrow {
-
-                width: 36px;
-
-                height: 36px;
-
-                font-size: 27px;
-
-            }
-
-
-            .gallery-arrow-left {
-
-                left: 5px;
-
-            }
-
-
-            .gallery-arrow-right {
-
-                right: 5px;
-
-            }
+            display: flex;
 
         }
 
 
-        /* =================================================
-           GALLERY LOADING
-           ================================================= */
+        .video-viewer-box {
 
-        .gallery-loading {
+            width:
+                min(1100px, 95vw);
+
+            background:
+                #000;
+
+        }
+
+
+        .video-viewer-box iframe {
+
+            display: block;
 
             width: 100%;
 
-            min-width: 100%;
+            height: 620px;
+
+            border: 0;
+
+        }
+
+
+        .video-viewer-close {
+
+            position: fixed;
+
+            top: 15px;
+
+            right: 20px;
+
+            width: 45px;
+
+            height: 45px;
+
+            border: 0;
+
+            border-radius: 50%;
+
+            background: #ffffff;
+
+            color: #3d1117;
+
+            font-size: 30px;
+
+            cursor: pointer;
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .video-viewer-box iframe {
+
+                height: 300px;
+
+            }
 
         }
 
@@ -336,7 +550,6 @@
 
     <nav class="nav">
 
-
         <a
             href="index.html"
             class="brand"
@@ -352,15 +565,13 @@
 
 
         <button
+            type="button"
             class="nav-toggle"
             id="nav-toggle"
             aria-label="Toggle navigation"
             aria-expanded="false"
-            type="button"
         >
-
             ☰
-
         </button>
 
 
@@ -377,8 +588,8 @@
 
 
             <li>
-                <a href="history.html">
-                    The House
+                <a href="about.html">
+                    About the Puja
                 </a>
             </li>
 
@@ -391,16 +602,10 @@
 
 
             <li>
-                <a href="puja.html">
-                    The puja
-                </a>
-            </li>
-
-
-            <li>
                 <a
                     href="gallery.html"
                     class="active"
+                    aria-current="page"
                 >
                     Gallery
                 </a>
@@ -410,13 +615,6 @@
             <li>
                 <a href="events.html">
                     Events
-                </a>
-            </li>
-
-
-            <li>
-                <a href="archive.html">
-                    Archive
                 </a>
             </li>
 
@@ -441,7 +639,6 @@
 </header>
 
 
-
 <!-- =====================================================
      HERO
      ===================================================== -->
@@ -452,11 +649,9 @@
 
         <div class="hero-content">
 
-
             <div class="eyebrow">
                 Experience
             </div>
-
 
             <h1>
 
@@ -465,7 +660,6 @@
                 &amp; Films
 
             </h1>
-
 
             <p class="tagline">
 
@@ -482,14 +676,6 @@
 </section>
 
 
-
-<!-- =====================================================
-     MAIN
-     ===================================================== -->
-
-<main id="main-content">
-
-
 <!-- =====================================================
      PHOTO GALLERY
      ===================================================== -->
@@ -498,37 +684,29 @@
 
     <div class="container">
 
-
         <div class="section-head">
-
 
             <div class="eyebrow">
                 Photo Gallery
             </div>
 
-
             <h2>
 
-                The house, the idol,
-                the rituals
+                The House, The Idol,
+                <br>
+                The Rituals
 
             </h2>
 
-
             <p class="lead">
 
-                Photographs from the Roy Bari family
-                archive, preserved through generations.
+                Photographs from the Roy Bari
+                family archive.
 
             </p>
 
         </div>
 
-
-
-        <!-- =================================================
-             HORIZONTAL PHOTO SLIDER
-             ================================================= -->
 
         <div class="gallery-slider">
 
@@ -539,15 +717,13 @@
                 id="gallery-prev"
                 aria-label="Previous photographs"
             >
-
                 ‹
-
             </button>
 
 
             <div
-                class="gallery-grid"
                 id="gallery-grid"
+                class="gallery-grid"
             >
 
                 <div class="gallery-loading">
@@ -569,70 +745,58 @@
                 id="gallery-next"
                 aria-label="Next photographs"
             >
-
                 ›
-
             </button>
 
+
         </div>
-
-
-        <p class="gallery-caption">
-
-            Photographs from the Roy Bari
-            family archive.
-
-        </p>
-
 
     </div>
 
 </section>
 
 
-
 <!-- =====================================================
      THEN & NOW
      ===================================================== -->
 
-<section class="section-alt comparison-section">
+<section
+    class="comparison-section section-alt"
+>
 
     <div class="container">
 
 
         <div class="section-head center">
 
-
             <div class="eyebrow">
                 Then &amp; Now
             </div>
 
-
             <h2>
-
-                The courtyard,
-                <br>
-                1962 and today
-
+                The Roy Bari Through Time
             </h2>
-
 
             <p class="lead">
 
-                A visual record of how the Roy Bari
-                has changed while its traditions remain.
+                Historical photographs placed
+                beside photographs from today.
 
             </p>
 
         </div>
 
 
+        <!-- =================================================
+             COMPARISON WILL LOAD HERE
+             ================================================= -->
+
         <div
-            class="compare"
             id="gallery-compare"
+            class="simple-comparison"
         >
 
-            <div class="compare-loading">
+            <div class="comparison-loading">
 
                 Loading comparison...
 
@@ -640,10 +804,10 @@
 
         </div>
 
+
     </div>
 
 </section>
-
 
 
 <!-- =====================================================
@@ -657,21 +821,18 @@
 
         <div class="section-head">
 
-
             <div class="eyebrow">
                 Films
             </div>
 
-
             <h2>
-                Watch the puja
+                Watch the Puja
             </h2>
-
 
             <p class="lead">
 
                 Moving images from the Roy Bari
-                Durga puja archive.
+                Durga Puja archive.
 
             </p>
 
@@ -679,17 +840,15 @@
 
 
         <div
-            class="video-list"
             id="video-list"
+            class="video-list"
         >
 
             <div class="video-row">
 
-
                 <div class="play">
                     ▶
                 </div>
-
 
                 <div class="video-info">
 
@@ -697,23 +856,16 @@
                         Loading films...
                     </h4>
 
-
-                    <p class="dur">
-                        Please wait
-                    </p>
-
                 </div>
 
             </div>
 
         </div>
 
+
     </div>
 
 </section>
-
-</main>
-
 
 
 <!-- =====================================================
@@ -728,12 +880,11 @@
         <div class="footer-grid">
 
 
-            <div class="footer-brand">
+            <div>
 
                 <h5>
                     Roy Bari
                 </h5>
-
 
                 <p>
 
@@ -752,29 +903,19 @@
                     Explore
                 </h5>
 
-
                 <ul>
 
                     <li>
-                        <a href="history.html">
-                            The House
+                        <a href="about.html">
+                            About the Puja
                         </a>
                     </li>
-
 
                     <li>
-                        <a href="puja.html">
-                            The puja
+                        <a href="family-tree.html">
+                            Family Tree
                         </a>
                     </li>
-
-
-                    <li>
-                        <a href="events.html">
-                            Events
-                        </a>
-                    </li>
-
 
                     <li>
                         <a href="gallery.html">
@@ -782,10 +923,9 @@
                         </a>
                     </li>
 
-
                     <li>
-                        <a href="archive.html">
-                            Archive
+                        <a href="events.html">
+                            Events
                         </a>
                     </li>
 
@@ -800,12 +940,11 @@
                     Visit
                 </h5>
 
-
                 <ul>
 
                     <li>
                         <a href="visit.html">
-                            Location &amp; Timings
+                            Location &amp; Directions
                         </a>
                     </li>
 
@@ -820,7 +959,6 @@
                     Contact
                 </h5>
 
-
                 <ul>
 
                     <li>
@@ -833,37 +971,91 @@
 
             </div>
 
+
         </div>
 
 
         <div class="footer-bottom">
 
             <span>
-
                 © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
-
             </span>
 
         </div>
+
 
     </div>
 
 </footer>
 
 
-
 <!-- =====================================================
-     LIGHTBOX
+     IMAGE LIGHTBOX
      ===================================================== -->
 
-<div id="lightbox-root"></div>
+<div id="simple-lightbox">
 
+    <button
+        type="button"
+        id="simple-lightbox-close"
+        aria-label="Close image"
+    >
+        ×
+    </button>
+
+
+    <img
+        id="simple-lightbox-image"
+        src=""
+        alt=""
+    >
+
+
+    <div
+        id="simple-lightbox-title"
+    ></div>
+
+</div>
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     VIDEO VIEWER
+     ===================================================== -->
+
+<div id="video-viewer">
+
+    <button
+        type="button"
+        class="video-viewer-close"
+        id="video-viewer-close"
+    >
+        ×
+    </button>
+
+
+    <div class="video-viewer-box">
+
+        <iframe
+            id="video-frame"
+            src=""
+            title="Roy Bari film"
+            allow="
+                autoplay;
+                fullscreen;
+                picture-in-picture
+            "
+            allowfullscreen
+        ></iframe>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN JS
      ===================================================== -->
 
 <script src="main.js"></script>

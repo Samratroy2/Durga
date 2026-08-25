@@ -10,14 +10,19 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Roy Bari Durga puja</title>
+    <title>
+        Events | Roy Bari Durga Puja
+    </title>
 
     <meta
         name="description"
-        content="The Durga puja events and rituals of ROY Bari — from Mahalaya to Dashami."
+        content="The Durga Puja events and rituals of Roy Bari — from Mahalaya to Dashami."
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
@@ -27,11 +32,16 @@
 
 <!-- =====================================================
      HEADER
-===================================================== -->
+     ===================================================== -->
 
 <header class="site-header">
 
     <nav class="nav">
+
+
+        <!-- =================================================
+             BRAND
+             ================================================= -->
 
         <a
             href="index.html"
@@ -47,75 +57,90 @@
         </a>
 
 
+        <!-- =================================================
+             MOBILE MENU
+             ================================================= -->
+
         <button
-            class="nav-toggle"
-            aria-label="Toggle menu"
-            aria-expanded="false"
             type="button"
+            class="nav-toggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
         >
             ☰
         </button>
 
 
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
         <ul class="nav-links">
 
             <li>
+
                 <a href="index.html">
                     Home
                 </a>
+
             </li>
 
+
             <li>
-                <a href="history.html">
-                    The House
+
+                <a href="about.html">
+                    About the Puja
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="family-tree.html">
                     Family Tree
                 </a>
+
             </li>
 
-            <li>
-                <a href="puja.html">
-                    The puja
-                </a>
-            </li>
 
             <li>
+
                 <a href="gallery.html">
                     Gallery
                 </a>
+
             </li>
 
+
             <li>
+
                 <a
                     href="events.html"
                     class="active"
+                    aria-current="page"
                 >
                     Events
                 </a>
+
             </li>
 
-            <li>
-                <a href="archive.html">
-                    Archive
-                </a>
-            </li>
-
-            
 
             <li>
+
                 <a href="visit.html">
                     Visit
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="contact.html">
                     Contact
                 </a>
+
             </li>
 
         </ul>
@@ -125,10 +150,9 @@
 </header>
 
 
-
 <!-- =====================================================
      HERO
-===================================================== -->
+     ===================================================== -->
 
 <section
     class="hero"
@@ -139,22 +163,26 @@
 
         <div class="hero-content">
 
+
             <div class="eyebrow">
-                The puja Calendar
+                The Puja Calendar
             </div>
+
 
             <h1>
                 The Days We Keep
             </h1>
+
 
             <p class="tagline">
 
                 From Mahalaya to Dashami, discover
                 the rituals, gatherings, and traditions
                 that mark the days of the Roy Bari
-                Durga puja.
+                Durga Puja.
 
             </p>
+
 
         </div>
 
@@ -163,14 +191,14 @@
 </section>
 
 
-
 <!-- =====================================================
      NEXT EVENT
-===================================================== -->
+     ===================================================== -->
 
 <section>
 
     <div class="container">
+
 
         <div class="section-head">
 
@@ -178,26 +206,33 @@
                 Next at the Bari
             </div>
 
+
             <h2 id="next-event-name">
                 Loading...
             </h2>
+
 
             <p
                 class="lead"
                 id="next-event-description"
             >
-                Loading the next puja event...
+                Loading the next Puja event...
             </p>
 
         </div>
 
 
-        <!-- COUNTDOWN -->
+        <!-- =================================================
+             COUNTDOWN
+             ================================================= -->
 
         <div
             class="event-countdown"
             id="event-timer"
         >
+
+
+            <!-- DAYS -->
 
             <div class="event-time-box">
 
@@ -208,12 +243,15 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Days
                 </span>
 
             </div>
 
+
+            <!-- HOURS -->
 
             <div class="event-time-box">
 
@@ -224,12 +262,15 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Hours
                 </span>
 
             </div>
 
+
+            <!-- MINUTES -->
 
             <div class="event-time-box">
 
@@ -240,12 +281,15 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Minutes
                 </span>
 
             </div>
 
+
+            <!-- SECONDS -->
 
             <div class="event-time-box">
 
@@ -256,11 +300,13 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Seconds
                 </span>
 
             </div>
+
 
         </div>
 
@@ -269,17 +315,18 @@
 </section>
 
 
-
 <!-- =====================================================
-     puja EVENTS
-===================================================== -->
+     PUJA EVENTS
+     ===================================================== -->
 
 <section class="section-alt">
 
     <div class="container">
 
 
-        <!-- SECTION HEADER -->
+        <!-- =================================================
+             SECTION HEADER
+             ================================================= -->
 
         <div class="section-head">
 
@@ -287,9 +334,11 @@
                 The Calendar
             </div>
 
+
             <h2>
-                The puja, day by day
+                The Puja, Day by Day
             </h2>
+
 
             <p class="lead">
 
@@ -302,19 +351,25 @@
         </div>
 
 
-
         <!-- =================================================
              FILTERS
-        ================================================= -->
+             ================================================= -->
 
-        <div class="pill-row event-filters">
+        <div
+            class="pill-row event-filters"
+            role="group"
+            aria-label="Filter events"
+        >
+
 
             <button
                 type="button"
                 class="pill event-filter active"
                 data-filter="all"
             >
+
                 All Days
+
             </button>
 
 
@@ -323,7 +378,9 @@
                 class="pill event-filter"
                 data-filter="ritual"
             >
+
                 Rituals
+
             </button>
 
 
@@ -332,7 +389,9 @@
                 class="pill event-filter"
                 data-filter="family"
             >
+
                 Family
+
             </button>
 
 
@@ -341,26 +400,24 @@
                 class="pill event-filter"
                 data-filter="visitor"
             >
+
                 Visitors
+
             </button>
+
 
         </div>
 
 
-
         <!-- =================================================
              FIREBASE EVENTS
-        ================================================= -->
+             ================================================= -->
 
         <div
             class="events-grid"
             id="events-grid"
         >
 
-            <!--
-                events.js will replace this
-                with Firestore event cards.
-            -->
 
             <div class="event-card">
 
@@ -370,14 +427,18 @@
                         Loading events...
                     </h3>
 
+
                     <p>
+
                         Please wait while the
-                        puja calendar is loaded.
+                        Puja calendar is loaded.
+
                     </p>
 
                 </div>
 
             </div>
+
 
         </div>
 
@@ -386,19 +447,21 @@
 </section>
 
 
-
 <!-- =====================================================
      FOOTER
-===================================================== -->
+     ===================================================== -->
 
 <footer class="site-footer">
 
     <div class="container">
 
+
         <div class="footer-grid">
 
 
-            <!-- FOOTER BRAND -->
+            <!-- =================================================
+                 ROY BARI
+                 ================================================= -->
 
             <div>
 
@@ -406,15 +469,21 @@
                     Roy Bari
                 </h5>
 
+
                 <p>
-                    V8J4+5FF, Chhota Nohari,
+
+                    V8J4+5FF,
+                    Chhota Nohari,
                     West Bengal 721121
+
                 </p>
 
             </div>
 
 
-            <!-- EXPLORE -->
+            <!-- =================================================
+                 EXPLORE
+                 ================================================= -->
 
             <div>
 
@@ -422,44 +491,57 @@
                     Explore
                 </h5>
 
+
                 <ul>
 
-                    <li>
-                        <a href="history.html">
-                            The House
-                        </a>
-                    </li>
 
                     <li>
+
+                        <a href="about.html">
+                            About the Puja
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
                         <a href="family-tree.html">
                             Family Tree
                         </a>
+
                     </li>
 
+
                     <li>
-                        <a href="puja.html">
-                            The puja
+
+                        <a href="gallery.html">
+                            Gallery
                         </a>
+
                     </li>
 
+
                     <li>
-                        <a href="events.html">
+
+                        <a
+                            href="events.html"
+                            aria-current="page"
+                        >
                             Events
                         </a>
+
                     </li>
 
-                    <li>
-                        <a href="archive.html">
-                            Archive
-                        </a>
-                    </li>
 
                 </ul>
 
             </div>
 
 
-            <!-- VISIT -->
+            <!-- =================================================
+                 VISIT
+                 ================================================= -->
 
             <div>
 
@@ -467,28 +549,36 @@
                     Visit
                 </h5>
 
+
                 <ul>
 
+
                     <li>
+
                         <a href="visit.html">
-                            Location &amp; Timings
+                            Location &amp; Directions
                         </a>
+
                     </li>
 
-                    
 
                     <li>
+
                         <a href="gallery.html">
                             Gallery
                         </a>
+
                     </li>
+
 
                 </ul>
 
             </div>
 
 
-            <!-- CONTACT -->
+            <!-- =================================================
+                 CONTACT
+                 ================================================= -->
 
             <div>
 
@@ -496,13 +586,18 @@
                     Contact
                 </h5>
 
+
                 <ul>
 
+
                     <li>
+
                         <a href="contact.html">
                             Get in Touch
                         </a>
+
                     </li>
+
 
                 </ul>
 
@@ -512,30 +607,34 @@
         </div>
 
 
-
-        <!-- FOOTER BOTTOM -->
+        <!-- =================================================
+             FOOTER BOTTOM
+             ================================================= -->
 
         <div class="footer-bottom">
 
             <span>
+
                 © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
+
             </span>
 
         </div>
+
 
     </div>
 
 </footer>
 
 
-
 <!-- =====================================================
      JAVASCRIPT
-===================================================== -->
+     ===================================================== -->
 
 <script src="main.js"></script>
+
 
 <script
     type="module"

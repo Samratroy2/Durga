@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        About the Puja | Roy Bari
+    </title>
+
+    <meta
+        name="description"
+        content="Discover the idol makers, rituals, old photographs, newspaper articles, and family memories of the Roy Bari Durga Puja."
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <!-- =====================================================
+         ABOUT PAGE LIGHTBOX CSS
+         ===================================================== -->
+
+    <style>
+
+        /* =====================================================
+           IMAGE BUTTON
+           ===================================================== */
+
+        .about-image-button {
+
+            display: block;
+
+            width: 100%;
+
+            padding: 0;
+
+            margin: 0;
+
+            border: 0;
+
+            background: transparent;
+
+            cursor: zoom-in;
+
+            text-align: left;
+
+            overflow: hidden;
+
+        }
+
+
+        .about-image-button img {
+
+            display: block;
+
+            width: 100%;
+
+            height: auto;
+
+            transition:
+                transform 0.35s ease,
+                opacity 0.35s ease;
+
+        }
+
+
+        .about-image-button:hover img {
+
+            transform: scale(1.025);
+
+            opacity: 0.92;
+
+        }
+
+
+        /* =====================================================
+           IMAGE WRAPPERS
+           ===================================================== */
+
+        .archive-image-wrap {
+
+            width: 100%;
+
+            overflow: hidden;
+
+            background: #eee7d9;
+
+        }
+
+
+        .archive-image {
+
+            display: block;
+
+            width: 100%;
+
+            min-height: 220px;
+
+            max-height: 500px;
+
+            object-fit: cover;
+
+        }
+
+
+        .newspaper-image-wrap {
+
+            width: 100%;
+
+            overflow: hidden;
+
+            background: #eee7d9;
+
+        }
+
+
+        .newspaper-image {
+
+            display: block;
+
+            width: 100%;
+
+            max-height: 650px;
+
+            object-fit: contain;
+
+        }
+
+
+        /* =====================================================
+           LIGHTBOX
+           ===================================================== */
+
+        .about-lightbox {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 99999;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+        }
+
+
+        .about-lightbox.is-open {
+
+            display: flex;
+
+        }
+
+
+        .about-lightbox-backdrop {
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                rgba(0, 0, 0, 0.88);
+
+            cursor: zoom-out;
+
+        }
+
+
+        .about-lightbox-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: min(
+                96vw,
+                1400px
+            );
+
+            height: min(
+                94vh,
+                1000px
+            );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            pointer-events: none;
+
+        }
+
+
+        .about-lightbox-content img {
+
+            pointer-events: auto;
+
+            display: block;
+
+            max-width: 94vw;
+
+            max-height: 84vh;
+
+            width: auto;
+
+            height: auto;
+
+            object-fit: contain;
+
+            border-radius: 4px;
+
+            box-shadow:
+                0 20px 70px
+                rgba(0, 0, 0, 0.5);
+
+            background: #fff;
+
+        }
+
+
+        /* =====================================================
+           CLOSE BUTTON
+           ===================================================== */
+
+        .about-lightbox-close {
+
+            position: fixed;
+
+            top: 18px;
+
+            right: 22px;
+
+            z-index: 5;
+
+            width: 46px;
+
+            height: 46px;
+
+            border: 0;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, 0.95);
+
+            color: #241b15;
+
+            font-size: 32px;
+
+            line-height: 1;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            pointer-events: auto;
+
+        }
+
+
+        .about-lightbox-close:hover {
+
+            background: #fff;
+
+            transform: scale(1.05);
+
+        }
+
+
+        /* =====================================================
+           CAPTION
+           ===================================================== */
+
+        .about-lightbox-caption {
+
+            margin-top: 12px;
+
+            max-width: 90vw;
+
+            color: #fff;
+
+            font-size: 14px;
+
+            text-align: center;
+
+            pointer-events: none;
+
+        }
+
+
+        /* =====================================================
+           PREVIOUS / NEXT
+           ===================================================== */
+
+        .about-lightbox-prev,
+        .about-lightbox-next {
+
+            position: fixed;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            z-index: 5;
+
+            width: 48px;
+
+            height: 64px;
+
+            border: 0;
+
+            border-radius: 6px;
+
+            background:
+                rgba(255, 255, 255, 0.90);
+
+            color: #241b15;
+
+            font-size: 42px;
+
+            line-height: 1;
+
+            cursor: pointer;
+
+            pointer-events: auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .about-lightbox-prev {
+
+            left: 18px;
+
+        }
+
+
+        .about-lightbox-next {
+
+            right: 18px;
+
+        }
+
+
+        .about-lightbox-prev:hover,
+        .about-lightbox-next:hover {
+
+            background: #fff;
+
+        }
+
+
+        /* =====================================================
+           PREVENT BACKGROUND SCROLL
+           ===================================================== */
+
+        body.about-lightbox-open {
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .about-lightbox {
+
+                padding: 10px;
+
+            }
+
+
+            .about-lightbox-content {
+
+                width: 100%;
+
+                height: 92vh;
+
+            }
+
+
+            .about-lightbox-content img {
+
+                max-width: 96vw;
+
+                max-height: 78vh;
+
+            }
+
+
+            .about-lightbox-close {
+
+                top: 10px;
+
+                right: 10px;
+
+                width: 42px;
+
+                height: 42px;
+
+                font-size: 28px;
+
+            }
+
+
+            .about-lightbox-prev,
+            .about-lightbox-next {
+
+                width: 38px;
+
+                height: 52px;
+
+                font-size: 32px;
+
+            }
+
+
+            .about-lightbox-prev {
+
+                left: 7px;
+
+            }
+
+
+            .about-lightbox-next {
+
+                right: 7px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
+<header class="site-header">
+
+    <nav class="nav">
+
+        <a
+            href="index.html"
+            class="brand"
+        >
+
+            ROY BARI
+
+            <span>
+                Est. 1671 · Nohari
+            </span>
+
+        </a>
+
+
+        <button
+            type="button"
+            class="nav-toggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+
+            <li>
+                <a
+                    href="about.html"
+                    class="active"
+                    aria-current="page"
+                >
+                    About the Puja
+                </a>
+            </li>
+
+
+            <li>
+                <a href="family-tree.html">
+                    Family Tree
+                </a>
+            </li>
+
+
+            <li>
+                <a href="gallery.html">
+                    Gallery
+                </a>
+            </li>
+
+
+            <li>
+                <a href="events.html">
+                    Events
+                </a>
+            </li>
+
+
+            <li>
+                <a href="visit.html">
+                    Visit
+                </a>
+            </li>
+
+
+            <li>
+                <a href="contact.html">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+
+<section class="hero about-hero">
+
+    <div class="hero-inner">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                The Story Behind the Puja
+            </div>
+
+
+            <h1>
+
+                People,
+                <br>
+                Rituals &amp; Memories
+
+            </h1>
+
+
+            <p class="tagline">
+
+                The craftsmen who shape the Goddess,
+                the rituals that are carefully observed,
+                photographs from earlier generations,
+                newspaper records, and memories preserved
+                in the family's own words.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PAGE INTRODUCTION
+     ===================================================== -->
+
+<section class="about-intro">
+
+    <div class="container">
+
+        <div class="section-head center">
+
+            <div class="eyebrow">
+                About the Puja
+            </div>
+
+
+            <h2>
+                A tradition carried by many hands
+            </h2>
+
+
+            <p class="lead">
+
+                The Roy Bari Durga Puja is a living
+                tradition. Its continuity comes not
+                only from rituals, but also from the
+                craftsmen, family members, photographs,
+                memories, newspaper records, and stories
+                passed from one generation to the next.
+
+            </p>
+
+        </div>
+
+
+        <nav
+            class="about-section-nav"
+            aria-label="About page sections"
+        >
+
+            <a
+                href="#idol-makers"
+                class="pill"
+            >
+                Idol Makers
+            </a>
+
+
+            <a
+                href="#rituals"
+                class="pill"
+            >
+                Rituals
+            </a>
+
+
+            <a
+                href="#old-pictures"
+                class="pill"
+            >
+                Old Pictures
+            </a>
+
+
+            <a
+                href="#newspaper-articles"
+                class="pill"
+            >
+                Newspaper Articles
+            </a>
+
+
+            <a
+                href="#their-words"
+                class="pill"
+            >
+                Family Memories
+            </a>
+
+        </nav>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     01 · IDOL MAKERS
+     ===================================================== -->
+
+<section
+    id="idol-makers"
+    class="about-section section-alt"
+>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                01 · The Idol Makers
+            </div>
+
+
+            <h2>
+                The Hands Behind the Goddess
+            </h2>
+
+
+            <p class="lead">
+
+                The making of the Durga idol is itself
+                part of the Puja tradition. From the
+                first framework to the final decoration,
+                each stage depends on the skill and
+                experience of the craftsmen.
+
+            </p>
+
+        </div>
+
+
+        <div class="maker-introduction">
+
+            <div class="maker-history">
+
+                <div class="eyebrow">
+                    A Craft Passed Down
+                </div>
+
+
+                <h3>
+                    Generations of craftsmanship
+                </h3>
+
+
+                <p>
+
+                    The idol associated with the Roy Bari
+                    Puja has been shaped through a
+                    continuing relationship between the
+                    family and its craftsmen.
+
+                </p>
+
+
+                <p>
+
+                    Bamboo, straw, clay, sculpting,
+                    painting and decoration each require
+                    a different stage of careful work.
+
+                </p>
+
+
+                <p>
+
+                    The finished Goddess carries the
+                    visual character of the Roy Bari
+                    tradition while also reflecting the
+                    individual skill of the present maker.
+
+                </p>
+
+            </div>
+
+
+            <div class="current-maker-summary">
+
+                <div class="eyebrow" style="margin-top: 20px;">
+                    Current Idol Maker
+                </div>
+
+
+                <h3 id="current-maker-name">
+                    Loading...
+                </h3>
+
+
+                <p id="current-maker-description">
+                    Loading current idol maker information...
+                </p>
+
+
+                <div
+                    class="small-caps maker-location"
+                    id="current-maker-location"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="idol-maker-feature"
+            class="maker-feature"
+        >
+
+            <div class="maker-feature-loading">
+
+                <div class="loading-spinner"></div>
+
+                <p>
+                    Loading current idol maker...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="section-head maker-gallery-heading">
+
+            <div class="eyebrow">
+                Craft &amp; Creation
+            </div>
+
+
+            <h3>
+                The Makers at Work
+            </h3>
+
+
+            <p class="lead">
+
+                Photographs of the craftsmen and the
+                different stages of idol making.
+
+            </p>
+
+        </div>
+
+
+        <div
+            class="grid grid-3 maker-gallery"
+            id="idol-maker-gallery"
+        >
+
+            <div class="card">
+
+                <p class="lead">
+                    Loading photographs...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     02 · RITUALS
+     ===================================================== -->
+
+<section
+    id="rituals"
+    class="about-section"
+>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                02 · Rituals &amp; Traditions
+            </div>
+
+
+            <h2>
+                What Happens During the Puja
+            </h2>
+
+
+            <p class="lead">
+
+                Explore the important rituals of the
+                Roy Bari Puja and understand the meaning
+                behind the traditions.
+
+            </p>
+
+        </div>
+
+
+        <div class="about-note">
+
+            <span class="about-note-icon">
+                ✦
+            </span>
+
+
+            <p>
+
+                The complete Puja calendar and exact
+                event timings are maintained on the
+
+                <a href="events.html">
+                    Events page
+                </a>.
+
+                This section focuses on the meaning,
+                history and tradition behind important
+                rituals.
+
+            </p>
+
+        </div>
+
+
+        <div
+            id="ritual-accordion"
+            class="ritual-list"
+        >
+
+            <div class="calendar-loading">
+
+                <div class="loading-spinner"></div>
+
+                <p>
+                    Loading rituals...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     03 · OLD PICTURES
+     ===================================================== -->
+
+<section
+    id="old-pictures"
+    class="about-section section-alt"
+>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                03 · From the Old Albums
+            </div>
+
+
+            <h2>
+                Photographs From Another Time
+            </h2>
+
+
+            <p class="lead">
+
+                Historical photographs preserved by the
+                family, showing earlier Puja celebrations,
+                the house, the idol, and generations of
+                family members.
+
+            </p>
+
+        </div>
+
+
+        <div
+            class="grid grid-3 old-photo-grid"
+            id="old-photo-grid"
+        >
+
+            <div class="card">
+
+                <p class="lead">
+                    Loading old photographs...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     04 · NEWSPAPER ARTICLES
+     ===================================================== -->
+
+<section
+    id="newspaper-articles"
+    class="about-section newspaper-section"
+>
+
+    <div class="container">
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                04 · From the Newspapers
+            </div>
+
+
+            <h2>
+                The Puja in the Press
+            </h2>
+
+
+            <p class="lead">
+
+                Newspaper reports, magazine features,
+                and published articles that have documented
+                the Roy Bari Durga Puja, its traditions,
+                and its place in the history of the region.
+
+            </p>
+
+        </div>
+
+
+        <div
+            id="newspaper-grid"
+            class="newspaper-layout"
+        >
+
+            <div class="newspaper-loading">
+
+                <div class="loading-spinner"></div>
+
+                <p>
+                    Loading newspaper articles...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="archive-note">
+
+            <span>
+                Newspaper Archive
+            </span>
+
+
+            <p>
+
+                Newspaper clippings and published
+                articles are preserved as part of the
+                Roy Bari family archive.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     05 · FAMILY MEMORIES
+     ===================================================== -->
+
+<section
+    id="their-words"
+    class="about-section section-alt"
+>
+
+    <div class="container">
+
+        <div class="section-head center">
+
+            <div class="eyebrow">
+                05 · Family Memories
+            </div>
+
+
+            <h2>
+                In Their Own Words
+            </h2>
+
+
+            <p class="lead">
+
+                Memories, recollections, stories,
+                and personal words shared by members
+                of the Roy Bari family.
+
+            </p>
+
+        </div>
+
+
+        <div
+            class="grid grid-3 memory-grid"
+            id="memory-grid"
+        >
+
+            <div class="card">
+
+                <p class="lead">
+                    Loading family memories...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <p class="small-caps center-text mt-lg">
+
+            Have a memory, photograph,
+            letter, or story to contribute?
+
+            <a
+                href="contact.html"
+                class="memory-contact-link"
+            >
+                Get in touch with the family.
+            </a>
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <div>
+
+                <h5>
+                    Roy Bari
+                </h5>
+
+
+                <p>
+
+                    V8J4+5FF,
+                    Chhota Nohari,
+                    West Bengal 721121
+
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h5>
+                    Explore
+                </h5>
+
+
+                <ul>
+
+                    <li>
+                        <a href="about.html">
+                            About the Puja
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="family-tree.html">
+                            Family Tree
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="gallery.html">
+                            Gallery
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="events.html">
+                            Events
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h5>
+                    Visit
+                </h5>
+
+
+                <ul>
+
+                    <li>
+                        <a href="visit.html">
+                            Location &amp; Directions
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="gallery.html">
+                            Gallery
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h5>
+                    Contact
+                </h5>
+
+
+                <ul>
+
+                    <li>
+                        <a href="contact.html">
+                            Get in Touch
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+
+                © 2026 Roy Bari.
+                A family archive,
+                not a commercial event.
+
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+<!-- =====================================================
+     IMAGE LIGHTBOX
+     ===================================================== -->
+
+<div
+    id="about-lightbox"
+    class="about-lightbox"
+    aria-hidden="true"
+>
+
+    <div
+        class="about-lightbox-backdrop"
+        id="about-lightbox-backdrop"
+    ></div>
+
+
+    <div
+        class="about-lightbox-content"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Full size image"
+    >
+
+        <button
+            type="button"
+            id="about-lightbox-close"
+            class="about-lightbox-close"
+            aria-label="Close image"
+        >
+            ×
+        </button>
+
+
+        <button
+            type="button"
+            id="about-lightbox-prev"
+            class="about-lightbox-prev"
+            aria-label="Previous image"
+            hidden
+        >
+            ‹
+        </button>
+
+
+        <img
+            id="about-lightbox-image"
+            src=""
+            alt=""
+        >
+
+
+        <button
+            type="button"
+            id="about-lightbox-next"
+            class="about-lightbox-next"
+            aria-label="Next image"
+            hidden
+        >
+            ›
+        </button>
+
+
+        <div
+            id="about-lightbox-caption"
+            class="about-lightbox-caption"
+        ></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script src="main.js"></script>
+
+
+<script
+    type="module"
+    src="about.js"
+></script>
+
+
+</body>
+
+</html>

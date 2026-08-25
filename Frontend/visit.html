@@ -3,23 +3,26 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>
-    Roy Bari Durga puja
-</title>
+    <title>
+        Visit | Roy Bari Durga Puja
+    </title>
 
-<meta
-    name="description"
-    content="Location, directions, puja timings, and visitor guidelines for the ROY Bari Durga puja."
->
+    <meta
+        name="description"
+        content="Location, directions, map, parking information, and visitor guidelines for the Roy Bari Durga Puja."
+    >
 
-<link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
@@ -35,6 +38,11 @@
 
     <nav class="nav">
 
+
+        <!-- =================================================
+             BRAND
+             ================================================= -->
+
         <a
             href="index.html"
             class="brand"
@@ -49,75 +57,95 @@
         </a>
 
 
+        <!-- =================================================
+             MOBILE MENU
+             ================================================= -->
+
         <button
+            type="button"
             class="nav-toggle"
-            aria-label="Toggle menu"
+            aria-label="Toggle navigation"
             aria-expanded="false"
         >
+
             ☰
+
         </button>
 
 
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
         <ul class="nav-links">
 
+
             <li>
+
                 <a href="index.html">
                     Home
                 </a>
+
             </li>
 
+
             <li>
-                <a href="history.html">
-                    The House
+
+                <a href="about.html">
+                    About the Puja
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="family-tree.html">
                     Family Tree
                 </a>
+
             </li>
 
-            <li>
-                <a href="puja.html">
-                    The puja
-                </a>
-            </li>
 
             <li>
+
                 <a href="gallery.html">
                     Gallery
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="events.html">
                     Events
                 </a>
+
             </li>
 
-            <li>
-                <a href="archive.html">
-                    Archive
-                </a>
-            </li>
-
-            
 
             <li>
+
                 <a
                     href="visit.html"
                     class="active"
+                    aria-current="page"
                 >
                     Visit
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="contact.html">
                     Contact
                 </a>
+
             </li>
+
 
         </ul>
 
@@ -137,21 +165,25 @@
 
     <div class="hero-inner">
 
+
         <div class="eyebrow">
-            Plan your visit
+            Plan Your Visit
         </div>
+
 
         <h1>
             Come to the Courtyard
         </h1>
 
+
         <p class="tagline">
 
-            The family welcomes visitors during
-            the main puja days — a few notes
-            before you arrive.
+            Find the Roy Bari, plan your route,
+            and learn a few things to know before
+            visiting the family home and Puja courtyard.
 
         </p>
+
 
     </div>
 
@@ -169,20 +201,28 @@
         <div class="grid grid-2">
 
 
+            <!-- =================================================
+                 LOCATION INFORMATION
+                 ================================================= -->
+
             <div>
 
                 <div class="eyebrow">
                     Location
                 </div>
 
+
                 <h2>
-                    Where to find us
+                    Where to Find Us
                 </h2>
 
 
                 <table class="info-table">
 
                     <tbody>
+
+
+                        <!-- ADDRESS -->
 
                         <tr>
 
@@ -197,6 +237,8 @@
                         </tr>
 
 
+                        <!-- RAIL 1 -->
+
                         <tr>
 
                             <th>
@@ -210,10 +252,12 @@
                         </tr>
 
 
+                        <!-- RAIL 2 -->
+
                         <tr>
 
                             <th>
-                                Nearest Rail
+                                Alternative Rail
                             </th>
 
                             <td id="rail-two">
@@ -222,6 +266,8 @@
 
                         </tr>
 
+
+                        <!-- PARKING -->
 
                         <tr>
 
@@ -235,14 +281,18 @@
 
                         </tr>
 
+
                     </tbody>
 
                 </table>
 
+
             </div>
 
 
-            <!-- MAP -->
+            <!-- =================================================
+                 MAP
+                 ================================================= -->
 
             <div>
 
@@ -250,16 +300,21 @@
                     Map
                 </div>
 
+
                 <h2>
-                    Getting here
+                    Getting Here
                 </h2>
 
 
                 <div class="map-container">
 
+
                     <!--
-                    Replace YOUR_GOOGLE_MAPS_EMBED_URL
-                    with your actual Google Maps embed URL.
+                        Replace this URL with the
+                        Google Maps Embed URL.
+
+                        visit.js can also update this
+                        iframe from Firebase.
                     -->
 
                     <iframe
@@ -272,54 +327,14 @@
                     >
                     </iframe>
 
+
                 </div>
 
+
             </div>
 
 
         </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     puja TIMINGS
-     ===================================================== -->
-
-<section
-    class="section-alt"
-    id="timings"
->
-
-    <div class="container">
-
-
-        <div class="section-head">
-
-            <div class="eyebrow">
-                puja timings
-            </div>
-
-            <h2>
-                When to come
-            </h2>
-
-        </div>
-
-
-        <div
-            id="visit-timings"
-            class="visit-timings"
-        >
-
-            <p class="small-caps">
-                Loading puja timings...
-            </p>
-
-        </div>
-
 
     </div>
 
@@ -330,23 +345,44 @@
      VISITOR GUIDE
      ===================================================== -->
 
-<section id="guide">
+<section
+    id="guide"
+    class="section-alt"
+>
 
     <div class="container">
 
 
         <div class="section-head">
 
+
             <div class="eyebrow">
-                Visitor guide
+                Visitor Guide
             </div>
 
+
             <h2>
-                A few things to know before you come
+                A Few Things to Know
+                Before You Come
             </h2>
+
+
+            <p class="lead">
+
+                The Roy Bari is a family home as well
+                as a place of worship. Please help us
+                preserve the atmosphere, privacy, and
+                traditions of the Puja.
+
+            </p>
+
 
         </div>
 
+
+        <!-- =================================================
+             FIREBASE VISITOR GUIDE
+             ================================================= -->
 
         <div
             class="grid grid-3"
@@ -354,8 +390,111 @@
         >
 
             <p class="small-caps">
+
                 Loading visitor guide...
+
             </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     EVENTS LINK
+     ===================================================== -->
+
+<section>
+
+    <div class="container">
+
+
+        <div class="section-head center">
+
+
+            <div class="eyebrow">
+                Puja Calendar
+            </div>
+
+
+            <h2>
+                See the Puja Events
+            </h2>
+
+
+            <p class="lead">
+
+                All Puja dates, rituals, Directions,
+                gatherings, and upcoming events
+                are maintained on the Events page.
+
+            </p>
+
+
+            <a
+                href="events.html"
+                class="btn btn-solid"
+                style="margin-top:20px;"
+            >
+
+                View All Events
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT CTA
+     ===================================================== -->
+
+<section class="section-alt">
+
+    <div class="container">
+
+
+        <div class="section-head center">
+
+
+            <div class="eyebrow">
+                Need More Information?
+            </div>
+
+
+            <h2>
+                Planning a Visit?
+            </h2>
+
+
+            <p class="lead">
+
+                For questions about visiting,
+                accessibility, photography, or
+                special arrangements, please
+                contact the family.
+
+            </p>
+
+
+            <a
+                href="contact.html"
+                class="btn btn-solid"
+                style="margin-top:20px;"
+            >
+
+                Contact the Family
+
+            </a>
+
 
         </div>
 
@@ -377,21 +516,32 @@
         <div class="footer-grid">
 
 
+            <!-- =================================================
+                 ROY BARI
+                 ================================================= -->
+
             <div>
 
                 <h5>
-                    ROY Bari
+                    Roy Bari
                 </h5>
 
+
                 <p>
+
                     V8J4+5FF,
                     Chhota Nohari,
                     West Bengal,
                     721121
+
                 </p>
 
             </div>
 
+
+            <!-- =================================================
+                 EXPLORE
+                 ================================================= -->
 
             <div>
 
@@ -399,42 +549,54 @@
                     Explore
                 </h5>
 
+
                 <ul>
 
-                    <li>
-                        <a href="history.html">
-                            The House
-                        </a>
-                    </li>
 
                     <li>
+
+                        <a href="about.html">
+                            About the Puja
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
                         <a href="family-tree.html">
                             Family Tree
                         </a>
+
                     </li>
 
+
                     <li>
-                        <a href="puja.html">
-                            The puja
+
+                        <a href="gallery.html">
+                            Gallery
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="events.html">
                             Events
                         </a>
+
                     </li>
 
-                    <li>
-                        <a href="archive.html">
-                            Archive
-                        </a>
-                    </li>
 
                 </ul>
 
             </div>
 
+
+            <!-- =================================================
+                 VISIT
+                 ================================================= -->
 
             <div>
 
@@ -442,26 +604,39 @@
                     Visit
                 </h5>
 
+
                 <ul>
 
+
                     <li>
-                        <a href="visit.html">
-                            Location &amp; Timings
+
+                        <a
+                            href="visit.html"
+                            aria-current="page"
+                        >
+                            Location &amp; Directions
                         </a>
+
                     </li>
 
-                    
 
                     <li>
+
                         <a href="gallery.html">
                             Gallery
                         </a>
+
                     </li>
+
 
                 </ul>
 
             </div>
 
+
+            <!-- =================================================
+                 CONTACT
+                 ================================================= -->
 
             <div>
 
@@ -469,13 +644,18 @@
                     Contact
                 </h5>
 
+
                 <ul>
 
+
                     <li>
+
                         <a href="contact.html">
                             Get in Touch
                         </a>
+
                     </li>
+
 
                 </ul>
 
@@ -485,12 +665,18 @@
         </div>
 
 
+        <!-- =================================================
+             FOOTER BOTTOM
+             ================================================= -->
+
         <div class="footer-bottom">
 
             <span>
-                © 2026 ROY Bari.
+
+                © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
+
             </span>
 
         </div>
@@ -506,6 +692,7 @@
      ===================================================== -->
 
 <script src="main.js"></script>
+
 
 <script
     type="module"
