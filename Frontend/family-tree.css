@@ -1,6 +1,6 @@
 /* =========================================================
    ROY BARI — FAMILY TREE
-   TREE COMPONENT ONLY
+   TREE COMPONENT CSS
 
    style.css handles:
    - Header
@@ -11,7 +11,7 @@
    - Footer
    - Global colors / layout
 
-   This file handles ONLY:
+   This file handles:
    - Tree controls
    - Search
    - Zoom
@@ -19,7 +19,8 @@
    - Generations
    - Person cards
    - Connectors
-   - Tree modals
+   - Modals
+   - Pan
    ========================================================= */
 
 
@@ -56,6 +57,8 @@
 
 .family-tree-events-section .search-field {
 
+    position: relative;
+
     display: flex;
 
     align-items: center;
@@ -76,17 +79,40 @@
 
     border-radius: 0;
 
-}
+    outline: none !important;
 
-
-.family-tree-events-section .search-field:focus-within {
-
-    border-color: var(--gold);
+    box-shadow: none !important;
 
 }
 
 
-.family-tree-events-section .search-icon {
+/* =========================================================
+   SEARCH FOCUS
+   IMPORTANT:
+   No golden focus border.
+   ========================================================= */
+
+.family-tree-events-section
+.search-field:focus-within {
+
+    border-color:
+        var(--border-strong);
+
+    outline:
+        none !important;
+
+    box-shadow:
+        none !important;
+
+}
+
+
+/* =========================================================
+   SEARCH ICON
+   ========================================================= */
+
+.family-tree-events-section
+.search-icon {
 
     flex-shrink: 0;
 
@@ -94,6 +120,10 @@
 
 }
 
+
+/* =========================================================
+   SEARCH INPUT
+   ========================================================= */
 
 .family-tree-events-section
 .search-field input {
@@ -108,7 +138,9 @@
 
     border: 0;
 
-    outline: 0;
+    outline: none !important;
+
+    box-shadow: none !important;
 
     background: transparent;
 
@@ -121,10 +153,244 @@
 }
 
 
+/* =========================================================
+   SEARCH INPUT FOCUS
+   ========================================================= */
+
+.family-tree-events-section
+.search-field input:focus {
+
+    border: 0;
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+}
+
+
+/* =========================================================
+   SEARCH PLACEHOLDER
+   ========================================================= */
+
 .family-tree-events-section
 .search-field input::placeholder {
 
-    color: var(--muted);
+    color:
+        var(--muted);
+
+}
+
+
+/* =========================================================
+   SEARCH RESULTS
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-results {
+
+    position: absolute;
+
+    top: calc(100% + 8px);
+
+    left: 0;
+
+    right: 0;
+
+    z-index: 9999;
+
+    display: none;
+
+    max-height: 320px;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border:
+        1px solid
+        #dfd3c5;
+
+    border-radius:
+        10px;
+
+    box-shadow:
+        0 12px 30px
+        rgba(
+            60,
+            40,
+            25,
+            0.15
+        );
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result {
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 4px;
+
+    padding:
+        14px
+        16px;
+
+    border: none;
+
+    border-bottom:
+        1px solid
+        #eee5dc;
+
+    background: #fff;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT LAST CHILD
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result:last-child {
+
+    border-bottom:
+        none;
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT HOVER
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result:hover {
+
+    background:
+        #f7f0e8;
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT FOCUS
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result:focus {
+
+    outline:
+        none;
+
+    background:
+        #f2e7dc;
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT NAME
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result-name {
+
+    display: block;
+
+    color:
+        #4b3427;
+
+    font-family:
+        "Tiro Bangla",
+        Georgia,
+        serif;
+
+    font-size:
+        16px;
+
+    font-weight:
+        600;
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT FATHER
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result-father {
+
+    display: block;
+
+    color:
+        #8b7767;
+
+    font-family:
+        "Mukta",
+        sans-serif;
+
+    font-size:
+        12px;
+
+    line-height:
+        1.5;
+
+}
+
+
+/* =========================================================
+   SEARCH RESULT FATHER STRONG
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-result-father strong {
+
+    color:
+        #6f4d32;
+
+    font-weight:
+        700;
+
+}
+
+
+/* =========================================================
+   SEARCH NO RESULT
+   ========================================================= */
+
+.family-tree-events-section
+.family-search-no-result {
+
+    padding:
+        16px;
+
+    color:
+        #8b7767;
+
+    text-align:
+        center;
+
+    font-size:
+        13px;
 
 }
 
@@ -133,7 +399,8 @@
    ZOOM CONTROLS
    ========================================================= */
 
-.family-tree-events-section .zoom-group {
+.family-tree-events-section
+.zoom-group {
 
     display: flex;
 
@@ -143,37 +410,55 @@
 
     overflow: hidden;
 
-    background: var(--paper);
+    background:
+        var(--paper);
 
-    border: 1px solid var(--border-strong);
+    border:
+        1px solid
+        var(--border-strong);
 
-    border-radius: 0;
+    border-radius:
+        0;
 
 }
 
 
+/* =========================================================
+   ZOOM BUTTONS
+   ========================================================= */
+
 .family-tree-events-section
 .zoom-group button {
 
-    width: 44px;
+    width:
+        44px;
 
-    height: 40px;
+    height:
+        40px;
 
-    padding: 0;
+    padding:
+        0;
 
-    border: 0;
+    border:
+        0;
 
-    background: transparent;
+    background:
+        transparent;
 
-    color: var(--maroon);
+    color:
+        var(--maroon);
 
-    font-family: var(--sans);
+    font-family:
+        var(--sans);
 
-    font-size: 18px;
+    font-size:
+        18px;
 
-    font-weight: 600;
+    font-weight:
+        600;
 
-    cursor: pointer;
+    cursor:
+        pointer;
 
     transition:
         background 0.2s ease,
@@ -181,6 +466,10 @@
 
 }
 
+
+/* =========================================================
+   ZOOM BUTTON HOVER
+   ========================================================= */
 
 .family-tree-events-section
 .zoom-group button:hover {
@@ -193,10 +482,15 @@
             0.12
         );
 
-    color: var(--gold);
+    color:
+        var(--gold);
 
 }
 
+
+/* =========================================================
+   ZOOM BUTTON ACTIVE
+   ========================================================= */
 
 .family-tree-events-section
 .zoom-group button:active {
@@ -212,10 +506,28 @@
 }
 
 
+/* =========================================================
+   ZOOM BUTTON FOCUS
+   ========================================================= */
+
+.family-tree-events-section
+.zoom-group button:focus {
+
+    outline:
+        none;
+
+}
+
+
+/* =========================================================
+   RESET ZOOM
+   ========================================================= */
+
 .family-tree-events-section
 .zoom-group #resetZoom {
 
-    width: 70px;
+    width:
+        70px;
 
     border-left:
         1px solid
@@ -244,7 +556,8 @@
 .family-tree-events-section
 .show-fathers-button {
 
-    height: 42px;
+    height:
+        42px;
 
     padding:
         0 19px;
@@ -288,6 +601,10 @@
 }
 
 
+/* =========================================================
+   SHOW FATHERS HOVER
+   ========================================================= */
+
 .family-tree-events-section
 .show-fathers-button:hover {
 
@@ -304,10 +621,24 @@
 
 
 /* =========================================================
+   SHOW FATHERS FOCUS
+   ========================================================= */
+
+.family-tree-events-section
+.show-fathers-button:focus {
+
+    outline:
+        none;
+
+}
+
+
+/* =========================================================
    STATUS
    ========================================================= */
 
-.family-tree-events-section .status {
+.family-tree-events-section
+.status {
 
     position:
         relative;
@@ -354,7 +685,8 @@
    TREE WRAPPER
    ========================================================= */
 
-.family-tree-events-section .tree-wrapper {
+.family-tree-events-section
+.tree-wrapper {
 
     position:
         relative;
@@ -408,7 +740,7 @@
 
 
 /* =========================================================
-   PAN STATE
+   TREE WRAPPER PAN
    ========================================================= */
 
 .family-tree-events-section
@@ -439,6 +771,10 @@
 }
 
 
+/* =========================================================
+   TREE SCROLLBAR TRACK
+   ========================================================= */
+
 .family-tree-events-section
 .tree-wrapper::-webkit-scrollbar-track {
 
@@ -453,6 +789,10 @@
 }
 
 
+/* =========================================================
+   TREE SCROLLBAR THUMB
+   ========================================================= */
+
 .family-tree-events-section
 .tree-wrapper::-webkit-scrollbar-thumb {
 
@@ -465,6 +805,10 @@
 }
 
 
+/* =========================================================
+   TREE SCROLLBAR THUMB HOVER
+   ========================================================= */
+
 .family-tree-events-section
 .tree-wrapper::-webkit-scrollbar-thumb:hover {
 
@@ -476,19 +820,26 @@
 
 /* =========================================================
    TREE STAGE
+   =========================================================
 
    IMPORTANT:
-   JavaScript should apply:
 
-   transform: scale(...)
+   The SVG connector layer and family tree
+   are both inside this element.
 
-   to #treeStage.
+   JavaScript scales the entire stage.
 
-   This makes the cards + connectors + generations
-   zoom together.
+   Therefore:
+
+       cards
+       connectors
+       generation labels
+
+   all remain synchronized during zoom.
    ========================================================= */
 
-.family-tree-events-section .tree-stage {
+.family-tree-events-section
+.tree-stage {
 
     position:
         relative;
@@ -517,16 +868,7 @@
 
 
 /* =========================================================
-   TREE ZOOM SUPPORT
-
-   If JS adds a zoom value using CSS variable,
-   this will handle it automatically.
-
-   Example:
-   treeStage.style.setProperty('--tree-scale', '1.2');
-
-   If JS uses transform directly, this rule does
-   not interfere with it.
+   TREE STAGE ZOOM
    ========================================================= */
 
 .family-tree-events-section
@@ -542,7 +884,8 @@
    SVG CONNECTOR LAYER
    ========================================================= */
 
-.family-tree-events-section .tree-lines {
+.family-tree-events-section
+.tree-lines {
 
     position:
         absolute;
@@ -572,7 +915,7 @@
 
 
 /* =========================================================
-   PARENT → CHILD LINES
+   TREE CONNECTOR
    ========================================================= */
 
 .family-tree-events-section
@@ -647,7 +990,8 @@
    FAMILY TREE
    ========================================================= */
 
-.family-tree-events-section .family-tree {
+.family-tree-events-section
+.family-tree {
 
     position:
         relative;
@@ -694,6 +1038,10 @@
 
 }
 
+
+/* =========================================================
+   LAST GENERATION
+   ========================================================= */
 
 .family-tree-events-section
 .generation-row:last-child {
@@ -841,7 +1189,7 @@
 
 
 /* =========================================================
-   PEOPLE IN GENERATION
+   GENERATION PEOPLE
    ========================================================= */
 
 .family-tree-events-section
@@ -892,17 +1240,6 @@
 
 /* =========================================================
    PERSON CARD
-
-   IMPORTANT:
-   DO NOT put scale() here.
-
-   The entire #treeStage is zoomed so that:
-   - cards
-   - connectors
-   - generation labels
-   - spouse lines
-
-   all remain together.
    ========================================================= */
 
 .family-tree-events-section
@@ -1050,6 +1387,40 @@
 
 
 /* =========================================================
+   SEARCH SELECTED
+   ========================================================= */
+
+.family-tree-events-section
+.person-card.search-selected {
+
+    border-color:
+        var(--gold);
+
+    box-shadow:
+        0
+        0
+        0
+        3px
+        rgba(
+            181,
+            138,
+            69,
+            0.20
+        ),
+        0
+        14px
+        32px
+        rgba(
+            61,
+            17,
+            23,
+            0.16
+        );
+
+}
+
+
+/* =========================================================
    PERSON NAME
    ========================================================= */
 
@@ -1098,6 +1469,10 @@
 
 }
 
+
+/* =========================================================
+   PERSON YEARS
+   ========================================================= */
 
 .family-tree-events-section
 .person-years {
@@ -1182,10 +1557,9 @@
 
 
 /* =========================================================
-   PERSON MODAL
+   MODAL BACKDROP
    ========================================================= */
 
-.family-tree-events-section
 .person-modal-backdrop {
 
     position:
@@ -1195,7 +1569,7 @@
         0 !important;
 
     z-index:
-        10000 !important;
+        99999 !important;
 
     display:
         none;
@@ -1213,7 +1587,10 @@
         100vh;
 
     padding:
-        25px;
+        20px;
+
+    box-sizing:
+        border-box;
 
     background:
         rgba(
@@ -1224,12 +1601,15 @@
         );
 
     backdrop-filter:
-        blur(4px);
+        blur(5px);
 
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   OPEN MODAL
+   ========================================================= */
+
 .person-modal-backdrop.open {
 
     display:
@@ -1239,21 +1619,20 @@
 
 
 /* =========================================================
-   MODAL
+   MODAL BOX
    ========================================================= */
 
-.family-tree-events-section
 .person-modal {
 
     position:
         relative;
 
     z-index:
-        10001;
+        100000;
 
     width:
         min(
-            430px,
+            480px,
             100%
         );
 
@@ -1263,13 +1642,13 @@
     overflow-y:
         auto;
 
-    padding:
-        35px
-        30px
-        28px;
-
     box-sizing:
         border-box;
+
+    padding:
+        36px
+        32px
+        30px;
 
     background:
         var(--paper);
@@ -1289,18 +1668,21 @@
             0,
             0,
             0,
-            0.30
+            0.35
         );
 
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   FATHERS MODAL
+   ========================================================= */
+
 .fathers-modal {
 
     width:
         min(
-            620px,
+            680px,
             100%
         );
 
@@ -1308,29 +1690,37 @@
 
 
 /* =========================================================
-   MODAL CLOSE
+   CLOSE BUTTON
    ========================================================= */
 
-.family-tree-events-section
 .person-modal-close {
 
     position:
         absolute;
 
     top:
-        10px;
+        12px;
 
     right:
-        12px;
+        14px;
 
     z-index:
         5;
 
     width:
-        35px;
+        34px;
 
     height:
-        35px;
+        34px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
 
     padding:
         0;
@@ -1344,8 +1734,11 @@
     color:
         var(--maroon);
 
+    font-family:
+        var(--sans);
+
     font-size:
-        26px;
+        22px;
 
     line-height:
         1;
@@ -1353,10 +1746,16 @@
     cursor:
         pointer;
 
+    outline:
+        none;
+
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   CLOSE HOVER
+   ========================================================= */
+
 .person-modal-close:hover {
 
     color:
@@ -1366,10 +1765,9 @@
 
 
 /* =========================================================
-   MODAL CONTENT
+   MODAL BODY
    ========================================================= */
 
-.family-tree-events-section
 .person-modal-body {
 
     width:
@@ -1378,100 +1776,12 @@
 }
 
 
-.family-tree-events-section
-.person-modal-body h2 {
-
-    margin:
-        0
-        0
-        7px;
-
-    color:
-        var(--maroon-dark);
-
-    font-family:
-        var(--serif);
-
-    font-size:
-        32px;
-
-    font-weight:
-        600;
-
-    line-height:
-        1.1;
-
-}
-
-
-.family-tree-events-section
-.modal-eyebrow {
-
-    margin:
-        0
-        0
-        7px;
-
-    color:
-        var(--gold);
-
-    font-family:
-        var(--sans);
-
-    font-size:
-        9px;
-
-    font-weight:
-        600;
-
-    letter-spacing:
-        0.15em;
-
-    text-transform:
-        uppercase;
-
-}
-
-
-.family-tree-events-section
-.modal-years {
-
-    margin:
-        0
-        0
-        16px;
-
-    color:
-        var(--muted);
-
-    font-size:
-        11px;
-
-}
-
-
 /* =========================================================
-   MODAL SECTION
+   MODAL EYEBROW
    ========================================================= */
 
-.family-tree-events-section
-.modal-section {
-
-    margin-top:
-        18px;
-
-    padding-top:
-        14px;
-
-    border-top:
-        1px solid
-        var(--border);
-
-}
-
-
-.family-tree-events-section
-.modal-section-label {
+.person-modal-body
+.modal-eyebrow {
 
     margin:
         0
@@ -1491,7 +1801,10 @@
         600;
 
     letter-spacing:
-        0.13em;
+        0.16em;
+
+    line-height:
+        1.4;
 
     text-transform:
         uppercase;
@@ -1499,7 +1812,225 @@
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   MODAL TITLE
+   ========================================================= */
+
+.person-modal-body h2 {
+
+    margin:
+        0
+        0
+        22px;
+
+    color:
+        var(--maroon-dark);
+
+    font-family:
+        var(--serif);
+
+    font-size:
+        38px;
+
+    font-weight:
+        500;
+
+    line-height:
+        1.05;
+
+}
+
+
+/* =========================================================
+   MODAL SECTION
+   ========================================================= */
+
+.person-modal-body
+.modal-section {
+
+    margin-top:
+        22px;
+
+    padding-top:
+        16px;
+
+    border-top:
+        1px solid
+        var(--border);
+
+}
+
+
+/* =========================================================
+   MODAL SECTION LABEL
+   ========================================================= */
+
+.person-modal-body
+.modal-section-label {
+
+    margin:
+        0
+        0
+        12px;
+
+    color:
+        var(--gold);
+
+    font-family:
+        var(--sans);
+
+    font-size:
+        9px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.15em;
+
+    line-height:
+        1.4;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+/* =========================================================
+   PERSON DATA
+   ========================================================= */
+
+.person-modal-body
+.person-data {
+
+    width:
+        100%;
+
+}
+
+
+/* =========================================================
+   DATA ROW
+   ========================================================= */
+
+.person-modal-body
+.data-row {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(
+            110px,
+            0.7fr
+        )
+        minmax(
+            0,
+            1.3fr
+        );
+
+    gap:
+        15px;
+
+    padding:
+        9px
+        0;
+
+    border-bottom:
+        1px solid
+        rgba(
+            100,
+            30,
+            40,
+            0.08
+        );
+
+}
+
+
+/* =========================================================
+   DATA LABEL
+   ========================================================= */
+
+.person-modal-body
+.data-label {
+
+    color:
+        var(--muted);
+
+    font-family:
+        var(--sans);
+
+    font-size:
+        9px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+/* =========================================================
+   DATA VALUE
+   ========================================================= */
+
+.person-modal-body
+.data-value {
+
+    color:
+        var(--text);
+
+    font-family:
+        var(--sans);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.5;
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+/* =========================================================
+   RELATION PERSON
+   ========================================================= */
+
+.person-modal-body
+.relation-person {
+
+    margin:
+        0;
+
+    color:
+        var(--maroon-dark);
+
+    font-family:
+        var(--serif);
+
+    font-size:
+        21px;
+
+    line-height:
+        1.3;
+
+}
+
+
+/* =========================================================
+   CHILDREN LIST
+   ========================================================= */
+
 .person-modal-body ul {
 
     margin:
@@ -1514,26 +2045,77 @@
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   CHILD ITEM
+   ========================================================= */
+
 .person-modal-body li {
 
+    position:
+        relative;
+
     padding:
-        4px 0;
+        7px
+        0
+        7px
+        17px;
 
     color:
         var(--text);
 
+    font-family:
+        var(--serif);
+
     font-size:
-        14px;
+        17px;
 
 }
 
 
-.family-tree-events-section
-.modal-notes {
+/* =========================================================
+   CHILD BULLET
+   ========================================================= */
 
-    margin-top:
-        18px;
+.person-modal-body li::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        0;
+
+    top:
+        15px;
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--gold);
+
+}
+
+
+/* =========================================================
+   FATHERS DESCRIPTION
+   ========================================================= */
+
+.fathers-modal
+.modal-description {
+
+    margin:
+        0
+        0
+        20px;
 
     color:
         var(--muted);
@@ -1542,13 +2124,10 @@
         var(--serif);
 
     font-size:
-        16px;
-
-    font-style:
-        italic;
+        15px;
 
     line-height:
-        1.6;
+        1.5;
 
 }
 
@@ -1557,7 +2136,6 @@
    FATHER RECORD
    ========================================================= */
 
-.family-tree-events-section
 .father-record {
 
     display:
@@ -1567,16 +2145,16 @@
         flex-start;
 
     gap:
-        14px;
+        15px;
 
     width:
         100%;
 
     margin-top:
-        10px;
+        12px;
 
     padding:
-        14px;
+        15px;
 
     box-sizing:
         border-box;
@@ -1591,7 +2169,10 @@
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   FATHER NUMBER
+   ========================================================= */
+
 .father-number {
 
     flex:
@@ -1621,6 +2202,9 @@
     color:
         white;
 
+    font-family:
+        var(--sans);
+
     font-size:
         10px;
 
@@ -1630,7 +2214,10 @@
 }
 
 
-.family-tree-events-section
+/* =========================================================
+   FATHER INFORMATION
+   ========================================================= */
+
 .father-information {
 
     min-width:
@@ -1642,32 +2229,10 @@
 }
 
 
-.family-tree-events-section
-.father-information h3 {
-
-    margin:
-        0;
-
-    color:
-        var(--maroon-dark);
-
-    font-family:
-        var(--serif);
-
-    font-size:
-        20px;
-
-    font-weight:
-        600;
-
-}
-
-
 /* =========================================================
    MODAL SCROLLBAR
    ========================================================= */
 
-.family-tree-events-section
 .person-modal::-webkit-scrollbar {
 
     width:
@@ -1676,7 +2241,6 @@
 }
 
 
-.family-tree-events-section
 .person-modal::-webkit-scrollbar-track {
 
     background:
@@ -1685,7 +2249,6 @@
 }
 
 
-.family-tree-events-section
 .person-modal::-webkit-scrollbar-thumb {
 
     background:
@@ -1859,7 +2422,6 @@
     }
 
 
-    .family-tree-events-section
     .person-modal-backdrop {
 
         padding:
@@ -1868,7 +2430,6 @@
     }
 
 
-    .family-tree-events-section
     .person-modal {
 
         max-height:
@@ -1882,11 +2443,11 @@
     }
 
 
-    .family-tree-events-section
-    .person-modal-body h2 {
+    .person-modal-body
+    h2 {
 
         font-size:
-            27px;
+            30px;
 
     }
 
@@ -1972,8 +2533,10 @@
 
     .family-tree-events-section
     .person-card,
+
     .family-tree-events-section
     .zoom-group button,
+
     .family-tree-events-section
     .show-fathers-button {
 
@@ -1982,652 +2545,4 @@
 
     }
 
-}
-
-
-/* =========================================================
-   FAMILY TREE PERSON MODAL
-   MODAL IS OUTSIDE .family-tree-events-section
-   ========================================================= */
-
-.person-modal-backdrop {
-
-    position: fixed !important;
-
-    inset: 0 !important;
-
-    z-index: 99999 !important;
-
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 100vw;
-
-    height: 100vh;
-
-    padding: 20px;
-
-    box-sizing: border-box;
-
-    background:
-        rgba(45, 8, 14, 0.72);
-
-    backdrop-filter:
-        blur(5px);
-
-}
-
-
-.person-modal-backdrop.open {
-
-    display: flex !important;
-
-}
-
-
-/* =========================================================
-   MODAL BOX
-   ========================================================= */
-
-.person-modal {
-
-    position: relative;
-
-    z-index: 100000;
-
-    width: min(480px, 100%);
-
-    max-height: 85vh;
-
-    overflow-y: auto;
-
-    box-sizing: border-box;
-
-    padding: 36px 32px 30px;
-
-    background: var(--paper);
-
-    border: 1px solid var(--gold);
-
-    border-radius: 0;
-
-    box-shadow:
-        0 25px 70px
-        rgba(0, 0, 0, 0.35);
-
-}
-
-
-/* =========================================================
-   CLOSE BUTTON
-   ========================================================= */
-
-.person-modal-close {
-
-    position: absolute;
-
-    top: 12px;
-
-    right: 14px;
-
-    z-index: 5;
-
-    width: 34px;
-
-    height: 34px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 0;
-
-    border: 0;
-
-    background: transparent;
-
-    color: var(--maroon);
-
-    font-family: var(--sans);
-
-    font-size: 22px;
-
-    line-height: 1;
-
-    cursor: pointer;
-
-}
-
-
-.person-modal-close:hover {
-
-    color: var(--gold);
-
-}
-
-
-/* =========================================================
-   MODAL BODY
-   ========================================================= */
-
-.person-modal-body {
-
-    width: 100%;
-
-}
-
-
-/* =========================================================
-   MODAL EYEBROW
-   ========================================================= */
-
-.person-modal-body .modal-eyebrow {
-
-    margin: 0 0 8px;
-
-    color: var(--gold);
-
-    font-family: var(--sans);
-
-    font-size: 9px;
-
-    font-weight: 600;
-
-    letter-spacing: 0.16em;
-
-    line-height: 1.4;
-
-    text-transform: uppercase;
-
-}
-
-
-/* =========================================================
-   PERSON NAME
-   ========================================================= */
-
-.person-modal-body h2 {
-
-    margin: 0 0 22px;
-
-    color: var(--maroon-dark);
-
-    font-family: var(--serif);
-
-    font-size: 38px;
-
-    font-weight: 500;
-
-    line-height: 1.05;
-
-}
-
-
-/* =========================================================
-   MODAL SECTION
-   ========================================================= */
-
-.person-modal-body .modal-section {
-
-    margin-top: 22px;
-
-    padding-top: 16px;
-
-    border-top:
-        1px solid
-        var(--border);
-
-}
-
-
-/* =========================================================
-   SECTION LABEL
-   ========================================================= */
-
-.person-modal-body .modal-section-label {
-
-    margin: 0 0 12px;
-
-    color: var(--gold);
-
-    font-family: var(--sans);
-
-    font-size: 9px;
-
-    font-weight: 600;
-
-    letter-spacing: 0.15em;
-
-    line-height: 1.4;
-
-    text-transform: uppercase;
-
-}
-
-
-/* =========================================================
-   PERSON DATA
-   ========================================================= */
-
-.person-modal-body .person-data {
-
-    width: 100%;
-
-}
-
-
-/* =========================================================
-   DATA ROW
-   ========================================================= */
-
-.person-modal-body .data-row {
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(110px, 0.7fr)
-        minmax(0, 1.3fr);
-
-    gap: 15px;
-
-    padding: 9px 0;
-
-    border-bottom:
-        1px solid
-        rgba(100, 30, 40, 0.08);
-
-}
-
-
-.person-modal-body .data-label {
-
-    color: var(--muted);
-
-    font-family: var(--sans);
-
-    font-size: 9px;
-
-    font-weight: 600;
-
-    letter-spacing: 0.08em;
-
-    text-transform: uppercase;
-
-}
-
-
-.person-modal-body .data-value {
-
-    color: var(--text);
-
-    font-family: var(--sans);
-
-    font-size: 13px;
-
-    line-height: 1.5;
-
-    overflow-wrap: anywhere;
-
-}
-
-
-/* =========================================================
-   RELATION PERSON
-   ========================================================= */
-
-.person-modal-body .relation-person {
-
-    margin: 0;
-
-    color: var(--maroon-dark);
-
-    font-family: var(--serif);
-
-    font-size: 21px;
-
-    line-height: 1.3;
-
-}
-
-
-/* =========================================================
-   CHILDREN LIST
-   ========================================================= */
-
-.person-modal-body ul {
-
-    margin: 0;
-
-    padding: 0;
-
-    list-style: none;
-
-}
-
-
-.person-modal-body li {
-
-    position: relative;
-
-    padding: 7px 0 7px 17px;
-
-    color: var(--text);
-
-    font-family: var(--serif);
-
-    font-size: 17px;
-
-}
-
-
-.person-modal-body li::before {
-
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-
-    top: 15px;
-
-    width: 6px;
-
-    height: 6px;
-
-    border-radius: 50%;
-
-    background: var(--gold);
-
-}
-
-
-/* =========================================================
-   FATHERS MODAL
-   ========================================================= */
-
-.fathers-modal {
-
-    width:
-        min(680px, 100%);
-
-}
-
-
-/* =========================================================
-   FATHERS MODAL DESCRIPTION
-   ========================================================= */
-
-.fathers-modal .modal-description {
-
-    margin: 0 0 20px;
-
-    color: var(--muted);
-
-    font-family: var(--serif);
-
-    font-size: 15px;
-
-    line-height: 1.5;
-
-}
-
-
-/* =========================================================
-   FATHER RECORD
-   ========================================================= */
-
-.father-record {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 15px;
-
-    width: 100%;
-
-    margin-top: 12px;
-
-    padding: 15px;
-
-    box-sizing: border-box;
-
-    background: var(--cream);
-
-    border:
-        1px solid
-        var(--border);
-
-}
-
-
-/* =========================================================
-   FATHER NUMBER
-   ========================================================= */
-
-.father-number {
-
-    flex: 0 0 32px;
-
-    width: 32px;
-
-    height: 32px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: var(--maroon);
-
-    color: white;
-
-    font-family: var(--sans);
-
-    font-size: 10px;
-
-    font-weight: 600;
-
-}
-
-
-/* =========================================================
-   FATHER INFORMATION
-   ========================================================= */
-
-.father-information {
-
-    min-width: 0;
-
-    flex: 1;
-
-}
-
-
-/* =========================================================
-   MODAL SCROLLBAR
-   ========================================================= */
-
-.person-modal::-webkit-scrollbar {
-
-    width: 7px;
-
-}
-
-
-.person-modal::-webkit-scrollbar-track {
-
-    background: var(--cream);
-
-}
-
-
-.person-modal::-webkit-scrollbar-thumb {
-
-    background: var(--gold);
-
-}
-
-
-/* =========================================================
-   MOBILE MODAL
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .person-modal-backdrop {
-
-        padding: 14px;
-
-    }
-
-
-    .person-modal {
-
-        max-height: 90vh;
-
-        padding:
-            30px
-            20px
-            24px;
-
-    }
-
-
-    .person-modal-body h2 {
-
-        font-size: 30px;
-
-    }
-
-
-    .person-modal-body .data-row {
-
-        grid-template-columns:
-            1fr;
-
-        gap: 4px;
-
-    }
-
-
-    .person-modal-body .data-value {
-
-        font-size: 13px;
-
-    }
-
-}
-
-
-.search-field {
-    position: relative;
-}
-
-.family-search-results {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    z-index: 9999;
-
-    display: none;
-
-    max-height: 320px;
-    overflow-y: auto;
-
-    background: #fff;
-
-    border: 1px solid #dfd3c5;
-    border-radius: 10px;
-
-    box-shadow:
-        0 12px 30px rgba(60, 40, 25, 0.15);
-}
-
-.family-search-result {
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: 4px;
-
-    padding: 14px 16px;
-
-    border: none;
-    border-bottom: 1px solid #eee5dc;
-
-    background: #fff;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    font-family: inherit;
-}
-
-.family-search-result:last-child {
-    border-bottom: none;
-}
-
-.family-search-result:hover {
-    background: #f7f0e8;
-}
-
-.family-search-result:focus {
-    outline: none;
-    background: #f2e7dc;
-}
-
-.family-search-result-name {
-    display: block;
-
-    color: #4b3427;
-
-    font-family:
-        "Tiro Bangla",
-        Georgia,
-        serif;
-
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.family-search-result-father {
-    display: block;
-
-    color: #8b7767;
-
-    font-family:
-        "Mukta",
-        sans-serif;
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-.family-search-result-father strong {
-    color: #6f4d32;
-    font-weight: 700;
-}
-
-.family-search-no-result {
-    padding: 16px;
-
-    color: #8b7767;
-
-    text-align: center;
-
-    font-size: 13px;
 }

@@ -1,11 +1,41 @@
 /* =========================================================
    ROY BARI — FAMILY TREE
    FIREBASE FIRESTORE
+
+   COLLECTION:
+       familyMembers
+
+   ID-BASED FAMILY STRUCTURE
+   ---------------------------------------------------------
+   Example:
+
+       1114321
+          ↓
+       111432
+          ↓
+       11143
+          ↓
+       1114
+          ↓
+       111
+          ↓
+       11
+          ↓
+       1
+
+   IMPORTANT
+   ---------------------------------------------------------
+   • Names are NOT unique.
+   • Document ID is the unique identity.
+   • Never identify a person by name.
+   • Tree sorting is by document ID.
+   • Search results are identified by document ID.
+   • Father chain is calculated from document ID.
    ========================================================= */
 
 
 /* =========================================================
-   FIREBASE
+   FIREBASE IMPORTS
    ========================================================= */
 
 import {
@@ -19,7 +49,7 @@ import {
 
 
 /* =========================================================
-   ELEMENTS
+   DOM ELEMENTS
    ========================================================= */
 
 const familyTree =
@@ -39,7 +69,7 @@ const status =
 
 
 /* =========================================================
-   ZOOM ELEMENTS
+   CONTROLS
    ========================================================= */
 
 const zoomIn =
@@ -51,15 +81,11 @@ const zoomOut =
 const resetZoom =
     document.getElementById("resetZoom");
 
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
 const searchInput =
     document.getElementById("personSearch");
 
-let searchResults = null;
+const showFathersButton =
+    document.getElementById("showFathers");
 
 
 /* =========================================================
@@ -80,9 +106,6 @@ const personModalClose =
    FATHERS MODAL
    ========================================================= */
 
-const showFathers =
-    document.getElementById("showFathers");
-
 const fathersModal =
     document.getElementById("fathersModal");
 
@@ -94,7 +117,53 @@ const fathersModalClose =
 
 
 /* =========================================================
-   DATA
+   SEARCH RESULTS
+   ========================================================= */
+
+let searchResults =
+    document.getElementById(
+        "familySearchResults"
+    );
+
+
+/* =========================================================
+   CREATE SEARCH RESULTS CONTAINER
+   ========================================================= */
+
+if (
+    !searchResults &&
+    searchInput
+) {
+
+    searchResults =
+        document.createElement(
+            "div"
+        );
+
+
+    searchResults.id =
+        "familySearchResults";
+
+
+    searchResults.className =
+        "family-search-results";
+
+
+    if (
+        searchInput.parentElement
+    ) {
+
+        searchInput.parentElement.appendChild(
+            searchResults
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FAMILY DATA
    ========================================================= */
 
 let members = {};
@@ -106,41 +175,29 @@ let childrenOf = {};
 let parentsOf = {};
 
 
-/*
-   IMPORTANT
+/* =========================================================
+   SELECTED PERSON
+   ========================================================= */
 
-   This always stores the EXACT UNIQUE ID
-   of the currently selected person.
-
-   Names are NEVER used as identifiers.
-
-   Example:
-
-   ID 1111145125
-   MONALISHA ROY
-   Father: MANIK ROY
-
-   ID 1111143111
-   MONALISHA ROY
-   Father: RAJAT KUMAR ROY
-
-   These are two different people.
-*/
-
-let selectedPersonId = null;
+let selectedPerson =
+    null;
 
 
 /* =========================================================
    ZOOM
    ========================================================= */
 
-let zoom = 1;
+let zoom =
+    1;
 
-const MIN_ZOOM = 0.5;
+const MIN_ZOOM =
+    0.5;
 
-const MAX_ZOOM = 2;
+const MAX_ZOOM =
+    2;
 
-const ZOOM_STEP = 0.1;
+const ZOOM_STEP =
+    0.1;
 
 
 /* =========================================================
@@ -151,12 +208,18 @@ async function loadFamilyTree() {
 
     try {
 
-        status.textContent =
-            "Loading family tree…";
+        if (
+            status
+        ) {
+
+            status.textContent =
+                "Loading family tree…";
+
+        }
 
 
         /* =================================================
-           GET FAMILY MEMBERS
+           GET FIRESTORE DOCUMENTS
            ================================================= */
 
         const snapshot =
@@ -172,18 +235,34 @@ async function loadFamilyTree() {
 
 
         snapshot.forEach(
-            docSnapshot => {
+            documentSnapshot => {
 
-                members[docSnapshot.id] = {
+                const documentId =
+                    String(
+                        documentSnapshot.id
+                    );
+
+
+                members[
+                    documentId
+                ] = {
 
                     id:
-                        docSnapshot.id,
+                        documentId,
 
-                    ...docSnapshot.data()
+                    ...documentSnapshot.data()
 
                 };
 
             }
+        );
+
+
+        console.log(
+            "Family members loaded:",
+            Object.keys(
+                members
+            ).length
         );
 
 
@@ -195,7 +274,7 @@ async function loadFamilyTree() {
 
 
         /* =================================================
-           GROUP GENERATIONS
+           BUILD GENERATIONS
            ================================================= */
 
         createGenerationGroups();
@@ -218,22 +297,35 @@ async function loadFamilyTree() {
             ).length;
 
 
-        status.textContent =
-            count === 1
-                ? "1 family member"
-                : `${count} family members`;
+        if (
+            status
+        ) {
 
+            status.textContent =
+                count === 1
+                    ? "1 family member"
+                    : `${count} family members`;
 
-    } catch (error) {
+        }
+
+    } catch (
+        error
+    ) {
 
         console.error(
-            "Family tree error:",
+            "Family tree loading error:",
             error
         );
 
 
-        status.textContent =
-            "Unable to load family tree.";
+        if (
+            status
+        ) {
+
+            status.textContent =
+                "Unable to load family tree.";
+
+        }
 
     }
 
@@ -241,7 +333,15 @@ async function loadFamilyTree() {
 
 
 /* =========================================================
-   BUILD RELATIONSHIP MAP
+   BUILD RELATIONSHIP MAPS
+   =========================================================
+   Father ID is always:
+
+       child ID without final digit
+
+   Example:
+
+       1114321 → 111432
    ========================================================= */
 
 function buildRelationshipMaps() {
@@ -256,18 +356,14 @@ function buildRelationshipMaps() {
     ).forEach(
         childId => {
 
-            const child =
+            const id =
                 String(
                     childId
                 );
 
 
-            /*
-               Generation 1 has no father.
-            */
-
             if (
-                child.length <= 1
+                id.length <= 1
             ) {
 
                 return;
@@ -275,33 +371,22 @@ function buildRelationshipMaps() {
             }
 
 
-            /*
-               Family hierarchy:
-
-               11  → father of 111
-               11  → father of 112
-               12  → father of 121
-
-               Therefore:
-
-               child ID minus last digit
-               = father ID
-            */
-
-            const parentId =
-                child.slice(
+            const fatherId =
+                id.slice(
                     0,
                     -1
                 );
 
 
             /*
-               Only create connection
-               when father exists.
+               Only create relationship
+               if father exists.
             */
 
             if (
-                !members[parentId]
+                !members[
+                    fatherId
+                ]
             ) {
 
                 return;
@@ -309,41 +394,51 @@ function buildRelationshipMaps() {
             }
 
 
-            /* =================================================
-               PARENT → CHILDREN
-               ================================================= */
+            /* =========================================
+               FATHER → CHILDREN
+               ========================================= */
 
             if (
-                !childrenOf[parentId]
+                !childrenOf[
+                    fatherId
+                ]
             ) {
 
-                childrenOf[parentId] =
-                    new Set();
+                childrenOf[
+                    fatherId
+                ] = new Set();
 
             }
 
 
-            childrenOf[parentId].add(
-                childId
+            childrenOf[
+                fatherId
+            ].add(
+                id
             );
 
 
-            /* =================================================
-               CHILD → PARENT
-               ================================================= */
+            /* =========================================
+               CHILD → FATHER
+               ========================================= */
 
             if (
-                !parentsOf[childId]
+                !parentsOf[
+                    id
+                ]
             ) {
 
-                parentsOf[childId] =
-                    new Set();
+                parentsOf[
+                    id
+                ] = new Set();
 
             }
 
 
-            parentsOf[childId].add(
-                parentId
+            parentsOf[
+                id
+            ].add(
+                fatherId
             );
 
         }
@@ -353,7 +448,7 @@ function buildRelationshipMaps() {
 
 
 /* =========================================================
-   GROUP MEMBERS BY GENERATION
+   CREATE GENERATION GROUPS
    ========================================================= */
 
 function createGenerationGroups() {
@@ -384,87 +479,135 @@ function createGenerationGroups() {
 
 
             if (
-                !generations[generation]
+                !generations[
+                    generation
+                ]
             ) {
 
-                generations[generation] =
-                    [];
+                generations[
+                    generation
+                ] = [];
 
             }
 
 
-            generations[generation].push(
+            generations[
+                generation
+            ].push(
                 person
             );
 
         }
     );
 
+}
+
+
+/* =========================================================
+   COMPARE DOCUMENT IDS
+   =========================================================
+   IDs are sorted numerically whenever possible.
+
+   IMPORTANT:
+       Name is NEVER used here.
+   ========================================================= */
+
+function compareIds(
+    a,
+    b
+) {
+
+    const idA =
+        String(
+            a ?? ""
+        );
+
+    const idB =
+        String(
+            b ?? ""
+        );
+
+
+    if (
+        /^\d+$/.test(idA) &&
+        /^\d+$/.test(idB)
+    ) {
+
+        try {
+
+            const numberA =
+                BigInt(
+                    idA
+                );
+
+            const numberB =
+                BigInt(
+                    idB
+                );
+
+
+            if (
+                numberA <
+                numberB
+            ) {
+
+                return -1;
+
+            }
+
+
+            if (
+                numberA >
+                numberB
+            ) {
+
+                return 1;
+
+            }
+
+
+            return 0;
+
+        } catch {
+
+            /* Continue to fallback */
+
+        }
+
+    }
+
+
+    return idA.localeCompare(
+        idB,
+        undefined,
+        {
+            numeric:
+                true
+        }
+    );
 
 }
 
 
 /* =========================================================
-   SORT GENERATION
+   SORT PEOPLE BY ID
    ========================================================= */
 
-function sortGeneration(
+function sortPeopleById(
     people
 ) {
 
     return [
         ...people
     ].sort(
-        (a, b) => {
-
-            const idA =
-                String(
-                    a.id
-                );
-
-            const idB =
-                String(
-                    b.id
-                );
-
-
-            const numA =
-                Number(
-                    idA
-                );
-
-            const numB =
-                Number(
-                    idB
-                );
-
-
-            if (
-                Number.isFinite(
-                    numA
-                ) &&
-                Number.isFinite(
-                    numB
-                )
-            ) {
-
-                return (
-                    numA -
-                    numB
-                );
-
-            }
-
-
-            return String(
-                a.name || ""
-            ).localeCompare(
-                String(
-                    b.name || ""
-                )
-            );
-
-        }
+        (
+            a,
+            b
+        ) =>
+            compareIds(
+                a.id,
+                b.id
+            )
     );
 
 }
@@ -476,11 +619,27 @@ function sortGeneration(
 
 function renderTree() {
 
+    if (
+        !familyTree
+    ) {
+
+        return;
+
+    }
+
+
     familyTree.innerHTML =
         "";
 
-    treeLines.innerHTML =
-        "";
+
+    if (
+        treeLines
+    ) {
+
+        treeLines.innerHTML =
+            "";
+
+    }
 
 
     const generationNumbers =
@@ -490,20 +649,31 @@ function renderTree() {
             .map(
                 Number
             )
+            .filter(
+                Number.isFinite
+            )
             .sort(
-                (a, b) =>
+                (
+                    a,
+                    b
+                ) =>
                     a - b
             );
 
 
     if (
-        generationNumbers.length === 0
+        generationNumbers.length ===
+        0
     ) {
 
         familyTree.innerHTML = `
+
             <div class="empty-tree">
+
                 No family members found.
+
             </div>
+
         `;
 
         return;
@@ -515,7 +685,7 @@ function renderTree() {
         generation => {
 
             const people =
-                sortGeneration(
+                sortPeopleById(
                     generations[
                         generation
                     ]
@@ -531,18 +701,8 @@ function renderTree() {
     );
 
 
-    /* =====================================================
-       RESET ZOOM
-       ===================================================== */
+    applyZoom();
 
-    applyZoom(
-        false
-    );
-
-
-    /* =====================================================
-       DRAW CONNECTIONS
-       ===================================================== */
 
     requestAnimationFrame(
         () => {
@@ -581,7 +741,9 @@ function createGenerationRow(
 
 
     row.dataset.generation =
-        generation;
+        String(
+            generation
+        );
 
 
     /* =====================================================
@@ -639,14 +801,10 @@ function createGenerationRow(
     people.forEach(
         person => {
 
-            const card =
+            peopleContainer.appendChild(
                 createPersonCard(
                     person
-                );
-
-
-            peopleContainer.appendChild(
-                card
+                )
             );
 
         }
@@ -684,11 +842,9 @@ function createPersonCard(
 
 
     /*
-       VERY IMPORTANT
+       UNIQUE ID.
 
-       Store exact unique Family ID.
-
-       Search navigation uses this.
+       Never use name here.
     */
 
     card.dataset.personId =
@@ -725,9 +881,12 @@ function createPersonCard(
     ]
         .filter(
             value =>
-                value !== undefined &&
-                value !== null &&
-                value !== ""
+                value !==
+                    undefined &&
+                value !==
+                    null &&
+                value !==
+                    ""
         )
         .join(
             " – "
@@ -745,48 +904,65 @@ function createPersonCard(
 
         </div>
 
-        ${
-            years
-                ? `
-                    <div class="person-meta">
 
-                        <span class="person-years">
+        <div class="person-meta">
 
-                            ${escapeHTML(
-                                years
-                            )}
+            <span class="person-years">
 
-                        </span>
+                ${escapeHTML(
+                    years
+                )}
 
-                    </div>
-                `
-                : ""
-        }
+            </span>
+
+        </div>
 
     `;
 
 
     /* =====================================================
-       NORMAL CARD CLICK
+       CLICK
        ===================================================== */
 
     card.addEventListener(
         "click",
-        () => {
+        event => {
 
-            selectedPersonId =
-                String(
-                    person.id
-                );
+            event.stopPropagation();
 
 
             /*
-               Direct card click opens
-               details modal.
+               Get the exact person
+               using UNIQUE ID.
             */
 
+            const personId =
+                String(
+                    card.dataset.personId
+                );
+
+
+            const exactPerson =
+                members[
+                    personId
+                ];
+
+
+            if (
+                !exactPerson
+            ) {
+
+                return;
+
+            }
+
+
+            selectedPerson =
+                exactPerson;
+
+
             showPerson(
-                person
+                exactPerson
             );
 
         }
@@ -802,21 +978,42 @@ function createPersonCard(
         event => {
 
             if (
-                event.key === "Enter" ||
-                event.key === " "
+                event.key ===
+                    "Enter" ||
+                event.key ===
+                    " "
             ) {
 
                 event.preventDefault();
 
 
-                selectedPersonId =
+                const personId =
                     String(
-                        person.id
+                        card.dataset.personId
                     );
 
 
+                const exactPerson =
+                    members[
+                        personId
+                    ];
+
+
+                if (
+                    !exactPerson
+                ) {
+
+                    return;
+
+                }
+
+
+                selectedPerson =
+                    exactPerson;
+
+
                 showPerson(
-                    person
+                    exactPerson
                 );
 
             }
@@ -831,7 +1028,7 @@ function createPersonCard(
 
 
 /* =========================================================
-   FIND EXACT CARD
+   FIND CARD BY UNIQUE ID
    ========================================================= */
 
 function findCard(
@@ -873,14 +1070,35 @@ function findCard(
 
 
 /* =========================================================
-   DRAW CONNECTIONS
+   SEARCH
+   =========================================================
+   IMPORTANT:
+
+   Duplicate names are allowed.
+
+   Example:
+
+       SAMIR ROY
+       ID 111114334
+
+       SAMIR ROY
+       ID 11111433
+
+       SAMIR ROY
+       ID 1111143
+
+   Search displays ALL matches.
+
+   Clicking a result uses the ID,
+   not the name.
    ========================================================= */
 
-function drawConnections() {
+function renderSearchResults(
+    query
+) {
 
     if (
-        !treeLines ||
-        !treeStage
+        !searchResults
     ) {
 
         return;
@@ -888,250 +1106,612 @@ function drawConnections() {
     }
 
 
-    treeLines.innerHTML =
+    searchResults.innerHTML =
         "";
 
 
-    const stageRect =
-        treeStage.getBoundingClientRect();
+    const search =
+        String(
+            query ||
+            ""
+        )
+            .trim()
+            .toLowerCase();
 
 
-    const width =
-        Math.max(
-            treeStage.scrollWidth,
-            treeStage.offsetWidth,
-            familyTree.scrollWidth
+    if (
+        !search
+    ) {
+
+        searchResults.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       FIND MATCHES
+       ===================================================== */
+
+    const results =
+        Object.values(
+            members
+        )
+            .filter(
+                person => {
+
+                    const name =
+                        String(
+                            person.name ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    const id =
+                        String(
+                            person.id ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    /*
+                       Search by either:
+
+                       • name
+                       • document ID
+                    */
+
+                    return (
+                        name.includes(
+                            search
+                        ) ||
+                        id.includes(
+                            search
+                        )
+                    );
+
+                }
+            )
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    compareIds(
+                        a.id,
+                        b.id
+                    )
+            );
+
+
+    /* =====================================================
+       NO RESULT
+       ===================================================== */
+
+    if (
+        results.length ===
+        0
+    ) {
+
+        const noResult =
+            document.createElement(
+                "div"
+            );
+
+
+        noResult.className =
+            "family-search-no-result";
+
+
+        noResult.textContent =
+            "No family member found.";
+
+
+        searchResults.appendChild(
+            noResult
         );
 
 
-    const height =
-        Math.max(
-            treeStage.scrollHeight,
-            treeStage.offsetHeight,
-            familyTree.scrollHeight
+        searchResults.style.display =
+            "block";
+
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       RESULT COUNT
+       ===================================================== */
+
+    /*
+       Optional heading.
+       Does not identify people.
+    */
+
+    if (
+        results.length >
+        1
+    ) {
+
+        const count =
+            document.createElement(
+                "div"
+            );
+
+
+        count.className =
+            "family-search-count";
+
+
+        count.textContent =
+            `${results.length} family members found`;
+
+
+        searchResults.appendChild(
+            count
         );
 
-
-    treeLines.setAttribute(
-        "width",
-        width
-    );
+    }
 
 
-    treeLines.setAttribute(
-        "height",
-        height
-    );
+    /* =====================================================
+       CREATE EACH RESULT
+       ===================================================== */
+
+    results.forEach(
+        person => {
+
+            const result =
+                document.createElement(
+                    "button"
+                );
 
 
-    treeLines.setAttribute(
-        "viewBox",
-        `0 0 ${width} ${height}`
-    );
+            result.type =
+                "button";
 
 
-    Object.keys(
-        parentsOf
-    ).forEach(
-        childId => {
+            result.className =
+                "family-search-result";
 
-            drawParentToChild(
-                childId,
-                stageRect
+
+            /*
+               UNIQUE ID IS STORED HERE.
+
+               This is what fixes duplicate
+               names.
+            */
+
+            result.dataset.personId =
+                String(
+                    person.id
+                );
+
+
+            /* =================================================
+               NAME
+               ================================================= */
+
+            const name =
+                document.createElement(
+                    "span"
+                );
+
+
+            name.className =
+                "family-search-result-name";
+
+
+            name.textContent =
+                person.name ||
+                "Unknown";
+
+
+            /* =================================================
+               DETAILS
+               ================================================= */
+
+            const details =
+                document.createElement(
+                    "span"
+                );
+
+
+            details.className =
+                "family-search-result-father";
+
+
+            const father =
+                getFather(
+                    person.id
+                );
+
+
+            const fatherName =
+                father
+                    ? (
+                        father.name ||
+                        "Unknown"
+                    )
+                    : "No recorded father";
+
+
+            details.innerHTML = `
+
+                ID:
+                <strong>
+                    ${escapeHTML(
+                        person.id
+                    )}
+                </strong>
+
+                &nbsp; · &nbsp;
+
+                Generation:
+                <strong>
+                    ${escapeHTML(
+                        person.generation ??
+                        "—"
+                    )}
+                </strong>
+
+                <br>
+
+                Father:
+                <strong>
+                    ${escapeHTML(
+                        fatherName
+                    )}
+                </strong>
+
+            `;
+
+
+            result.appendChild(
+                name
+            );
+
+
+            result.appendChild(
+                details
+            );
+
+
+            /* =================================================
+               CLICK EXACT RESULT
+               ================================================= */
+
+            result.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    /*
+                       READ UNIQUE ID
+                    */
+
+                    const personId =
+                        String(
+                            result.dataset.personId
+                        );
+
+
+                    /*
+                       GET EXACT PERSON
+
+                       NOT:
+
+                           members[name]
+
+                       BUT:
+
+                           members[id]
+                    */
+
+                    const exactPerson =
+                        members[
+                            personId
+                        ];
+
+
+                    if (
+                        !exactPerson
+                    ) {
+
+                        console.error(
+                            "Person not found:",
+                            personId
+                        );
+
+                        return;
+
+                    }
+
+
+                    selectedPerson =
+                        exactPerson;
+
+
+                    /* =========================================
+                       CLEAR OLD HIGHLIGHTS
+                       ========================================= */
+
+                    document
+                        .querySelectorAll(
+                            ".person-card"
+                        )
+                        .forEach(
+                            card => {
+
+                                card.classList.remove(
+                                    "is-match"
+                                );
+
+                            }
+                        );
+
+
+                    /* =========================================
+                       HIGHLIGHT EXACT CARD
+                       ========================================= */
+
+                    const card =
+                        findCard(
+                            exactPerson.id
+                        );
+
+
+                    if (
+                        card
+                    ) {
+
+                        card.classList.add(
+                            "is-match"
+                        );
+
+
+                        card.scrollIntoView(
+                            {
+                                behavior:
+                                    "smooth",
+
+                                block:
+                                    "center",
+
+                                inline:
+                                    "center"
+                            }
+                        );
+
+                    }
+
+
+                    /* =========================================
+                       CLOSE SEARCH RESULTS
+                       ========================================= */
+
+                    searchResults.style.display =
+                        "none";
+
+
+                    /*
+                       Keep the typed search text.
+
+                       This makes it clear which
+                       duplicate name was searched.
+                    */
+
+                    if (
+                        searchInput
+                    ) {
+
+                        searchInput.value =
+                            exactPerson.name ||
+                            "";
+
+                    }
+
+
+                    /* =========================================
+                       OPEN EXACT PERSON
+                       ========================================= */
+
+                    showPerson(
+                        exactPerson
+                    );
+
+                }
+            );
+
+
+            searchResults.appendChild(
+                result
             );
 
         }
     );
 
+
+    searchResults.style.display =
+        "block";
+
 }
 
 
 /* =========================================================
-   DRAW PARENT → CHILD
+   SEARCH INPUT
    ========================================================= */
 
-function drawParentToChild(
-    childId,
-    stageRect
+if (
+    searchInput
 ) {
 
-    const parentIds =
-        Array.from(
-            parentsOf[
-                childId
-            ] || []
-        );
+    searchInput.addEventListener(
+        "input",
+        () => {
 
+            /*
+               Clear card highlights
+               while searching.
+            */
 
-    if (
-        parentIds.length === 0
-    ) {
+            document
+                .querySelectorAll(
+                    ".person-card"
+                )
+                .forEach(
+                    card => {
 
-        return;
+                        card.classList.remove(
+                            "is-match"
+                        );
 
-    }
-
-
-    const childCard =
-        findCard(
-            childId
-        );
-
-
-    if (!childCard) {
-
-        return;
-
-    }
-
-
-    let parentX = 0;
-
-    let parentY = 0;
-
-    let parentCount = 0;
-
-
-    parentIds.forEach(
-        parentId => {
-
-            const parentCard =
-                findCard(
-                    parentId
+                    }
                 );
 
 
-            if (!parentCard) {
+            renderSearchResults(
+                searchInput.value
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       FOCUS
+       ===================================================== */
+
+    searchInput.addEventListener(
+        "focus",
+        () => {
+
+            if (
+                searchInput.value.trim()
+            ) {
+
+                renderSearchResults(
+                    searchInput.value
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       KEYBOARD
+       ===================================================== */
+
+    searchInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                if (
+                    searchResults
+                ) {
+
+                    searchResults.style.display =
+                        "none";
+
+                }
+
 
                 return;
 
             }
 
 
-            const rect =
-                parentCard.getBoundingClientRect();
+            /*
+               If exactly one result exists,
+               Enter opens that exact person.
+            */
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                const results =
+                    searchResults
+                        ? searchResults.querySelectorAll(
+                            ".family-search-result"
+                        )
+                        : [];
 
 
-            parentX +=
-                rect.left +
-                rect.width / 2 -
-                stageRect.left;
+                if (
+                    results.length ===
+                    1
+                ) {
+
+                    event.preventDefault();
 
 
-            parentY =
-                Math.max(
-                    parentY,
-                    rect.bottom -
-                    stageRect.top
-                );
+                    results[0].click();
 
+                }
 
-            parentCount++;
+            }
 
         }
-    );
-
-
-    if (
-        parentCount === 0
-    ) {
-
-        return;
-
-    }
-
-
-    parentX /=
-        parentCount;
-
-
-    const childRect =
-        childCard.getBoundingClientRect();
-
-
-    const childX =
-        childRect.left +
-        childRect.width / 2 -
-        stageRect.left;
-
-
-    const childY =
-        childRect.top -
-        stageRect.top;
-
-
-    if (
-        childY <= parentY
-    ) {
-
-        return;
-
-    }
-
-
-    createCurve(
-        parentX,
-        parentY,
-        childX,
-        childY
     );
 
 }
 
 
 /* =========================================================
-   CREATE CURVED LINE
+   CLOSE SEARCH WHEN CLICKING OUTSIDE
    ========================================================= */
 
-function createCurve(
-    x1,
-    y1,
-    x2,
-    y2
-) {
+document.addEventListener(
+    "click",
+    event => {
 
-    const distance =
-        y2 - y1;
+        if (
+            !searchResults ||
+            !searchInput
+        ) {
 
+            return;
 
-    const middleY =
-        y1 +
-        Math.max(
-            25,
-            distance * 0.5
-        );
+        }
 
 
-    const path =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
-        );
+        if (
+            event.target ===
+                searchInput ||
+            searchResults.contains(
+                event.target
+            )
+        ) {
+
+            return;
+
+        }
 
 
-    path.setAttribute(
-        "d",
-        `
-            M ${x1} ${y1}
+        searchResults.style.display =
+            "none";
 
-            C
-            ${x1} ${middleY},
-            ${x2} ${middleY},
-            ${x2} ${y2}
-        `
-    );
-
-
-    path.classList.add(
-        "tree-line"
-    );
-
-
-    treeLines.appendChild(
-        path
-    );
-
-}
+    }
+);
 
 
 /* =========================================================
@@ -1142,10 +1722,18 @@ function showPerson(
     person
 ) {
 
-    selectedPersonId =
-        String(
-            person.id
-        );
+    if (
+        !personModalBody ||
+        !personModal
+    ) {
+
+        return;
+
+    }
+
+
+    selectedPerson =
+        person;
 
 
     const father =
@@ -1154,17 +1742,24 @@ function showPerson(
         );
 
 
+    const children =
+        getChildren(
+            person.id
+        );
+
+
     let html = `
 
         <p class="modal-eyebrow">
 
-            Generation
+            GENERATION
             ${escapeHTML(
                 person.generation ??
                 "—"
             )}
 
         </p>
+
 
         <h2 id="personModalName">
 
@@ -1179,7 +1774,7 @@ function showPerson(
 
 
     /* =====================================================
-       FAMILY INFORMATION
+       PERSON DATA
        ===================================================== */
 
     html += `
@@ -1192,52 +1787,26 @@ function showPerson(
 
             </p>
 
+
             <div class="person-data">
 
     `;
 
 
-    Object.entries(
-        person
-    ).forEach(
-        ([key, value]) => {
-
-            if (
-                key === "id"
-            ) {
-
-                return;
-
-            }
+    const fields =
+        getPersonFieldOrder(
+            person
+        );
 
 
-            html += `
+    fields.forEach(
+        field => {
 
-                <div class="data-row">
-
-                    <span class="data-label">
-
-                        ${escapeHTML(
-                            formatFieldName(
-                                key
-                            )
-                        )}
-
-                    </span>
-
-                    <span class="data-value">
-
-                        ${escapeHTML(
-                            formatValue(
-                                value
-                            )
-                        )}
-
-                    </span>
-
-                </div>
-
-            `;
+            html +=
+                createDataRow(
+                    field.label,
+                    field.value
+                );
 
         }
     );
@@ -1256,7 +1825,9 @@ function showPerson(
        FATHER
        ===================================================== */
 
-    if (father) {
+    if (
+        father
+    ) {
 
         html += `
 
@@ -1267,6 +1838,7 @@ function showPerson(
                     Father
 
                 </p>
+
 
                 <p class="relation-person">
 
@@ -1288,14 +1860,9 @@ function showPerson(
        CHILDREN
        ===================================================== */
 
-    const children =
-        getChildren(
-            person.id
-        );
-
-
     if (
-        children.length > 0
+        children.length >
+        0
     ) {
 
         html += `
@@ -1307,6 +1874,7 @@ function showPerson(
                     Children
 
                 </p>
+
 
                 <ul>
 
@@ -1365,17 +1933,204 @@ function showPerson(
 
 
 /* =========================================================
-   GET FATHER
+   PERSON FIELD ORDER
+   =========================================================
+   Fixed order:
+
+       ID
+       Generation
+       Father ID
+       Created At
+       Updated At
+
+   Firestore insertion order does NOT matter.
    ========================================================= */
 
-function getFather(
+function getPersonFieldOrder(
+    person
+) {
+
+    const fields = [
+
+        {
+            key:
+                "id",
+
+            label:
+                "ID",
+
+            value:
+                person.id
+
+        },
+
+        {
+            key:
+                "generation",
+
+            label:
+                "Generation",
+
+            value:
+                person.generation
+
+        },
+
+        {
+            key:
+                "fatherId",
+
+            label:
+                "Father ID",
+
+            value:
+                person.fatherId ??
+                getFatherId(
+                    person.id
+                )
+
+        },
+
+        {
+            key:
+                "createdAt",
+
+            label:
+                "Created At",
+
+            value:
+                person.createdAt
+
+        },
+
+        {
+            key:
+                "updatedAt",
+
+            label:
+                "Updated At",
+
+            value:
+                person.updatedAt
+
+        }
+
+    ];
+
+
+    const fixedKeys =
+        new Set(
+            fields.map(
+                field =>
+                    field.key
+            )
+        );
+
+
+    /*
+       Additional fields are placed
+       after standard fields.
+    */
+
+    Object.keys(
+        person
+    )
+        .filter(
+            key =>
+                !fixedKeys.has(
+                    key
+                ) &&
+                key !== "name"
+        )
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                a.localeCompare(
+                    b
+                )
+        )
+        .forEach(
+            key => {
+
+                fields.push({
+
+                    key,
+
+                    label:
+                        formatFieldName(
+                            key
+                        ),
+
+                    value:
+                        person[
+                            key
+                        ]
+
+                });
+
+            }
+        );
+
+
+    return fields;
+
+}
+
+
+/* =========================================================
+   CREATE DATA ROW
+   ========================================================= */
+
+function createDataRow(
+    label,
+    value
+) {
+
+    return `
+
+        <div class="data-row">
+
+            <span class="data-label">
+
+                ${escapeHTML(
+                    label
+                )}
+
+            </span>
+
+
+            <span class="data-value">
+
+                ${escapeHTML(
+                    formatValue(
+                        value
+                    )
+                )}
+
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   GET FATHER ID
+   ========================================================= */
+
+function getFatherId(
     personId
 ) {
 
     const id =
         String(
-            personId
-        );
+            personId ??
+            ""
+        ).trim();
 
 
     if (
@@ -1387,19 +2142,50 @@ function getFather(
     }
 
 
-    /*
-       Example:
-
-       11111433221
-              ↓
-       1111143322
-    */
-
     const fatherId =
         id.slice(
             0,
             -1
         );
+
+
+    if (
+        !members[
+            fatherId
+        ]
+    ) {
+
+        return null;
+
+    }
+
+
+    return fatherId;
+
+}
+
+
+/* =========================================================
+   GET FATHER
+   ========================================================= */
+
+function getFather(
+    personId
+) {
+
+    const fatherId =
+        getFatherId(
+            personId
+        );
+
+
+    if (
+        !fatherId
+    ) {
+
+        return null;
+
+    }
 
 
     return (
@@ -1413,6 +2199,88 @@ function getFather(
 
 
 /* =========================================================
+   BUILD FATHER CHAIN
+   ========================================================= */
+
+function buildFatherChain(
+    personId
+) {
+
+    const chain =
+        [];
+
+
+    let currentId =
+        String(
+            personId ??
+            ""
+        ).trim();
+
+
+    const visited =
+        new Set();
+
+
+    while (
+        currentId.length >
+        1
+    ) {
+
+        const fatherId =
+            currentId.slice(
+                0,
+                -1
+            );
+
+
+        if (
+            visited.has(
+                fatherId
+            )
+        ) {
+
+            break;
+
+        }
+
+
+        visited.add(
+            fatherId
+        );
+
+
+        const father =
+            members[
+                fatherId
+            ];
+
+
+        if (
+            !father
+        ) {
+
+            break;
+
+        }
+
+
+        chain.push(
+            father
+        );
+
+
+        currentId =
+            fatherId;
+
+    }
+
+
+    return chain;
+
+}
+
+
+/* =========================================================
    GET CHILDREN
    ========================================================= */
 
@@ -1420,11 +2288,17 @@ function getChildren(
     parentId
 ) {
 
-    return Array.from(
-        childrenOf[
-            parentId
-        ] || []
-    )
+    const childIds =
+        Array.from(
+            childrenOf[
+                String(
+                    parentId
+                )
+            ] || []
+        );
+
+
+    return childIds
         .map(
             childId =>
                 members[
@@ -1433,1193 +2307,481 @@ function getChildren(
         )
         .filter(
             Boolean
+        )
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                compareIds(
+                    a.id,
+                    b.id
+                )
         );
 
 }
 
 
 /* =========================================================
-   SEARCH RESULTS CONTAINER
+   FATHER RELATIONSHIP LABEL
    ========================================================= */
 
-function createSearchResultsContainer() {
-
-    if (
-        !searchInput
-    ) {
-
-        return null;
-
-    }
-
-
-    const existing =
-        document.getElementById(
-            "familySearchResults"
-        );
-
-
-    if (existing) {
-
-        return existing;
-
-    }
-
-
-    const container =
-        document.createElement(
-            "div"
-        );
-
-
-    container.id =
-        "familySearchResults";
-
-
-    container.className =
-        "family-search-results";
-
-
-    const searchField =
-        searchInput.closest(
-            ".search-field"
-        );
-
-
-    if (searchField) {
-
-        searchField.appendChild(
-            container
-        );
-
-    } else if (
-        searchInput.parentElement
-    ) {
-
-        searchInput.parentElement.appendChild(
-            container
-        );
-
-    }
-
-
-    return container;
-
-}
-
-
-searchResults =
-    createSearchResultsContainer();
-
-
-/* =========================================================
-   CREATE SEARCH RESULT
-   =========================================================
-
-   USER SEES ONLY:
-
-   NAME
-   FATHER NAME
-
-   FAMILY ID IS NOT SHOWN.
-   GENERATION IS NOT SHOWN.
-
-   ID IS ONLY STORED INTERNALLY.
-   ========================================================= */
-
-function createSearchResult(
-    person
+function getFatherRelationshipLabel(
+    index
 ) {
 
-    const result =
-        document.createElement(
-            "button"
+    if (
+        index ===
+        0
+    ) {
+
+        return "Father";
+
+    }
+
+
+    if (
+        index ===
+        1
+    ) {
+
+        return "Grandfather";
+
+    }
+
+
+    if (
+        index ===
+        2
+    ) {
+
+        return "Great-grandfather";
+
+    }
+
+
+    return (
+        "Great-".repeat(
+            index - 2
+        ) +
+        "grandfather"
+    );
+
+}
+
+
+/* =========================================================
+   SHOW ALL FATHERS
+   ========================================================= */
+
+function showAllFathers() {
+
+    if (
+        !fathersModalBody ||
+        !fathersModal
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !selectedPerson
+    ) {
+
+        fathersModalBody.innerHTML = `
+
+            <p class="modal-eyebrow">
+
+                ROY BARI
+
+            </p>
+
+
+            <h2 id="fathersModalTitle">
+
+                Fathers
+
+            </h2>
+
+
+            <p class="modal-description">
+
+                Select a family member first
+                to view their paternal lineage.
+
+            </p>
+
+        `;
+
+
+        fathersModal.classList.add(
+            "open"
         );
 
 
-    result.type =
-        "button";
+        if (
+            fathersModalClose
+        ) {
+
+            fathersModalClose.focus();
+
+        }
 
 
-    result.className =
-        "family-search-result";
+        return;
+
+    }
 
 
-    /*
-       Store exact unique ID internally.
-    */
+    /* =====================================================
+       GET COMPLETE FATHER CHAIN
+       ===================================================== */
 
-    result.dataset.personId =
-        String(
-            person.id
+    const fathers =
+        buildFatherChain(
+            selectedPerson.id
         );
 
 
-    const name =
-        person.name ||
-        "Unknown";
+    /* =====================================================
+       NO FATHERS
+       ===================================================== */
+
+    if (
+        fathers.length ===
+        0
+    ) {
+
+        fathersModalBody.innerHTML = `
+
+            <p class="modal-eyebrow">
+
+                ROY BARI
+
+            </p>
 
 
-    const father =
-        getFather(
-            person.id
+            <h2 id="fathersModalTitle">
+
+                Fathers
+
+            </h2>
+
+
+            <p class="modal-description">
+
+                No recorded paternal ancestor
+                was found for
+
+                <strong>
+
+                    ${escapeHTML(
+                        selectedPerson.name ||
+                        "Unknown"
+                    )}
+
+                </strong>.
+
+            </p>
+
+        `;
+
+
+        fathersModal.classList.add(
+            "open"
         );
 
 
-    const fatherName =
-        father?.name ||
-        "Father information unavailable";
+        if (
+            fathersModalClose
+        ) {
+
+            fathersModalClose.focus();
+
+        }
 
 
-    result.innerHTML = `
+        return;
 
-        <span class="family-search-result-name">
+    }
 
-            ${escapeHTML(
-                name
-            )}
 
-        </span>
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
-        <span class="family-search-result-father">
+    let html = `
 
-            Father:
+        <p class="modal-eyebrow">
+
+            ROY BARI
+
+        </p>
+
+
+        <h2 id="fathersModalTitle">
+
+            Fathers
+
+        </h2>
+
+
+        <p class="modal-description">
+
+            Paternal lineage of
 
             <strong>
 
                 ${escapeHTML(
-                    fatherName
+                    selectedPerson.name ||
+                    "Unknown"
                 )}
 
             </strong>
 
-        </span>
+        </p>
 
     `;
 
 
     /* =====================================================
-       SEARCH RESULT CLICK
+       FATHER RECORDS
        ===================================================== */
 
-    result.addEventListener(
-        "click",
-        event => {
+    fathers.forEach(
+        (
+            father,
+            index
+        ) => {
 
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            /*
-               IMPORTANT:
-
-               DO NOT use:
-
-               showPerson(person)
-
-               here.
-
-               We only navigate to
-               the exact tree card.
-            */
-
-            goToPerson(
-                person
-            );
-
-        }
-    );
-
-
-    return result;
-
-}
-
-
-/* =========================================================
-   SHOW SEARCH RESULTS
-   ========================================================= */
-
-function showSearchResults(
-    results
-) {
-
-    if (
-        !searchResults
-    ) {
-
-        return;
-
-    }
-
-
-    searchResults.innerHTML =
-        "";
-
-
-    /* =====================================================
-       NO RESULT
-       ===================================================== */
-
-    if (
-        results.length === 0
-    ) {
-
-        const noResult =
-            document.createElement(
-                "div"
-            );
-
-
-        noResult.className =
-            "family-search-no-result";
-
-
-        noResult.textContent =
-            "No family member found.";
-
-
-        searchResults.appendChild(
-            noResult
-        );
-
-
-        searchResults.style.display =
-            "block";
-
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       ALL RESULTS
-       ===================================================== */
-
-    results.forEach(
-        person => {
-
-            const result =
-                createSearchResult(
-                    person
+            const relationship =
+                getFatherRelationshipLabel(
+                    index
                 );
 
 
-            searchResults.appendChild(
-                result
-            );
+            html += `
 
-        }
-    );
+                <div class="father-record">
 
+                    <div class="father-number">
 
-    searchResults.style.display =
-        "block";
+                        ${index + 1}
 
-}
+                    </div>
 
 
-/* =========================================================
-   CLEAR SEARCH RESULTS
-   ========================================================= */
+                    <div class="father-information">
 
-function clearSearchResults() {
+                        <p class="modal-eyebrow">
 
-    document
-        .querySelectorAll(
-            ".person-card"
-        )
-        .forEach(
-            card => {
+                            ${escapeHTML(
+                                relationship
+                            )}
 
-                card.classList.remove(
-                    "is-match"
-                );
-
-                card.classList.remove(
-                    "search-selected"
-                );
-
-            }
-        );
+                        </p>
 
 
-    if (
-        searchResults
-    ) {
+                        <h3>
 
-        searchResults.innerHTML =
-            "";
+                            ${escapeHTML(
+                                father.name ||
+                                "Unknown"
+                            )}
 
-        searchResults.style.display =
-            "none";
-
-    }
-
-}
+                        </h3>
 
 
-/* =========================================================
-   SEARCH INPUT
-   ========================================================= */
+                        <div class="person-data">
 
-if (
-    searchInput
-) {
-
-    searchInput.addEventListener(
-        "input",
-        () => {
-
-            const query =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
+            `;
 
 
             /* =================================================
-               CLEAR OLD HIGHLIGHTS
+               FIXED FIELD ORDER
+
+               ALWAYS:
+
+               ID
+               Generation
+               Father ID
+               Created At
+               Updated At
                ================================================= */
 
-            document
-                .querySelectorAll(
-                    ".person-card"
+            const standardFields = [
+
+                {
+                    key:
+                        "id",
+
+                    label:
+                        "ID",
+
+                    value:
+                        father.id
+
+                },
+
+                {
+                    key:
+                        "generation",
+
+                    label:
+                        "Generation",
+
+                    value:
+                        father.generation
+
+                },
+
+                {
+                    key:
+                        "fatherId",
+
+                    label:
+                        "Father ID",
+
+                    value:
+                        father.fatherId ??
+                        getFatherId(
+                            father.id
+                        )
+
+                },
+
+                {
+                    key:
+                        "createdAt",
+
+                    label:
+                        "Created At",
+
+                    value:
+                        father.createdAt
+
+                },
+
+                {
+                    key:
+                        "updatedAt",
+
+                    label:
+                        "Updated At",
+
+                    value:
+                        father.updatedAt
+
+                }
+
+            ];
+
+
+            standardFields.forEach(
+                field => {
+
+                    html +=
+                        createDataRow(
+                            field.label,
+                            field.value
+                        );
+
+                }
+            );
+
+
+            /* =================================================
+               ADDITIONAL CUSTOM FIELDS
+
+               Keep them after the standard fields.
+               ================================================= */
+
+            const standardKeys =
+                new Set(
+                    standardFields.map(
+                        field =>
+                            field.key
+                    )
+                );
+
+
+            Object.keys(
+                father
+            )
+                .filter(
+                    key =>
+                        !standardKeys.has(
+                            key
+                        ) &&
+                        key !== "name"
+                )
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+                        a.localeCompare(
+                            b
+                        )
                 )
                 .forEach(
-                    card => {
+                    key => {
 
-                        card.classList.remove(
-                            "is-match"
-                        );
-
-                        card.classList.remove(
-                            "search-selected"
-                        );
-
-                    }
-                );
-
-
-            /* =================================================
-               CLEAR OLD RESULTS
-               ================================================= */
-
-            if (
-                searchResults
-            ) {
-
-                searchResults.innerHTML =
-                    "";
-
-                searchResults.style.display =
-                    "none";
-
-            }
-
-
-            /* =================================================
-               EMPTY
-               ================================================= */
-
-            if (
-                !query
-            ) {
-
-                return;
-
-            }
-
-
-            /* =================================================
-               FIND ALL MATCHES
-               ================================================= */
-
-            const results =
-                Object.values(
-                    members
-                )
-                    .filter(
-                        person => {
-
-                            const name =
-                                String(
-                                    person.name ||
-                                    ""
-                                )
-                                    .toLowerCase();
-
-
-                            const id =
-                                String(
-                                    person.id ||
-                                    ""
-                                )
-                                    .toLowerCase();
-
-
-                            /*
-                               Search by:
-
-                               Name
-                               OR
-                               Family ID
-
-                               Family ID remains hidden
-                               from the results.
-                            */
-
-                            return (
-                                name.includes(
-                                    query
-                                ) ||
-                                id.includes(
-                                    query
-                                )
-                            );
-
-                        }
-                    )
-                    .sort(
-                        (a, b) => {
-
-                            const nameA =
-                                String(
-                                    a.name ||
-                                    ""
-                                );
-
-
-                            const nameB =
-                                String(
-                                    b.name ||
-                                    ""
-                                );
-
-
-                            const nameCompare =
-                                nameA.localeCompare(
-                                    nameB
-                                );
-
-
-                            if (
-                                nameCompare !== 0
-                            ) {
-
-                                return nameCompare;
-
-                            }
-
-
-                            /*
-                               If same name,
-                               sort internally by ID.
-
-                               Both remain separate.
-                            */
-
-                            return String(
-                                a.id
-                            ).localeCompare(
-                                String(
-                                    b.id
+                        html +=
+                            createDataRow(
+                                formatFieldName(
+                                    key
                                 ),
-                                undefined,
-                                {
-                                    numeric:
-                                        true
-                                }
+                                father[
+                                    key
+                                ]
                             );
 
-                        }
-                    );
-
-
-            /* =================================================
-               HIGHLIGHT ALL MATCHING CARDS
-               ================================================= */
-
-            results.forEach(
-                person => {
-
-                    const card =
-                        findCard(
-                            person.id
-                        );
-
-
-                    if (
-                        card
-                    ) {
-
-                        card.classList.add(
-                            "is-match"
-                        );
-
                     }
-
-                }
-            );
-
-
-            /* =================================================
-               SHOW ALL RESULTS
-
-               IMPORTANT:
-
-               Even if there is only one result,
-               we still show the result.
-
-               User decides which person to open.
-            */
-
-            showSearchResults(
-                results
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       FOCUS
-
-       If search already contains text,
-       rebuild the results.
-    ===================================================== */
-
-    searchInput.addEventListener(
-        "focus",
-        () => {
-
-            const query =
-                searchInput.value
-                    .trim();
-
-
-            if (
-                !query
-            ) {
-
-                return;
-
-            }
-
-
-            searchInput.dispatchEvent(
-                new Event(
-                    "input"
-                )
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       ESCAPE SEARCH
-       ===================================================== */
-
-    searchInput.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key ===
-                "Escape"
-            ) {
-
-                clearSearchResults();
-
-                searchInput.blur();
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   GO TO EXACT PERSON
-   =========================================================
-
-   THIS IS THE IMPORTANT FIX.
-
-   We do NOT use:
-
-       scrollIntoView()
-
-   because the tree has:
-
-       treeWrapper
-       treeStage
-       transform: scale()
-
-   We calculate the exact visual difference and
-   compensate for zoom.
-   ========================================================= */
-
-function goToPerson(
-    person
-) {
-
-    if (
-        !person
-    ) {
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       EXACT UNIQUE ID
-       ===================================================== */
-
-    const personId =
-        String(
-            person.id
-        );
-
-
-    selectedPersonId =
-        personId;
-
-
-    /* =====================================================
-       FIND EXACT CARD
-       ===================================================== */
-
-    const card =
-        findCard(
-            personId
-        );
-
-
-    if (
-        !card
-    ) {
-
-        console.error(
-            "Exact person card not found:",
-            personId
-        );
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       REMOVE OLD SEARCH HIGHLIGHT
-       ===================================================== */
-
-    document
-        .querySelectorAll(
-            ".person-card"
-        )
-        .forEach(
-            item => {
-
-                item.classList.remove(
-                    "search-selected"
                 );
 
-            }
-        );
 
+            html += `
 
-    /* =====================================================
-       HIGHLIGHT EXACT CARD
-       ===================================================== */
+                        </div>
 
-    card.classList.add(
-        "search-selected"
-    );
+                    </div>
 
+                </div>
 
-    /* =====================================================
-       WAIT FOR LAYOUT
-       ===================================================== */
-
-    requestAnimationFrame(
-        () => {
-
-            requestAnimationFrame(
-                () => {
-
-                    scrollToExactPerson(
-                        card
-                    );
-
-                }
-            );
+            `;
 
         }
     );
 
 
-    /* =====================================================
-       KEEP SEARCH TEXT
-
-       Example:
-
-       MONA
-
-       stays in input.
-    */
+    fathersModalBody.innerHTML =
+        html;
 
 
-    /* =====================================================
-       HIDE DROPDOWN AFTER CLICK
-       ===================================================== */
+    fathersModal.classList.add(
+        "open"
+    );
+
 
     if (
-        searchResults
+        fathersModalClose
     ) {
 
-        searchResults.style.display =
-            "none";
+        fathersModalClose.focus();
 
     }
-
-
-    /* =====================================================
-       KEEP HIGHLIGHT FOR 4 SECONDS
-       ===================================================== */
-
-    setTimeout(
-        () => {
-
-            card.classList.remove(
-                "search-selected"
-            );
-
-        },
-        4000
-    );
 
 }
 
 
 /* =========================================================
-   SCROLL TO EXACT PERSON
+   ZOOM
    ========================================================= */
 
-function scrollToExactPerson(
-    card
-) {
-
-    if (
-        !card ||
-        !treeWrapper
-    ) {
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       GET CURRENT POSITIONS
-       ===================================================== */
-
-    const cardRect =
-        card.getBoundingClientRect();
-
-
-    const wrapperRect =
-        treeWrapper.getBoundingClientRect();
-
-
-    /* =====================================================
-       CARD CENTER
-       ===================================================== */
-
-    const cardCenterX =
-        cardRect.left +
-        (
-            cardRect.width /
-            2
-        );
-
-
-    const cardCenterY =
-        cardRect.top +
-        (
-            cardRect.height /
-            2
-        );
-
-
-    /* =====================================================
-       WRAPPER CENTER
-       ===================================================== */
-
-    const wrapperCenterX =
-        wrapperRect.left +
-        (
-            treeWrapper.clientWidth /
-            2
-        );
-
-
-    const wrapperCenterY =
-        wrapperRect.top +
-        (
-            treeWrapper.clientHeight /
-            2
-        );
-
-
-    /* =====================================================
-       VISUAL DISTANCE
-       ===================================================== */
-
-    const visualDifferenceX =
-        cardCenterX -
-        wrapperCenterX;
-
-
-    const visualDifferenceY =
-        cardCenterY -
-        wrapperCenterY;
-
-
-    /*
-       IMPORTANT:
-
-       The treeStage uses:
-
-           transform: scale(zoom)
-
-       Therefore the visual distance is larger/smaller
-       than the actual scroll distance.
-
-       Divide by zoom.
-    */
-
-    const scrollDifferenceX =
-        visualDifferenceX /
-        zoom;
-
-
-    const scrollDifferenceY =
-        visualDifferenceY /
-        zoom;
-
-
-    /* =====================================================
-       TARGET SCROLL
-       ===================================================== */
-
-    let targetLeft =
-        treeWrapper.scrollLeft +
-        scrollDifferenceX;
-
-
-    let targetTop =
-        treeWrapper.scrollTop +
-        scrollDifferenceY;
-
-
-    /* =====================================================
-       SCROLL LIMITS
-       ===================================================== */
-
-    const maxLeft =
-        Math.max(
-            0,
-            treeWrapper.scrollWidth -
-            treeWrapper.clientWidth
-        );
-
-
-    const maxTop =
-        Math.max(
-            0,
-            treeWrapper.scrollHeight -
-            treeWrapper.clientHeight
-        );
-
-
-    /* =====================================================
-       KEEP TARGET INSIDE RANGE
-       ===================================================== */
-
-    targetLeft =
-        Math.max(
-            0,
-            Math.min(
-                targetLeft,
-                maxLeft
-            )
-        );
-
-
-    targetTop =
-        Math.max(
-            0,
-            Math.min(
-                targetTop,
-                maxTop
-            )
-        );
-
-
-
-    /* =====================================================
-       SCROLL
-       ===================================================== */
-
-    treeWrapper.scrollTo({
-
-        left:
-            targetLeft,
-
-        top:
-            targetTop,
-
-        behavior:
-            "smooth"
-
-    });
-
-
-    /* =====================================================
-       SECOND CORRECTION
-
-       After smooth scrolling, check the exact card again.
-    ===================================================== */
-
-    setTimeout(
-        () => {
-
-            correctPersonPosition(
-                card
-            );
-
-        },
-        700
-    );
-
-}
-
-
-/* =========================================================
-   CORRECT PERSON POSITION
-   ========================================================= */
-
-function correctPersonPosition(
-    card
-) {
-
-    if (
-        !card ||
-        !treeWrapper
-    ) {
-
-        return;
-
-    }
-
-
-    const cardRect =
-        card.getBoundingClientRect();
-
-
-    const wrapperRect =
-        treeWrapper.getBoundingClientRect();
-
-
-    const cardCenterX =
-        cardRect.left +
-        (
-            cardRect.width /
-            2
-        );
-
-
-    const cardCenterY =
-        cardRect.top +
-        (
-            cardRect.height /
-            2
-        );
-
-
-    const wrapperCenterX =
-        wrapperRect.left +
-        (
-            treeWrapper.clientWidth /
-            2
-        );
-
-
-    const wrapperCenterY =
-        wrapperRect.top +
-        (
-            treeWrapper.clientHeight /
-            2
-        );
-
-
-    const differenceX =
-        cardCenterX -
-        wrapperCenterX;
-
-
-    const differenceY =
-        cardCenterY -
-        wrapperCenterY;
-
-
-    /*
-       If the card is already close enough,
-       don't move anything.
-    */
-
-    if (
-        Math.abs(
-            differenceX
-        ) < 8 &&
-        Math.abs(
-            differenceY
-        ) < 8
-    ) {
-
-        return;
-
-    }
-
-
-    const correctionX =
-        differenceX /
-        zoom;
-
-
-    const correctionY =
-        differenceY /
-        zoom;
-
-
-    let targetLeft =
-        treeWrapper.scrollLeft +
-        correctionX;
-
-
-    let targetTop =
-        treeWrapper.scrollTop +
-        correctionY;
-
-
-    const maxLeft =
-        Math.max(
-            0,
-            treeWrapper.scrollWidth -
-            treeWrapper.clientWidth
-        );
-
-
-    const maxTop =
-        Math.max(
-            0,
-            treeWrapper.scrollHeight -
-            treeWrapper.clientHeight
-        );
-
-
-    targetLeft =
-        Math.max(
-            0,
-            Math.min(
-                targetLeft,
-                maxLeft
-            )
-        );
-
-
-    targetTop =
-        Math.max(
-            0,
-            Math.min(
-                targetTop,
-                maxTop
-            )
-        );
-
-
-    treeWrapper.scrollTo({
-
-        left:
-            targetLeft,
-
-        top:
-            targetTop,
-
-        behavior:
-            "smooth"
-
-    });
-
-}
-
-
-/* =========================================================
-   CLOSE SEARCH WHEN CLICKING OUTSIDE
-   ========================================================= */
-
-document.addEventListener(
-    "click",
-    event => {
-
-        if (
-            !searchInput
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            event.target.closest(
-                ".search-field"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            searchResults
-        ) {
-
-            searchResults.innerHTML =
-                "";
-
-            searchResults.style.display =
-                "none";
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   APPLY ZOOM
-   ========================================================= */
-
-function applyZoom(
-    redraw = true
-) {
+function applyZoom() {
 
     if (
         !treeStage
@@ -2630,12 +2792,28 @@ function applyZoom(
     }
 
 
+    zoom =
+        Math.max(
+            MIN_ZOOM,
+            Math.min(
+                MAX_ZOOM,
+                zoom
+            )
+        );
+
+
     treeStage.style.transform =
         `scale(${zoom})`;
 
 
     treeStage.style.transformOrigin =
         "top left";
+
+
+    treeStage.dataset.zoom =
+        String(
+            zoom
+        );
 
 
     if (
@@ -2650,25 +2828,13 @@ function applyZoom(
     }
 
 
-    if (
-        redraw
-    ) {
+    requestAnimationFrame(
+        () => {
 
-        requestAnimationFrame(
-            () => {
+            drawConnections();
 
-                requestAnimationFrame(
-                    () => {
-
-                        drawConnections();
-
-                    }
-                );
-
-            }
-        );
-
-    }
+        }
+    );
 
 }
 
@@ -2686,13 +2852,12 @@ if (
         () => {
 
             zoom =
-                Math.min(
-                    MAX_ZOOM,
-                    Number(
-                        (
-                            zoom +
-                            ZOOM_STEP
-                        ).toFixed(2)
+                Number(
+                    (
+                        zoom +
+                        ZOOM_STEP
+                    ).toFixed(
+                        2
                     )
                 );
 
@@ -2718,13 +2883,12 @@ if (
         () => {
 
             zoom =
-                Math.max(
-                    MIN_ZOOM,
-                    Number(
-                        (
-                            zoom -
-                            ZOOM_STEP
-                        ).toFixed(2)
+                Number(
+                    (
+                        zoom -
+                        ZOOM_STEP
+                    ).toFixed(
+                        2
                     )
                 );
 
@@ -2749,11 +2913,351 @@ if (
         "click",
         () => {
 
-            zoom = 1;
+            zoom =
+                1;
+
 
             applyZoom();
 
         }
+    );
+
+}
+
+
+/* =========================================================
+   DRAW TREE CONNECTIONS
+   =========================================================
+   The SVG and cards are both inside
+   treeStage.
+
+   Coordinates are converted back from
+   viewport coordinates into stage
+   coordinates.
+
+   This keeps lines aligned after zoom.
+   ========================================================= */
+
+function drawConnections() {
+
+    if (
+        !treeStage ||
+        !treeLines
+    ) {
+
+        return;
+
+    }
+
+
+    treeLines.innerHTML =
+        "";
+
+
+    const scale =
+        zoom >
+        0
+            ? zoom
+            : 1;
+
+
+    const stageRect =
+        treeStage.getBoundingClientRect();
+
+
+    const width =
+        Math.max(
+            treeStage.scrollWidth,
+            treeStage.offsetWidth,
+            1
+        );
+
+
+    const height =
+        Math.max(
+            treeStage.scrollHeight,
+            treeStage.offsetHeight,
+            1
+        );
+
+
+    treeLines.setAttribute(
+        "width",
+        String(
+            width
+        )
+    );
+
+
+    treeLines.setAttribute(
+        "height",
+        String(
+            height
+        )
+    );
+
+
+    treeLines.setAttribute(
+        "viewBox",
+        `0 0 ${width} ${height}`
+    );
+
+
+    Object.keys(
+        parentsOf
+    ).forEach(
+        childId => {
+
+            drawParentToChild(
+                childId,
+                stageRect,
+                scale
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DRAW PARENT → CHILD
+   ========================================================= */
+
+function drawParentToChild(
+    childId,
+    stageRect,
+    scale
+) {
+
+    const parentIds =
+        Array.from(
+            parentsOf[
+                childId
+            ] || []
+        );
+
+
+    if (
+        parentIds.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    const childCard =
+        findCard(
+            childId
+        );
+
+
+    if (
+        !childCard
+    ) {
+
+        return;
+
+    }
+
+
+    let parentX =
+        0;
+
+    let parentY =
+        0;
+
+    let parentCount =
+        0;
+
+
+    parentIds.forEach(
+        parentId => {
+
+            const parentCard =
+                findCard(
+                    parentId
+                );
+
+
+            if (
+                !parentCard
+            ) {
+
+                return;
+
+            }
+
+
+            const rect =
+                parentCard.getBoundingClientRect();
+
+
+            const x =
+                (
+                    rect.left -
+                    stageRect.left
+                ) /
+                scale;
+
+
+            const y =
+                (
+                    rect.top -
+                    stageRect.top
+                ) /
+                scale;
+
+
+            const width =
+                rect.width /
+                scale;
+
+
+            const height =
+                rect.height /
+                scale;
+
+
+            parentX +=
+                x +
+                width / 2;
+
+
+            parentY =
+                Math.max(
+                    parentY,
+                    y +
+                    height
+                );
+
+
+            parentCount++;
+
+        }
+    );
+
+
+    if (
+        parentCount ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    parentX /=
+        parentCount;
+
+
+    const childRect =
+        childCard.getBoundingClientRect();
+
+
+    const childX =
+        (
+            childRect.left -
+            stageRect.left
+        ) /
+        scale +
+        (
+            childRect.width /
+            scale
+        ) / 2;
+
+
+    const childY =
+        (
+            childRect.top -
+            stageRect.top
+        ) /
+        scale;
+
+
+    if (
+        childY <=
+        parentY
+    ) {
+
+        return;
+
+    }
+
+
+    createCurve(
+        parentX,
+        parentY,
+        childX,
+        childY
+    );
+
+}
+
+
+/* =========================================================
+   CREATE SVG CURVE
+   ========================================================= */
+
+function createCurve(
+    x1,
+    y1,
+    x2,
+    y2
+) {
+
+    if (
+        !treeLines
+    ) {
+
+        return;
+
+    }
+
+
+    const distance =
+        y2 -
+        y1;
+
+
+    const middleY =
+        y1 +
+        Math.max(
+            25,
+            distance * 0.5
+        );
+
+
+    const path =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+        );
+
+
+    path.setAttribute(
+        "d",
+        `
+            M ${x1} ${y1}
+
+            C
+            ${x1} ${middleY},
+            ${x2} ${middleY},
+            ${x2} ${y2}
+        `
+    );
+
+
+    path.classList.add(
+        "tree-line"
+    );
+
+
+    treeLines.appendChild(
+        path
     );
 
 }
@@ -2901,21 +3405,28 @@ document.addEventListener(
         }
 
 
-        clearSearchResults();
+        if (
+            searchResults
+        ) {
+
+            searchResults.style.display =
+                "none";
+
+        }
 
     }
 );
 
 
 /* =========================================================
-   SHOW FATHERS
+   SHOW FATHERS BUTTON
    ========================================================= */
 
 if (
-    showFathers
+    showFathersButton
 ) {
 
-    showFathers.addEventListener(
+    showFathersButton.addEventListener(
         "click",
         showAllFathers
     );
@@ -2924,358 +3435,7 @@ if (
 
 
 /* =========================================================
-   SHOW FATHER LINEAGE
-   ========================================================= */
-
-function showAllFathers() {
-
-    /* =====================================================
-       NO SELECTED PERSON
-       ===================================================== */
-
-    if (
-        !selectedPersonId
-    ) {
-
-        fathersModalBody.innerHTML = `
-
-            <p class="modal-eyebrow">
-
-                ROY BARI
-
-            </p>
-
-            <h2 id="fathersModalTitle">
-
-                Father Lineage
-
-            </h2>
-
-            <p>
-
-                Click a family member first.
-
-            </p>
-
-        `;
-
-
-        fathersModal.classList.add(
-            "open"
-        );
-
-
-        if (
-            fathersModalClose
-        ) {
-
-            fathersModalClose.focus();
-
-        }
-
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       START FROM EXACT PERSON
-       ===================================================== */
-
-    let currentId =
-        String(
-            selectedPersonId
-        );
-
-
-    const lineage = [];
-
-
-    /* =====================================================
-       FOLLOW FATHER CHAIN
-       ===================================================== */
-
-    while (
-        currentId.length > 1
-    ) {
-
-        const fatherId =
-            currentId.slice(
-                0,
-                -1
-            );
-
-
-        if (
-            !members[
-                fatherId
-            ]
-        ) {
-
-            break;
-
-        }
-
-
-        const father =
-            members[
-                fatherId
-            ];
-
-
-        lineage.push(
-            father
-        );
-
-
-        currentId =
-            fatherId;
-
-    }
-
-
-    /* =====================================================
-       NO FATHERS
-       ===================================================== */
-
-    if (
-        lineage.length === 0
-    ) {
-
-        fathersModalBody.innerHTML = `
-
-            <p class="modal-eyebrow">
-
-                ROY BARI
-
-            </p>
-
-            <h2 id="fathersModalTitle">
-
-                Father Lineage
-
-            </h2>
-
-            <p>
-
-                No father information found for
-
-                <strong>
-
-                    ${escapeHTML(
-                        members[
-                            selectedPersonId
-                        ]?.name ||
-                        selectedPersonId
-                    )}
-
-                </strong>
-
-            </p>
-
-        `;
-
-
-        fathersModal.classList.add(
-            "open"
-        );
-
-
-        if (
-            fathersModalClose
-        ) {
-
-            fathersModalClose.focus();
-
-        }
-
-
-        return;
-
-    }
-
-
-    const selectedPerson =
-        members[
-            selectedPersonId
-        ];
-
-
-    /* =====================================================
-       HEADER
-       ===================================================== */
-
-    let html = `
-
-        <p class="modal-eyebrow">
-
-            ROY BARI
-
-        </p>
-
-        <h2 id="fathersModalTitle">
-
-            Father Lineage
-
-        </h2>
-
-        <p class="modal-description">
-
-            Ancestors of
-
-            <strong>
-
-                ${escapeHTML(
-                    selectedPerson?.name ||
-                    selectedPersonId
-                )}
-
-            </strong>
-
-        </p>
-
-    `;
-
-
-    /* =====================================================
-       LINEAGE
-       ===================================================== */
-
-    lineage.forEach(
-        (father, index) => {
-
-            let relationship;
-
-
-            if (
-                index === 0
-            ) {
-
-                relationship =
-                    "Father";
-
-            } else if (
-                index === 1
-            ) {
-
-                relationship =
-                    "Grandfather";
-
-            } else {
-
-                relationship =
-                    "Great-".repeat(
-                        index - 1
-                    ) +
-                    "Grandfather";
-
-            }
-
-
-            html += `
-
-                <div class="father-record">
-
-                    <div class="father-number">
-
-                        ${index + 1}
-
-                    </div>
-
-                    <div class="father-information">
-
-                        <p class="modal-section-label">
-
-                            ${escapeHTML(
-                                relationship
-                            )}
-
-                        </p>
-
-            `;
-
-
-            Object.entries(
-                father
-            ).forEach(
-                ([key, value]) => {
-
-                    if (
-                        key === "id"
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    html += `
-
-                        <div class="data-row">
-
-                            <span class="data-label">
-
-                                ${escapeHTML(
-                                    formatFieldName(
-                                        key
-                                    )
-                                )}
-
-                            </span>
-
-                            <span class="data-value">
-
-                                ${escapeHTML(
-                                    formatValue(
-                                        value
-                                    )
-                                )}
-
-                            </span>
-
-                        </div>
-
-                    `;
-
-                }
-            );
-
-
-            html += `
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-    );
-
-
-    fathersModalBody.innerHTML =
-        html;
-
-
-    fathersModal.classList.add(
-        "open"
-    );
-
-
-    if (
-        fathersModalClose
-    ) {
-
-        fathersModalClose.focus();
-
-    }
-
-}
-
-
-/* =========================================================
-   DRAG / PAN
+   MOUSE PAN
    ========================================================= */
 
 let isPanning =
@@ -3306,23 +3466,20 @@ if (
         "mousedown",
         event => {
 
-            /*
-               Don't pan when clicking:
-
-               person card
-               button
-               input
-            */
-
             if (
                 event.target.closest(
                     ".person-card"
-                ) ||
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            if (
                 event.target.closest(
-                    "button"
-                ) ||
-                event.target.closest(
-                    "input"
+                    "button, input"
                 )
             ) {
 
@@ -3355,6 +3512,9 @@ if (
             scrollStartY =
                 treeWrapper.scrollTop;
 
+
+            event.preventDefault();
+
         }
     );
 
@@ -3370,7 +3530,8 @@ window.addEventListener(
     event => {
 
         if (
-            !isPanning
+            !isPanning ||
+            !treeWrapper
         ) {
 
             return;
@@ -3451,12 +3612,17 @@ if (
             if (
                 event.target.closest(
                     ".person-card"
-                ) ||
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            if (
                 event.target.closest(
-                    "button"
-                ) ||
-                event.target.closest(
-                    "input"
+                    "button, input"
                 )
             ) {
 
@@ -3467,6 +3633,15 @@ if (
 
             const touch =
                 event.touches[0];
+
+
+            if (
+                !touch
+            ) {
+
+                return;
+
+            }
 
 
             touchStartX =
@@ -3486,10 +3661,21 @@ if (
 
         },
         {
-            passive: true
+            passive:
+                true
         }
     );
 
+}
+
+
+/* =========================================================
+   TOUCH MOVE
+   ========================================================= */
+
+if (
+    treeWrapper
+) {
 
     treeWrapper.addEventListener(
         "touchmove",
@@ -3498,12 +3684,17 @@ if (
             if (
                 event.target.closest(
                     ".person-card"
-                ) ||
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            if (
                 event.target.closest(
-                    "button"
-                ) ||
-                event.target.closest(
-                    "input"
+                    "button, input"
                 )
             ) {
 
@@ -3514,6 +3705,15 @@ if (
 
             const touch =
                 event.touches[0];
+
+
+            if (
+                !touch
+            ) {
+
+                return;
+
+            }
 
 
             const dx =
@@ -3537,7 +3737,8 @@ if (
 
         },
         {
-            passive: true
+            passive:
+                true
         }
     );
 
@@ -3545,7 +3746,7 @@ if (
 
 
 /* =========================================================
-   REDRAW AFTER RESIZE
+   RESIZE
    ========================================================= */
 
 let resizeFrame =
@@ -3581,24 +3782,35 @@ window.addEventListener(
 
 
 /* =========================================================
-   REDRAW AFTER SCROLL
+   FONT LOADING
    ========================================================= */
 
 if (
-    treeWrapper
+    document.fonts &&
+    document.fonts.ready
 ) {
 
-    treeWrapper.addEventListener(
-        "scroll",
-        () => {
+    document.fonts.ready
+        .then(
+            () => {
 
-            drawConnections();
+                requestAnimationFrame(
+                    () => {
 
-        },
-        {
-            passive: true
-        }
-    );
+                        drawConnections();
+
+                    }
+                );
+
+            }
+        )
+        .catch(
+            () => {
+
+                /* Ignore font loading errors */
+
+            }
+        );
 
 }
 
@@ -3614,28 +3826,18 @@ function formatFieldName(
     return String(
         key
     )
-
         .replace(
             /([A-Z])/g,
             " $1"
         )
-
         .replace(
-            /[\_-]/g,
+            /[_-]/g,
             " "
         )
-
-        .replace(
-            /\s+/g,
-            " "
-        )
-
-        .trim()
-
         .replace(
             /^./,
-            char =>
-                char.toUpperCase()
+            character =>
+                character.toUpperCase()
         );
 
 }
@@ -3650,12 +3852,15 @@ function formatValue(
 ) {
 
     if (
-        value === null ||
-        value === undefined ||
-        value === ""
+        value ===
+            null ||
+        value ===
+            undefined ||
+        value ===
+            ""
     ) {
 
-        return "";
+        return "—";
 
     }
 
@@ -3665,15 +3870,24 @@ function formatValue(
        ===================================================== */
 
     if (
-        typeof value === "object" &&
-        typeof value.toDate === "function"
+        value &&
+        typeof value.toDate ===
+            "function"
     ) {
 
         try {
 
-            return value
-                .toDate()
-                .toLocaleString(
+            const date =
+                value.toDate();
+
+
+            if (
+                !Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+
+                return date.toLocaleString(
                     "en-IN",
                     {
                         day:
@@ -3696,14 +3910,11 @@ function formatValue(
                     }
                 );
 
-        } catch (
-            error
-        ) {
+            }
 
-            console.warn(
-                "Timestamp conversion failed:",
-                error
-            );
+        } catch {
+
+            /* Continue */
 
         }
 
@@ -3711,12 +3922,14 @@ function formatValue(
 
 
     /* =====================================================
-       SERIALIZED FIRESTORE TIMESTAMP
+       FIRESTORE SERIALIZED TIMESTAMP
        ===================================================== */
 
     if (
-        typeof value === "object" &&
-        value.seconds !== undefined
+        typeof value ===
+            "object" &&
+        value.seconds !==
+            undefined
     ) {
 
         try {
@@ -3782,14 +3995,9 @@ function formatValue(
 
             }
 
-        } catch (
-            error
-        ) {
+        } catch {
 
-            console.warn(
-                "Serialized timestamp conversion failed:",
-                error
-            );
+            /* Continue */
 
         }
 
@@ -3806,9 +4014,16 @@ function formatValue(
         )
     ) {
 
-        return value.join(
-            ", "
-        );
+        return value
+            .map(
+                item =>
+                    formatValue(
+                        item
+                    )
+            )
+            .join(
+                ", "
+            );
 
     }
 
@@ -3818,7 +4033,8 @@ function formatValue(
        ===================================================== */
 
     if (
-        typeof value === "object"
+        typeof value ===
+            "object"
     ) {
 
         try {
@@ -3838,10 +4054,6 @@ function formatValue(
     }
 
 
-    /* =====================================================
-       NORMAL
-       ===================================================== */
-
     return String(
         value
     );
@@ -3858,66 +4070,28 @@ function escapeHTML(
 ) {
 
     return String(
-        value ?? ""
+        value ??
+        ""
     )
-
         .replaceAll(
             "&",
             "&amp;"
         )
-
         .replaceAll(
             "<",
             "&lt;"
         )
-
         .replaceAll(
             ">",
             "&gt;"
         )
-
         .replaceAll(
             '"',
             "&quot;"
         )
-
         .replaceAll(
             "'",
             "&#039;"
-        );
-
-}
-
-
-/* =========================================================
-   CSS ESCAPE
-   ========================================================= */
-
-function cssEscape(
-    value
-) {
-
-    if (
-        window.CSS &&
-        typeof CSS.escape ===
-        "function"
-    ) {
-
-        return CSS.escape(
-            String(
-                value
-            )
-        );
-
-    }
-
-
-    return String(
-        value
-    )
-        .replace(
-            /["\\]/g,
-            "\\$&"
         );
 
 }
