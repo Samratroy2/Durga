@@ -19,7 +19,6 @@
         Roy Bari — Puja Events
     </title>
 
-
     <!-- =====================================================
          ADMIN CSS
          ===================================================== -->
@@ -29,7 +28,6 @@
         href="./css/admin.css"
     >
 
-
     <!-- =====================================================
          FONT AWESOME
          ===================================================== -->
@@ -38,7 +36,6 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
-
 
     <style>
 
@@ -146,6 +143,8 @@
         .form-group textarea {
 
             width: 100%;
+
+            box-sizing: border-box;
 
             padding: 13px 14px;
 
@@ -277,7 +276,7 @@
 
 
         /* =====================================================
-           URL REQUIRED NOTICE
+           FIELD HELP
            ===================================================== */
 
         .field-help {
@@ -423,8 +422,7 @@
            LIST HEADER
            ===================================================== */
 
-        .manager-list-card
-        .section-heading {
+        .manager-list-card .section-heading {
 
             display: flex;
 
@@ -439,8 +437,7 @@
         }
 
 
-        .manager-list-card
-        .section-heading > span {
+        .manager-list-card .section-heading > span {
 
             color: #8c715e;
 
@@ -942,795 +939,838 @@
 <body class="dashboard-page">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
 
-    <aside class="sidebar">
-
-
-        <!-- BRAND -->
-
-        <div class="sidebar-brand">
-
-            <div class="sidebar-logo">
-                🪔
-            </div>
+<aside class="sidebar">
 
 
-            <div class="sidebar-brand-text">
+    <!-- BRAND -->
 
-                <h2>
-                    Roy Bari
-                </h2>
+    <div class="sidebar-brand">
 
-                <span>
-                    Administration
-                </span>
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- MAIN -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- CONTENT -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <a
+            href="./events.html"
+            class="nav-item active"
+            aria-current="page"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- HOMEPAGE -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- INFORMATION -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- MEDIA & ARCHIVE -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- MORE -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+            id="changePasswordNav"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- =================================================
+         SIDEBAR BOTTOM
+         ================================================= -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
 
             </div>
 
         </div>
 
 
-        <!-- NAVIGATION -->
+        <button
+            id="logoutButton"
+            class="logout-button"
+            type="button"
+        >
 
-        <nav class="sidebar-nav">
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
 
 
-            <!-- MAIN -->
+    </div>
 
-            <div class="nav-section-title">
-                MAIN
+</aside>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+
+<main class="dashboard-main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+
+        <div class="topbar-left">
+
+            <span class="page-eyebrow">
+                CONTENT MANAGEMENT
+            </span>
+
+            <h1>
+                Puja Events
+            </h1>
+
+            <p>
+                Manage Durga Puja events and celebrations.
+            </p>
+
+        </div>
+
+
+        <!-- ADMIN USER -->
+
+        <div class="admin-user">
+
+            <div
+                class="user-avatar"
+                id="userAvatar"
+            >
+                A
             </div>
 
 
-            <a
-                href="./dashboard.html"
-                class="nav-item"
-            >
+            <div class="user-details">
 
-                <i class="fa-solid fa-display"></i>
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
                 <span>
-                    Dashboard
+                    Administrator
                 </span>
 
-            </a>
-
-
-            <!-- CONTENT -->
-
-            <div class="nav-section-title">
-                CONTENT
             </div>
 
+        </div>
 
-            <a
-                href="./family.html"
-                class="nav-item"
-            >
+    </header>
 
-                <i class="fa-solid fa-people-roof"></i>
 
-                <span>
-                    Family Tree
-                </span>
+    <!-- =================================================
+         EVENT MANAGEMENT
+         ================================================= -->
 
-            </a>
+    <section class="manager-layout">
 
 
-            <a
-                href="./events.html"
-                class="nav-item active"
-            >
+        <!-- =================================================
+             ADD / EDIT EVENT
+             ================================================= -->
 
-                <i class="fa-solid fa-calendar-days"></i>
+        <div class="manager-form-card">
 
-                <span>
-                    Puja Events
-                </span>
 
-            </a>
-
-
-            <a
-                href="./gallery.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-image"></i>
-
-                <span>
-                    Gallery
-                </span>
-
-            </a>
-
-
-            <!-- HOMEPAGE -->
-
-            <div class="nav-section-title">
-                HOMEPAGE
-            </div>
-
-
-            <a
-                href="./homepage-countdown.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-hourglass-half"></i>
-
-                <span>
-                    Homepage Countdown
-                </span>
-
-            </a>
-
-
-            <!-- MEDIA -->
-
-            <div class="nav-section-title">
-                MEDIA &amp; ARCHIVE
-            </div>
-
-
-            <a
-                href="./comparisons.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-code-compare"></i>
-
-                <span>
-                    Comparisons
-                </span>
-
-            </a>
-
-
-            <a
-                href="./idol-makers.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-user-gear"></i>
-
-                <span>
-                    Idol Makers
-                </span>
-
-            </a>
-
-
-            <a
-                href="./newspaper-articles.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-newspaper"></i>
-
-                <span>
-                    Newspaper Articles
-                </span>
-
-            </a>
-
-
-            <a
-                href="./old-pictures.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                <span>
-                    Old Pictures
-                </span>
-
-            </a>
-
-
-            <!-- MORE -->
-
-            <div class="nav-section-title">
-                MORE
-            </div>
-
-
-            <a
-                href="./memories.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-heart"></i>
-
-                <span>
-                    Memories
-                </span>
-
-            </a>
-
-
-            <a
-                href="./rituals.html"
-                class="nav-item"
-            >
-
-                <span class="nav-icon">
-                    ॐ
-                </span>
-
-                <span>
-                    Rituals
-                </span>
-
-            </a>
-
-
-            <!-- ADMIN -->
-
-            <div class="nav-section-title">
-                ADMIN
-            </div>
-
-
-            <a
-                href="./enquiries.html"
-                class="nav-item"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <span>
-                    Enquiries
-                </span>
-
-            </a>
-
-
-            <a
-                href="./activity.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Activity History
-                </span>
-
-            </a>
-
-
-            <a
-                href="./change-password.html"
-                class="nav-item"
-                id="changePasswordNav"
-            >
-
-                <i class="fa-solid fa-key"></i>
-
-                <span>
-                    Change Password
-                </span>
-
-            </a>
-
-
-        </nav>
-
-
-        <!-- SIDEBAR BOTTOM -->
-
-        <div class="sidebar-bottom">
-
-
-            <div class="sidebar-note">
-
-                <i class="fa-solid fa-lock"></i>
+            <div class="section-heading">
 
                 <div>
 
-                    <strong>
-                        Admin Access
-                    </strong>
+                    <span>
+                        PUJA EVENT
+                    </span>
 
-                    <small>
-                        Protected area
-                    </small>
+                    <h2 id="formTitle">
+                        Add Event
+                    </h2>
 
                 </div>
 
             </div>
 
 
-            <button
-                id="logoutButton"
-                class="logout-button"
-                type="button"
-            >
+            <form id="eventForm">
 
-                <i class="fa-solid fa-right-from-bracket"></i>
 
-                Logout
+                <!-- DOCUMENT ID -->
 
-            </button>
+                <input
+                    type="hidden"
+                    id="eventId"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- TITLE -->
+
+                    <div class="form-group">
+
+                        <label for="title">
+
+                            Title
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            required
+                            placeholder="Event title"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="date">
+
+                            Date
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TIME -->
+
+                    <div class="form-group">
+
+                        <label for="time">
+
+                            Time
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="time"
+                            id="time"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Stored as a readable time such as 7:00 PM.
+                        </span>
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+                        <label for="location">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            placeholder="Event location"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- ABOUT -->
+
+                    <div class="form-group full-width">
+
+                        <label for="about">
+                            About
+                        </label>
+
+                        <textarea
+                            id="about"
+                            rows="4"
+                            placeholder="Explain the event..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group full-width">
+
+                        <label>
+
+                            Category
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="category-box">
+
+
+                            <label class="category-option">
+
+                                <input
+                                    type="checkbox"
+                                    name="category"
+                                    value="ritual"
+                                >
+
+                                <span>
+                                    Ritual
+                                </span>
+
+                            </label>
+
+
+                            <label class="category-option">
+
+                                <input
+                                    type="checkbox"
+                                    name="category"
+                                    value="family"
+                                >
+
+                                <span>
+                                    Family
+                                </span>
+
+                            </label>
+
+
+                            <label class="category-option">
+
+                                <input
+                                    type="checkbox"
+                                    name="category"
+                                    value="visitors"
+                                >
+
+                                <span>
+                                    Visitors
+                                </span>
+
+                            </label>
+
+
+                            <label class="category-option">
+
+                                <input
+                                    type="checkbox"
+                                    name="category"
+                                    value="culturals"
+                                >
+
+                                <span>
+                                    Culturals
+                                </span>
+
+                            </label>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group full-width">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            rows="4"
+                            placeholder="Describe the event..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- URL -->
+
+                    <div class="form-group full-width">
+
+                        <label for="url">
+
+                            URL
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="url"
+                            id="url"
+                            required
+                            placeholder="https://example.com/..."
+                            autocomplete="off"
+                        >
+
+                        <span class="field-help">
+
+                            <span class="required-note">
+                                URL is required.
+                            </span>
+
+                            Use a complete URL beginning with
+                            <strong>https://</strong>
+                            or
+                            <strong>http://</strong>.
+
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- FORM ACTIONS -->
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="saveButton"
+                    >
+                        Save Event
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelButton"
+                    >
+                        Cancel
+                    </button>
+
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <p
+                    id="eventMessage"
+                    class="message"
+                    aria-live="polite"
+                ></p>
+
+
+            </form>
 
 
         </div>
 
-    </aside>
+
+        <!-- =================================================
+             EVENT LIST
+             ================================================= -->
+
+        <div class="manager-list-card">
 
 
-    <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
-
-    <main class="dashboard-main">
+            <div class="section-heading">
 
 
-        <!-- TOPBAR -->
-
-        <header class="topbar">
-
-
-            <div class="topbar-left">
-
-                <span class="page-eyebrow">
-                    CONTENT MANAGEMENT
-                </span>
-
-                <h1>
-                    Puja Events
-                </h1>
-
-                <p>
-                    Manage Durga Puja events and celebrations.
-                </p>
-
-            </div>
-
-
-            <!-- ADMIN USER -->
-
-            <div class="admin-user">
-
-                <div
-                    class="user-avatar"
-                    id="userAvatar"
-                >
-                    A
-                </div>
-
-
-                <div class="user-details">
-
-                    <strong id="adminEmail">
-                        Admin
-                    </strong>
+                <div>
 
                     <span>
-                        Administrator
+                        FIRESTORE
                     </span>
 
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- =================================================
-             EVENT MANAGEMENT
-             ================================================= -->
-
-        <section class="manager-layout">
-
-
-            <!-- =================================================
-                 ADD / EDIT EVENT
-                 ================================================= -->
-
-            <div class="manager-form-card">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <span>
-                            PUJA EVENT
-                        </span>
-
-                        <h2 id="formTitle">
-                            Add Event
-                        </h2>
-
-                    </div>
+                    <h2>
+                        Events
+                    </h2>
 
                 </div>
 
 
-                <form id="eventForm">
-
-
-                    <!-- DOCUMENT ID -->
-
-                    <input
-                        type="hidden"
-                        id="eventId"
-                    >
-
-
-                    <div class="form-grid">
-
-
-                        <!-- TITLE -->
-
-                        <div class="form-group">
-
-                            <label for="title">
-                                Title
-                                <span class="required">
-                                    *
-                                </span>
-                            </label>
-
-                            <input
-                                type="text"
-                                id="title"
-                                required
-                                placeholder="Event title"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-
-                        <!-- DATE -->
-
-                        <div class="form-group">
-
-                            <label for="date">
-                                Date
-                                <span class="required">
-                                    *
-                                </span>
-                            </label>
-
-                            <input
-                                type="date"
-                                id="date"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- TIME -->
-
-                        <div class="form-group">
-
-                            <label for="time">
-                                Time
-                                <span class="required">
-                                    *
-                                </span>
-                            </label>
-
-                            <input
-                                type="time"
-                                id="time"
-                                required
-                            >
-
-                            <span class="field-help">
-                                Stored as a readable time such as 7:00 PM.
-                            </span>
-
-                        </div>
-
-
-                        <!-- LOCATION -->
-
-                        <div class="form-group">
-
-                            <label for="location">
-                                Location
-                            </label>
-
-                            <input
-                                type="text"
-                                id="location"
-                                placeholder="Event location"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-
-                        <!-- ABOUT -->
-
-                        <div class="form-group full-width">
-
-                            <label for="about">
-                                About
-                            </label>
-
-                            <textarea
-                                id="about"
-                                rows="4"
-                                placeholder="Explain the event..."
-                            ></textarea>
-
-                        </div>
-
-
-                        <!-- CATEGORY -->
-
-                        <div class="form-group full-width">
-
-                            <label>
-                                Category
-                                <span class="required">
-                                    *
-                                </span>
-                            </label>
-
-
-                            <div class="category-box">
-
-
-                                <label
-                                    class="category-option"
-                                >
-
-                                    <input
-                                        type="checkbox"
-                                        name="category"
-                                        value="ritual"
-                                    >
-
-                                    <span>
-                                        Ritual
-                                    </span>
-
-                                </label>
-
-
-                                <label
-                                    class="category-option"
-                                >
-
-                                    <input
-                                        type="checkbox"
-                                        name="category"
-                                        value="family"
-                                    >
-
-                                    <span>
-                                        Family
-                                    </span>
-
-                                </label>
-
-
-                                <label
-                                    class="category-option"
-                                >
-
-                                    <input
-                                        type="checkbox"
-                                        name="category"
-                                        value="visitors"
-                                    >
-
-                                    <span>
-                                        Visitors
-                                    </span>
-
-                                </label>
-
-
-                                <label
-                                    class="category-option"
-                                >
-
-                                    <input
-                                        type="checkbox"
-                                        name="category"
-                                        value="culturals"
-                                    >
-
-                                    <span>
-                                        Culturals
-                                    </span>
-
-                                </label>
-
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- DESCRIPTION -->
-
-                        <div class="form-group full-width">
-
-                            <label for="description">
-                                Description
-                            </label>
-
-                            <textarea
-                                id="description"
-                                rows="4"
-                                placeholder="Describe the event..."
-                            ></textarea>
-
-                        </div>
-
-
-                        <!-- URL -->
-
-                        <div class="form-group full-width">
-
-                            <label for="url">
-
-                                URL
-
-                                <span class="required">
-                                    *
-                                </span>
-
-                            </label>
-
-
-                            <input
-                                type="url"
-                                id="url"
-                                required
-                                placeholder="https://example.com/..."
-                                autocomplete="off"
-                            >
-
-
-                            <span class="field-help">
-
-                                <span class="required-note">
-                                    URL is required.
-                                </span>
-
-                                Use a complete URL beginning with
-                                <strong>https://</strong> or
-                                <strong>http://</strong>.
-
-                            </span>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- FORM ACTIONS -->
-
-                    <div class="form-actions">
-
-
-                        <button
-                            type="submit"
-                            class="primary-button"
-                            id="saveButton"
-                        >
-                            Save Event
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="secondary-button"
-                            id="cancelButton"
-                        >
-                            Cancel
-                        </button>
-
-
-                    </div>
-
-
-                    <!-- MESSAGE -->
-
-                    <p
-                        id="eventMessage"
-                        class="message"
-                        aria-live="polite"
-                    ></p>
-
-
-                </form>
+                <span id="eventCount">
+                    0 events
+                </span>
 
 
             </div>
 
 
-            <!-- =================================================
-                 EVENT LIST
-                 ================================================= -->
+            <div
+                id="eventList"
+                class="manager-list"
+            >
 
-            <div class="manager-list-card">
-
-
-                <div class="section-heading">
-
-
-                    <div>
-
-                        <span>
-                            FIRESTORE
-                        </span>
-
-                        <h2>
-                            Events
-                        </h2>
-
-                    </div>
-
-
-                    <span id="eventCount">
-                        0 events
-                    </span>
-
-
+                <div class="loading-state">
+                    Loading events...
                 </div>
-
-
-                <div
-                    id="eventList"
-                    class="manager-list"
-                >
-
-                    Loading...
-
-                </div>
-
 
             </div>
 
 
-        </section>
+        </div>
 
 
-        <!-- =================================================
-             FOOTER
-             ================================================= -->
-
-        <footer class="dashboard-footer">
-
-            <span>
-                Roy Bari
-            </span>
-
-            <span>
-                Family Heritage Management
-            </span>
-
-        </footer>
-
-
-    </main>
+    </section>
 
 
     <!-- =====================================================
-         JAVASCRIPT
+         FOOTER
          ===================================================== -->
 
-    <script
-        type="module"
-        src="./js/events.js"
-    ></script>
+    <footer class="dashboard-footer">
+
+        <span>
+            Roy Bari
+        </span>
+
+        <span>
+            Puja Events Management
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script
+    type="module"
+    src="./js/events.js"
+></script>
 
 
 </body>

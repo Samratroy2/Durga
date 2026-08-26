@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,10 +19,6 @@
         Roy Bari — Admin Dashboard
     </title>
 
-    <!-- =====================================================
-         STYLES
-         ===================================================== -->
-
     <link
         rel="stylesheet"
         href="./css/admin.css"
@@ -34,17 +29,15 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
-
     <style>
 
         /* =====================================================
-           DASHBOARD ADDITIONAL STYLES
+           RECENT ACTIVITY
            ===================================================== */
 
         .activity-section {
             margin-top: 42px;
         }
-
 
         .activity-header {
             display: flex;
@@ -53,7 +46,6 @@
             gap: 20px;
             margin-bottom: 18px;
         }
-
 
         .activity-header-left span {
             display: block;
@@ -64,24 +56,15 @@
             margin-bottom: 5px;
         }
 
-
         .activity-header-left h2 {
             margin: 0;
         }
-
 
         .activity-header-left p {
             margin: 6px 0 0;
             color: #777;
             font-size: 13px;
         }
-
-
-        .activity-view-all:hover {
-            background: #6f4b35;
-            color: #fff;
-        }
-
 
         .activity-view-all {
             border: 1px solid #ddd;
@@ -96,6 +79,10 @@
             transition: .2s ease;
         }
 
+        .activity-view-all:hover {
+            background: #6f4b35;
+            color: #fff;
+        }
 
         .activity-card {
             background: #fff;
@@ -103,7 +90,6 @@
             border-radius: 12px;
             overflow: hidden;
         }
-
 
         .activity-summary {
             display: flex;
@@ -113,23 +99,19 @@
             border-bottom: 1px solid #eee7df;
         }
 
-
         .activity-summary strong {
             font-size: 14px;
         }
-
 
         .activity-summary span {
             font-size: 12px;
             color: #888;
         }
 
-
         .activity-list {
             display: flex;
             flex-direction: column;
         }
-
 
         .activity-item {
             display: flex;
@@ -139,11 +121,9 @@
             border-bottom: 1px solid #eee7df;
         }
 
-
         .activity-item:last-child {
             border-bottom: none;
         }
-
 
         .activity-icon {
             width: 40px;
@@ -157,12 +137,10 @@
             font-size: 16px;
         }
 
-
         .activity-main {
             flex: 1;
             min-width: 0;
         }
-
 
         .activity-title {
             font-size: 13px;
@@ -170,7 +148,6 @@
             color: #3b3029;
             margin-bottom: 5px;
         }
-
 
         .activity-meta {
             display: flex;
@@ -180,7 +157,6 @@
             font-size: 11px;
             color: #8a817a;
         }
-
 
         .activity-action {
             display: inline-flex;
@@ -193,35 +169,29 @@
             letter-spacing: .5px;
         }
 
-
         .activity-action.created {
             background: #e9f6ec;
             color: #327442;
         }
-
 
         .activity-action.updated {
             background: #fff4dc;
             color: #9a6a13;
         }
 
-
         .activity-action.deleted {
             background: #fdeaea;
             color: #a33b3b;
         }
-
 
         .activity-action.other {
             background: #eeeef5;
             color: #55556d;
         }
 
-
         .activity-time {
             white-space: nowrap;
         }
-
 
         .activity-empty {
             padding: 35px 20px;
@@ -230,13 +200,11 @@
             font-size: 13px;
         }
 
-
         .activity-loading {
             padding: 25px 20px;
             color: #888;
             font-size: 13px;
         }
-
 
         .activity-error {
             padding: 25px 20px;
@@ -253,13 +221,11 @@
             cursor: pointer;
         }
 
-
         .admin-card {
             transition:
                 transform .2s ease,
                 box-shadow .2s ease;
         }
-
 
         .admin-card:hover {
             transform: translateY(-2px);
@@ -269,12 +235,15 @@
         }
 
 
+        /* =====================================================
+           STATUS
+           ===================================================== */
+
         .status-card {
             display: flex;
             align-items: center;
             gap: 14px;
         }
-
 
         .status-dot {
             width: 10px;
@@ -284,20 +253,17 @@
             background: #999;
         }
 
-
         .status-dot.online {
             background: #3b9b55;
             box-shadow:
                 0 0 0 4px rgba(59, 155, 85, .10);
         }
 
-
         .status-dot.offline {
             background: #c44;
             box-shadow:
                 0 0 0 4px rgba(204, 68, 68, .10);
         }
-
 
         .status-right {
             margin-left: auto;
@@ -314,14 +280,12 @@
             margin-top: 42px;
         }
 
-
         .new-admin-grid {
             display: grid;
             grid-template-columns:
                 repeat(5, minmax(0, 1fr));
             gap: 18px;
         }
-
 
         .new-admin-card {
             display: flex;
@@ -336,14 +300,12 @@
                 box-shadow .2s ease;
         }
 
-
         .new-admin-card:hover {
             transform: translateY(-3px);
             box-shadow:
                 0 10px 25px
                 rgba(70, 45, 30, .08);
         }
-
 
         .new-card-top {
             display: flex;
@@ -352,7 +314,6 @@
             gap: 10px;
             margin-bottom: 18px;
         }
-
 
         .new-card-icon {
             width: 45px;
@@ -366,14 +327,12 @@
             font-size: 20px;
         }
 
-
         .new-card-badge {
             font-size: 8px;
             font-weight: 800;
             letter-spacing: 1px;
             color: #a67c52;
         }
-
 
         .new-admin-card h3 {
             margin: 0 0 9px;
@@ -382,7 +341,6 @@
             font-size: 18px;
         }
 
-
         .new-admin-card p {
             margin: 0;
             color: #777;
@@ -390,7 +348,6 @@
             line-height: 1.65;
             flex: 1;
         }
-
 
         .new-card-button {
             width: 100%;
@@ -410,8 +367,109 @@
             transition: .2s ease;
         }
 
-
         .new-card-button:hover {
+            background: #6f4b35;
+            border-color: #6f4b35;
+            color: #fff;
+        }
+
+
+        /* =====================================================
+           INFORMATION MANAGEMENT
+           ===================================================== */
+
+        .information-section {
+            margin-top: 42px;
+        }
+
+        .information-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .information-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 230px;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid #e8e0d7;
+            border-radius: 12px;
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .information-card:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 10px 25px
+                rgba(70, 45, 30, .08);
+        }
+
+        .information-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .information-card-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #f4ece3;
+            color: #6f4b35;
+            font-size: 20px;
+        }
+
+        .information-card-badge {
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #a67c52;
+        }
+
+        .information-card h3 {
+            margin: 0 0 9px;
+            color: #3b3029;
+            font-family: Georgia, serif;
+            font-size: 18px;
+        }
+
+        .information-card p {
+            margin: 0;
+            color: #777;
+            font-size: 12px;
+            line-height: 1.65;
+            flex: 1;
+        }
+
+        .information-card-button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            color: #6f4b35;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: .2s ease;
+        }
+
+        .information-card-button:hover {
             background: #6f4b35;
             border-color: #6f4b35;
             color: #fff;
@@ -430,7 +488,6 @@
             margin-top: 18px;
         }
 
-
         .additional-stat {
             background: #fff;
             border: 1px solid #e8e0d7;
@@ -440,7 +497,6 @@
             transition: .2s ease;
         }
 
-
         .additional-stat:hover {
             transform: translateY(-2px);
             box-shadow:
@@ -448,18 +504,15 @@
                 rgba(70, 45, 30, .06);
         }
 
-
         .additional-stat-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-
         .additional-stat-icon {
             font-size: 18px;
         }
-
 
         .additional-stat-label {
             display: block;
@@ -470,7 +523,6 @@
             text-transform: uppercase;
             letter-spacing: .7px;
         }
-
 
         .additional-stat-number {
             display: block;
@@ -501,7 +553,6 @@
                     repeat(3, minmax(0, 1fr));
             }
 
-
             .additional-stat-grid {
                 grid-template-columns:
                     repeat(3, minmax(0, 1fr));
@@ -517,10 +568,13 @@
                     repeat(2, minmax(0, 1fr));
             }
 
-
             .additional-stat-grid {
                 grid-template-columns:
                     repeat(2, minmax(0, 1fr));
+            }
+
+            .information-grid {
+                grid-template-columns: 1fr;
             }
 
         }
@@ -533,32 +587,30 @@
                 flex-direction: column;
             }
 
-
             .activity-item {
                 align-items: flex-start;
             }
-
 
             .activity-time {
                 width: 100%;
             }
 
-
             .new-admin-grid {
                 grid-template-columns: 1fr;
             }
-
 
             .additional-stat-grid {
                 grid-template-columns: 1fr;
             }
 
+            .information-grid {
+                grid-template-columns: 1fr;
+            }
 
             .status-card {
                 align-items: flex-start;
                 flex-wrap: wrap;
             }
-
 
             .status-right {
                 width: 100%;
@@ -575,1588 +627,1703 @@
 <body class="dashboard-page">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         UNCHANGED
-         ===================================================== -->
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
 
-    <aside class="sidebar">
-
-
-        <!-- BRAND -->
-
-        <div class="sidebar-brand">
-
-            <div class="sidebar-logo">
-                🪔
-            </div>
+<aside class="sidebar">
 
 
-            <div class="sidebar-brand-text">
+    <!-- BRAND -->
 
-                <h2>
-                    Roy Bari
-                </h2>
+    <div class="sidebar-brand">
 
-                <span>
-                    Administration
-                </span>
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- MAIN -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+        <a
+            href="./dashboard.html"
+            class="nav-item active"
+            id="dashboardNav"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- CONTENT -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+        <a
+            href="./family.html"
+            class="nav-item"
+            id="familyNav"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+        <a
+            href="./events.html"
+            class="nav-item"
+            id="eventsNav"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+            id="galleryNav"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- HOMEPAGE -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- INFORMATION -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+            id="visitNav"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+            id="contactNav"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- MEDIA & ARCHIVE -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- MORE -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+            id="memoriesNav"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+            id="ritualsNav"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+            id="enquiriesNav"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+            id="activityNav"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+            id="changePasswordNav"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- SIDEBAR BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
 
             </div>
 
         </div>
 
+        <button
+            type="button"
+            id="logoutButton"
+            class="logout-button"
+        >
 
-        <!-- NAVIGATION -->
+            <i class="fa-solid fa-right-from-bracket"></i>
 
-        <nav class="sidebar-nav">
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
 
 
-            <!-- MAIN -->
+<!-- =====================================================
+     MAIN DASHBOARD
+     ===================================================== -->
 
-            <div class="nav-section-title">
-                MAIN
+<main class="dashboard-main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <span class="page-eyebrow">
+                ROY BARI ADMINISTRATION
+            </span>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Manage the digital heritage of Roy Bari.
+            </p>
+
+        </div>
+
+
+        <div class="admin-user">
+
+            <div
+                class="user-avatar"
+                id="userAvatar"
+            >
+                A
             </div>
 
+            <div class="user-details">
 
-            <a
-                href="./dashboard.html"
-                class="nav-item active"
-                id="dashboardNav"
-            >
-
-                <i class="fa-solid fa-display"></i>
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
                 <span>
-                    Dashboard
+                    Administrator
                 </span>
 
-            </a>
-
-
-            <!-- CONTENT -->
-
-            <div class="nav-section-title">
-                CONTENT
             </div>
 
+            <span class="user-status">
+                ●
+            </span>
 
-            <a
-                href="./family.html"
-                class="nav-item"
-                id="familyNav"
-            >
+        </div>
 
-                <i class="fa-solid fa-people-roof"></i>
+    </header>
+
+
+    <!-- =====================================================
+         WELCOME
+         ===================================================== -->
+
+    <section class="welcome-card">
+
+        <div class="welcome-content">
+
+            <span class="welcome-label">
+                WELCOME BACK
+            </span>
+
+            <h2>
+                Preserve the Roy Bari legacy.
+            </h2>
+
+            <p>
+                Add, update and manage the stories,
+                people, traditions and memories that
+                make Roy Bari special.
+            </p>
+
+        </div>
+
+        <div class="welcome-art">
+
+            <div class="welcome-circle">
+                🪔
+            </div>
+
+            <span class="welcome-flower">
+                ✦
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN QUICK STATS
+         ===================================================== -->
+
+    <section class="stats-grid">
+
+
+        <!-- FAMILY -->
+
+        <article
+            class="stat-card"
+            id="familyStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="stat-icon">
+                👨‍👩‍👧
+            </div>
+
+            <div class="stat-content">
 
                 <span>
-                    Family Tree
+                    Family Members
                 </span>
 
-            </a>
+                <strong id="familyCount">
+                    —
+                </strong>
+
+            </div>
+
+            <span class="stat-arrow">
+                →
+            </span>
+
+        </article>
 
 
-            <a
-                href="./events.html"
-                class="nav-item"
-                id="eventsNav"
-            >
+        <!-- EVENTS -->
 
-                <i class="fa-solid fa-calendar-days"></i>
+        <article
+            class="stat-card"
+            id="eventsStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="stat-icon">
+                🪔
+            </div>
+
+            <div class="stat-content">
 
                 <span>
                     Puja Events
                 </span>
 
-            </a>
+                <strong id="eventsCount">
+                    —
+                </strong>
+
+            </div>
+
+            <span class="stat-arrow">
+                →
+            </span>
+
+        </article>
 
 
-            <a
-                href="./gallery.html"
-                class="nav-item"
-                id="galleryNav"
-            >
+        <!-- GALLERY -->
 
-                <i class="fa-solid fa-image"></i>
+        <article
+            class="stat-card"
+            id="galleryStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="stat-icon">
+                📷
+            </div>
+
+            <div class="stat-content">
 
                 <span>
                     Gallery
                 </span>
 
-            </a>
+                <strong id="galleryCount">
+                    —
+                </strong>
 
-
-            <!-- HOMEPAGE -->
-
-            <div class="nav-section-title">
-                HOMEPAGE
             </div>
 
+            <span class="stat-arrow">
+                →
+            </span>
 
-            <a
-                href="./homepage-countdown.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-hourglass-half"></i>
-
-                <span>
-                    Homepage Countdown
-                </span>
-
-            </a>
+        </article>
 
 
-            <!-- MEDIA & ARCHIVE -->
+        <!-- ENQUIRIES -->
 
-            <div class="nav-section-title">
-                MEDIA &amp; ARCHIVE
+        <article
+            class="stat-card"
+            id="enquiriesStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="stat-icon">
+                ✉
             </div>
 
-
-            <a
-                href="./comparisons.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-code-compare"></i>
-
-                <span>
-                    Comparisons
-                </span>
-
-            </a>
-
-
-            <a
-                href="./idol-makers.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-user-gear"></i>
-
-                <span>
-                    Idol Makers
-                </span>
-
-            </a>
-
-
-            <a
-                href="./newspaper-articles.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-newspaper"></i>
-
-                <span>
-                    Newspaper Articles
-                </span>
-
-            </a>
-
-
-            <a
-                href="./old-pictures.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                <span>
-                    Old Pictures
-                </span>
-
-            </a>
-
-
-            <!-- MORE -->
-
-            <div class="nav-section-title">
-                MORE
-            </div>
-
-
-            <a
-                href="./memories.html"
-                class="nav-item"
-                id="memoriesNav"
-            >
-
-                <i class="fa-solid fa-heart"></i>
-
-                <span>
-                    Memories
-                </span>
-
-            </a>
-
-
-            <a
-                href="./rituals.html"
-                class="nav-item"
-                id="ritualsNav"
-            >
-
-                <span class="nav-icon">
-                    ॐ
-                </span>
-
-                <span>
-                    Rituals
-                </span>
-
-            </a>
-
-
-            <!-- ADMIN -->
-
-            <div class="nav-section-title">
-                ADMIN
-            </div>
-
-
-            <a
-                href="./enquiries.html"
-                class="nav-item"
-                id="enquiriesNav"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
+            <div class="stat-content">
 
                 <span>
                     Enquiries
                 </span>
 
-            </a>
-
-
-            <a
-                href="./activity.html"
-                class="nav-item"
-                id="activityNav"
-            >
-
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Activity History
-                </span>
-
-            </a>
-
-
-            <a
-                href="./change-password.html"
-                class="nav-item"
-                id="changePasswordNav"
-            >
-
-                <i class="fa-solid fa-key"></i>
-
-                <span>
-                    Change Password
-                </span>
-
-            </a>
-
-
-        </nav>
-
-
-        <!-- SIDEBAR BOTTOM -->
-
-        <div class="sidebar-bottom">
-
-
-            <div class="sidebar-note">
-
-                <i class="fa-solid fa-lock"></i>
-
-                <div>
-
-                    <strong>
-                        Admin Access
-                    </strong>
-
-                    <small>
-                        Protected area
-                    </small>
-
-                </div>
+                <strong id="enquiriesCount">
+                    —
+                </strong>
 
             </div>
 
+            <span class="stat-arrow">
+                →
+            </span>
 
-            <button
-                type="button"
-                id="logoutButton"
-                class="logout-button"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                Logout
-
-            </button>
+        </article>
 
 
-        </div>
+        <!-- ACTIVITY -->
 
-    </aside>
+        <article
+            class="stat-card"
+            id="activityStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="stat-icon">
+                🕘
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    Activities
+                </span>
+
+                <strong id="activityCount">
+                    —
+                </strong>
+
+            </div>
+
+            <span class="stat-arrow">
+                →
+            </span>
+
+        </article>
+
+
+    </section>
 
 
     <!-- =====================================================
-         MAIN DASHBOARD
+         ADDITIONAL COLLECTION STATS
          ===================================================== -->
 
-    <main class="dashboard-main">
+    <section class="additional-stat-grid">
 
 
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
+        <!-- HOMEPAGE COUNTDOWN -->
 
-        <header class="topbar">
+        <article
+            class="additional-stat"
+            id="homepageCountdownStatCard"
+            tabindex="0"
+            role="button"
+        >
 
+            <div class="additional-stat-top">
 
-            <div class="topbar-left">
-
-                <span class="page-eyebrow">
-                    ROY BARI ADMINISTRATION
+                <span class="additional-stat-icon">
+                    ⏳
                 </span>
 
-                <h1>
-                    Dashboard
-                </h1>
-
-                <p>
-                    Manage the digital heritage of Roy Bari.
-                </p>
-
-            </div>
-
-
-            <div class="admin-user">
-
-                <div
-                    class="user-avatar"
-                    id="userAvatar"
-                >
-                    A
-                </div>
-
-
-                <div class="user-details">
-
-                    <strong id="adminEmail">
-                        Admin
-                    </strong>
-
-                    <span>
-                        Administrator
-                    </span>
-
-                </div>
-
-
-                <span class="user-status">
-                    ●
+                <span>
+                    →
                 </span>
 
             </div>
 
-        </header>
+            <span class="additional-stat-label">
+                Homepage Countdown
+            </span>
+
+            <strong
+                class="additional-stat-number"
+                id="homepageCountdownCount"
+            >
+                —
+            </strong>
+
+        </article>
 
 
-        <!-- =================================================
-             WELCOME
-             ================================================= -->
+        <!-- COMPARISONS -->
 
-        <section class="welcome-card">
+        <article
+            class="additional-stat"
+            id="comparisonsStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="additional-stat-top">
+
+                <span class="additional-stat-icon">
+                    ⇄
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </div>
+
+            <span class="additional-stat-label">
+                Comparisons
+            </span>
+
+            <strong
+                class="additional-stat-number"
+                id="comparisonsCount"
+            >
+                —
+            </strong>
+
+        </article>
 
 
-            <div class="welcome-content">
+        <!-- IDOL MAKERS -->
 
-                <span class="welcome-label">
-                    WELCOME BACK
+        <article
+            class="additional-stat"
+            id="idolMakersStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="additional-stat-top">
+
+                <span class="additional-stat-icon">
+                    🧑‍🎨
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </div>
+
+            <span class="additional-stat-label">
+                Idol Makers
+            </span>
+
+            <strong
+                class="additional-stat-number"
+                id="idolMakersCount"
+            >
+                —
+            </strong>
+
+        </article>
+
+
+        <!-- NEWSPAPER ARTICLES -->
+
+        <article
+            class="additional-stat"
+            id="newspaperArticlesStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="additional-stat-top">
+
+                <span class="additional-stat-icon">
+                    📰
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </div>
+
+            <span class="additional-stat-label">
+                Newspaper Articles
+            </span>
+
+            <strong
+                class="additional-stat-number"
+                id="newspaperArticlesCount"
+            >
+                —
+            </strong>
+
+        </article>
+
+
+        <!-- OLD PICTURES -->
+
+        <article
+            class="additional-stat"
+            id="oldPicturesStatCard"
+            tabindex="0"
+            role="button"
+        >
+
+            <div class="additional-stat-top">
+
+                <span class="additional-stat-icon">
+                    🖼️
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </div>
+
+            <span class="additional-stat-label">
+                Old Pictures
+            </span>
+
+            <strong
+                class="additional-stat-number"
+                id="oldPicturesCount"
+            >
+                —
+            </strong>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         CONTENT MANAGEMENT
+         ===================================================== -->
+
+    <section class="content-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span style="font-size: 15px; margin-top: 20px;">
+                    CONTENT MANAGEMENT
                 </span>
 
                 <h2>
-                    Preserve the Roy Bari legacy.
+                    Manage Website
                 </h2>
 
-                <p>
-                    Add, update and manage the stories,
-                    people, traditions and memories that
-                    make Roy Bari special.
-                </p>
-
             </div>
 
-
-            <div class="welcome-art">
-
-                <div class="welcome-circle">
-                    🪔
-                </div>
-
-                <span class="welcome-flower">
-                    ✦
-                </span>
-
-            </div>
+        </div>
 
 
-        </section>
-
-
-        <!-- =================================================
-             MAIN QUICK STATS
-             ================================================= -->
-
-        <section class="stats-grid">
+        <div class="admin-grid">
 
 
             <!-- FAMILY -->
 
-            <article
-                class="stat-card"
-                id="familyStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="admin-card">
 
-                <div class="stat-icon">
-                    👨‍👩‍👧
-                </div>
+                <div class="card-top">
 
-                <div class="stat-content">
+                    <div class="card-icon family-icon">
+                        👨‍👩‍👧
+                    </div>
 
-                    <span>
-                        Family Members
+                    <span class="card-badge">
+                        FAMILY
                     </span>
 
-                    <strong id="familyCount">
-                        —
-                    </strong>
-
                 </div>
 
-                <span class="stat-arrow">
-                    →
-                </span>
+                <h3>
+                    Family Tree
+                </h3>
+
+                <p>
+                    Add family members, define
+                    relationships and maintain the
+                    Roy Bari genealogy.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="familyButton"
+                >
+
+                    <span>
+                        Manage Family
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
 
             </article>
 
 
             <!-- EVENTS -->
 
-            <article
-                class="stat-card"
-                id="eventsStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="admin-card">
 
-                <div class="stat-icon">
-                    🪔
-                </div>
+                <div class="card-top">
 
-                <div class="stat-content">
+                    <div class="card-icon event-icon">
+                        🪔
+                    </div>
 
-                    <span>
-                        Puja Events
+                    <span class="card-badge">
+                        PUJA
                     </span>
 
-                    <strong id="eventsCount">
-                        —
-                    </strong>
-
                 </div>
 
-                <span class="stat-arrow">
-                    →
-                </span>
+                <h3>
+                    Puja Events
+                </h3>
+
+                <p>
+                    Manage Durga Puja events,
+                    rituals, schedules and important
+                    celebrations.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="eventsButton"
+                >
+
+                    <span>
+                        Manage Events
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
 
             </article>
 
 
             <!-- GALLERY -->
 
-            <article
-                class="stat-card"
-                id="galleryStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="admin-card">
 
-                <div class="stat-icon">
-                    📷
-                </div>
+                <div class="card-top">
 
-                <div class="stat-content">
+                    <div class="card-icon gallery-icon">
+                        📷
+                    </div>
 
-                    <span>
-                        Gallery
+                    <span class="card-badge">
+                        MEMORIES
                     </span>
 
-                    <strong id="galleryCount">
-                        —
-                    </strong>
-
                 </div>
 
-                <span class="stat-arrow">
-                    →
-                </span>
+                <h3>
+                    Gallery
+                </h3>
 
-            </article>
+                <p>
+                    Upload and organize photographs
+                    from generations of Roy Bari
+                    traditions.
+                </p>
 
-
-            <!-- ENQUIRIES -->
-
-            <article
-                class="stat-card"
-                id="enquiriesStatCard"
-                tabindex="0"
-                role="button"
-            >
-
-                <div class="stat-icon">
-                    ✉
-                </div>
-
-                <div class="stat-content">
+                <button
+                    type="button"
+                    class="card-button"
+                    id="galleryButton"
+                >
 
                     <span>
-                        Enquiries
-                    </span>
-
-                    <strong id="enquiriesCount">
-                        —
-                    </strong>
-
-                </div>
-
-                <span class="stat-arrow">
-                    →
-                </span>
-
-            </article>
-
-
-            <!-- ACTIVITY -->
-
-            <article
-                class="stat-card"
-                id="activityStatCard"
-                tabindex="0"
-                role="button"
-            >
-
-                <div class="stat-icon">
-                    🕘
-                </div>
-
-                <div class="stat-content">
-
-                    <span>
-                        Activities
-                    </span>
-
-                    <strong id="activityCount">
-                        —
-                    </strong>
-
-                </div>
-
-                <span class="stat-arrow">
-                    →
-                </span>
-
-            </article>
-
-
-        </section>
-
-
-        <!-- =================================================
-             ADDITIONAL COLLECTION STATS
-             ================================================= -->
-
-        <section class="additional-stat-grid">
-
-
-            <!-- HOMEPAGE COUNTDOWN -->
-
-            <article
-                class="additional-stat"
-                id="homepageCountdownStatCard"
-                tabindex="0"
-                role="button"
-            >
-
-                <div class="additional-stat-top">
-
-                    <span class="additional-stat-icon">
-                        ⏳
+                        Manage Gallery
                     </span>
 
                     <span>
                         →
                     </span>
 
+                </button>
+
+            </article>
+
+
+            <!-- MEMORIES -->
+
+            <article class="admin-card">
+
+                <div class="card-top">
+
+                    <div class="card-icon">
+                        ♡
+                    </div>
+
+                    <span class="card-badge">
+                        STORIES
+                    </span>
+
                 </div>
 
-                <span class="additional-stat-label">
-                    Homepage Countdown
+                <h3>
+                    Memories
+                </h3>
+
+                <p>
+                    Preserve personal memories,
+                    family stories and experiences.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="memoriesButton"
+                >
+
+                    <span>
+                        Manage Memories
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+            <!-- RITUALS -->
+
+            <article class="admin-card">
+
+                <div class="card-top">
+
+                    <div class="card-icon">
+                        ॐ
+                    </div>
+
+                    <span class="card-badge">
+                        TRADITION
+                    </span>
+
+                </div>
+
+                <h3>
+                    Rituals
+                </h3>
+
+                <p>
+                    Manage traditional rituals,
+                    customs and Puja practices.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="ritualsButton"
+                >
+
+                    <span>
+                        Manage Rituals
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HERITAGE & MEDIA
+         ===================================================== -->
+
+    <section class="new-admin-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span style="font-size: 15px; margin-top: 20px;">
+                    HERITAGE &amp; MEDIA
                 </span>
 
-                <strong
-                    class="additional-stat-number"
-                    id="homepageCountdownCount"
+                <h2>
+                    Additional Content
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="new-admin-grid">
+
+
+            <!-- HOMEPAGE COUNTDOWN -->
+
+            <article class="new-admin-card">
+
+                <div class="new-card-top">
+
+                    <div class="new-card-icon">
+                        ⏳
+                    </div>
+
+                    <span class="new-card-badge">
+                        HOMEPAGE
+                    </span>
+
+                </div>
+
+                <h3>
+                    Homepage Countdown
+                </h3>
+
+                <p>
+                    Set the title and date/time displayed
+                    in the homepage countdown.
+                </p>
+
+                <button
+                    type="button"
+                    class="new-card-button"
+                    id="homepageCountdownButton"
                 >
-                    —
-                </strong>
+
+                    <span>
+                        Manage Countdown
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
 
             </article>
 
 
             <!-- COMPARISONS -->
 
-            <article
-                class="additional-stat"
-                id="comparisonsStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="new-admin-card">
 
-                <div class="additional-stat-top">
+                <div class="new-card-top">
 
-                    <span class="additional-stat-icon">
+                    <div class="new-card-icon">
                         ⇄
+                    </div>
+
+                    <span class="new-card-badge">
+                        VISUAL
+                    </span>
+
+                </div>
+
+                <h3>
+                    Comparisons
+                </h3>
+
+                <p>
+                    Manage then-and-now comparison images
+                    from the Roy Bari archive.
+                </p>
+
+                <button
+                    type="button"
+                    class="new-card-button"
+                    id="comparisonsButton"
+                >
+
+                    <span>
+                        Manage Comparisons
                     </span>
 
                     <span>
                         →
                     </span>
 
-                </div>
-
-                <span class="additional-stat-label">
-                    Comparisons
-                </span>
-
-                <strong
-                    class="additional-stat-number"
-                    id="comparisonsCount"
-                >
-                    —
-                </strong>
+                </button>
 
             </article>
 
 
             <!-- IDOL MAKERS -->
 
-            <article
-                class="additional-stat"
-                id="idolMakersStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="new-admin-card">
 
-                <div class="additional-stat-top">
+                <div class="new-card-top">
 
-                    <span class="additional-stat-icon">
+                    <div class="new-card-icon">
                         🧑‍🎨
+                    </div>
+
+                    <span class="new-card-badge">
+                        PUJA
+                    </span>
+
+                </div>
+
+                <h3>
+                    Idol Makers
+                </h3>
+
+                <p>
+                    Manage the artisans and idol makers
+                    connected with the Puja.
+                </p>
+
+                <button
+                    type="button"
+                    class="new-card-button"
+                    id="idolMakersButton"
+                >
+
+                    <span>
+                        Manage Idol Makers
                     </span>
 
                     <span>
                         →
                     </span>
 
-                </div>
-
-                <span class="additional-stat-label">
-                    Idol Makers
-                </span>
-
-                <strong
-                    class="additional-stat-number"
-                    id="idolMakersCount"
-                >
-                    —
-                </strong>
+                </button>
 
             </article>
 
 
             <!-- NEWSPAPER ARTICLES -->
 
-            <article
-                class="additional-stat"
-                id="newspaperArticlesStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="new-admin-card">
 
-                <div class="additional-stat-top">
+                <div class="new-card-top">
 
-                    <span class="additional-stat-icon">
+                    <div class="new-card-icon">
                         📰
+                    </div>
+
+                    <span class="new-card-badge">
+                        PRESS
+                    </span>
+
+                </div>
+
+                <h3>
+                    Newspaper Articles
+                </h3>
+
+                <p>
+                    Preserve newspaper coverage and
+                    published articles about Roy Bari.
+                </p>
+
+                <button
+                    type="button"
+                    class="new-card-button"
+                    id="newspaperArticlesButton"
+                >
+
+                    <span>
+                        Manage Articles
                     </span>
 
                     <span>
                         →
                     </span>
 
-                </div>
-
-                <span class="additional-stat-label">
-                    Newspaper Articles
-                </span>
-
-                <strong
-                    class="additional-stat-number"
-                    id="newspaperArticlesCount"
-                >
-                    —
-                </strong>
+                </button>
 
             </article>
 
 
             <!-- OLD PICTURES -->
 
-            <article
-                class="additional-stat"
-                id="oldPicturesStatCard"
-                tabindex="0"
-                role="button"
-            >
+            <article class="new-admin-card">
 
-                <div class="additional-stat-top">
+                <div class="new-card-top">
 
-                    <span class="additional-stat-icon">
+                    <div class="new-card-icon">
                         🖼️
+                    </div>
+
+                    <span class="new-card-badge">
+                        ARCHIVE
+                    </span>
+
+                </div>
+
+                <h3>
+                    Old Pictures
+                </h3>
+
+                <p>
+                    Manage historical photographs and
+                    descriptions from the family archive.
+                </p>
+
+                <button
+                    type="button"
+                    class="new-card-button"
+                    id="oldPicturesButton"
+                >
+
+                    <span>
+                        Manage Old Pictures
                     </span>
 
                     <span>
                         →
                     </span>
 
-                </div>
-
-                <span class="additional-stat-label">
-                    Old Pictures
-                </span>
-
-                <strong
-                    class="additional-stat-number"
-                    id="oldPicturesCount"
-                >
-                    —
-                </strong>
+                </button>
 
             </article>
 
 
-        </section>
+        </div>
 
-
-        <!-- =================================================
-             CONTENT MANAGEMENT
-             ================================================= -->
-
-        <section class="content-section">
-
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span style="font-size: 15px; margin-top: 20px;">
-                        CONTENT MANAGEMENT
-                    </span>
-
-                    <h2>
-                        Manage Website
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="admin-grid">
-
-
-                <!-- FAMILY -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon family-icon">
-                            👨‍👩‍👧
-                        </div>
-
-                        <span class="card-badge">
-                            FAMILY
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Family Tree
-                    </h3>
-
-                    <p>
-                        Add family members, define
-                        relationships and maintain the
-                        Roy Bari genealogy.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="familyButton"
-                    >
-
-                        <span>
-                            Manage Family
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- EVENTS -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon event-icon">
-                            🪔
-                        </div>
-
-                        <span class="card-badge">
-                            PUJA
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Puja Events
-                    </h3>
-
-                    <p>
-                        Manage Durga Puja events,
-                        rituals, schedules and important
-                        celebrations.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="eventsButton"
-                    >
-
-                        <span>
-                            Manage Events
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- GALLERY -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon gallery-icon">
-                            📷
-                        </div>
-
-                        <span class="card-badge">
-                            MEMORIES
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Gallery
-                    </h3>
-
-                    <p>
-                        Upload and organize photographs
-                        from generations of Roy Bari
-                        traditions.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="galleryButton"
-                    >
-
-                        <span>
-                            Manage Gallery
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- MEMORIES -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon">
-                            ♡
-                        </div>
-
-                        <span class="card-badge">
-                            STORIES
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Memories
-                    </h3>
-
-                    <p>
-                        Preserve personal memories,
-                        family stories and experiences.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="memoriesButton"
-                    >
-
-                        <span>
-                            Manage Memories
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- RITUALS -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon">
-                            ॐ
-                        </div>
-
-                        <span class="card-badge">
-                            TRADITION
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Rituals
-                    </h3>
-
-                    <p>
-                        Manage traditional rituals,
-                        customs and Puja practices.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="ritualsButton"
-                    >
-
-                        <span>
-                            Manage Rituals
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             HERITAGE & MEDIA
-             ================================================= -->
-
-        <section class="new-admin-section">
-
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span  style="font-size: 15px; margin-top: 20px;">
-                        HERITAGE &amp; MEDIA
-                    </span>
-
-                    <h2>
-                        Additional Content
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="new-admin-grid">
-
-
-                <!-- HOMEPAGE COUNTDOWN -->
-
-                <article class="new-admin-card">
-
-                    <div class="new-card-top">
-
-                        <div class="new-card-icon">
-                            ⏳
-                        </div>
-
-                        <span class="new-card-badge">
-                            HOMEPAGE
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Homepage Countdown
-                    </h3>
-
-                    <p>
-                        Set the title and date/time displayed
-                        in the homepage countdown.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="new-card-button"
-                        id="homepageCountdownButton"
-                    >
-
-                        <span>
-                            Manage Countdown
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- COMPARISONS -->
-
-                <article class="new-admin-card">
-
-                    <div class="new-card-top">
-
-                        <div class="new-card-icon">
-                            ⇄
-                        </div>
-
-                        <span class="new-card-badge">
-                            VISUAL
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Comparisons
-                    </h3>
-
-                    <p>
-                        Manage then-and-now comparison images
-                        from the Roy Bari archive.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="new-card-button"
-                        id="comparisonsButton"
-                    >
-
-                        <span>
-                            Manage Comparisons
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- IDOL MAKERS -->
-
-                <article class="new-admin-card">
-
-                    <div class="new-card-top">
-
-                        <div class="new-card-icon">
-                            🧑‍🎨
-                        </div>
-
-                        <span class="new-card-badge">
-                            PUJA
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Idol Makers
-                    </h3>
-
-                    <p>
-                        Manage the artisans and idol makers
-                        connected with the Puja.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="new-card-button"
-                        id="idolMakersButton"
-                    >
-
-                        <span>
-                            Manage Idol Makers
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- NEWSPAPER ARTICLES -->
-
-                <article class="new-admin-card">
-
-                    <div class="new-card-top">
-
-                        <div class="new-card-icon">
-                            📰
-                        </div>
-
-                        <span class="new-card-badge">
-                            PRESS
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Newspaper Articles
-                    </h3>
-
-                    <p>
-                        Preserve newspaper coverage and
-                        published articles about Roy Bari.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="new-card-button"
-                        id="newspaperArticlesButton"
-                    >
-
-                        <span>
-                            Manage Articles
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- OLD PICTURES -->
-
-                <article class="new-admin-card">
-
-                    <div class="new-card-top">
-
-                        <div class="new-card-icon">
-                            🖼️
-                        </div>
-
-                        <span class="new-card-badge">
-                            ARCHIVE
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Old Pictures
-                    </h3>
-
-                    <p>
-                        Manage historical photographs and
-                        descriptions from the family archive.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="new-card-button"
-                        id="oldPicturesButton"
-                    >
-
-                        <span>
-                            Manage Old Pictures
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             ADMINISTRATION
-             ================================================= -->
-
-        <section class="content-section">
-
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span  style="font-size: 15px; margin-top: 20px;">
-                        ADMINISTRATION
-                    </span>
-
-                    <h2>
-                        Website Administration
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="admin-grid">
-
-
-                <!-- ENQUIRIES -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon">
-                            ✉
-                        </div>
-
-                        <span class="card-badge">
-                            MESSAGES
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Enquiries
-                    </h3>
-
-                    <p>
-                        View messages and enquiries
-                        submitted through the Roy Bari
-                        website.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="enquiriesButton"
-                    >
-
-                        <span>
-                            View Enquiries
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-                <!-- ACTIVITY -->
-
-                <article class="admin-card">
-
-                    <div class="card-top">
-
-                        <div class="card-icon">
-                            🕘
-                        </div>
-
-                        <span class="card-badge" >
-                            AUDIT TRAIL
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        Activity History
-                    </h3>
-
-                    <p>
-                        See what was changed, by whom
-                        and when across the administration.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="card-button"
-                        id="activityButton"
-                    >
-
-                        <span>
-                            View Activity
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </article>
-
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             RECENT ACTIVITY
-             ================================================= -->
-
-        <section class="activity-section">
-
-
-            <div class="activity-header">
-
-
-                <div class="activity-header-left">
-
-                    <span  style="font-size: 15px; margin-top: 20px;">
-                        AUDIT TRAIL
-                    </span>
-
-                    <h2>
-                        Recent Activity
-                    </h2>
-
-                    <p>
-                        See what was changed, by whom and when.
-                    </p>
-
-                </div>
-
-
-                <a
-                    href="./activity.html"
-                    class="activity-view-all"
-                >
-                    View Full History →
-                </a>
-
-
-            </div>
-
-
-            <div class="activity-card">
-
-
-                <div class="activity-summary">
-
-                    <strong>
-                        Activity History
-                    </strong>
-
-                    <span id="activitySummary">
-                        Loading...
-                    </span>
-
-                </div>
-
-
-                <div
-                    id="recentActivityList"
-                    class="activity-list"
-                >
-
-                    <div class="activity-loading">
-                        Loading activity history...
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-        <!-- =================================================
-             FIREBASE STATUS
-             ================================================= -->
-
-        <section class="system-section">
-
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span  style="font-size: 15px; margin-top: 20px;">
-                        SYSTEM
-                    </span>
-
-                    <h2>
-                        Connection Status
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-card">
-
-
-                <div
-                    class="status-dot"
-                    id="statusDot"
-                ></div>
-
-
-                <div class="status-content">
-
-                    <strong id="statusText">
-                        Checking Firebase...
-                    </strong>
-
-                    <span>
-                        Firebase Firestore
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="status-right"
-                    id="statusRight"
-                >
-                    Checking...
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-        <!-- =================================================
-             FOOTER
-             ================================================= -->
-
-        <footer class="dashboard-footer">
-
-            <span>
-                Roy Bari
-            </span>
-
-            <span>
-                Preserving tradition · One generation at a time
-            </span>
-
-        </footer>
-
-
-    </main>
+    </section>
 
 
     <!-- =====================================================
-         JAVASCRIPT
+         INFORMATION
          ===================================================== -->
 
-    <script
-        type="module"
-        src="./js/dashboard.js"
-    ></script>
+    <section class="information-section">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <span style="font-size: 15px; margin-top: 20px;">
+                    WEBSITE INFORMATION
+                </span>
+
+                <h2>
+                    Visit &amp; Contact
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="information-grid">
+
+
+            <!-- VISIT -->
+
+            <article class="information-card">
+
+                <div class="information-card-top">
+
+                    <div class="information-card-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+
+                    <span class="information-card-badge">
+                        LOCATION
+                    </span>
+
+                </div>
+
+                <h3>
+                    Visit Roy Bari
+                </h3>
+
+                <p>
+                    Manage the public visiting information,
+                    address, Google Maps link, parking details
+                    and nearest railway stations.
+                </p>
+
+                <button
+                    type="button"
+                    class="information-card-button"
+                    id="visitButton"
+                >
+
+                    <span>
+                        Manage Visit Information
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+            <!-- CONTACT -->
+
+            <article class="information-card">
+
+                <div class="information-card-top">
+
+                    <div class="information-card-icon">
+                        <i class="fa-solid fa-address-book"></i>
+                    </div>
+
+                    <span class="information-card-badge">
+                        CONTACT
+                    </span>
+
+                </div>
+
+                <h3>
+                    Contact Information
+                </h3>
+
+                <p>
+                    Manage the public address, email,
+                    two phone numbers and social media
+                    links shown on the Contact page.
+                </p>
+
+                <button
+                    type="button"
+                    class="information-card-button"
+                    id="contactButton"
+                >
+
+                    <span>
+                        Manage Contact Information
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ADMINISTRATION
+         ===================================================== -->
+
+    <section class="content-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span style="font-size: 15px; margin-top: 20px;">
+                    ADMINISTRATION
+                </span>
+
+                <h2>
+                    Website Administration
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-grid">
+
+
+            <!-- ENQUIRIES -->
+
+            <article class="admin-card">
+
+                <div class="card-top">
+
+                    <div class="card-icon">
+                        ✉
+                    </div>
+
+                    <span class="card-badge">
+                        MESSAGES
+                    </span>
+
+                </div>
+
+                <h3>
+                    Enquiries
+                </h3>
+
+                <p>
+                    View messages and enquiries
+                    submitted through the Roy Bari
+                    website.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="enquiriesButton"
+                >
+
+                    <span>
+                        View Enquiries
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+            <!-- ACTIVITY -->
+
+            <article class="admin-card">
+
+                <div class="card-top">
+
+                    <div class="card-icon">
+                        🕘
+                    </div>
+
+                    <span class="card-badge">
+                        AUDIT TRAIL
+                    </span>
+
+                </div>
+
+                <h3>
+                    Activity History
+                </h3>
+
+                <p>
+                    See what was changed, by whom
+                    and when across the administration.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="activityButton"
+                >
+
+                    <span>
+                        View Activity
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RECENT ACTIVITY
+         ===================================================== -->
+
+    <section class="activity-section">
+
+        <div class="activity-header">
+
+            <div class="activity-header-left">
+
+                <span style="font-size: 15px; margin-top: 20px;">
+                    AUDIT TRAIL
+                </span>
+
+                <h2>
+                    Recent Activity
+                </h2>
+
+                <p>
+                    See what was changed, by whom and when.
+                </p>
+
+            </div>
+
+
+            <a
+                href="./activity.html"
+                class="activity-view-all"
+            >
+                View Full History →
+            </a>
+
+        </div>
+
+
+        <div class="activity-card">
+
+            <div class="activity-summary">
+
+                <strong>
+                    Activity History
+                </strong>
+
+                <span id="activitySummary">
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <div
+                id="recentActivityList"
+                class="activity-list"
+            >
+
+                <div class="activity-loading">
+                    Loading activity history...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FIREBASE STATUS
+         ===================================================== -->
+
+    <section class="system-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span style="font-size: 15px; margin-top: 20px;">
+                    SYSTEM
+                </span>
+
+                <h2>
+                    Connection Status
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="status-card">
+
+            <div
+                class="status-dot"
+                id="statusDot"
+            ></div>
+
+
+            <div class="status-content">
+
+                <strong id="statusText">
+                    Checking Firebase...
+                </strong>
+
+                <span>
+                    Firebase Firestore
+                </span>
+
+            </div>
+
+
+            <div
+                class="status-right"
+                id="statusRight"
+            >
+                Checking...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <span>
+            Roy Bari
+        </span>
+
+        <span>
+            Preserving tradition · One generation at a time
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script
+    type="module"
+    src="./js/dashboard.js"
+></script>
 
 
 </body>
 
 </html>
-```

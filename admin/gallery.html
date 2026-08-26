@@ -19,15 +19,26 @@
         Roy Bari — Gallery & Videos
     </title>
 
+
+    <!-- =====================================================
+         ADMIN CSS
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="./css/admin.css"
     >
 
+
+    <!-- =====================================================
+         FONT AWESOME
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
+
 
     <style>
 
@@ -880,6 +891,13 @@
             }
 
 
+            .collection-tabs {
+
+                flex-direction: column;
+
+            }
+
+
             .manager-item {
 
                 align-items: flex-start;
@@ -927,717 +945,754 @@
 <body class="dashboard-page">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
 
-    <aside class="sidebar">
-
-
-        <!-- BRAND -->
-
-        <div class="sidebar-brand">
-
-            <div class="sidebar-logo">
-                🪔
-            </div>
+<aside class="sidebar">
 
 
-            <div class="sidebar-brand-text">
+    <!-- BRAND -->
 
-                <h2>
-                    Roy Bari
-                </h2>
+    <div class="sidebar-brand">
 
-                <span>
-                    Administration
-                </span>
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- MAIN -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- CONTENT -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <a
+            href="./gallery.html"
+            class="nav-item active"
+            aria-current="page"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             HOMEPAGE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MEDIA & ARCHIVE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MORE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             ADMIN
+             ================================================= -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- =================================================
+         SIDEBAR BOTTOM
+         ================================================= -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <button
+            type="button"
+            id="logoutButton"
+            class="logout-button"
+        >
 
-        <nav class="sidebar-nav">
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
 
 
-            <!-- MAIN -->
+    </div>
 
-            <div class="nav-section-title">
-                MAIN
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
+
+<main class="dashboard-main">
+
+
+    <!-- =================================================
+         TOPBAR
+         ================================================= -->
+
+    <header class="topbar">
+
+
+        <div class="topbar-left">
+
+            <span class="page-eyebrow">
+                CONTENT MANAGEMENT
+            </span>
+
+
+            <h1 id="pageTitle">
+                Gallery
+            </h1>
+
+
+            <p id="pageDescription">
+                Manage photographs and visual memories.
+            </p>
+
+        </div>
+
+
+        <div class="admin-user">
+
+
+            <div
+                class="user-avatar"
+                id="userAvatar"
+            >
+                A
             </div>
 
 
-            <a
-                href="./dashboard.html"
-                class="nav-item"
-            >
+            <div class="user-details">
 
-                <i class="fa-solid fa-display"></i>
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
                 <span>
-                    Dashboard
+                    Administrator
                 </span>
 
-            </a>
-
-
-            <!-- =================================================
-                 CONTENT
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                CONTENT
             </div>
 
 
-            <a
-                href="./family.html"
-                class="nav-item"
-            >
+            <span class="user-status">
+                ●
+            </span>
 
-                <i class="fa-solid fa-people-roof"></i>
 
-                <span>
-                    Family Tree
-                </span>
+        </div>
 
-            </a>
+    </header>
 
 
-            <a
-                href="./events.html"
-                class="nav-item"
-            >
+    <!-- =====================================================
+         COLLECTION TABS
+         ===================================================== -->
 
-                <i class="fa-solid fa-calendar-days"></i>
+    <div class="collection-tabs">
 
-                <span>
-                    Puja Events
-                </span>
 
-            </a>
+        <button
+            type="button"
+            id="galleryTab"
+            class="collection-tab active"
+        >
 
+            <i class="fa-solid fa-images"></i>
 
-            <a
-                href="./gallery.html"
-                class="nav-item active"
-            >
+            Gallery
 
-                <i class="fa-solid fa-image"></i>
+        </button>
 
-                <span>
-                    Gallery
-                </span>
 
-            </a>
+        <button
+            type="button"
+            id="videosTab"
+            class="collection-tab"
+        >
 
+            <i class="fa-solid fa-video"></i>
 
-            <!-- =================================================
-                 HOMEPAGE
-                 ================================================= -->
+            Videos
 
-            <div class="nav-section-title">
-                HOMEPAGE
-            </div>
+        </button>
 
 
-            <a
-                href="./homepage-countdown.html"
-                class="nav-item"
-            >
+    </div>
 
-                <i class="fa-solid fa-hourglass-half"></i>
 
-                <span>
-                    Homepage Countdown
-                </span>
+    <!-- =====================================================
+         MANAGEMENT
+         ===================================================== -->
 
-            </a>
-
-
-            <!-- =================================================
-                 MEDIA & ARCHIVE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                MEDIA &amp; ARCHIVE
-            </div>
-
-
-            <a
-                href="./comparisons.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-code-compare"></i>
-
-                <span>
-                    Comparisons
-                </span>
-
-            </a>
-
-
-            <a
-                href="./idol-makers.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-user-gear"></i>
-
-                <span>
-                    Idol Makers
-                </span>
-
-            </a>
-
-
-            <a
-                href="./newspaper-articles.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-newspaper"></i>
-
-                <span>
-                    Newspaper Articles
-                </span>
-
-            </a>
-
-
-            <a
-                href="./old-pictures.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                <span>
-                    Old Pictures
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                MORE
-            </div>
-
-
-            <a
-                href="./memories.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-heart"></i>
-
-                <span>
-                    Memories
-                </span>
-
-            </a>
-
-
-            <a
-                href="./rituals.html"
-                class="nav-item"
-            >
-
-                <span class="nav-icon">
-                    ॐ
-                </span>
-
-                <span>
-                    Rituals
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 ADMIN
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                ADMIN
-            </div>
-
-
-            <a
-                href="./enquiries.html"
-                class="nav-item"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <span>
-                    Enquiries
-                </span>
-
-            </a>
-
-
-            <a
-                href="./activity.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Activity History
-                </span>
-
-            </a>
-
-
-            <a
-                href="./change-password.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-key"></i>
-
-                <span>
-                    Change Password
-                </span>
-
-            </a>
-
-
-        </nav>
+    <section class="manager-layout">
 
 
         <!-- =================================================
-             SIDEBAR BOTTOM
+             LEFT — FORM
              ================================================= -->
 
-        <div class="sidebar-bottom">
+        <div class="manager-form-card">
 
 
-            <div class="sidebar-note">
+            <div class="section-heading">
 
-                <i class="fa-solid fa-lock"></i>
+                <div>
+
+                    <span id="formEyebrow">
+                        PHOTO
+                    </span>
+
+                    <h2 id="formTitle">
+                        Add Photograph
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <form
+                id="galleryForm"
+                class="gallery-form"
+            >
+
+
+                <input
+                    type="hidden"
+                    id="galleryId"
+                    name="galleryId"
+                >
+
+
+                <div class="gallery-form-grid">
+
+
+                    <!-- TITLE -->
+
+                    <div class="gallery-form-group">
+
+                        <label for="title">
+                            Title *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Enter title"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- YEAR -->
+
+                    <div class="gallery-form-group">
+
+                        <label for="year">
+                            Year
+                        </label>
+
+                        <input
+                            type="number"
+                            id="year"
+                            name="year"
+                            placeholder="e.g. 2025"
+                            min="1800"
+                            max="2100"
+                        >
+
+                    </div>
+
+
+                    <!-- IMAGE / VIDEO URL -->
+
+                    <div class="gallery-form-group full">
+
+                        <label
+                            for="image"
+                            id="linkLabel"
+                        >
+                            Image URL *
+                        </label>
+
+                        <input
+                            type="url"
+                            id="image"
+                            name="image"
+                            placeholder="https://drive.google.com/..."
+                            required
+                        >
+
+                        <small
+                            id="linkHelp"
+                            style="
+                                color:#8b7b6d;
+                                font-size:11px;
+                                line-height:1.5;
+                            "
+                        >
+                            Google Drive image links are supported.
+                        </small>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="gallery-form-group full">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="Describe this item..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div
+                        class="gallery-form-group full"
+                        id="categoryGroup"
+                    >
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <input
+                            type="text"
+                            id="category"
+                            name="category"
+                            placeholder="e.g. Puja, Family, Tradition"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="gallery-form-actions">
+
+
+                    <button
+                        type="submit"
+                        id="saveButton"
+                        class="gallery-save-button"
+                    >
+                        Save Photograph
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelButton"
+                        class="gallery-cancel-button"
+                    >
+                        Cancel
+                    </button>
+
+
+                </div>
+
+
+                <p
+                    id="galleryMessage"
+                    class="message"
+                    aria-live="polite"
+                ></p>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             RIGHT — LIST
+             ================================================= -->
+
+        <div class="manager-list-card">
+
+
+            <div class="section-heading">
 
 
                 <div>
 
-                    <strong>
-                        Admin Access
-                    </strong>
-
-                    <small>
-                        Protected area
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <button
-                type="button"
-                id="logoutButton"
-                class="logout-button"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                Logout
-
-            </button>
-
-
-        </div>
-
-    </aside>
-
-
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
-
-    <main class="dashboard-main">
-
-
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
-
-        <header class="topbar">
-
-
-            <div class="topbar-left">
-
-                <span class="page-eyebrow">
-                    CONTENT MANAGEMENT
-                </span>
-
-
-                <h1 id="pageTitle">
-                    Gallery
-                </h1>
-
-
-                <p id="pageDescription">
-                    Manage photographs and visual memories.
-                </p>
-
-            </div>
-
-
-            <div class="admin-user">
-
-
-                <div
-                    class="user-avatar"
-                    id="userAvatar"
-                >
-                    A
-                </div>
-
-
-                <div class="user-details">
-
-                    <strong id="adminEmail">
-                        Admin
-                    </strong>
-
-                    <span>
-                        Administrator
+                    <span id="listEyebrow">
+                        FIRESTORE
                     </span>
 
+                    <h2 id="listTitle">
+                        Gallery
+                    </h2>
+
                 </div>
 
 
-                <span class="user-status">
-                    ●
+                <span id="galleryCount">
+                    0 photos
                 </span>
 
 
             </div>
 
-        </header>
 
+            <div id="galleryList">
 
-        <!-- =====================================================
-             COLLECTION TABS
-             ===================================================== -->
+                <div class="gallery-loading">
+                    Loading gallery...
+                </div>
 
-        <div class="collection-tabs">
+            </div>
 
-            <button
-                type="button"
-                id="galleryTab"
-                class="collection-tab active"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                Gallery
-
-            </button>
-
-
-            <button
-                type="button"
-                id="videosTab"
-                class="collection-tab"
-            >
-
-                <i class="fa-solid fa-video"></i>
-
-                Videos
-
-            </button>
 
         </div>
 
-
-        <!-- =====================================================
-             MANAGEMENT
-             ===================================================== -->
-
-        <section class="manager-layout">
-
-
-            <!-- =================================================
-                 LEFT — FORM
-                 ================================================= -->
-
-            <div class="manager-form-card">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <span id="formEyebrow">
-                            PHOTO
-                        </span>
-
-                        <h2 id="formTitle">
-                            Add Photograph
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-                <form
-                    id="galleryForm"
-                    class="gallery-form"
-                >
-
-
-                    <input
-                        type="hidden"
-                        id="galleryId"
-                        name="galleryId"
-                    >
-
-
-                    <div class="gallery-form-grid">
-
-
-                        <!-- TITLE -->
-
-                        <div class="gallery-form-group">
-
-                            <label for="title">
-                                Title *
-                            </label>
-
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                placeholder="Enter title"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- YEAR -->
-
-                        <div class="gallery-form-group">
-
-                            <label for="year">
-                                Year
-                            </label>
-
-                            <input
-                                type="number"
-                                id="year"
-                                name="year"
-                                placeholder="e.g. 2025"
-                                min="1800"
-                                max="2100"
-                            >
-
-                        </div>
-
-
-                        <!-- IMAGE / VIDEO URL -->
-
-                        <div class="gallery-form-group full">
-
-                            <label
-                                for="image"
-                                id="linkLabel"
-                            >
-                                Image URL *
-                            </label>
-
-                            <input
-                                type="url"
-                                id="image"
-                                name="image"
-                                placeholder="https://drive.google.com/..."
-                                required
-                            >
-
-                            <small
-                                id="linkHelp"
-                                style="
-                                    color:#8b7b6d;
-                                    font-size:11px;
-                                    line-height:1.5;
-                                "
-                            >
-                                Google Drive image links are supported.
-                            </small>
-
-                        </div>
-
-
-                        <!-- DESCRIPTION -->
-
-                        <div class="gallery-form-group full">
-
-                            <label for="description">
-                                Description
-                            </label>
-
-                            <textarea
-                                id="description"
-                                name="description"
-                                placeholder="Describe this item..."
-                            ></textarea>
-
-                        </div>
-
-
-                        <!-- CATEGORY -->
-
-                        <div
-                            class="gallery-form-group full"
-                            id="categoryGroup"
-                        >
-
-                            <label for="category">
-                                Category
-                            </label>
-
-                            <input
-                                type="text"
-                                id="category"
-                                name="category"
-                                placeholder="e.g. Puja, Family, Tradition"
-                            >
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- ACTIONS -->
-
-                    <div class="gallery-form-actions">
-
-
-                        <button
-                            type="submit"
-                            id="saveButton"
-                            class="gallery-save-button"
-                        >
-                            Save Photograph
-                        </button>
-
-
-                        <button
-                            type="button"
-                            id="cancelButton"
-                            class="gallery-cancel-button"
-                        >
-                            Cancel
-                        </button>
-
-
-                    </div>
-
-
-                    <p
-                        id="galleryMessage"
-                        class="message"
-                    ></p>
-
-
-                </form>
-
-            </div>
-
-
-            <!-- =================================================
-                 RIGHT — LIST
-                 ================================================= -->
-
-            <div class="manager-list-card">
-
-
-                <div class="section-heading">
-
-
-                    <div>
-
-                        <span id="listEyebrow">
-                            FIRESTORE
-                        </span>
-
-                        <h2 id="listTitle">
-                            Gallery
-                        </h2>
-
-                    </div>
-
-
-                    <span id="galleryCount">
-                        0 photos
-                    </span>
-
-
-                </div>
-
-
-                <div id="galleryList">
-
-                    <div class="gallery-loading">
-                        Loading gallery...
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-        <!-- =====================================================
-             FOOTER
-             ===================================================== -->
-
-        <footer class="dashboard-footer">
-
-
-            <span>
-                Roy Bari
-            </span>
-
-
-            <span>
-                Preserving tradition · One generation at a time
-            </span>
-
-
-        </footer>
-
-
-    </main>
+    </section>
 
 
     <!-- =====================================================
-         JAVASCRIPT
+         FOOTER
          ===================================================== -->
 
-    <script
-        type="module"
-        src="./js/gallery.js"
-    ></script>
+    <footer class="dashboard-footer">
+
+
+        <span>
+            Roy Bari
+        </span>
+
+
+        <span>
+            Preserving tradition · One generation at a time
+        </span>
+
+
+    </footer>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script
+    type="module"
+    src="./js/gallery.js"
+></script>
 
 
 </body>

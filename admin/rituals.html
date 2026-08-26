@@ -140,6 +140,10 @@
 
             outline: none;
 
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
         }
 
 
@@ -178,6 +182,8 @@
             gap: 10px;
 
             margin-top: 20px;
+
+            flex-wrap: wrap;
 
         }
 
@@ -268,6 +274,13 @@
         .message.error {
 
             color: #a33d3d;
+
+        }
+
+
+        .message.info {
+
+            color: #735b48;
 
         }
 
@@ -452,6 +465,8 @@
 
             font-size: 13px;
 
+            white-space: pre-wrap;
+
         }
 
 
@@ -630,6 +645,20 @@
 
             }
 
+
+            .form-actions {
+
+                flex-direction: column;
+
+            }
+
+
+            .form-actions button {
+
+                width: 100%;
+
+            }
+
         }
 
     </style>
@@ -640,728 +669,801 @@
 <body class="dashboard-page">
 
 
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
+
+<aside class="sidebar">
+
+
+    <!-- BRAND -->
+
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <!-- FAMILY TREE -->
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <!-- PUJA EVENTS -->
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <!-- GALLERY -->
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             HOMEPAGE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <!-- VISIT -->
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <!-- CONTACT -->
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MEDIA & ARCHIVE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+
+        <!-- COMPARISONS -->
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <!-- IDOL MAKERS -->
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <!-- NEWSPAPER ARTICLES -->
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <!-- OLD PICTURES -->
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MORE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <!-- MEMORIES -->
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <!-- RITUALS ACTIVE -->
+
+        <a
+            href="./rituals.html"
+            class="nav-item active"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             ADMIN
+             ================================================= -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <!-- ENQUIRIES -->
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+
+        <!-- ACTIVITY HISTORY -->
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <!-- CHANGE PASSWORD -->
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+    </nav>
+
+
     <!-- =====================================================
-         SIDEBAR
+         SIDEBAR BOTTOM
          ===================================================== -->
 
-    <aside class="sidebar">
+    <div class="sidebar-bottom">
 
 
-        <!-- BRAND -->
+        <div class="sidebar-note">
 
-        <div class="sidebar-brand">
+            <i class="fa-solid fa-lock"></i>
 
-            <div class="sidebar-logo">
-                🪔
-            </div>
+            <div>
 
-            <div class="sidebar-brand-text">
+                <strong>
+                    Admin Access
+                </strong>
 
-                <h2>
-                    Roy Bari
-                </h2>
-
-                <span>
-                    Administration
-                </span>
+                <small>
+                    Protected area
+                </small>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <button
+            id="logoutButton"
+            class="logout-button"
+            type="button"
+        >
 
-        <nav class="sidebar-nav">
+            <i class="fa-solid fa-right-from-bracket"></i>
 
+            Logout
 
-            <!-- MAIN -->
+        </button>
 
-            <div class="nav-section-title">
-                MAIN
-            </div>
+    </div>
 
-
-            <a
-                href="./dashboard.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-display"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </a>
+</aside>
 
 
-            <!-- =================================================
-                 CONTENT
-                 ================================================= -->
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
 
-            <div class="nav-section-title">
-                CONTENT
-            </div>
+<main class="dashboard-main">
 
 
-            <a
-                href="./family.html"
-                class="nav-item"
-            >
+    <!-- =================================================
+         TOPBAR
+         ================================================= -->
 
-                <i class="fa-solid fa-people-roof"></i>
-
-                <span>
-                    Family Tree
-                </span>
-
-            </a>
+    <header class="topbar">
 
 
-            <a
-                href="./events.html"
-                class="nav-item"
-            >
+        <div class="topbar-left">
 
-                <i class="fa-solid fa-calendar-days"></i>
-
-                <span>
-                    Puja Events
-                </span>
-
-            </a>
-
-            <a
-                href="./gallery.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-image"></i>
-
-                <span>
-                    Gallery
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 HOMEPAGE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                HOMEPAGE
-            </div>
-
-
-            <a
-                href="./homepage-countdown.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-hourglass-half"></i>
-
-                <span>
-                    Homepage Countdown
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 MEDIA & ARCHIVE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                MEDIA &amp; ARCHIVE
-            </div>
-
-
-            <a
-                href="./comparisons.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-code-compare"></i>
-
-                <span>
-                    Comparisons
-                </span>
-
-            </a>
-
-
-            <a
-                href="./idol-makers.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-user-gear"></i>
-
-                <span>
-                    Idol Makers
-                </span>
-
-            </a>
-
-
-            <a
-                href="./newspaper-articles.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-newspaper"></i>
-
-                <span>
-                    Newspaper Articles
-                </span>
-
-            </a>
-
-
-            <a
-                href="./old-pictures.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                <span>
-                    Old Pictures
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
-
-            <div class="nav-section-title">
+            <span class="page-eyebrow">
                 MORE
+            </span>
+
+            <h1>
+                Rituals
+            </h1>
+
+            <p>
+                Manage Roy Bari rituals and traditions.
+            </p>
+
+        </div>
+
+
+        <div class="admin-user">
+
+            <div class="user-avatar">
+                A
             </div>
 
+            <div class="user-details">
 
-            <a
-                href="./memories.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-heart"></i>
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
                 <span>
-                    Memories
+                    Administrator
                 </span>
 
-            </a>
-
-
-            <a
-                href="./rituals.html"
-                class="nav-item active"
-            >
-
-                <span class="nav-icon">
-                    ॐ
-                </span>
-
-                <span>
-                    Rituals
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 ADMIN
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                ADMIN
             </div>
 
+        </div>
 
-            <a
-                href="./enquiries.html"
-                class="nav-item"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <span>
-                    Enquiries
-                </span>
-
-            </a>
+    </header>
 
 
-            <a
-                href="./activity.html"
-                class="nav-item"
-            >
+    <!-- =================================================
+         RITUAL MANAGEMENT
+         ================================================= -->
 
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Activity History
-                </span>
-
-            </a>
-
-
-            <a
-                href="./change-password.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-key"></i>
-
-                <span>
-                    Change Password
-                </span>
-
-            </a>
-
-
-        </nav>
+    <section class="ritual-manager-layout">
 
 
         <!-- =================================================
-             SIDEBAR BOTTOM
+             FORM
              ================================================= -->
 
-        <div class="sidebar-bottom">
+        <div class="content-card">
 
 
-            <div class="sidebar-note">
-
-                <i class="fa-solid fa-lock"></i>
+            <div class="section-heading">
 
                 <div>
 
-                    <strong>
-                        Admin Access
-                    </strong>
+                    <span>
+                        RITUAL
+                    </span>
 
-                    <small>
-                        Protected area
-                    </small>
+                    <h2 id="formTitle">
+                        Add Ritual
+                    </h2>
 
                 </div>
 
             </div>
 
 
-            <button
-                id="logoutButton"
-                class="logout-button"
-                type="button"
-            >
+            <form id="ritualForm">
 
-                <i class="fa-solid fa-right-from-bracket"></i>
 
-                Logout
+                <div class="form-grid">
 
-            </button>
+
+                    <!-- NAME -->
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Name *
+                        </label>
+
+                        <input
+                            id="name"
+                            type="text"
+                            required
+                            placeholder="e.g. Bodhan & Kalparambha"
+                        >
+
+                    </div>
+
+
+                    <!-- DAY -->
+
+                    <div class="form-group">
+
+                        <label for="day">
+                            Day
+                        </label>
+
+                        <input
+                            id="day"
+                            type="text"
+                            placeholder="e.g. Sasthi"
+                        >
+
+                    </div>
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="date">
+                            Date
+                        </label>
+
+                        <input
+                            id="date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <!-- TIME -->
+
+                    <div class="form-group">
+
+                        <label for="time">
+                            Time
+                        </label>
+
+                        <input
+                            id="time"
+                            type="text"
+                            placeholder="e.g. Evening"
+                        >
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <input
+                            id="category"
+                            type="text"
+                            placeholder="e.g. Sasthi"
+                        >
+
+                    </div>
+
+
+                    <!-- TYPE -->
+
+                    <div class="form-group">
+
+                        <label for="type">
+                            Type
+                        </label>
+
+                        <select id="type">
+
+                            <option value="">
+                                Select type
+                            </option>
+
+                            <option value="puja">
+                                Puja
+                            </option>
+
+                            <option value="ritual">
+                                Ritual
+                            </option>
+
+                            <option value="offering">
+                                Offering
+                            </option>
+
+                            <option value="tradition">
+                                Tradition
+                            </option>
+
+                            <option value="other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+                        <label for="location">
+                            Location
+                        </label>
+
+                        <input
+                            id="location"
+                            type="text"
+                            placeholder="e.g. Roy Bari"
+                        >
+
+                    </div>
+
+
+                    <!-- PRIEST -->
+
+                    <div class="form-group">
+
+                        <label for="priest">
+                            Priest
+                        </label>
+
+                        <input
+                            id="priest"
+                            type="text"
+                            placeholder="e.g. Family Purohit"
+                        >
+
+                    </div>
+
+
+                    <!-- ORDER -->
+
+                    <div class="form-group">
+
+                        <label for="order">
+                            Display Order
+                        </label>
+
+                        <input
+                            id="order"
+                            type="number"
+                            min="1"
+                            placeholder="e.g. 1"
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group full-width">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            placeholder="Describe the ritual..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="saveButton"
+                    >
+
+                        Save Ritual
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelButton"
+                    >
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+
+                <p
+                    id="ritualMessage"
+                    aria-live="polite"
+                ></p>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             LIST
+             ================================================= -->
+
+        <div class="content-card">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        FIRESTORE
+                    </span>
+
+                    <h2>
+                        Rituals
+                    </h2>
+
+                </div>
+
+
+                <span id="ritualCount">
+                    0 rituals
+                </span>
+
+
+            </div>
+
+
+            <div id="ritualList">
+
+                Loading...
+
+            </div>
 
 
         </div>
 
-    </aside>
+
+    </section>
 
 
     <!-- =====================================================
-         MAIN
+         FOOTER
          ===================================================== -->
 
-    <main class="dashboard-main">
+    <footer class="dashboard-footer">
 
+        <span>
+            Roy Bari
+        </span>
 
-        <!-- TOPBAR -->
+        <span>
+            Ritual Management
+        </span>
 
-        <header class="topbar">
+    </footer>
 
 
-            <div class="topbar-left">
+</main>
 
-                <span class="page-eyebrow">
-                    MORE
-                </span>
 
-                <h1>
-                    Rituals
-                </h1>
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
 
-                <p>
-                    Manage Roy Bari rituals and traditions.
-                </p>
-
-            </div>
-
-
-            <div class="admin-user">
-
-                <div class="user-avatar">
-                    A
-                </div>
-
-                <div class="user-details">
-
-                    <strong id="adminEmail">
-                        Admin
-                    </strong>
-
-                    <span>
-                        Administrator
-                    </span>
-
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- =================================================
-             RITUAL MANAGEMENT
-             ================================================= -->
-
-        <section class="ritual-manager-layout">
-
-
-            <!-- =================================================
-                 FORM
-                 ================================================= -->
-
-            <div class="content-card">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <span>
-                            RITUAL
-                        </span>
-
-                        <h2 id="formTitle">
-                            Add Ritual
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-                <form id="ritualForm">
-
-
-                    <div class="form-grid">
-
-
-                        <!-- NAME -->
-
-                        <div class="form-group">
-
-                            <label for="name">
-                                Name *
-                            </label>
-
-                            <input
-                                id="name"
-                                type="text"
-                                required
-                                placeholder="e.g. Bodhan & Kalparambha"
-                            >
-
-                        </div>
-
-
-                        <!-- DAY -->
-
-                        <div class="form-group">
-
-                            <label for="day">
-                                Day
-                            </label>
-
-                            <input
-                                id="day"
-                                type="text"
-                                placeholder="e.g. Sasthi"
-                            >
-
-                        </div>
-
-
-                        <!-- DATE -->
-
-                        <div class="form-group">
-
-                            <label for="date">
-                                Date
-                            </label>
-
-                            <input
-                                id="date"
-                                type="date"
-                            >
-
-                        </div>
-
-
-                        <!-- TIME -->
-
-                        <div class="form-group">
-
-                            <label for="time">
-                                Time
-                            </label>
-
-                            <input
-                                id="time"
-                                type="text"
-                                placeholder="e.g. Evening"
-                            >
-
-                        </div>
-
-
-                        <!-- CATEGORY -->
-
-                        <div class="form-group">
-
-                            <label for="category">
-                                Category
-                            </label>
-
-                            <input
-                                id="category"
-                                type="text"
-                                placeholder="e.g. Sasthi"
-                            >
-
-                        </div>
-
-
-                        <!-- TYPE -->
-
-                        <div class="form-group">
-
-                            <label for="type">
-                                Type
-                            </label>
-
-                            <select id="type">
-
-                                <option value="">
-                                    Select type
-                                </option>
-
-                                <option value="puja">
-                                    Puja
-                                </option>
-
-                                <option value="ritual">
-                                    Ritual
-                                </option>
-
-                                <option value="offering">
-                                    Offering
-                                </option>
-
-                                <option value="tradition">
-                                    Tradition
-                                </option>
-
-                                <option value="other">
-                                    Other
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- LOCATION -->
-
-                        <div class="form-group">
-
-                            <label for="location">
-                                Location
-                            </label>
-
-                            <input
-                                id="location"
-                                type="text"
-                                placeholder="e.g. Roy Bari"
-                            >
-
-                        </div>
-
-
-                        <!-- PRIEST -->
-
-                        <div class="form-group">
-
-                            <label for="priest">
-                                Priest
-                            </label>
-
-                            <input
-                                id="priest"
-                                type="text"
-                                placeholder="e.g. Family Purohit"
-                            >
-
-                        </div>
-
-
-                        <!-- ORDER -->
-
-                        <div class="form-group">
-
-                            <label for="order">
-                                Display Order
-                            </label>
-
-                            <input
-                                id="order"
-                                type="number"
-                                min="1"
-                                placeholder="e.g. 1"
-                            >
-
-                        </div>
-
-
-                        <!-- DESCRIPTION -->
-
-                        <div class="form-group full-width">
-
-                            <label for="description">
-                                Description
-                            </label>
-
-                            <textarea
-                                id="description"
-                                placeholder="Describe the ritual..."
-                            ></textarea>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- ACTIONS -->
-
-                    <div class="form-actions">
-
-                        <button
-                            type="submit"
-                            class="primary-button"
-                            id="saveButton"
-                        >
-                            Save Ritual
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="secondary-button"
-                            id="cancelButton"
-                        >
-                            Cancel
-                        </button>
-
-                    </div>
-
-
-                    <p id="ritualMessage"></p>
-
-
-                </form>
-
-
-            </div>
-
-
-            <!-- =================================================
-                 LIST
-                 ================================================= -->
-
-            <div class="content-card">
-
-
-                <div class="section-heading">
-
-
-                    <div>
-
-                        <span>
-                            FIRESTORE
-                        </span>
-
-                        <h2>
-                            Rituals
-                        </h2>
-
-                    </div>
-
-
-                    <span id="ritualCount">
-                        0 rituals
-                    </span>
-
-
-                </div>
-
-
-                <div id="ritualList">
-
-                    Loading...
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-        <!-- =====================================================
-             FOOTER
-             ===================================================== -->
-
-        <footer class="dashboard-footer">
-
-            <span>
-                Roy Bari
-            </span>
-
-            <span>
-                Ritual Management
-            </span>
-
-        </footer>
-
-
-    </main>
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-         ===================================================== -->
-
-    <script
-        type="module"
-        src="./js/rituals.js"
-    ></script>
+<script
+    type="module"
+    src="./js/rituals.js"
+></script>
 
 
 </body>

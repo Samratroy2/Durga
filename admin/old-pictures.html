@@ -75,7 +75,8 @@
 
             padding: 20px;
 
-            border-bottom: 1px solid #eee5dc;
+            border-bottom:
+                1px solid #eee5dc;
 
         }
 
@@ -158,16 +159,27 @@
 
             font-family: inherit;
 
+            transition:
+                background .15s ease,
+                border-color .15s ease,
+                transform .15s ease;
+
         }
 
 
         .manager-list-item:hover,
-
         .manager-list-item.active {
 
             background: #f4ece4;
 
             border-color: #dcc8b5;
+
+        }
+
+
+        .manager-list-item:hover {
+
+            transform: translateY(-1px);
 
         }
 
@@ -248,9 +260,7 @@
 
 
         .form-group input,
-
         .form-group textarea,
-
         .form-group select {
 
             width: 100%;
@@ -271,6 +281,10 @@
 
             outline: none;
 
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
         }
 
 
@@ -286,9 +300,7 @@
 
 
         .form-group input:focus,
-
         .form-group textarea:focus,
-
         .form-group select:focus {
 
             border-color: #b27a4a;
@@ -359,9 +371,7 @@
 
 
         .primary-button,
-
         .secondary-button,
-
         .danger-button {
 
             border: 1px solid #ddd1c6;
@@ -375,6 +385,11 @@
             font-family: inherit;
 
             font-weight: 700;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease,
+                color .2s ease;
 
         }
 
@@ -487,6 +502,19 @@
             text-align: center;
 
             color: #8b7b6d;
+
+        }
+
+
+        .empty-list i {
+
+            display: block;
+
+            margin-bottom: 10px;
+
+            font-size: 28px;
+
+            color: #b27a4a;
 
         }
 
@@ -679,7 +707,6 @@
         </a>
 
 
-
         <!-- GALLERY -->
 
         <a
@@ -716,6 +743,47 @@
 
             <span>
                 Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <!-- VISIT -->
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <!-- CONTACT -->
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
             </span>
 
         </a>
@@ -778,7 +846,7 @@
         </a>
 
 
-        <!-- OLD PICTURES - ACTIVE -->
+        <!-- OLD PICTURES ACTIVE -->
 
         <a
             href="./old-pictures.html"
@@ -963,9 +1031,11 @@
                 CONTENT MANAGEMENT
             </span>
 
+
             <h1>
                 Old Pictures
             </h1>
+
 
             <p>
                 Manage historic photographs, categories,
@@ -979,9 +1049,11 @@
 
         <div class="admin-user">
 
+
             <div class="user-avatar">
                 A
             </div>
+
 
             <div class="user-details">
 
@@ -1020,9 +1092,11 @@
                     FIRESTORE
                 </span>
 
+
                 <h2 id="listTitle">
                     Old Pictures
                 </h2>
+
 
                 <small id="documentCount">
                     Loading...
@@ -1030,6 +1104,8 @@
 
             </div>
 
+
+            <!-- NEW DOCUMENT -->
 
             <div class="doc-tools">
 
@@ -1047,6 +1123,8 @@
 
             </div>
 
+
+            <!-- DOCUMENT LIST -->
 
             <div
                 id="documentList"
@@ -1073,9 +1151,11 @@
                     EDITOR
                 </span>
 
+
                 <h2 id="formTitle">
                     Select a document
                 </h2>
+
 
                 <small id="documentId">
                     No document selected
@@ -1083,6 +1163,8 @@
 
             </div>
 
+
+            <!-- EDITOR FORM -->
 
             <form
                 id="editorForm"
@@ -1131,6 +1213,8 @@
                         id="cancelButton"
                     >
 
+                        <i class="fa-solid fa-xmark"></i>
+
                         Cancel
 
                     </button>
@@ -1138,9 +1222,12 @@
                 </div>
 
 
+                <!-- MESSAGE -->
+
                 <p
                     id="message"
                     class="message"
+                    aria-live="polite"
                 ></p>
 
 
@@ -1161,11 +1248,13 @@
             Roy Bari
         </span>
 
+
         <span>
             Old Pictures Management
         </span>
 
     </footer>
+
 
 </main>
 

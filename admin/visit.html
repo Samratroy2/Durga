@@ -11,7 +11,7 @@
     >
 
     <title>
-        Visit Settings | Roy Bari Admin
+        Roy Bari — Visit
     </title>
 
     <meta
@@ -21,220 +21,986 @@
 
     <link
         rel="stylesheet"
-        href="css/admin.css"
+        href="./css/admin.css"
     >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           VISIT SETTINGS
+           ===================================================== */
+
+        .visit-settings {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+        }
+
+
+        /* =====================================================
+           PAGE HEADER
+           ===================================================== */
+
+        .visit-intro {
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .visit-intro span {
+
+            display: block;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+
+            color: #8b6a50;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .visit-intro h2 {
+
+            margin: 0;
+
+            color: #3f2920;
+
+            font-family: Georgia, serif;
+
+        }
+
+
+        .visit-intro p {
+
+            margin: 7px 0 0;
+
+            color: #8b7b6d;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================================
+           STATUS
+           ===================================================== */
+
+        .admin-status {
+
+            margin-bottom: 18px;
+
+            padding: 12px 14px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            line-height: 1.45;
+
+        }
+
+
+        .admin-status.success {
+
+            background: #edf7ef;
+
+            border: 1px solid #c9e5ce;
+
+            color: #39734a;
+
+        }
+
+
+        .admin-status.error {
+
+            background: #f9eaea;
+
+            border: 1px solid #e3c2c2;
+
+            color: #a33d3d;
+
+        }
+
+
+        .admin-status.info {
+
+            background: #f7f1eb;
+
+            border: 1px solid #e2d4c6;
+
+            color: #735b48;
+
+        }
+
+
+        /* =====================================================
+           FORM
+           ===================================================== */
+
+        .visit-form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 18px;
+
+        }
+
+
+        /* =====================================================
+           CARD
+           ===================================================== */
+
+        .visit-card {
+
+            background: #fff;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+        }
+
+
+        .visit-card-header {
+
+            padding: 20px;
+
+            border-bottom: 1px solid #eee5dc;
+
+        }
+
+
+        .visit-card-header span {
+
+            display: block;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+
+            color: #8b6a50;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .visit-card-header h2 {
+
+            margin: 0;
+
+            color: #3f2920;
+
+            font-size: 19px;
+
+        }
+
+
+        .visit-card-header p {
+
+            margin: 7px 0 0;
+
+            color: #8b7b6d;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .visit-card-body {
+
+            padding: 22px;
+
+        }
+
+
+        /* =====================================================
+           FORM GRID
+           ===================================================== */
+
+        .visit-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+
+        }
+
+
+        .visit-full-width {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        /* =====================================================
+           FORM GROUP
+           ===================================================== */
+
+        .visit-form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .visit-form-group label {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #67584c;
+
+        }
+
+
+        .visit-form-group input,
+        .visit-form-group textarea {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 12px 13px;
+
+            border: 1px solid #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+            color: #3c3028;
+
+            font: inherit;
+
+            outline: none;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .visit-form-group textarea {
+
+            min-height: 125px;
+
+            resize: vertical;
+
+            line-height: 1.55;
+
+        }
+
+
+        .visit-form-group input:focus,
+        .visit-form-group textarea:focus {
+
+            border-color: #795337;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, .08);
+
+        }
+
+
+        .visit-form-group small {
+
+            color: #8b7b6d;
+
+            font-size: 11px;
+
+            line-height: 1.45;
+
+        }
+
+
+        /* =====================================================
+           MAP URL
+           ===================================================== */
+
+        .map-help {
+
+            margin-top: 2px;
+
+            padding: 10px 12px;
+
+            border-radius: 7px;
+
+            background: #faf6f1;
+
+            border: 1px solid #eee5dc;
+
+            color: #806f61;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
+        .visit-actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            margin-top: 2px;
+
+        }
+
+
+        .visit-save-button {
+
+            border: 1px solid #704a31;
+
+            background: #704a31;
+
+            color: #fff;
+
+            padding: 11px 18px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            font-weight: 700;
+
+            transition:
+                background .15s ease,
+                border-color .15s ease;
+
+        }
+
+
+        .visit-save-button:hover {
+
+            background: #5f3d29;
+
+            border-color: #5f3d29;
+
+        }
+
+
+        .visit-save-button:disabled {
+
+            opacity: .6;
+
+            cursor: wait;
+
+        }
+
+
+        .visit-reset-button {
+
+            border: 1px solid #ddd1c6;
+
+            background: #fff;
+
+            color: #4b392d;
+
+            padding: 11px 18px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            font-weight: 700;
+
+        }
+
+
+        .visit-reset-button:hover {
+
+            background: #f7f1eb;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .visit-form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .visit-full-width {
+
+                grid-column: auto;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .visit-card-header {
+
+                padding: 17px;
+
+            }
+
+            .visit-card-body {
+
+                padding: 18px;
+
+            }
+
+            .visit-actions {
+
+                flex-direction: column;
+
+            }
+
+            .visit-actions button {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
 
-<body>
+<body class="dashboard-page">
 
 
-<!-- =====================================================
-     HEADER
-     ===================================================== -->
+<!-- =========================================================
+     SIDEBAR
+     ========================================================= -->
 
-<header class="admin-header">
+<aside class="sidebar">
 
-    <div class="admin-header-left">
 
-        <a
-            href="dashboard.html"
-            class="admin-logo"
-        >
-            ROY BARI
-        </a>
+    <!-- =====================================================
+         BRAND
+         ===================================================== -->
 
-        <span class="admin-page-title">
-            Visit
-        </span>
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
 
     </div>
 
 
-    <a
-        href="../visit.html"
-        target="_blank"
-        class="admin-view-site"
-    >
-        View Site ↗
-    </a>
+    <!-- =====================================================
+         NAVIGATION
+         ===================================================== -->
 
-</header>
+    <nav class="sidebar-nav">
 
 
+        <!-- MAIN -->
 
-<!-- =====================================================
-     LAYOUT
-     ===================================================== -->
-
-<div class="admin-layout">
+        <div class="nav-section-title">
+            MAIN
+        </div>
 
 
-    <!-- =================================================
-         SIDEBAR
-         ================================================= -->
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
 
-    <aside class="admin-sidebar">
+            <i class="fa-solid fa-display"></i>
 
-        <nav>
-
-            <a href="dashboard.html">
+            <span>
                 Dashboard
-            </a>
+            </span>
 
-            <a href="events.html">
-                Events
-            </a>
+        </a>
 
-            <a href="gallery.html">
+
+        <!-- CONTENT -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
                 Gallery
-            </a>
+            </span>
 
-            <a href="comparisons.html">
-                Comparisons
-            </a>
+        </a>
 
-            <a href="family.html">
-                Family
-            </a>
 
-            <a href="rituals.html">
-                Rituals
-            </a>
+        <!-- HOMEPAGE -->
 
-            <a href="memories.html">
-                Memories
-            </a>
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
 
-            <a href="old-pictures.html">
-                Old Pictures
-            </a>
 
-            <a href="newspaper-articles.html">
-                Newspaper Articles
-            </a>
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
 
-            <a href="idol-makers.html">
-                Idol Makers
-            </a>
+            <i class="fa-solid fa-hourglass-half"></i>
 
-            <a href="homepage-countdown.html">
+            <span>
                 Homepage Countdown
-            </a>
+            </span>
 
-            <a
-                href="visit.html"
-                class="active"
-            >
+        </a>
+
+
+        <!-- INFORMATION -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <a
+            href="./visit.html"
+            class="nav-item active"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
                 Visit
-            </a>
+            </span>
 
-            <a href="contact.html">
+        </a>
+
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
                 Contact
-            </a>
+            </span>
 
-            <a href="enquiries.html">
+        </a>
+
+
+        <!-- MEDIA & ARCHIVE -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- MORE -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
                 Enquiries
-            </a>
+            </span>
 
-            <a href="activity.html">
-                Activity Logs
-            </a>
+        </a>
 
-            <a href="change-password.html">
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
                 Change Password
-            </a>
+            </span>
 
-        </nav>
+        </a>
 
-    </aside>
-
-
-
-    <!-- =================================================
-         MAIN
-         ================================================= -->
-
-    <main class="admin-main">
+    </nav>
 
 
-        <div class="admin-content">
+    <!-- =====================================================
+         SIDEBAR BOTTOM
+         ===================================================== -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="logoutButton"
+            class="logout-button"
+            type="button"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
+<main class="dashboard-main">
+
+
+    <!-- =====================================================
+         TOPBAR
+         ===================================================== -->
+
+    <header class="topbar">
+
+
+        <div class="topbar-left">
+
+            <span class="page-eyebrow">
+                INFORMATION
+            </span>
+
+            <h1>
+                Visit
+            </h1>
+
+            <p>
+                Manage location, transport and parking
+                information for visitors.
+            </p>
+
+        </div>
+
+
+        <div class="admin-user">
+
+            <div class="user-avatar">
+                A
+            </div>
+
+            <div class="user-details">
+
+                <strong id="adminEmail">
+                    Admin
+                </strong>
+
+                <span>
+                    Administrator
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         VISIT SETTINGS
+         ===================================================== -->
+
+    <section class="visit-settings">
+
+
+        <div class="visit-intro">
+
+            <span>
+                WEBSITE SETTINGS
+            </span>
+
+            <h2>
+                Visit Information
+            </h2>
+
+            <p>
+                Update the information visitors see when
+                planning a visit to Roy Bari.
+            </p>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div
+            id="visit-status"
+            class="admin-status"
+            hidden
+            aria-live="polite"
+        ></div>
+
+
+        <!-- FORM -->
+
+        <form
+            id="visit-form"
+            class="visit-form"
+        >
 
 
             <!-- =================================================
-                 HEADER
+                 LOCATION
                  ================================================= -->
 
-            <div class="page-header">
+            <section class="visit-card">
 
-                <div>
+                <div class="visit-card-header">
 
-                    <div class="eyebrow">
-                        Website Settings
-                    </div>
+                    <span>
+                        LOCATION
+                    </span>
 
-                    <h1>
-                        Visit Information
-                    </h1>
+                    <h2>
+                        Roy Bari Address
+                    </h2>
 
                     <p>
-                        Manage location, transport and
-                        parking information for visitors.
+                        Address shown on the public Visit page.
                     </p>
 
                 </div>
 
-            </div>
 
+                <div class="visit-card-body">
 
-
-            <!-- =================================================
-                 STATUS
-                 ================================================= -->
-
-            <div
-                id="visit-status"
-                class="admin-status"
-                hidden
-            ></div>
-
-
-
-            <!-- =================================================
-                 FORM
-                 ================================================= -->
-
-            <form
-                id="visit-form"
-                class="admin-form"
-            >
-
-
-                <!-- =============================================
-                     LOCATION
-                     ============================================= -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Location
-                            </h2>
-
-                            <p>
-                                Address shown on the Visit page.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group">
+                    <div class="visit-form-group">
 
                         <label for="address">
                             Roy Bari Address
@@ -249,37 +1015,38 @@
 
                     </div>
 
-                </section>
+                </div>
+
+            </section>
 
 
+            <!-- =================================================
+                 GOOGLE MAPS
+                 ================================================= -->
 
-                <!-- =============================================
-                     GOOGLE MAP
-                     ============================================= -->
+            <section class="visit-card">
 
-                <section class="admin-card">
+                <div class="visit-card-header">
 
-                    <div class="admin-card-header">
+                    <span>
+                        GOOGLE MAPS
+                    </span>
 
-                        <div>
+                    <h2>
+                        Map Location
+                    </h2>
 
-                            <h2>
-                                Google Maps
-                            </h2>
+                    <p>
+                        Add the Google Maps sharing URL used
+                        for the public Visit page.
+                    </p>
 
-                            <p>
-                                Add the Google Maps sharing URL.
-                                The public Visit page will convert
-                                it into an embedded map using the
-                                address if necessary.
-                            </p>
-
-                        </div>
-
-                    </div>
+                </div>
 
 
-                    <div class="form-group">
+                <div class="visit-card-body">
+
+                    <div class="visit-form-group">
 
                         <label for="mapUrl">
                             Google Maps URL
@@ -292,45 +1059,56 @@
                             placeholder="https://share.google/..."
                         >
 
-                        <small>
-                            Example:
-                            https://share.google/...
-                        </small>
+                        <div class="map-help">
 
-                    </div>
+                            <strong>
+                                Tip:
+                            </strong>
 
-                </section>
-
-
-
-                <!-- =============================================
-                     RAILWAY
-                     ============================================= -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Railway Information
-                            </h2>
-
-                            <p>
-                                Nearest railway stations and
-                                approximate travel time.
-                            </p>
+                            Copy the sharing URL from Google Maps
+                            and paste it here. The public page can
+                            use the saved address when an embeddable
+                            map URL is not directly available.
 
                         </div>
 
                     </div>
 
+                </div>
 
-                    <div class="form-grid">
+            </section>
 
 
-                        <div class="form-group">
+            <!-- =================================================
+                 RAILWAY
+                 ================================================= -->
+
+            <section class="visit-card">
+
+                <div class="visit-card-header">
+
+                    <span>
+                        TRANSPORT
+                    </span>
+
+                    <h2>
+                        Railway Information
+                    </h2>
+
+                    <p>
+                        Add the nearest railway stations and
+                        approximate travel times.
+                    </p>
+
+                </div>
+
+
+                <div class="visit-card-body">
+
+                    <div class="visit-form-grid">
+
+
+                        <div class="visit-form-group">
 
                             <label for="railOne">
                                 Railway Station 1
@@ -346,7 +1124,7 @@
                         </div>
 
 
-                        <div class="form-group">
+                        <div class="visit-form-group">
 
                             <label for="railTwo">
                                 Railway Station 2
@@ -364,35 +1142,38 @@
 
                     </div>
 
-                </section>
+                </div>
+
+            </section>
 
 
+            <!-- =================================================
+                 PARKING
+                 ================================================= -->
 
-                <!-- =============================================
-                     PARKING
-                     ============================================= -->
+            <section class="visit-card">
 
-                <section class="admin-card">
+                <div class="visit-card-header">
 
-                    <div class="admin-card-header">
+                    <span>
+                        PARKING
+                    </span>
 
-                        <div>
+                    <h2>
+                        Parking Information
+                    </h2>
 
-                            <h2>
-                                Parking
-                            </h2>
+                    <p>
+                        Tell visitors what they should know
+                        about parking near Roy Bari.
+                    </p>
 
-                            <p>
-                                Information visitors should know
-                                about parking near Roy Bari.
-                            </p>
-
-                        </div>
-
-                    </div>
+                </div>
 
 
-                    <div class="form-group">
+                <div class="visit-card-body">
+
+                    <div class="visit-form-group">
 
                         <label for="parking">
                             Parking Information
@@ -407,41 +1188,76 @@
 
                     </div>
 
-                </section>
-
-
-
-                <!-- =============================================
-                     SAVE
-                     ============================================= -->
-
-                <div class="form-actions">
-
-                    <button
-                        type="submit"
-                        id="save-visit"
-                        class="admin-button primary"
-                    >
-                        Save Visit Information
-                    </button>
-
                 </div>
 
-
-            </form>
-
-
-        </div>
-
-    </main>
-
-</div>
+            </section>
 
 
+            <!-- =================================================
+                 SAVE ACTIONS
+                 ================================================= -->
+
+            <div class="visit-actions">
+
+                <button
+                    type="submit"
+                    id="save-visit"
+                    class="visit-save-button"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Visit Information
+
+                </button>
+
+
+                <button
+                    type="reset"
+                    class="visit-reset-button"
+                >
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <span>
+            Roy Bari
+        </span>
+
+        <span>
+            Visit Information Management
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
 
 <script
     type="module"
-    src="js/visit.js"
+    src="./js/visit.js"
 ></script>
 
 

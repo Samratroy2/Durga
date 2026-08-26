@@ -14,6 +14,11 @@
         Roy Bari — Memories
     </title>
 
+    <meta
+        name="description"
+        content="Manage Roy Bari memories and family stories."
+    >
+
     <link
         rel="stylesheet"
         href="./css/admin.css"
@@ -40,6 +45,8 @@
 
             padding: 24px;
 
+            min-width: 0;
+
         }
 
 
@@ -52,7 +59,7 @@
             display: grid;
 
             grid-template-columns:
-                repeat(2, 1fr);
+                repeat(2, minmax(0, 1fr));
 
             gap: 16px;
 
@@ -73,6 +80,8 @@
             flex-direction: column;
 
             gap: 7px;
+
+            min-width: 0;
 
         }
 
@@ -110,6 +119,10 @@
 
             outline: none;
 
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
         }
 
 
@@ -119,6 +132,8 @@
 
             resize: vertical;
 
+            line-height: 1.6;
+
         }
 
 
@@ -127,6 +142,18 @@
         .form-group select:focus {
 
             border-color: #795337;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, .08);
+
+        }
+
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+
+            color: #aaa098;
 
         }
 
@@ -139,6 +166,8 @@
 
             display: flex;
 
+            flex-wrap: wrap;
+
             gap: 10px;
 
             margin-top: 20px;
@@ -149,6 +178,8 @@
         .primary-button,
         .secondary-button {
 
+            min-height: 42px;
+
             padding: 11px 18px;
 
             border-radius: 7px;
@@ -158,6 +189,11 @@
             font-family: inherit;
 
             font-weight: 600;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease,
+                color .2s ease;
 
         }
 
@@ -173,6 +209,13 @@
         }
 
 
+        .primary-button:hover {
+
+            background: #62422d;
+
+        }
+
+
         .secondary-button {
 
             border: 1px solid #ddd1c6;
@@ -180,6 +223,22 @@
             background: white;
 
             color: #5d4b3d;
+
+        }
+
+
+        .secondary-button:hover {
+
+            background: #f7f1eb;
+
+        }
+
+
+        button:disabled {
+
+            opacity: .55;
+
+            cursor: not-allowed;
 
         }
 
@@ -196,6 +255,8 @@
 
             font-size: 13px;
 
+            font-weight: 600;
+
         }
 
 
@@ -209,6 +270,24 @@
         .message-error {
 
             color: #a33d3d;
+
+        }
+
+
+        .message-info {
+
+            color: #735b48;
+
+        }
+
+
+        /* =====================================================
+           MEMORY LIST
+           ===================================================== */
+
+        #memoryList {
+
+            width: 100%;
 
         }
 
@@ -244,6 +323,8 @@
 
             font-size: 20px;
 
+            line-height: 1.3;
+
         }
 
 
@@ -261,6 +342,10 @@
 
 
         .memory-tag {
+
+            display: inline-flex;
+
+            align-items: center;
 
             padding: 4px 8px;
 
@@ -287,8 +372,14 @@
 
             font-size: 13px;
 
+            white-space: pre-wrap;
+
         }
 
+
+        /* =====================================================
+           MEMORY IMAGE
+           ===================================================== */
 
         .memory-image {
 
@@ -296,11 +387,17 @@
 
             max-width: 220px;
 
+            max-height: 180px;
+
             margin-top: 12px;
 
             border-radius: 8px;
 
             display: block;
+
+            object-fit: cover;
+
+            border: 1px solid #e7ddd3;
 
         }
 
@@ -312,6 +409,8 @@
         .memory-actions {
 
             display: flex;
+
+            flex-wrap: wrap;
 
             gap: 7px;
 
@@ -333,7 +432,31 @@
 
             cursor: pointer;
 
+            font-family: inherit;
+
             font-size: 11px;
+
+            font-weight: 700;
+
+            transition:
+                background .2s ease,
+                border-color .2s ease;
+
+        }
+
+
+        .edit-button {
+
+            color: #795337;
+
+        }
+
+
+        .edit-button:hover {
+
+            background: #f4ece4;
+
+            border-color: #d8c2ad;
 
         }
 
@@ -345,13 +468,22 @@
         }
 
 
+        .delete-button:hover {
+
+            background: #f9e8e8;
+
+            border-color: #d9b6b0;
+
+        }
+
+
         /* =====================================================
            EMPTY LIST
            ===================================================== */
 
         .empty-list {
 
-            padding: 35px 10px;
+            padding: 45px 15px;
 
             text-align: center;
 
@@ -360,15 +492,106 @@
         }
 
 
+        .empty-list i {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            color: #b27a4a;
+
+            font-size: 30px;
+
+        }
+
+
+        .empty-list strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #5a4433;
+
+            font-family: Georgia, serif;
+
+            font-size: 16px;
+
+        }
+
+
+        .empty-list span {
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           LOADING
+           ===================================================== */
+
+        .loading-state {
+
+            padding: 45px 15px;
+
+            text-align: center;
+
+            color: #8b7b6d;
+
+            font-size: 13px;
+
+        }
+
+
+        .loading-state i {
+
+            margin-right: 7px;
+
+        }
+
+
+        /* =====================================================
+           IMAGE ERROR
+           ===================================================== */
+
+        .memory-image-error {
+
+            width: 100%;
+
+            max-width: 220px;
+
+            margin-top: 12px;
+
+            padding: 25px 15px;
+
+            box-sizing: border-box;
+
+            border-radius: 8px;
+
+            border: 1px solid #e7ddd3;
+
+            background: #f8f3ee;
+
+            color: #8b7b6d;
+
+            text-align: center;
+
+            font-size: 11px;
+
+        }
+
+
         /* =====================================================
            RESPONSIVE
            ===================================================== */
 
-        @media (max-width: 800px) {
+        @media (max-width: 900px) {
 
             .form-grid {
 
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
 
             }
 
@@ -376,6 +599,64 @@
             .full-width {
 
                 grid-column: auto;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .content-card {
+
+                padding: 20px;
+
+            }
+
+
+            .form-actions {
+
+                flex-direction: column;
+
+            }
+
+
+            .form-actions button {
+
+                width: 100%;
+
+            }
+
+
+            .memory-item h3 {
+
+                font-size: 18px;
+
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .content-card {
+
+                padding: 16px;
+
+            }
+
+
+            .memory-actions {
+
+                width: 100%;
+
+            }
+
+
+            .edit-button,
+            .delete-button {
+
+                flex: 1;
 
             }
 
@@ -389,674 +670,762 @@
 <body class="dashboard-page">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
 
-    <aside class="sidebar">
-
-
-        <!-- BRAND -->
-
-        <div class="sidebar-brand">
-
-            <div class="sidebar-logo">
-                🪔
-            </div>
+<aside class="sidebar">
 
 
-            <div class="sidebar-brand-text">
+    <!-- =================================================
+         BRAND
+         ================================================= -->
 
-                <h2>
-                    Roy Bari
-                </h2>
+    <div class="sidebar-brand">
 
-                <span>
-                    Administration
-                </span>
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <!-- FAMILY TREE -->
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <!-- PUJA EVENTS -->
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <!-- GALLERY -->
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             HOMEPAGE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <!-- VISIT -->
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <!-- CONTACT -->
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MEDIA & ARCHIVE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MORE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <!-- MEMORIES - ACTIVE -->
+
+        <a
+            href="./memories.html"
+            class="nav-item active"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <!-- RITUALS -->
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             ADMIN
+             ================================================= -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <!-- ENQUIRIES -->
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+
+        <!-- ACTIVITY HISTORY -->
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <!-- CHANGE PASSWORD -->
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- =================================================
+         SIDEBAR BOTTOM
+         ================================================= -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <button
+            id="logoutButton"
+            class="logout-button"
+            type="button"
+        >
 
-        <nav class="sidebar-nav">
+            <i class="fa-solid fa-right-from-bracket"></i>
 
+            Logout
 
-            <!-- MAIN -->
+        </button>
 
-            <div class="nav-section-title">
-                MAIN
-            </div>
+    </div>
 
-
-            <a
-                href="./dashboard.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-display"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </a>
+</aside>
 
 
-            <!-- =================================================
-                 CONTENT
-                 ================================================= -->
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
 
-            <div class="nav-section-title">
-                CONTENT
-            </div>
+<main class="dashboard-main">
 
 
-            <a
-                href="./family.html"
-                class="nav-item"
-            >
+    <!-- =================================================
+         TOPBAR
+         ================================================= -->
 
-                <i class="fa-solid fa-people-roof"></i>
-
-                <span>
-                    Family Tree
-                </span>
-
-            </a>
+    <header class="topbar">
 
 
-            <a
-                href="./events.html"
-                class="nav-item"
-            >
+        <div class="topbar-left">
 
-                <i class="fa-solid fa-calendar-days"></i>
-
-                <span>
-                    Puja Events
-                </span>
-
-            </a>
-
-
-            <a
-                href="./gallery.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-image"></i>
-
-                <span>
-                    Gallery
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 HOMEPAGE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                HOMEPAGE
-            </div>
-
-
-            <a
-                href="./homepage-countdown.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-hourglass-half"></i>
-
-                <span>
-                    Homepage Countdown
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 MEDIA & ARCHIVE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                MEDIA &amp; ARCHIVE
-            </div>
-
-
-            <a
-                href="./comparisons.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-code-compare"></i>
-
-                <span>
-                    Comparisons
-                </span>
-
-            </a>
-
-
-            <a
-                href="./idol-makers.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-user-gear"></i>
-
-                <span>
-                    Idol Makers
-                </span>
-
-            </a>
-
-
-            <a
-                href="./newspaper-articles.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-newspaper"></i>
-
-                <span>
-                    Newspaper Articles
-                </span>
-
-            </a>
-
-
-            <a
-                href="./old-pictures.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                <span>
-                    Old Pictures
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
-
-            <div class="nav-section-title">
+            <span class="page-eyebrow">
                 MORE
+            </span>
+
+
+            <h1>
+                Memories
+            </h1>
+
+
+            <p>
+                Preserve stories and memories of Roy Bari.
+            </p>
+
+        </div>
+
+
+        <!-- ADMIN -->
+
+        <div class="admin-user">
+
+            <div
+                class="user-avatar"
+                id="userAvatar"
+            >
+                A
             </div>
 
 
-            <a
-                href="./memories.html"
-                class="nav-item active"
-            >
+            <div class="user-details">
 
-                <i class="fa-solid fa-heart"></i>
-
-                <span>
-                    Memories
-                </span>
-
-            </a>
-
-
-            <a
-                href="./rituals.html"
-                class="nav-item"
-            >
-
-                <span class="nav-icon">
-                    ॐ
-                </span>
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
                 <span>
-                    Rituals
+                    Administrator
                 </span>
 
-            </a>
-
-
-            <!-- =================================================
-                 ADMIN
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                ADMIN
             </div>
 
+        </div>
 
-            <a
-                href="./enquiries.html"
-                class="nav-item"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <span>
-                    Enquiries
-                </span>
-
-            </a>
+    </header>
 
 
-            <a
-                href="./activity.html"
-                class="nav-item"
-            >
+    <!-- =================================================
+         MEMORY MANAGEMENT
+         ================================================= -->
 
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Activity History
-                </span>
-
-            </a>
-
-
-            <a
-                href="./change-password.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-key"></i>
-
-                <span>
-                    Change Password
-                </span>
-
-            </a>
-
-
-        </nav>
+    <section class="manager-layout">
 
 
         <!-- =================================================
-             SIDEBAR BOTTOM
+             FORM
              ================================================= -->
 
-        <div class="sidebar-bottom">
+        <div class="content-card">
 
 
-            <div class="sidebar-note">
-
-                <i class="fa-solid fa-lock"></i>
-
+            <div class="section-heading">
 
                 <div>
 
-                    <strong>
-                        Admin Access
-                    </strong>
+                    <span>
+                        MEMORY
+                    </span>
 
-                    <small>
-                        Protected area
-                    </small>
+                    <h2 id="formTitle">
+                        Add Memory
+                    </h2>
 
                 </div>
 
             </div>
 
 
-            <button
-                id="logoutButton"
-                class="logout-button"
-                type="button"
-            >
+            <form id="memoryForm">
 
-                <i class="fa-solid fa-right-from-bracket"></i>
 
-                Logout
+                <div class="form-grid">
 
-            </button>
+
+                    <!-- TITLE -->
+
+                    <div class="form-group">
+
+                        <label for="title">
+                            Title *
+                        </label>
+
+                        <input
+                            id="title"
+                            type="text"
+                            required
+                            placeholder="Memory title"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- YEAR -->
+
+                    <div class="form-group">
+
+                        <label for="year">
+                            Year
+                        </label>
+
+                        <input
+                            id="year"
+                            type="number"
+                            placeholder="e.g. 1985"
+                            min="1800"
+                            max="2100"
+                        >
+
+                    </div>
+
+
+                    <!-- PERSON -->
+
+                    <div class="form-group">
+
+                        <label for="person">
+                            Person
+                        </label>
+
+                        <input
+                            id="person"
+                            type="text"
+                            placeholder="Person associated with memory"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <select id="category">
+
+                            <option value="">
+                                Select category
+                            </option>
+
+                            <option value="family">
+                                Family
+                            </option>
+
+                            <option value="puja">
+                                Puja
+                            </option>
+
+                            <option value="childhood">
+                                Childhood
+                            </option>
+
+                            <option value="tradition">
+                                Tradition
+                            </option>
+
+                            <option value="personal">
+                                Personal
+                            </option>
+
+                            <option value="other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MEMORY -->
+
+                    <div class="form-group full-width">
+
+                        <label for="description">
+                            Memory *
+                        </label>
+
+                        <textarea
+                            id="description"
+                            required
+                            placeholder="Write the memory or story..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- IMAGE -->
+
+                    <div class="form-group full-width">
+
+                        <label for="imageUrl">
+                            Image URL
+                        </label>
+
+                        <input
+                            id="imageUrl"
+                            type="url"
+                            placeholder="https://..."
+                            autocomplete="off"
+                        >
+
+                        <span class="field-help">
+                            Add an image URL if this memory has
+                            an associated photograph.
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="saveButton"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Save Memory
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelButton"
+                    >
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <p
+                    id="memoryMessage"
+                    aria-live="polite"
+                ></p>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             LIST
+             ================================================= -->
+
+        <div class="content-card">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>
+                        FIRESTORE
+                    </span>
+
+                    <h2>
+                        Memories
+                    </h2>
+
+                </div>
+
+
+                <span id="memoryCount">
+                    0 memories
+                </span>
+
+            </div>
+
+
+            <div id="memoryList">
+
+                <div class="loading-state">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    Loading memories...
+
+                </div>
+
+            </div>
 
 
         </div>
 
-    </aside>
+    </section>
 
 
     <!-- =====================================================
-         MAIN
+         FOOTER
          ===================================================== -->
 
-    <main class="dashboard-main">
+    <footer class="dashboard-footer">
 
+        <span>
+            Roy Bari
+        </span>
 
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
+        <span>
+            Family Heritage Management
+        </span>
 
-        <header class="topbar">
+    </footer>
 
 
-            <div class="topbar-left">
+</main>
 
-                <span class="page-eyebrow">
-                    MORE
-                </span>
 
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
-                <h1>
-                    Memories
-                </h1>
-
-
-                <p>
-                    Preserve stories and memories of Roy Bari.
-                </p>
-
-            </div>
-
-
-            <div class="admin-user">
-
-
-                <div class="user-avatar">
-                    A
-                </div>
-
-
-                <div class="user-details">
-
-                    <strong id="adminEmail">
-                        Admin
-                    </strong>
-
-                    <span>
-                        Administrator
-                    </span>
-
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- =================================================
-             MEMORY MANAGEMENT
-             ================================================= -->
-
-        <section class="manager-layout">
-
-
-            <!-- =================================================
-                 FORM
-                 ================================================= -->
-
-            <div class="content-card">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <span>
-                            MEMORY
-                        </span>
-
-                        <h2 id="formTitle">
-                            Add Memory
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-                <form id="memoryForm">
-
-
-                    <div class="form-grid">
-
-
-                        <!-- TITLE -->
-
-                        <div class="form-group">
-
-                            <label for="title">
-                                Title *
-                            </label>
-
-                            <input
-                                id="title"
-                                type="text"
-                                required
-                                placeholder="Memory title"
-                            >
-
-                        </div>
-
-
-                        <!-- YEAR -->
-
-                        <div class="form-group">
-
-                            <label for="year">
-                                Year
-                            </label>
-
-                            <input
-                                id="year"
-                                type="number"
-                                placeholder="e.g. 1985"
-                            >
-
-                        </div>
-
-
-                        <!-- PERSON -->
-
-                        <div class="form-group">
-
-                            <label for="person">
-                                Person
-                            </label>
-
-                            <input
-                                id="person"
-                                type="text"
-                                placeholder="Person associated with memory"
-                            >
-
-                        </div>
-
-
-                        <!-- CATEGORY -->
-
-                        <div class="form-group">
-
-                            <label for="category">
-                                Category
-                            </label>
-
-                            <select id="category">
-
-                                <option value="">
-                                    Select category
-                                </option>
-
-                                <option value="family">
-                                    Family
-                                </option>
-
-                                <option value="puja">
-                                    Puja
-                                </option>
-
-                                <option value="childhood">
-                                    Childhood
-                                </option>
-
-                                <option value="tradition">
-                                    Tradition
-                                </option>
-
-                                <option value="personal">
-                                    Personal
-                                </option>
-
-                                <option value="other">
-                                    Other
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- MEMORY -->
-
-                        <div class="form-group full-width">
-
-                            <label for="description">
-                                Memory *
-                            </label>
-
-                            <textarea
-                                id="description"
-                                required
-                                placeholder="Write the memory or story..."
-                            ></textarea>
-
-                        </div>
-
-
-                        <!-- IMAGE -->
-
-                        <div class="form-group full-width">
-
-                            <label for="imageUrl">
-                                Image URL
-                            </label>
-
-                            <input
-                                id="imageUrl"
-                                type="url"
-                                placeholder="https://..."
-                            >
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- ACTIONS -->
-
-                    <div class="form-actions">
-
-                        <button
-                            type="submit"
-                            class="primary-button"
-                            id="saveButton"
-                        >
-                            Save Memory
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="secondary-button"
-                            id="cancelButton"
-                        >
-                            Cancel
-                        </button>
-
-                    </div>
-
-
-                    <p id="memoryMessage"></p>
-
-
-                </form>
-
-            </div>
-
-
-            <!-- =================================================
-                 LIST
-                 ================================================= -->
-
-            <div class="content-card">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <span>
-                            FIRESTORE
-                        </span>
-
-                        <h2>
-                            Memories
-                        </h2>
-
-                    </div>
-
-
-                    <span id="memoryCount">
-                        0 memories
-                    </span>
-
-                </div>
-
-
-                <div id="memoryList">
-
-                    Loading...
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-        <!-- =====================================================
-             FOOTER
-             ===================================================== -->
-
-        <footer class="dashboard-footer">
-
-
-            <span>
-                Roy Bari
-            </span>
-
-
-            <span>
-                Family Heritage Management
-            </span>
-
-
-        </footer>
-
-
-    </main>
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-         ===================================================== -->
-
-    <script
-        type="module"
-        src="./js/memories.js"
-    ></script>
+<script
+    type="module"
+    src="./js/memories.js"
+></script>
 
 
 </body>

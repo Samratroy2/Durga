@@ -16,7 +16,7 @@
 
     <meta
         name="description"
-        content="Manage the homepage countdown title and date time."
+        content="Manage the Roy Bari homepage countdown."
     >
 
     <link
@@ -52,7 +52,6 @@
         }
 
 
-
         /* =====================================================
            MANAGER CARD
            ===================================================== */
@@ -72,7 +71,6 @@
         }
 
 
-
         .manager-card-header {
 
             padding: 20px;
@@ -81,7 +79,6 @@
                 1px solid #eee5dc;
 
         }
-
 
 
         .manager-card-header span {
@@ -99,7 +96,6 @@
         }
 
 
-
         .manager-card-header h2 {
 
             margin: 5px 0 0;
@@ -107,7 +103,6 @@
             color: #3f2920;
 
         }
-
 
 
         .manager-card-header small {
@@ -125,7 +120,6 @@
         }
 
 
-
         /* =====================================================
            DOCUMENT LIST
            ===================================================== */
@@ -139,7 +133,6 @@
             overflow-y: auto;
 
         }
-
 
 
         .manager-list-item {
@@ -166,12 +159,14 @@
 
             font-family: inherit;
 
+            transition:
+                background .15s ease,
+                border-color .15s ease;
+
         }
 
 
-
         .manager-list-item:hover,
-
         .manager-list-item.active {
 
             background: #f4ece4;
@@ -179,7 +174,6 @@
             border-color: #dcc8b5;
 
         }
-
 
 
         .manager-list-item strong {
@@ -191,7 +185,6 @@
             font-size: 13px;
 
         }
-
 
 
         .manager-list-item small {
@@ -207,7 +200,6 @@
         }
 
 
-
         /* =====================================================
            DOCUMENT TOOLS
            ===================================================== */
@@ -219,13 +211,11 @@
         }
 
 
-
         .doc-tools button {
 
             width: 100%;
 
         }
-
 
 
         /* =====================================================
@@ -239,13 +229,11 @@
         }
 
 
-
         .form-group {
 
             margin-bottom: 18px;
 
         }
-
 
 
         .form-group label {
@@ -263,11 +251,8 @@
         }
 
 
-
         .form-group input,
-
         .form-group textarea,
-
         .form-group select {
 
             width: 100%;
@@ -288,8 +273,11 @@
 
             outline: none;
 
-        }
+            transition:
+                border-color .15s ease,
+                box-shadow .15s ease;
 
+        }
 
 
         .form-group textarea {
@@ -303,11 +291,8 @@
         }
 
 
-
         .form-group input:focus,
-
         .form-group textarea:focus,
-
         .form-group select:focus {
 
             border-color: #b27a4a;
@@ -317,7 +302,6 @@
                 rgba(178, 122, 74, .1);
 
         }
-
 
 
         /* =====================================================
@@ -339,7 +323,6 @@
         }
 
 
-
         /* =====================================================
            CHECKBOX
            ===================================================== */
@@ -355,13 +338,11 @@
         }
 
 
-
         .checkbox-row input {
 
             width: auto;
 
         }
-
 
 
         /* =====================================================
@@ -381,11 +362,8 @@
         }
 
 
-
         .primary-button,
-
         .secondary-button,
-
         .danger-button {
 
             border: 1px solid #ddd1c6;
@@ -403,7 +381,6 @@
         }
 
 
-
         .primary-button {
 
             background: #704a31;
@@ -415,13 +392,11 @@
         }
 
 
-
         .primary-button:hover {
 
             background: #5f3d29;
 
         }
-
 
 
         .secondary-button {
@@ -433,13 +408,11 @@
         }
 
 
-
         .secondary-button:hover {
 
             background: #f7f1eb;
 
         }
-
 
 
         .danger-button {
@@ -453,13 +426,11 @@
         }
 
 
-
         .danger-button:hover {
 
             background: #f9e8e8;
 
         }
-
 
 
         button:disabled {
@@ -469,7 +440,6 @@
             cursor: not-allowed;
 
         }
-
 
 
         /* =====================================================
@@ -487,13 +457,11 @@
         }
 
 
-
         .message-success {
 
             color: #39734a;
 
         }
-
 
 
         .message-error {
@@ -503,13 +471,11 @@
         }
 
 
-
         .message-info {
 
             color: #735b48;
 
         }
-
 
 
         /* =====================================================
@@ -527,29 +493,69 @@
         }
 
 
-
         /* =====================================================
-           IMAGE PREVIEW
+           COUNTDOWN PREVIEW
            ===================================================== */
 
-        .preview {
+        .countdown-preview {
 
-            max-width: 220px;
+            margin-top: 20px;
 
-            max-height: 160px;
+            padding: 18px;
 
-            display: block;
+            border-radius: 10px;
 
-            margin-top: 10px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #faf6f1,
+                    #f4ece4
+                );
 
-            border-radius: 8px;
-
-            object-fit: cover;
-
-            border: 1px solid #ddd1c6;
+            border: 1px solid #e5d8ca;
 
         }
 
+
+        .countdown-preview-label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #8b6a50;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .countdown-preview-title {
+
+            margin: 0 0 12px;
+
+            color: #3f2920;
+
+            font-family: Georgia, serif;
+
+            font-size: 20px;
+
+        }
+
+
+        .countdown-preview-date {
+
+            color: #74675d;
+
+            font-size: 12px;
+
+        }
 
 
         /* =====================================================
@@ -565,7 +571,6 @@
             }
 
 
-
             .manager-list {
 
                 max-height: 320px;
@@ -573,7 +578,6 @@
             }
 
         }
-
 
 
         @media (max-width: 600px) {
@@ -585,7 +589,6 @@
             }
 
 
-
             .manager-card-header {
 
                 padding: 17px;
@@ -593,13 +596,11 @@
             }
 
 
-
             .form-actions {
 
                 flex-direction: column;
 
             }
-
 
 
             .form-actions button {
@@ -625,9 +626,7 @@
 <aside class="sidebar">
 
 
-    <!-- =====================================================
-         BRAND
-         ===================================================== -->
+    <!-- BRAND -->
 
     <div class="sidebar-brand">
 
@@ -658,9 +657,7 @@
     <nav class="sidebar-nav">
 
 
-        <!-- =================================================
-             MAIN
-             ================================================= -->
+        <!-- MAIN -->
 
         <div class="nav-section-title">
             MAIN
@@ -681,16 +678,12 @@
         </a>
 
 
-        <!-- =================================================
-             CONTENT
-             ================================================= -->
+        <!-- CONTENT -->
 
         <div class="nav-section-title">
             CONTENT
         </div>
 
-
-        <!-- FAMILY TREE -->
 
         <a
             href="./family.html"
@@ -706,8 +699,6 @@
         </a>
 
 
-        <!-- PUJA EVENTS -->
-
         <a
             href="./events.html"
             class="nav-item"
@@ -721,8 +712,6 @@
 
         </a>
 
-
-        <!-- GALLERY -->
 
         <a
             href="./gallery.html"
@@ -747,8 +736,6 @@
         </div>
 
 
-        <!-- HOMEPAGE COUNTDOWN - ACTIVE -->
-
         <a
             href="./homepage-countdown.html"
             class="nav-item active"
@@ -764,6 +751,43 @@
 
 
         <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
              MEDIA & ARCHIVE
              ================================================= -->
 
@@ -771,8 +795,6 @@
             MEDIA &amp; ARCHIVE
         </div>
 
-
-        <!-- COMPARISONS -->
 
         <a
             href="./comparisons.html"
@@ -788,8 +810,6 @@
         </a>
 
 
-        <!-- IDOL MAKERS -->
-
         <a
             href="./idol-makers.html"
             class="nav-item"
@@ -804,8 +824,6 @@
         </a>
 
 
-        <!-- NEWSPAPER ARTICLES -->
-
         <a
             href="./newspaper-articles.html"
             class="nav-item"
@@ -819,8 +837,6 @@
 
         </a>
 
-
-        <!-- OLD PICTURES -->
 
         <a
             href="./old-pictures.html"
@@ -845,8 +861,6 @@
         </div>
 
 
-        <!-- MEMORIES -->
-
         <a
             href="./memories.html"
             class="nav-item"
@@ -860,8 +874,6 @@
 
         </a>
 
-
-        <!-- RITUALS -->
 
         <a
             href="./rituals.html"
@@ -879,7 +891,6 @@
         </a>
 
 
-
         <!-- =================================================
              ADMIN
              ================================================= -->
@@ -888,8 +899,6 @@
             ADMIN
         </div>
 
-
-        <!-- ENQUIRIES -->
 
         <a
             href="./enquiries.html"
@@ -905,8 +914,6 @@
         </a>
 
 
-        <!-- ACTIVITY HISTORY -->
-
         <a
             href="./activity.html"
             class="nav-item"
@@ -920,8 +927,6 @@
 
         </a>
 
-
-        <!-- CHANGE PASSWORD -->
 
         <a
             href="./change-password.html"
@@ -946,8 +951,6 @@
     <div class="sidebar-bottom">
 
 
-        <!-- ADMIN ACCESS -->
-
         <div class="sidebar-note">
 
             <i class="fa-solid fa-lock"></i>
@@ -966,8 +969,6 @@
 
         </div>
 
-
-        <!-- LOGOUT -->
 
         <button
             id="logoutButton"
@@ -1003,7 +1004,7 @@
         <div class="topbar-left">
 
             <span class="page-eyebrow">
-                CONTENT MANAGEMENT
+                HOMEPAGE
             </span>
 
             <h1>
@@ -1011,7 +1012,7 @@
             </h1>
 
             <p>
-                Set the single title and date-time used by the
+                Set the title and date-time used by the
                 public homepage countdown.
             </p>
 
@@ -1044,14 +1045,14 @@
 
 
     <!-- =====================================================
-         HOMEPAGE COUNTDOWN MANAGEMENT
+         COUNTDOWN MANAGEMENT
          ===================================================== -->
 
     <section class="content-manager">
 
 
         <!-- =================================================
-             DOCUMENT LIST
+             FIRESTORE LIST
              ================================================= -->
 
         <div class="manager-card">
@@ -1143,6 +1144,35 @@
                 </div>
 
 
+                <!-- PREVIEW -->
+
+                <div
+                    id="countdownPreview"
+                    class="countdown-preview"
+                    hidden
+                >
+
+                    <span class="countdown-preview-label">
+                        PUBLIC HOMEPAGE PREVIEW
+                    </span>
+
+                    <h3
+                        id="countdownPreviewTitle"
+                        class="countdown-preview-title"
+                    >
+                        Countdown
+                    </h3>
+
+                    <div
+                        id="countdownPreviewDate"
+                        class="countdown-preview-date"
+                    >
+                        No date selected
+                    </div>
+
+                </div>
+
+
                 <!-- FORM ACTIONS -->
 
                 <div class="form-actions">
@@ -1179,6 +1209,8 @@
                         class="secondary-button"
                         id="cancelButton"
                     >
+
+                        <i class="fa-solid fa-xmark"></i>
 
                         Cancel
 
@@ -1229,6 +1261,140 @@
     type="module"
     src="./js/homepage-countdown.js"
 ></script>
+
+
+<script>
+
+    /*
+     * Optional live preview.
+     *
+     * This does not interfere with homepage-countdown.js.
+     * It simply watches dynamically generated fields and
+     * displays a small preview when possible.
+     */
+
+    document.addEventListener("input", function () {
+
+        const preview =
+            document.getElementById("countdownPreview");
+
+        const previewTitle =
+            document.getElementById("countdownPreviewTitle");
+
+        const previewDate =
+            document.getElementById("countdownPreviewDate");
+
+        if (!preview || !previewTitle || !previewDate) {
+            return;
+        }
+
+        const fields =
+            document.getElementById("fields");
+
+        if (!fields) {
+            return;
+        }
+
+        const inputs =
+            fields.querySelectorAll("input");
+
+        let titleValue = "";
+        let dateValue = "";
+
+        inputs.forEach(function (input) {
+
+            const value =
+                String(input.value || "").trim();
+
+            const name =
+                String(input.name || input.id || "")
+                    .toLowerCase();
+
+            if (
+                !titleValue &&
+                (
+                    name.includes("title") ||
+                    name.includes("name") ||
+                    name.includes("heading")
+                )
+            ) {
+                titleValue = value;
+            }
+
+            if (
+                !dateValue &&
+                (
+                    name.includes("date") ||
+                    name.includes("time") ||
+                    name.includes("target")
+                )
+            ) {
+                dateValue = value;
+            }
+
+        });
+
+        if (!titleValue && !dateValue) {
+
+            preview.hidden = true;
+
+            return;
+
+        }
+
+        preview.hidden = false;
+
+        previewTitle.textContent =
+            titleValue || "Homepage Countdown";
+
+        previewDate.textContent =
+            dateValue || "No date selected";
+
+    });
+
+
+    /*
+     * Reset preview when the editor changes.
+     */
+
+    document.addEventListener("click", function (event) {
+
+        const target =
+            event.target.closest(
+                "#cancelButton, #newButton, .manager-list-item"
+            );
+
+        if (!target) {
+            return;
+        }
+
+        setTimeout(function () {
+
+            const preview =
+                document.getElementById("countdownPreview");
+
+            if (!preview) {
+                return;
+            }
+
+            /*
+             * Allow the generated editor fields to settle first.
+             */
+
+            const fields =
+                document.getElementById("fields");
+
+            if (!fields || !fields.children.length) {
+
+                preview.hidden = true;
+
+            }
+
+        }, 100);
+
+    });
+
+</script>
 
 
 </body>

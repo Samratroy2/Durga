@@ -1644,6 +1644,21 @@ function escapeHTML(
 
 }
 
+document.getElementById("visitButton")?.addEventListener(
+    "click",
+    () => {
+        window.location.href = "./visit.html";
+    }
+);
+
+
+document.getElementById("contactButton")?.addEventListener(
+    "click",
+    () => {
+        window.location.href = "./contact.html";
+    }
+);
+
 
 /* =========================================================
    START
@@ -1652,3 +1667,5 @@ function escapeHTML(
 console.log(
     "Roy Bari Admin Dashboard loaded successfully."
 );
+
+

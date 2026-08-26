@@ -11,315 +11,972 @@
     >
 
     <title>
-        Contact | Roy Bari Admin
+        Roy Bari — Contact
     </title>
 
     <meta
         name="description"
-        content="Manage Roy Bari contact information."
+        content="Manage Roy Bari public contact information."
     >
 
     <link
         rel="stylesheet"
-        href="css/admin.css"
+        href="./css/admin.css"
     >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           CONTACT FORM
+           ===================================================== */
+
+        .contact-manager {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+        }
+
+
+        .contact-card {
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #ddd1c6;
+
+            border-radius: 14px;
+
+            margin-bottom: 20px;
+
+            overflow: hidden;
+
+        }
+
+
+        .contact-card-header {
+
+            padding: 22px;
+
+            border-bottom:
+                1px solid
+                #eee5dc;
+
+        }
+
+
+        .contact-card-header span {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #8b6a50;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .contact-card-header h2 {
+
+            margin: 0;
+
+            color: #3f2920;
+
+            font-family: Georgia, serif;
+
+            font-size: 21px;
+
+        }
+
+
+        .contact-card-header p {
+
+            margin: 7px 0 0;
+
+            color: #8b7b6d;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .contact-card-body {
+
+            padding: 22px;
+
+        }
+
+
+        /* =====================================================
+           FORM GRID
+           ===================================================== */
+
+        .contact-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+
+        }
+
+
+        .contact-form-group {
+
+            min-width: 0;
+
+        }
+
+
+        .contact-form-group.full {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .contact-form-group label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #67584c;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        .contact-form-group input,
+        .contact-form-group textarea {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 12px 13px;
+
+            border:
+                1px solid
+                #ddd1c6;
+
+            border-radius: 8px;
+
+            background: #fffdf9;
+
+            color: #3b3028;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .contact-form-group textarea {
+
+            min-height: 115px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+
+        }
+
+
+        .contact-form-group input:focus,
+        .contact-form-group textarea:focus {
+
+            border-color: #795337;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, .08);
+
+        }
+
+
+        .contact-form-group small {
+
+            display: block;
+
+            margin-top: 6px;
+
+            color: #8b7b6d;
+
+            font-size: 11px;
+
+            line-height: 1.45;
+
+        }
+
+
+        /* =====================================================
+           SAVE AREA
+           ===================================================== */
+
+        .contact-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 22px;
+
+        }
+
+
+        .contact-save-button {
+
+            border:
+                1px solid
+                #704a31;
+
+            border-radius: 8px;
+
+            padding: 12px 18px;
+
+            background: #704a31;
+
+            color: #ffffff;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background .2s ease,
+                transform .2s ease;
+
+        }
+
+
+        .contact-save-button:hover {
+
+            background: #5f3d29;
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        .contact-save-button:disabled {
+
+            opacity: .55;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+        }
+
+
+        /* =====================================================
+           STATUS
+           ===================================================== */
+
+        #contact-status {
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .admin-status {
+
+            padding: 12px 15px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .admin-status.loading {
+
+            background: #f5efe8;
+
+            color: #735b48;
+
+        }
+
+
+        .admin-status.success {
+
+            background: #eaf6ed;
+
+            color: #39734a;
+
+        }
+
+
+        .admin-status.error {
+
+            background: #fbeaea;
+
+            color: #a33d3d;
+
+        }
+
+
+        .admin-status.info {
+
+            background: #f1eee9;
+
+            color: #735b48;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .contact-form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .contact-form-group.full {
+
+                grid-column: auto;
+
+            }
+
+
+            .contact-card-header,
+            .contact-card-body {
+
+                padding: 18px;
+
+            }
+
+
+            .contact-actions {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            .contact-save-button {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
 
-<body>
+<body class="dashboard-page">
 
 
 <!-- =====================================================
-     ADMIN HEADER
+     SIDEBAR
      ===================================================== -->
 
-<header class="admin-header">
+<aside class="sidebar">
 
-    <div class="admin-header-left">
 
-        <a
-            href="dashboard.html"
-            class="admin-logo"
-        >
-            ROY BARI
-        </a>
+    <!-- BRAND -->
 
-        <span class="admin-page-title">
-            Contact Information
-        </span>
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
 
     </div>
 
 
-    <a
-        href="../Frontend/contact.html"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="admin-view-site"
-    >
-        View Site ↗
-    </a>
+    <!-- NAVIGATION -->
 
-</header>
+    <nav class="sidebar-nav">
 
+
+        <!-- MAIN -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- CONTENT -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- HOMEPAGE -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- INFORMATION -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <a
+            href="./contact.html"
+            class="nav-item active"
+            aria-current="page"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- MEDIA -->
+
+        <div class="nav-section-title">
+            MEDIA &amp; ARCHIVE
+        </div>
+
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- MORE -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- SIDEBAR BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="logoutButton"
+            class="logout-button"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+
+</aside>
 
 
 <!-- =====================================================
-     ADMIN LAYOUT
+     MAIN
      ===================================================== -->
 
-<div class="admin-layout">
+<main class="dashboard-main">
 
 
-    <!-- =================================================
-         SIDEBAR
-         ================================================= -->
+    <!-- TOPBAR -->
 
-    <aside class="admin-sidebar">
+    <header class="topbar">
 
-        <nav>
+        <div class="topbar-left">
 
-            <a href="dashboard.html">
-                Dashboard
-            </a>
+            <span class="page-eyebrow">
+                WEBSITE SETTINGS
+            </span>
 
-            <a href="events.html">
-                Events
-            </a>
+            <h1>
+                Contact Information
+            </h1>
 
-            <a href="gallery.html">
-                Gallery
-            </a>
+            <p>
+                Manage the contact details displayed
+                on the public Roy Bari website.
+            </p>
 
-            <a href="comparisons.html">
-                Comparisons
-            </a>
-
-            <a href="family.html">
-                Family
-            </a>
-
-            <a href="rituals.html">
-                Rituals
-            </a>
-
-            <a href="memories.html">
-                Memories
-            </a>
-
-            <a href="newspaper-articles.html">
-                Newspaper
-            </a>
-
-            <a href="old-pictures.html">
-                Old Pictures
-            </a>
-
-            <a href="idol-makers.html">
-                Idol Makers
-            </a>
-
-            <a href="visit.html">
-                Visit
-            </a>
-
-            <a
-                href="contact.html"
-                class="active"
-                aria-current="page"
-            >
-                Contact
-            </a>
-
-        </nav>
-
-    </aside>
+        </div>
 
 
+        <div class="admin-user">
 
-    <!-- =================================================
-         MAIN
-         ================================================= -->
-
-    <main class="admin-main">
-
-        <div class="admin-content">
+            <div class="user-avatar">
+                A
+            </div>
 
 
-            <!-- =============================================
-                 PAGE HEADER
-                 ============================================= -->
+            <div class="user-details">
 
-            <div class="page-header">
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
-                <div>
+                <span>
+                    Administrator
+                </span>
 
-                    <div class="eyebrow">
-                        Website Settings
-                    </div>
+            </div>
 
-                    <h1>
-                        Contact Information
-                    </h1>
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENT
+         ===================================================== -->
+
+    <section class="contact-manager">
+
+
+        <!-- STATUS -->
+
+        <div
+            id="contact-status"
+            class="admin-status"
+            hidden
+            aria-live="polite"
+        ></div>
+
+
+        <!-- FORM -->
+
+        <form
+            id="contact-form"
+            novalidate
+        >
+
+
+            <!-- =================================================
+                 BASIC CONTACT
+                 ================================================= -->
+
+            <section class="contact-card">
+
+
+                <div class="contact-card-header">
+
+                    <span>
+                        CONTACT
+                    </span>
+
+                    <h2>
+                        Basic Contact Information
+                    </h2>
 
                     <p>
-                        Manage the contact details displayed
-                        on the Roy Bari public website.
+                        These details are used by the public
+                        Contact page.
                     </p>
 
                 </div>
 
-            </div>
+
+                <div class="contact-card-body">
+
+                    <div class="contact-form-grid">
 
 
+                        <!-- ADDRESS -->
 
-            <!-- =============================================
-                 STATUS
-                 ============================================= -->
+                        <div class="contact-form-group full">
 
-            <div
-                id="contact-status"
-                class="admin-status"
-                hidden
-                aria-live="polite"
-            ></div>
-
-
-
-            <!-- =============================================
-                 CONTACT FORM
-                 ============================================= -->
-
-            <form
-                id="contact-form"
-                class="admin-form"
-                novalidate
-            >
-
-
-                <!-- =========================================
-                     ADDRESS
-                     ========================================= -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
+                            <label for="address">
                                 Address
-                            </h2>
+                            </label>
 
-                            <p>
-                                Main Roy Bari contact address.
-                            </p>
+                            <textarea
+                                id="address"
+                                name="address"
+                                rows="4"
+                                placeholder="Nohari Roy Bari, Chhota Nohari, West Bengal 721121"
+                                autocomplete="street-address"
+                            ></textarea>
 
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="address">
-                            Address
-                        </label>
-
-                        <textarea
-                            id="address"
-                            name="address"
-                            rows="4"
-                            placeholder="Nohari Roy Bari, Chhota Nohari, West Bengal 721121"
-                            autocomplete="street-address"
-                        ></textarea>
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- =========================================
-                     EMAIL
-                     ========================================= -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Email
-                            </h2>
-
-                            <p>
-                                Public email address.
-                            </p>
+                            <small>
+                                Public Roy Bari address.
+                            </small>
 
                         </div>
 
-                    </div>
 
+                        <!-- EMAIL -->
 
-                    <div class="form-group">
+                        <div class="contact-form-group full">
 
-                        <label for="email">
-                            Email Address
-                        </label>
+                            <label for="email">
+                                Email Address
+                            </label>
 
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="nohariroybaridurgamandir@gmail.com"
-                            autocomplete="email"
-                        >
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="nohariroybaridurgamandir@gmail.com"
+                                autocomplete="email"
+                            >
 
-                    </div>
-
-                </section>
-
-
-
-                <!-- =========================================
-                     PHONE NUMBERS
-                     ========================================= -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Phone Numbers
-                            </h2>
-
-                            <p>
-                                Add one or two public contact numbers.
-                            </p>
+                            <small>
+                                Visitors can use this address
+                                to contact Roy Bari.
+                            </small>
 
                         </div>
 
+
                     </div>
 
+                </div>
 
-                    <div class="form-grid">
+            </section>
+
+
+            <!-- =================================================
+                 PHONE
+                 ================================================= -->
+
+            <section class="contact-card">
+
+
+                <div class="contact-card-header">
+
+                    <span>
+                        TELEPHONE
+                    </span>
+
+                    <h2>
+                        Phone Numbers
+                    </h2>
+
+                    <p>
+                        The public page can display one or
+                        two contact numbers.
+                    </p>
+
+                </div>
+
+
+                <div class="contact-card-body">
+
+                    <div class="contact-form-grid">
 
 
                         <!-- PHONE 1 -->
 
-                        <div class="form-group">
+                        <div class="contact-form-group">
 
                             <label for="phone1">
                                 Phone Number 1
                             </label>
 
                             <input
-                                type="text"
+                                type="tel"
                                 id="phone1"
                                 name="phone1"
                                 placeholder="+91 9083640748"
@@ -335,14 +992,14 @@
 
                         <!-- PHONE 2 -->
 
-                        <div class="form-group">
+                        <div class="contact-form-group">
 
                             <label for="phone2">
                                 Phone Number 2
                             </label>
 
                             <input
-                                type="text"
+                                type="tel"
                                 id="phone2"
                                 name="phone2"
                                 placeholder="+91 XXXXXXXXXX"
@@ -358,39 +1015,44 @@
 
                     </div>
 
-                </section>
+                </div>
+
+            </section>
 
 
+            <!-- =================================================
+                 SOCIAL MEDIA
+                 ================================================= -->
 
-                <!-- =========================================
-                     SOCIAL MEDIA
-                     ========================================= -->
-
-                <section class="admin-card">
-
-                    <div class="admin-card-header">
-
-                        <div>
-
-                            <h2>
-                                Social Media
-                            </h2>
-
-                            <p>
-                                Links shown on the public Contact page.
-                            </p>
-
-                        </div>
-
-                    </div>
+            <section class="contact-card">
 
 
-                    <div class="form-grid">
+                <div class="contact-card-header">
+
+                    <span>
+                        SOCIAL MEDIA
+                    </span>
+
+                    <h2>
+                        Social Links
+                    </h2>
+
+                    <p>
+                        These links can be displayed on the
+                        public Contact page.
+                    </p>
+
+                </div>
+
+
+                <div class="contact-card-body">
+
+                    <div class="contact-form-grid">
 
 
                         <!-- FACEBOOK -->
 
-                        <div class="form-group">
+                        <div class="contact-form-group">
 
                             <label for="facebook">
                                 Facebook
@@ -409,7 +1071,7 @@
 
                         <!-- INSTAGRAM -->
 
-                        <div class="form-group">
+                        <div class="contact-form-group">
 
                             <label for="instagram">
                                 Instagram
@@ -428,22 +1090,23 @@
 
                         <!-- WHATSAPP -->
 
-                        <div class="form-group">
+                        <div class="contact-form-group">
 
                             <label for="whatsapp">
                                 WhatsApp
                             </label>
 
                             <input
-                                type="url"
+                                type="text"
                                 id="whatsapp"
                                 name="whatsapp"
-                                placeholder="https://wa.me/..."
-                                autocomplete="url"
+                                placeholder="+91 9083640748 or https://wa.me/..."
+                                autocomplete="tel"
                             >
 
                             <small>
-                                WhatsApp link or channel URL.
+                                You can enter a WhatsApp number
+                                or a complete WhatsApp URL.
                             </small>
 
                         </div>
@@ -451,7 +1114,7 @@
 
                         <!-- YOUTUBE -->
 
-                        <div class="form-group">
+                        <div class="contact-form-group">
 
                             <label for="youtube">
                                 YouTube
@@ -470,36 +1133,54 @@
 
                     </div>
 
-                </section>
-
-
-
-                <!-- =========================================
-                     SAVE
-                     ========================================= -->
-
-                <div class="form-actions">
-
-                    <button
-                        type="submit"
-                        id="save-contact"
-                        class="admin-button primary"
-                    >
-                        Save Contact Information
-                    </button>
-
                 </div>
 
+            </section>
 
-            </form>
+
+            <!-- =================================================
+                 SAVE
+                 ================================================= -->
+
+            <div class="contact-actions">
+
+                <button
+                    type="submit"
+                    id="save-contact"
+                    class="contact-save-button"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Contact Information
+
+                </button>
+
+            </div>
 
 
-        </div>
+        </form>
 
-    </main>
 
-</div>
+    </section>
 
+
+    <!-- FOOTER -->
+
+    <footer class="dashboard-footer">
+
+        <span>
+            Roy Bari
+        </span>
+
+        <span>
+            Contact Management
+        </span>
+
+    </footer>
+
+
+</main>
 
 
 <!-- =====================================================
@@ -508,7 +1189,7 @@
 
 <script
     type="module"
-    src="js/contact.js"
+    src="./js/contact.js"
 ></script>
 
 

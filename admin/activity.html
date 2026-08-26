@@ -68,7 +68,7 @@
 
 
         /* =====================================================
-           HEADER
+           ACTIVITY HEADER
            ===================================================== */
 
         .activity-heading {
@@ -243,6 +243,13 @@
         }
 
 
+        .message-loading {
+
+            color: #735b48;
+
+        }
+
+
         /* =====================================================
            TABLE WRAPPER
            ===================================================== */
@@ -355,7 +362,7 @@
 
 
         /* =====================================================
-           ACTION CELL
+           ACTION
            ===================================================== */
 
         .activity-action-cell {
@@ -394,10 +401,6 @@
         }
 
 
-        /* =====================================================
-           CREATED
-           ===================================================== */
-
         .activity-history-icon.created {
 
             background: #e9f6ec;
@@ -406,10 +409,6 @@
 
         }
 
-
-        /* =====================================================
-           UPDATED
-           ===================================================== */
 
         .activity-history-icon.updated {
 
@@ -420,10 +419,6 @@
         }
 
 
-        /* =====================================================
-           DELETED
-           ===================================================== */
-
         .activity-history-icon.deleted {
 
             background: #fdeaea;
@@ -432,10 +427,6 @@
 
         }
 
-
-        /* =====================================================
-           OTHER
-           ===================================================== */
 
         .activity-history-icon.other {
 
@@ -447,7 +438,7 @@
 
 
         /* =====================================================
-           SECTION CELL
+           SECTION
            ===================================================== */
 
         .activity-section-cell {
@@ -602,7 +593,7 @@
 
 
         /* =====================================================
-           EMPTY STATE
+           EMPTY / LOADING
            ===================================================== */
 
         .activity-empty {
@@ -617,10 +608,6 @@
 
         }
 
-
-        /* =====================================================
-           LOADING
-           ===================================================== */
 
         .activity-loading {
 
@@ -684,32 +671,432 @@
 <body class="dashboard-page">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
 
-    <aside class="sidebar">
+<aside class="sidebar">
+
+
+    <!-- =================================================
+         BRAND
+         ================================================= -->
+
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                Roy Bari
+            </h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <nav class="sidebar-nav">
 
 
         <!-- =================================================
-             BRAND
+             MAIN
              ================================================= -->
 
-        <div class="sidebar-brand">
+        <div class="nav-section-title">
+            MAIN
+        </div>
 
-            <div class="sidebar-logo">
-                🪔
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-display"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-people-roof"></i>
+
+            <span>
+                Family Tree
+            </span>
+
+        </a>
+
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+                Puja Events
+            </span>
+
+        </a>
+
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-image"></i>
+
+            <span>
+                Gallery
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             HOMEPAGE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <span>
+                Homepage Countdown
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+                Visit
+            </span>
+
+        </a>
+
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-address-book"></i>
+
+            <span>
+                Contact
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             ARCHIVE / MEDIA
+             ================================================= -->
+
+        <div class="nav-section-title">
+            ARCHIVE / MEDIA
+        </div>
+
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-code-compare"></i>
+
+            <span>
+                Comparisons
+            </span>
+
+        </a>
+
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-user-gear"></i>
+
+            <span>
+                Idol Makers
+            </span>
+
+        </a>
+
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-newspaper"></i>
+
+            <span>
+                Newspaper Articles
+            </span>
+
+        </a>
+
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-images"></i>
+
+            <span>
+                Old Pictures
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MORE
+             ================================================= -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+
+        <a
+            href="./memories.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            <span>
+                Memories
+            </span>
+
+        </a>
+
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+
+            <span class="nav-icon">
+                ॐ
+            </span>
+
+            <span>
+                Rituals
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             ADMIN
+             ================================================= -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+
+            <i class="fa-regular fa-circle-question"></i>
+
+            <span>
+                Enquiries
+            </span>
+
+        </a>
+
+
+        <a
+            href="./activity.html"
+            class="nav-item active"
+            aria-current="page"
+        >
+
+            <i class="fa-solid fa-book"></i>
+
+            <span>
+                Activity History
+            </span>
+
+        </a>
+
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Change Password
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- =================================================
+         SIDEBAR BOTTOM
+         ================================================= -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="logoutButton"
+            class="logout-button"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+
+    </div>
+
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
+
+<main class="dashboard-main">
+
+
+    <!-- =================================================
+         TOPBAR
+         ================================================= -->
+
+    <header class="topbar">
+
+
+        <div class="topbar-left">
+
+            <span class="page-eyebrow">
+                ADMINISTRATION
+            </span>
+
+            <h1>
+                Activity History
+            </h1>
+
+            <p>
+                See what was changed, by whom and when.
+            </p>
+
+        </div>
+
+
+        <div class="admin-user">
+
+            <div class="user-avatar">
+                A
             </div>
 
 
-            <div class="sidebar-brand-text">
+            <div class="user-details">
 
-                <h2>
-                    Roy Bari
-                </h2>
+                <strong id="adminEmail">
+                    Admin
+                </strong>
 
                 <span>
-                    Administration
+                    Administrator
                 </span>
 
             </div>
@@ -717,610 +1104,181 @@
         </div>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
-
-        <nav class="sidebar-nav">
+    </header>
 
 
-            <!-- =================================================
-                 MAIN
-                 ================================================= -->
 
-            <div class="nav-section-title">
-                MAIN
-            </div>
+    <!-- =================================================
+         ACTIVITY
+         ================================================= -->
+
+    <section class="manager-layout">
 
 
-            <a
-                href="./dashboard.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-display"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </a>
+        <div class="manager-list-card">
 
 
             <!-- =================================================
-                 CONTENT
+                 HEADER
                  ================================================= -->
 
-            <div class="nav-section-title">
-                CONTENT
-            </div>
+            <div class="activity-heading">
 
 
-            <a
-                href="./family.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-people-roof"></i>
-
-                <span>
-                    Family Tree
-                </span>
-
-            </a>
-
-
-            <a
-                href="./events.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-calendar-days"></i>
-
-                <span>
-                    Puja Events
-                </span>
-
-            </a>
-
-            <a
-                href="./gallery.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-image"></i>
-
-                <span>
-                    Gallery
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 HOMEPAGE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                HOMEPAGE
-            </div>
-
-
-            <a
-                href="./homepage-countdown.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-hourglass-half"></i>
-
-                <span>
-                    Homepage Countdown
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 ARCHIVE / MEDIA
-                 ================================================= -->
-
-            <a
-                href="./comparisons.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-code-compare"></i>
-
-                <span>
-                    Comparisons
-                </span>
-
-            </a>
-
-
-            <a
-                href="./idol-makers.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-user-gear"></i>
-
-                <span>
-                    Idol Makers
-                </span>
-
-            </a>
-
-
-            <a
-                href="./newspaper-articles.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-newspaper"></i>
-
-                <span>
-                    Newspaper Articles
-                </span>
-
-            </a>
-
-
-            <a
-                href="./old-pictures.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-images"></i>
-
-                <span>
-                    Old Pictures
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 MORE
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                MORE
-            </div>
-
-
-            <a
-                href="./memories.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-heart"></i>
-
-                <span>
-                    Memories
-                </span>
-
-            </a>
-
-
-            <a
-                href="./rituals.html"
-                class="nav-item"
-            >
-
-                <span class="nav-icon">
-                    ॐ
-                </span>
-
-                <span>
-                    Rituals
-                </span>
-
-            </a>
-
-
-            <!-- =================================================
-                 ADMIN
-                 ================================================= -->
-
-            <div class="nav-section-title">
-                ADMIN
-            </div>
-
-
-            <a
-                href="./enquiries.html"
-                class="nav-item"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <span>
-                    Enquiries
-                </span>
-
-            </a>
-
-
-            <a
-                href="./activity.html"
-                class="nav-item active"
-            >
-
-                <i class="fa-solid fa-book"></i>
-
-                <span>
-                    Activity History
-                </span>
-
-            </a>
-
-
-            <a
-                href="./change-password.html"
-                class="nav-item"
-            >
-
-                <i class="fa-solid fa-key"></i>
-
-                <span>
-                    Change Password
-                </span>
-
-            </a>
-
-
-        </nav>
-
-
-        <!-- =================================================
-             SIDEBAR BOTTOM
-             ================================================= -->
-
-        <div class="sidebar-bottom">
-
-
-            <div class="sidebar-note">
-
-                <i class="fa-solid fa-lock"></i>
-
-
-                <div>
-
-                    <strong>
-                        Admin Access
-                    </strong>
-
-                    <small>
-                        Protected area
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <button
-                type="button"
-                id="logoutButton"
-                class="logout-button"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                Logout
-
-            </button>
-
-
-        </div>
-
-
-    </aside>
-
-
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
-
-    <main class="dashboard-main">
-
-
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
-
-        <header class="topbar">
-
-
-            <div class="topbar-left">
-
-                <span class="page-eyebrow">
-                    ADMINISTRATION
-                </span>
-
-                <h1>
-                    Activity History
-                </h1>
-
-                <p>
-                    See what was changed, by whom and when.
-                </p>
-
-            </div>
-
-
-            <div class="admin-user">
-
-                <div class="user-avatar">
-                    A
-                </div>
-
-
-                <div class="user-details">
-
-                    <strong id="adminEmail">
-                        Admin
-                    </strong>
+                <div class="activity-heading-left">
 
                     <span>
-                        Administrator
+                        FIRESTORE
                     </span>
 
+                    <h2>
+                        Complete Activity History
+                    </h2>
+
                 </div>
+
+
+                <span
+                    id="activityCount"
+                    class="activity-count"
+                >
+                    0 activities
+                </span>
+
 
             </div>
 
 
-        </header>
+
+            <!-- =================================================
+                 FILTERS
+                 ================================================= -->
+
+            <div class="activity-filters">
 
 
-        <!-- =================================================
-             ACTIVITY
-             ================================================= -->
+                <div class="activity-filter-group">
 
-        <section class="manager-layout">
+                    <label for="activitySearch">
+                        Search
+                    </label>
 
-
-            <div class="manager-list-card">
-
-
-                <!-- =================================================
-                     HEADER
-                     ================================================= -->
-
-                <div class="activity-heading">
-
-
-                    <div class="activity-heading-left">
-
-                        <span>
-                            FIRESTORE
-                        </span>
-
-                        <h2>
-                            Complete Activity History
-                        </h2>
-
-                    </div>
-
-
-                    <span
-                        id="activityCount"
-                        class="activity-count"
+                    <input
+                        type="search"
+                        id="activitySearch"
+                        placeholder="Search activity..."
+                        autocomplete="off"
                     >
-                        0 activities
-                    </span>
-
 
                 </div>
 
 
-                <!-- =================================================
-                     FILTERS
-                     ================================================= -->
+                <div class="activity-filter-group">
 
-                <div class="activity-filters">
+                    <label for="actionFilter">
+                        Action
+                    </label>
 
+                    <select id="actionFilter">
 
-                    <!-- SEARCH -->
+                        <option value="">
+                            All Actions
+                        </option>
 
-                    <div class="activity-filter-group">
+                        <option value="created">
+                            Added
+                        </option>
 
-                        <label for="activitySearch">
-                            Search
-                        </label>
+                        <option value="updated">
+                            Updated
+                        </option>
 
-                        <input
-                            type="search"
-                            id="activitySearch"
-                            placeholder="Search activity..."
-                            autocomplete="off"
-                        >
+                        <option value="deleted">
+                            Deleted
+                        </option>
 
-                    </div>
+                        <option value="login">
+                            Login
+                        </option>
 
-
-                    <!-- ACTION -->
-
-                    <div class="activity-filter-group">
-
-                        <label for="actionFilter">
-                            Action
-                        </label>
-
-                        <select id="actionFilter">
-
-                            <option value="">
-                                All Actions
-                            </option>
-
-                            <option value="created">
-                                Added
-                            </option>
-
-                            <option value="updated">
-                                Updated
-                            </option>
-
-                            <option value="deleted">
-                                Deleted
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- SECTION -->
-
-                    <div class="activity-filter-group">
-
-                        <label for="collectionFilter">
-                            Section
-                        </label>
-
-                        <select id="collectionFilter">
-
-                            <option value="">
-                                All Sections
-                            </option>
-
-
-                            <!-- EXISTING COLLECTIONS -->
-
-                            <option value="familyMembers">
-                                Family
-                            </option>
-
-                            <option value="events">
-                                Events
-                            </option>
-
-                            <option value="gallery">
-                                Gallery
-                            </option>
-
-                            <option value="memories">
-                                Memories
-                            </option>
-
-                            <option value="rituals">
-                                Rituals
-                            </option>
-
-                            <option value="enquiries">
-                                Enquiries
-                            </option>
-
-
-                            <!-- NEW COLLECTIONS -->
-
-                            <option value="homepageCountdown">
-                                Homepage Countdown
-                            </option>
-
-                            <option value="comparisons">
-                                Comparisons
-                            </option>
-
-                            <option value="idolMakers">
-                                Idol Makers
-                            </option>
-
-                            <option value="newspaperArticles">
-                                Newspaper Articles
-                            </option>
-
-                            <option value="oldPictures">
-                                Old Pictures
-                            </option>
-
-                        </select>
-
-                    </div>
-
+                    </select>
 
                 </div>
 
 
-                <!-- =================================================
-                     MESSAGE
-                     ================================================= -->
+                <div class="activity-filter-group">
 
-                <p
-                    id="activityMessage"
-                    class="message"
-                ></p>
+                    <label for="collectionFilter">
+                        Section
+                    </label>
 
+                    <select id="collectionFilter">
 
-                <!-- =================================================
-                     TABLE
-                     ================================================= -->
+                        <option value="">
+                            All Sections
+                        </option>
 
-                <div class="activity-table-wrapper">
+                        <option value="familyMembers">
+                            Family
+                        </option>
 
+                        <option value="familyRelationships">
+                            Family Relationships
+                        </option>
 
-                    <table class="activity-table">
+                        <option value="events">
+                            Events
+                        </option>
 
+                        <option value="gallery">
+                            Gallery
+                        </option>
 
-                        <thead>
+                        <option value="memories">
+                            Memories
+                        </option>
 
-                            <tr>
+                        <option value="rituals">
+                            Rituals
+                        </option>
 
-                                <th>
-                                    Action
-                                </th>
+                        <option value="enquiries">
+                            Enquiries
+                        </option>
 
-                                <th>
-                                    Section
-                                </th>
+                        <option value="contact">
+                            Contact
+                        </option>
 
-                                <th>
-                                    Activity
-                                </th>
+                        <option value="visit">
+                            Visit
+                        </option>
 
-                                <th>
-                                    Details
-                                </th>
+                        <option value="homepageCountdown">
+                            Homepage Countdown
+                        </option>
 
-                                <th>
-                                    Admin
-                                </th>
+                        <option value="comparisons">
+                            Comparisons
+                        </option>
 
-                                <th>
-                                    Date &amp; Time
-                                </th>
+                        <option value="idolMakers">
+                            Idol Makers
+                        </option>
 
-                                <th>
-                                    Document ID
-                                </th>
+                        <option value="newspaperArticles">
+                            Newspaper Articles
+                        </option>
 
-                            </tr>
+                        <option value="oldPictures">
+                            Old Pictures
+                        </option>
 
-                        </thead>
+                        <option value="activityLogs">
+                            Activity History
+                        </option>
 
-
-                        <tbody
-                            id="activityList"
-                        >
-
-                            <tr>
-
-                                <td
-                                    colspan="7"
-                                    class="activity-loading"
-                                >
-                                    Loading activity history...
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-
-                    </table>
-
+                    </select>
 
                 </div>
 
@@ -1328,37 +1286,123 @@
             </div>
 
 
-        </section>
+
+            <!-- =================================================
+                 MESSAGE
+                 ================================================= -->
+
+            <p
+                id="activityMessage"
+                class="message"
+            ></p>
 
 
-        <!-- =================================================
-             FOOTER
-             ================================================= -->
 
-        <footer class="dashboard-footer">
+            <!-- =================================================
+                 TABLE
+                 ================================================= -->
 
-            <span>
-                Roy Bari
-            </span>
-
-            <span>
-                Complete Administrative History
-            </span>
-
-        </footer>
+            <div class="activity-table-wrapper">
 
 
-    </main>
+                <table class="activity-table">
 
 
-    <!-- =====================================================
-         JAVASCRIPT
-         ===================================================== -->
+                    <thead>
 
-    <script
-        type="module"
-        src="./js/activity.js"
-    ></script>
+                        <tr>
+
+                            <th>
+                                Action
+                            </th>
+
+                            <th>
+                                Section
+                            </th>
+
+                            <th>
+                                Activity
+                            </th>
+
+                            <th>
+                                Details
+                            </th>
+
+                            <th>
+                                Admin
+                            </th>
+
+                            <th>
+                                Date &amp; Time
+                            </th>
+
+                            <th>
+                                Document ID
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="activityList">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="activity-loading"
+                            >
+                                Loading activity history...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         FOOTER
+         ================================================= -->
+
+    <footer class="dashboard-footer">
+
+        <span>
+            Roy Bari
+        </span>
+
+        <span>
+            Complete Administrative History
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script
+    type="module"
+    src="./js/activity.js"
+></script>
 
 
 </body>
