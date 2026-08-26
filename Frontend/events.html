@@ -33,11 +33,14 @@
 
         .event-categories {
 
-            display: flex;
+            display:
+                flex;
 
-            flex-wrap: wrap;
+            flex-wrap:
+                wrap;
 
-            gap: 7px;
+            gap:
+                7px;
 
             margin:
                 12px 0 14px;
@@ -47,9 +50,11 @@
 
         .event-category {
 
-            display: inline-flex;
+            display:
+                inline-flex;
 
-            align-items: center;
+            align-items:
+                center;
 
             padding:
                 5px 10px;
@@ -80,6 +85,7 @@
                 capitalize;
 
         }
+
 
 
         /* =====================================================
@@ -169,6 +175,7 @@
         }
 
 
+
         /* =====================================================
            NEXT EVENT META
            ===================================================== */
@@ -235,11 +242,17 @@
             text-decoration:
                 none;
 
+            font-family:
+                inherit;
+
             font-size:
                 12px;
 
             font-weight:
                 700;
+
+            cursor:
+                pointer;
 
             transition:
                 all .2s ease;
@@ -261,6 +274,7 @@
                 none;
 
         }
+
 
 
         /* =====================================================
@@ -349,6 +363,7 @@
                 1.45;
 
         }
+
 
 
         /* =====================================================
@@ -472,6 +487,7 @@
         }
 
 
+
         /* =====================================================
            TODAY
            ===================================================== */
@@ -522,6 +538,7 @@
         }
 
 
+
         /* =====================================================
            UPCOMING
            ===================================================== */
@@ -532,6 +549,7 @@
                 rgba(120, 82, 52, .16);
 
         }
+
 
 
         /* =====================================================
@@ -564,13 +582,22 @@
         }
 
 
+        /*
+           IMPORTANT:
+           hidden modal must NEVER occupy the screen.
+        */
+
         .event-image-modal[hidden] {
 
             display:
-                none;
+                none !important;
 
         }
 
+
+        /* =====================================================
+           MODAL OVERLAY
+           ===================================================== */
 
         .event-image-overlay {
 
@@ -592,6 +619,11 @@
         }
 
 
+
+        /* =====================================================
+           MODAL DIALOG
+           ===================================================== */
+
         .event-image-dialog {
 
             position:
@@ -601,7 +633,7 @@
                 2;
 
             width:
-                min(100%, 950px);
+                min(100%, 1100px);
 
             max-height:
                 92vh;
@@ -628,6 +660,11 @@
 
         }
 
+
+
+        /* =====================================================
+           CLOSE BUTTON
+           ===================================================== */
 
         .event-image-close {
 
@@ -697,6 +734,11 @@
         }
 
 
+
+        /* =====================================================
+           MODAL HEADER
+           ===================================================== */
+
         .event-image-header {
 
             padding-right:
@@ -727,6 +769,11 @@
         }
 
 
+
+        /* =====================================================
+           IMAGE CONTAINER
+           ===================================================== */
+
         .event-image-container {
 
             position:
@@ -756,6 +803,11 @@
         }
 
 
+
+        /* =====================================================
+           EVENT IMAGE
+           ===================================================== */
+
         .event-image {
 
             display:
@@ -781,6 +833,19 @@
 
         }
 
+
+        .event-image[hidden] {
+
+            display:
+                none !important;
+
+        }
+
+
+
+        /* =====================================================
+           LOADING IMAGE
+           ===================================================== */
 
         .event-image-loading {
 
@@ -808,8 +873,35 @@
             font-weight:
                 600;
 
+            z-index:
+                5;
+
         }
 
+
+        /*
+           THIS IS THE IMPORTANT FIX.
+
+           JavaScript uses:
+
+               loading.hidden = true;
+
+           This rule guarantees that the
+           loading overlay disappears.
+        */
+
+        .event-image-loading[hidden] {
+
+            display:
+                none !important;
+
+        }
+
+
+
+        /* =====================================================
+           IMAGE ERROR
+           ===================================================== */
 
         .event-image-error {
 
@@ -821,6 +913,14 @@
 
             color:
                 #765236;
+
+        }
+
+
+        .event-image-error[hidden] {
+
+            display:
+                none !important;
 
         }
 
@@ -853,12 +953,18 @@
         }
 
 
+
+        /* =====================================================
+           PREVENT BACKGROUND SCROLL
+           ===================================================== */
+
         body.event-modal-open {
 
             overflow:
                 hidden;
 
         }
+
 
 
         /* =====================================================
@@ -901,6 +1007,9 @@
 
             .event-image-dialog {
 
+                width:
+                    100%;
+
                 padding:
                     20px;
 
@@ -918,10 +1027,27 @@
                 max-height:
                     70vh;
 
+                max-width:
+                    100%;
+
             }
 
 
             .event-image-header h2 {
+
+                font-size:
+                    22px;
+
+            }
+
+
+            .event-image-close {
+
+                width:
+                    36px;
+
+                height:
+                    36px;
 
                 font-size:
                     22px;
@@ -946,6 +1072,9 @@
 
     <nav class="nav">
 
+
+        <!-- BRAND -->
+
         <a
             href="index.html"
             class="brand"
@@ -960,6 +1089,9 @@
         </a>
 
 
+
+        <!-- MOBILE MENU -->
+
         <button
             type="button"
             class="nav-toggle"
@@ -972,53 +1104,80 @@
         </button>
 
 
+
+        <!-- NAVIGATION -->
+
         <ul class="nav-links">
 
+
             <li>
+
                 <a href="index.html">
                     Home
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="about.html">
                     About the Puja
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="family-tree.html">
                     Family Tree
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="gallery.html">
                     Gallery
                 </a>
+
             </li>
 
+
             <li>
+
                 <a
                     href="events.html"
                     class="active"
                     aria-current="page"
                 >
+
                     Events
+
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="visit.html">
                     Visit
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="contact.html">
                     Contact
                 </a>
+
             </li>
+
 
         </ul>
 
@@ -1041,13 +1200,16 @@
 
         <div class="hero-content">
 
+
             <div class="eyebrow">
                 The Puja Calendar
             </div>
 
+
             <h1>
                 The Days We Keep
             </h1>
+
 
             <p class="tagline">
 
@@ -1057,6 +1219,7 @@
                 Durga Puja.
 
             </p>
+
 
         </div>
 
@@ -1074,37 +1237,50 @@
 
     <div class="container">
 
+
         <div class="section-head">
+
 
             <div class="eyebrow">
                 Next at the Bari
             </div>
 
+
             <h2 id="next-event-name">
                 Loading...
             </h2>
+
 
             <p
                 class="lead"
                 id="next-event-description"
             >
+
                 Loading the next Puja event...
+
             </p>
 
+
+            <!-- DATE + TIME -->
 
             <div
                 class="next-event-meta"
                 aria-live="polite"
             >
 
-                <span id="next-event-date"></span>
+                <span
+                    id="next-event-date"
+                ></span>
 
-                <span id="next-event-time"></span>
+
+                <span
+                    id="next-event-time"
+                ></span>
 
             </div>
 
 
-            <!-- NEXT EVENT VIEW BUTTON -->
+            <!-- NEXT EVENT IMAGE BUTTON -->
 
             <button
                 type="button"
@@ -1115,13 +1291,17 @@
 
                 View Event Image
 
-                <span aria-hidden="true">
+                <span
+                    aria-hidden="true"
+                >
                     ↗
                 </span>
 
             </button>
 
+
         </div>
+
 
 
         <!-- =================================================
@@ -1133,6 +1313,9 @@
             id="event-timer"
         >
 
+
+            <!-- DAYS -->
+
             <div class="event-time-box">
 
                 <span
@@ -1142,12 +1325,16 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Days
                 </span>
 
             </div>
 
+
+
+            <!-- HOURS -->
 
             <div class="event-time-box">
 
@@ -1158,12 +1345,16 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Hours
                 </span>
 
             </div>
 
+
+
+            <!-- MINUTES -->
 
             <div class="event-time-box">
 
@@ -1174,12 +1365,16 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Minutes
                 </span>
 
             </div>
 
+
+
+            <!-- SECONDS -->
 
             <div class="event-time-box">
 
@@ -1190,11 +1385,13 @@
                     00
                 </span>
 
+
                 <span class="event-time-label">
                     Seconds
                 </span>
 
             </div>
+
 
         </div>
 
@@ -1212,15 +1409,21 @@
 
     <div class="container">
 
+
+        <!-- SECTION HEADER -->
+
         <div class="section-head">
+
 
             <div class="eyebrow">
                 The Calendar
             </div>
 
+
             <h2>
                 The Puja, Day by Day
             </h2>
+
 
             <p class="lead">
 
@@ -1230,7 +1433,9 @@
 
             </p>
 
+
         </div>
+
 
 
         <!-- =================================================
@@ -1243,51 +1448,78 @@
             aria-label="Filter events"
         >
 
+
+            <!-- ALL -->
+
             <button
                 type="button"
                 class="pill event-filter active"
                 data-filter="all"
             >
+
                 All Days
+
             </button>
 
+
+
+            <!-- RITUAL -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="ritual"
             >
+
                 Rituals
+
             </button>
 
+
+
+            <!-- FAMILY -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="family"
             >
+
                 Family
+
             </button>
 
+
+
+            <!-- VISITORS -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="visitors"
             >
+
                 Visitors
+
             </button>
 
+
+
+            <!-- CULTURALS -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="culturals"
             >
+
                 Culturals
+
             </button>
 
+
         </div>
+
 
 
         <!-- =================================================
@@ -1299,6 +1531,9 @@
             id="events-grid"
         >
 
+
+            <!-- INITIAL LOADING -->
+
             <div class="event-card">
 
                 <div class="event-content">
@@ -1307,14 +1542,18 @@
                         Loading events...
                     </h3>
 
+
                     <p>
+
                         Please wait while the
                         Puja calendar is loaded.
+
                     </p>
 
                 </div>
 
             </div>
+
 
         </div>
 
@@ -1332,7 +1571,11 @@
 
     <div class="container">
 
+
         <div class="footer-grid">
+
+
+            <!-- ROY BARI -->
 
             <div>
 
@@ -1340,14 +1583,20 @@
                     Roy Bari
                 </h5>
 
+
                 <p>
+
                     V8J4+5FF,
                     Chhota Nohari,
                     West Bengal 721121
+
                 </p>
 
             </div>
 
+
+
+            <!-- EXPLORE -->
 
             <div>
 
@@ -1355,39 +1604,58 @@
                     Explore
                 </h5>
 
+
                 <ul>
 
+
                     <li>
+
                         <a href="about.html">
                             About the Puja
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="family-tree.html">
                             Family Tree
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="gallery.html">
                             Gallery
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a
                             href="events.html"
                             aria-current="page"
                         >
+
                             Events
+
                         </a>
+
                     </li>
+
 
                 </ul>
 
             </div>
 
+
+
+            <!-- VISIT -->
 
             <div>
 
@@ -1395,24 +1663,35 @@
                     Visit
                 </h5>
 
+
                 <ul>
 
+
                     <li>
+
                         <a href="visit.html">
                             Location &amp; Directions
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="gallery.html">
                             Gallery
                         </a>
+
                     </li>
+
 
                 </ul>
 
             </div>
 
+
+
+            <!-- CONTACT -->
 
             <div>
 
@@ -1420,30 +1699,42 @@
                     Contact
                 </h5>
 
+
                 <ul>
 
+
                     <li>
+
                         <a href="contact.html">
                             Get in Touch
                         </a>
+
                     </li>
+
 
                 </ul>
 
             </div>
 
+
         </div>
 
+
+
+        <!-- FOOTER BOTTOM -->
 
         <div class="footer-bottom">
 
             <span>
+
                 © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
+
             </span>
 
         </div>
+
 
     </div>
 
@@ -1462,11 +1753,17 @@
     aria-hidden="true"
 >
 
+
+    <!-- MODAL OVERLAY -->
+
     <div
         class="event-image-overlay"
         data-close-event-modal
     ></div>
 
+
+
+    <!-- MODAL DIALOG -->
 
     <div
         class="event-image-dialog"
@@ -1475,47 +1772,78 @@
         aria-labelledby="event-image-title"
     >
 
+
+        <!-- CLOSE BUTTON -->
+
         <button
             type="button"
             class="event-image-close"
             id="event-image-close"
             aria-label="Close image"
         >
+
             ×
+
         </button>
 
 
+
+        <!-- HEADER -->
+
         <div class="event-image-header">
+
 
             <div class="eyebrow">
                 Roy Bari Event
             </div>
 
+
             <h2 id="event-image-title">
                 Event
             </h2>
 
+
         </div>
 
 
+
+        <!-- IMAGE CONTAINER -->
+
         <div class="event-image-container">
+
+
+            <!-- LOADING -->
 
             <div
                 id="event-image-loading"
                 class="event-image-loading"
             >
+
                 Loading image...
+
             </div>
 
+
+
+            <!-- ACTUAL IMAGE -->
+
+            <!--
+                IMPORTANT:
+                There is NO src="" here.
+                JavaScript adds the Google Drive
+                thumbnail URL when opening.
+            -->
 
             <img
                 id="event-image"
                 class="event-image"
-                src=""
                 alt=""
                 hidden
             >
 
+
+
+            <!-- IMAGE ERROR -->
 
             <div
                 id="event-image-error"
@@ -1523,19 +1851,26 @@
                 hidden
             >
 
+
                 <strong>
                     Image could not be loaded.
                 </strong>
 
+
                 <p>
+
                     Please make sure the Google Drive
                     file is shared as
                     "Anyone with the link".
+
                 </p>
+
 
             </div>
 
+
         </div>
+
 
     </div>
 

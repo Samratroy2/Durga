@@ -59,11 +59,24 @@ document.addEventListener(
         );
 
 
+        /*
+           Initialize the event image modal
+           before loading Firestore events.
+        */
+
         initEventImageModal();
 
 
+        /*
+           Load events from Firestore.
+        */
+
         loadEvents();
 
+
+        /*
+           Initialize category filters.
+        */
 
         initEventFilters();
 
@@ -372,9 +385,21 @@ function getEventDate(
     }
 
 
+    /*
+       Firestore stores the event date
+       separately from the event time.
+
+       Example:
+
+       date = 17 October 2026
+       time = 7:30 PM
+    */
+
     if (
         event.time &&
-        String(event.time).trim()
+        String(
+            event.time
+        ).trim()
     ) {
 
         const timeParts =
@@ -484,6 +509,13 @@ function getDateObject(
             "string"
     ) {
 
+        /*
+           YYYY-MM-DD
+
+           Create a local date to avoid
+           timezone shifting.
+        */
+
         const match =
             event.date.match(
                 /^(\d{4})-(\d{2})-(\d{2})$/
@@ -538,6 +570,17 @@ function getDateObject(
 
 /* =========================================================
    PARSE EVENT TIME
+   =========================================================
+
+   Supports:
+
+   7:00 PM
+   7:30 PM
+   12:00 PM
+   12:00 AM
+   19:30
+   07:30
+
    ========================================================= */
 
 function parseEventTime(
@@ -736,6 +779,10 @@ function formatEventTime(
     event
 ) {
 
+    /*
+       Prefer the separate Firestore time field.
+    */
+
     if (
         event.time &&
         String(
@@ -782,12 +829,24 @@ function formatEventTime(
         }
 
 
+        /*
+           If the stored value is something
+           like "Evening", display it as-is.
+        */
+
         return String(
             event.time
         );
 
     }
 
+
+    /*
+       Backwards compatibility.
+
+       If there is no separate time field,
+       use the Firestore timestamp.
+    */
 
     const date =
         getDateObject(
@@ -801,6 +860,12 @@ function formatEventTime(
 
     }
 
+
+    /*
+       Don't show midnight as 12:00 AM
+       when the timestamp only contains
+       a date.
+    */
 
     if (
         date.getHours() === 0 &&
@@ -1379,7 +1444,7 @@ function formatCategoryName(
 
 
 /* =========================================================
-   VIEW EVENT BUTTON
+   BUILD VIEW EVENT BUTTON
    ========================================================= */
 
 function buildURLHTML(
@@ -1405,6 +1470,10 @@ function buildURLHTML(
         ).trim();
 
 
+    /*
+       Only allow HTTP and HTTPS URLs.
+    */
+
     if (
         !isSafeURL(
             cleanURL
@@ -1429,11 +1498,7 @@ function buildURLHTML(
             >
 
                 <span>
-                    View Event
-                </span>
-
-                <span aria-hidden="true">
-                    ↗
+                    View Event Image
                 </span>
 
             </button>
@@ -1482,10 +1547,19 @@ function isSafeURL(
 
 
 /* =========================================================
-   GOOGLE DRIVE IMAGE URL
-   ========================================================= */
-/* =========================================================
-   GOOGLE DRIVE IMAGE URL
+   CONVERT GOOGLE DRIVE URL
+   =========================================================
+
+   Supports:
+
+   https://drive.google.com/file/d/FILE_ID/view
+
+   and:
+
+   https://drive.google.com/open?id=FILE_ID
+
+   The resulting URL is used by the <img> element.
+
    ========================================================= */
 
 function convertGoogleDriveURL(
@@ -1506,7 +1580,7 @@ function convertGoogleDriveURL(
 
 
     /* =====================================================
-       GOOGLE DRIVE /FILE/D/FILE_ID/VIEW
+       GOOGLE DRIVE FILE URL
        ===================================================== */
 
     const fileMatch =
@@ -1521,14 +1595,6 @@ function convertGoogleDriveURL(
             fileMatch[1];
 
 
-        /*
-           Google Drive thumbnail endpoint.
-
-           This is much more reliable for
-           displaying Drive images inside
-           an <img> element.
-        */
-
         return (
             "https://drive.google.com/thumbnail" +
             "?id=" +
@@ -1542,7 +1608,7 @@ function convertGoogleDriveURL(
 
 
     /* =====================================================
-       GOOGLE DRIVE OPEN?ID=FILE_ID
+       GOOGLE DRIVE OPEN URL
        ===================================================== */
 
     try {
@@ -1586,6 +1652,11 @@ function convertGoogleDriveURL(
 
     catch {
 
+        /*
+           If parsing fails, use the
+           original URL.
+        */
+
         return cleanURL;
 
     }
@@ -1600,10 +1671,6 @@ function convertGoogleDriveURL(
 }
 
 
-
-/* =========================================================
-   EVENT IMAGE MODAL
-   ========================================================= */
 
 /* =========================================================
    EVENT IMAGE MODAL
@@ -1672,8 +1739,11 @@ function initEventImageModal() {
 
 
     /*
-       Remember which element opened
+       Store the button that opened
        the modal.
+
+       This is used to restore focus
+       when the modal closes.
     */
 
     let lastFocusedElement =
@@ -1699,17 +1769,37 @@ function initEventImageModal() {
         }
 
 
+        /*
+           Remember the currently focused
+           element.
+        */
+
         lastFocusedElement =
             document.activeElement;
 
+
+        /*
+           Set modal title.
+        */
 
         title.textContent =
             event.title ||
             "Event";
 
 
-        image.src =
-            "";
+        /*
+           IMPORTANT:
+
+           Do not use image.src = "".
+
+           Removing src prevents the browser
+           from trying to load the current
+           events.html page as an image.
+        */
+
+        image.removeAttribute(
+            "src"
+        );
 
 
         image.alt =
@@ -1729,6 +1819,10 @@ function initEventImageModal() {
             false;
 
 
+        /*
+           Show modal.
+        */
+
         modal.hidden =
             false;
 
@@ -1743,6 +1837,11 @@ function initEventImageModal() {
             "event-modal-open"
         );
 
+
+        /*
+           Convert the Firestore URL
+           into an image URL.
+        */
 
         const imageURL =
             convertGoogleDriveURL(
@@ -1777,8 +1876,8 @@ function initEventImageModal() {
 
 
         /*
-           Move keyboard focus into
-           the modal.
+           Put keyboard focus on the
+           close button.
         */
 
         requestAnimationFrame(
@@ -1800,15 +1899,8 @@ function initEventImageModal() {
     function closeModal() {
 
         /*
-           IMPORTANT:
-
-           Remove focus from the close button
-           BEFORE hiding the modal.
-
-           This prevents the browser warning:
-
-           "Blocked aria-hidden on an element
-           because its descendant retained focus."
+           Remove focus from anything inside
+           the modal before applying aria-hidden.
         */
 
         if (
@@ -1822,6 +1914,10 @@ function initEventImageModal() {
 
         }
 
+
+        /*
+           Mark modal as hidden.
+        */
 
         modal.setAttribute(
             "aria-hidden",
@@ -1838,8 +1934,22 @@ function initEventImageModal() {
         );
 
 
-        image.src =
-            "";
+        /*
+           IMPORTANT:
+
+           Never do:
+
+               image.src = "";
+
+           because an empty src causes the browser
+           to request the current page as an image.
+
+           Instead remove the src attribute.
+        */
+
+        image.removeAttribute(
+            "src"
+        );
 
 
         image.hidden =
@@ -1856,7 +1966,7 @@ function initEventImageModal() {
 
         /*
            Return focus to the button that
-           originally opened the modal.
+           opened the modal.
         */
 
         if (
@@ -1865,24 +1975,34 @@ function initEventImageModal() {
                 "function"
         ) {
 
-            /*
-               Small delay avoids focusing an
-               element while the modal is still
-               being hidden.
-            */
-
             requestAnimationFrame(
                 () => {
 
                     try {
 
-                        lastFocusedElement.focus();
+                        /*
+                           Only focus it if it still
+                           exists in the document.
+                        */
+
+                        if (
+                            document.contains(
+                                lastFocusedElement
+                            )
+                        ) {
+
+                            lastFocusedElement.focus();
+
+                        }
 
                     }
 
                     catch {
 
-                        /* Ignore focus restoration errors */
+                        /*
+                           Ignore focus restoration
+                           errors.
+                        */
 
                     }
 
@@ -1906,6 +2026,10 @@ function initEventImageModal() {
     image.addEventListener(
         "load",
         () => {
+
+            /*
+               Image loaded successfully.
+            */
 
             console.log(
                 "Event image loaded successfully."
@@ -1935,6 +2059,28 @@ function initEventImageModal() {
     image.addEventListener(
         "error",
         () => {
+
+            /*
+               Ignore errors if the modal has
+               already been closed.
+
+               This prevents the false error
+               that happened with:
+
+                   image.src = "";
+            */
+
+            if (
+                modal.hidden ||
+                !image.getAttribute(
+                    "src"
+                )
+            ) {
+
+                return;
+
+            }
+
 
             console.error(
                 "Event image could not be loaded:",
@@ -2019,7 +2165,7 @@ function initEventImageModal() {
 
 
     /* =====================================================
-       EVENT CARD VIEW BUTTON
+       EVENT CARD VIEW EVENT BUTTON
        ===================================================== */
 
     document.addEventListener(
@@ -2073,7 +2219,7 @@ function initEventImageModal() {
 
 
     /* =====================================================
-       NEXT EVENT VIEW BUTTON
+       NEXT EVENT VIEW EVENT BUTTON
        ===================================================== */
 
     if (nextEventButton) {
@@ -2111,6 +2257,8 @@ function initEventImageModal() {
     }
 
 }
+
+
 
 /* =========================================================
    ABOUT BUTTONS
@@ -2297,7 +2445,7 @@ function findNextEvent(
 
 
     /* =====================================================
-       NO UPCOMING
+       NO UPCOMING EVENTS
        ===================================================== */
 
     if (
@@ -2421,6 +2569,11 @@ function findNextEvent(
 
     }
 
+
+    /*
+       Show the next-event View Event
+       button only when a valid URL exists.
+    */
 
     if (linkElement) {
 
@@ -2559,6 +2712,12 @@ function updateNextEventError() {
         );
 
 
+    const linkElement =
+        document.getElementById(
+            "next-event-link"
+        );
+
+
     if (nameElement) {
 
         nameElement.textContent =
@@ -2571,6 +2730,14 @@ function updateNextEventError() {
 
         descriptionElement.textContent =
             "Please try again later.";
+
+    }
+
+
+    if (linkElement) {
+
+        linkElement.hidden =
+            true;
 
     }
 
@@ -2662,6 +2829,11 @@ function startCountdown(
             countdownInterval =
                 null;
 
+
+            /*
+               Find the next event using
+               the already-loaded Firestore data.
+            */
 
             findNextEvent(
                 events
@@ -2886,6 +3058,10 @@ function initEventFilters() {
                 "click",
                 () => {
 
+                    /* =========================================
+                       REMOVE ACTIVE
+                       ========================================= */
+
                     buttons.forEach(
                         btn => {
 
@@ -2896,6 +3072,10 @@ function initEventFilters() {
                         }
                     );
 
+
+                    /* =========================================
+                       ADD ACTIVE
+                       ========================================= */
 
                     button.classList.add(
                         "active"
@@ -2911,6 +3091,10 @@ function initEventFilters() {
                             .toLowerCase();
 
 
+                    /* =========================================
+                       ALL
+                       ========================================= */
+
                     if (
                         filter === "all"
                     ) {
@@ -2924,6 +3108,10 @@ function initEventFilters() {
 
                     }
 
+
+                    /* =========================================
+                       FILTER
+                       ========================================= */
 
                     const filteredEvents =
                         events.filter(
@@ -2943,6 +3131,14 @@ function initEventFilters() {
                                                     .trim()
                                                     .toLowerCase();
 
+
+                                            /*
+                                               Accept both:
+
+                                               visitor
+
+                                               visitors
+                                            */
 
                                             if (
                                                 filter ===
