@@ -40,7 +40,9 @@
 
 import {
     collection,
-    getDocs
+    getDocs,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 import {
@@ -4097,8 +4099,73 @@ function escapeHTML(
 }
 
 
+
+/* =========================================================
+   LOAD FAMILY PHOTO
+   ========================================================= */
+
+async function loadFamilyPhoto() {
+
+    const imageEl = document.getElementById("familyTreeImage");
+    const statusEl = document.getElementById("familyImageStatus");
+    const captionEl = document.getElementById("familyImageCaption");
+
+    if (!imageEl) return;
+
+    try {
+
+        const snapshot = await getDoc(
+            doc(db, "familyMembers", "image")
+        );
+
+        if (!snapshot.exists()) {
+            if (statusEl) statusEl.textContent = "No family photo available.";
+            return;
+        }
+
+        const data = snapshot.data();
+        const driveUrl = String(data.url || "");
+        const caption = data.caption || "";
+
+        const match = driveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        const fileId = match ? match[1] : null;
+
+        if (!fileId) {
+            if (statusEl) statusEl.textContent = "Family photo unavailable.";
+            return;
+        }
+
+        const directUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+
+        imageEl.onload = () => {
+            imageEl.style.display = "block";
+            if (statusEl) statusEl.style.display = "none";
+        };
+
+        imageEl.onerror = () => {
+            if (statusEl) statusEl.textContent = "Unable to load family photo.";
+        };
+
+        imageEl.src = directUrl;
+        imageEl.alt = caption || "Roy Bari family tree";
+
+        if (captionEl) captionEl.textContent = caption;
+
+    } catch (error) {
+
+        console.error("Family photo loading error:", error);
+
+        if (statusEl) statusEl.textContent = "Unable to load family photo.";
+
+    }
+
+}
+
+
+
 /* =========================================================
    START
    ========================================================= */
 
 loadFamilyTree();
+loadFamilyPhoto();
