@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Contact | Roy Bari Admin
+    </title>
+
+    <meta
+        name="description"
+        content="Manage Roy Bari contact information."
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/admin.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ADMIN HEADER
+     ===================================================== -->
+
+<header class="admin-header">
+
+    <div class="admin-header-left">
+
+        <a
+            href="dashboard.html"
+            class="admin-logo"
+        >
+            ROY BARI
+        </a>
+
+        <span class="admin-page-title">
+            Contact Information
+        </span>
+
+    </div>
+
+
+    <a
+        href="../Frontend/contact.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="admin-view-site"
+    >
+        View Site ↗
+    </a>
+
+</header>
+
+
+
+<!-- =====================================================
+     ADMIN LAYOUT
+     ===================================================== -->
+
+<div class="admin-layout">
+
+
+    <!-- =================================================
+         SIDEBAR
+         ================================================= -->
+
+    <aside class="admin-sidebar">
+
+        <nav>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="gallery.html">
+                Gallery
+            </a>
+
+            <a href="comparisons.html">
+                Comparisons
+            </a>
+
+            <a href="family.html">
+                Family
+            </a>
+
+            <a href="rituals.html">
+                Rituals
+            </a>
+
+            <a href="memories.html">
+                Memories
+            </a>
+
+            <a href="newspaper-articles.html">
+                Newspaper
+            </a>
+
+            <a href="old-pictures.html">
+                Old Pictures
+            </a>
+
+            <a href="idol-makers.html">
+                Idol Makers
+            </a>
+
+            <a href="visit.html">
+                Visit
+            </a>
+
+            <a
+                href="contact.html"
+                class="active"
+                aria-current="page"
+            >
+                Contact
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =================================================
+         MAIN
+         ================================================= -->
+
+    <main class="admin-main">
+
+        <div class="admin-content">
+
+
+            <!-- =============================================
+                 PAGE HEADER
+                 ============================================= -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        Website Settings
+                    </div>
+
+                    <h1>
+                        Contact Information
+                    </h1>
+
+                    <p>
+                        Manage the contact details displayed
+                        on the Roy Bari public website.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 STATUS
+                 ============================================= -->
+
+            <div
+                id="contact-status"
+                class="admin-status"
+                hidden
+                aria-live="polite"
+            ></div>
+
+
+
+            <!-- =============================================
+                 CONTACT FORM
+                 ============================================= -->
+
+            <form
+                id="contact-form"
+                class="admin-form"
+                novalidate
+            >
+
+
+                <!-- =========================================
+                     ADDRESS
+                     ========================================= -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Address
+                            </h2>
+
+                            <p>
+                                Main Roy Bari contact address.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="address">
+                            Address
+                        </label>
+
+                        <textarea
+                            id="address"
+                            name="address"
+                            rows="4"
+                            placeholder="Nohari Roy Bari, Chhota Nohari, West Bengal 721121"
+                            autocomplete="street-address"
+                        ></textarea>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================================
+                     EMAIL
+                     ========================================= -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Email
+                            </h2>
+
+                            <p>
+                                Public email address.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="nohariroybaridurgamandir@gmail.com"
+                            autocomplete="email"
+                        >
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================================
+                     PHONE NUMBERS
+                     ========================================= -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Phone Numbers
+                            </h2>
+
+                            <p>
+                                Add one or two public contact numbers.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- PHONE 1 -->
+
+                        <div class="form-group">
+
+                            <label for="phone1">
+                                Phone Number 1
+                            </label>
+
+                            <input
+                                type="text"
+                                id="phone1"
+                                name="phone1"
+                                placeholder="+91 9083640748"
+                                autocomplete="tel"
+                            >
+
+                            <small>
+                                Primary contact number.
+                            </small>
+
+                        </div>
+
+
+                        <!-- PHONE 2 -->
+
+                        <div class="form-group">
+
+                            <label for="phone2">
+                                Phone Number 2
+                            </label>
+
+                            <input
+                                type="text"
+                                id="phone2"
+                                name="phone2"
+                                placeholder="+91 XXXXXXXXXX"
+                                autocomplete="tel"
+                            >
+
+                            <small>
+                                Optional second contact number.
+                            </small>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================================
+                     SOCIAL MEDIA
+                     ========================================= -->
+
+                <section class="admin-card">
+
+                    <div class="admin-card-header">
+
+                        <div>
+
+                            <h2>
+                                Social Media
+                            </h2>
+
+                            <p>
+                                Links shown on the public Contact page.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- FACEBOOK -->
+
+                        <div class="form-group">
+
+                            <label for="facebook">
+                                Facebook
+                            </label>
+
+                            <input
+                                type="url"
+                                id="facebook"
+                                name="facebook"
+                                placeholder="https://www.facebook.com/..."
+                                autocomplete="url"
+                            >
+
+                        </div>
+
+
+                        <!-- INSTAGRAM -->
+
+                        <div class="form-group">
+
+                            <label for="instagram">
+                                Instagram
+                            </label>
+
+                            <input
+                                type="url"
+                                id="instagram"
+                                name="instagram"
+                                placeholder="https://www.instagram.com/..."
+                                autocomplete="url"
+                            >
+
+                        </div>
+
+
+                        <!-- WHATSAPP -->
+
+                        <div class="form-group">
+
+                            <label for="whatsapp">
+                                WhatsApp
+                            </label>
+
+                            <input
+                                type="url"
+                                id="whatsapp"
+                                name="whatsapp"
+                                placeholder="https://wa.me/..."
+                                autocomplete="url"
+                            >
+
+                            <small>
+                                WhatsApp link or channel URL.
+                            </small>
+
+                        </div>
+
+
+                        <!-- YOUTUBE -->
+
+                        <div class="form-group">
+
+                            <label for="youtube">
+                                YouTube
+                            </label>
+
+                            <input
+                                type="url"
+                                id="youtube"
+                                name="youtube"
+                                placeholder="https://www.youtube.com/..."
+                                autocomplete="url"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================================
+                     SAVE
+                     ========================================= -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        id="save-contact"
+                        class="admin-button primary"
+                    >
+                        Save Contact Information
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<!-- =====================================================
+     CONTACT JAVASCRIPT
+     ===================================================== -->
+
+<script
+    type="module"
+    src="js/contact.js"
+></script>
+
+
+</body>
+
+</html>
