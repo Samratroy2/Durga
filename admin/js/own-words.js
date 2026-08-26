@@ -1,7 +1,27 @@
 /* =========================================================
-   ROY BARI — MEMORIES ADMIN
-   FIRESTORE: memories
-   ACTIVITY: activityLogs
+   ROY BARI — OWN-WORDS / MEMORIES ADMIN
+   =========================================================
+
+   FIRESTORE COLLECTIONS:
+
+       memories
+       activityLogs
+
+   MEMORY FIELDS:
+
+       title
+       year
+       person
+       category
+       quote
+       imageUrl
+       createdAt
+       updatedAt
+
+   OLD FIELD SUPPORTED:
+
+       description
+
    ========================================================= */
 
 
@@ -48,79 +68,50 @@ import {
 const form =
     document.getElementById("memoryForm");
 
-
 const formTitle =
     document.getElementById("formTitle");
-
 
 const titleInput =
     document.getElementById("title");
 
-
 const yearInput =
     document.getElementById("year");
-
 
 const personInput =
     document.getElementById("person");
 
-
 const categoryInput =
     document.getElementById("category");
-
-
-/*
-   IMPORTANT:
-
-   HTML field:
-
-       description
-
-   Firestore field:
-
-       quote
-
-   Old documents using:
-
-       description
-
-   are also supported.
-*/
 
 const descriptionInput =
     document.getElementById("description");
 
-
 const imageInput =
     document.getElementById("imageUrl");
-
 
 const saveButton =
     document.getElementById("saveButton");
 
-
 const cancelButton =
     document.getElementById("cancelButton");
-
 
 const list =
     document.getElementById("memoryList");
 
-
 const count =
     document.getElementById("memoryCount");
-
 
 const message =
     document.getElementById("memoryMessage");
 
-
 const logoutButton =
     document.getElementById("logoutButton");
 
-
 const adminEmail =
     document.getElementById("adminEmail");
+
+const userAvatar =
+    document.getElementById("userAvatar");
 
 
 /* =========================================================
@@ -142,11 +133,13 @@ onAuthStateChanged(
     auth,
     async user => {
 
-        /*
-           User must be logged in.
-        */
+        /* -------------------------------------------------
+           USER NOT LOGGED IN
+           ------------------------------------------------- */
 
         if (!user) {
+
+            currentAdmin = null;
 
             window.location.replace(
                 "./index.html"
@@ -157,17 +150,16 @@ onAuthStateChanged(
         }
 
 
-        /*
-           Store current admin.
-        */
+        /* -------------------------------------------------
+           STORE CURRENT ADMIN
+           ------------------------------------------------- */
 
-        currentAdmin =
-            user;
+        currentAdmin = user;
 
 
-        /*
-           Display email.
-        */
+        /* -------------------------------------------------
+           DISPLAY ADMIN EMAIL
+           ------------------------------------------------- */
 
         if (adminEmail) {
 
@@ -178,9 +170,27 @@ onAuthStateChanged(
         }
 
 
-        /*
-           Store admin information.
-        */
+        /* -------------------------------------------------
+           DISPLAY AVATAR
+           ------------------------------------------------- */
+
+        if (userAvatar) {
+
+            const email =
+                user.email ||
+                "A";
+
+            userAvatar.textContent =
+                email
+                    .charAt(0)
+                    .toUpperCase();
+
+        }
+
+
+        /* -------------------------------------------------
+           STORE ADMIN INFORMATION
+           ------------------------------------------------- */
 
         try {
 
@@ -193,7 +203,6 @@ onAuthStateChanged(
 
             }
 
-
             if (user.uid) {
 
                 localStorage.setItem(
@@ -204,6 +213,7 @@ onAuthStateChanged(
             }
 
         }
+
         catch (error) {
 
             console.warn(
@@ -214,9 +224,9 @@ onAuthStateChanged(
         }
 
 
-        /*
-           Load memories after authentication.
-        */
+        /* -------------------------------------------------
+           LOAD MEMORIES
+           ------------------------------------------------- */
 
         await loadMemories();
 
@@ -241,13 +251,22 @@ function showMessage(
 
 
     message.textContent =
-        text;
+        text || "";
 
 
-    message.className =
-        type
-            ? `message ${type}`
-            : "message";
+    if (type) {
+
+        message.className =
+            `message ${type}`;
+
+    }
+
+    else {
+
+        message.className =
+            "message";
+
+    }
 
 }
 
@@ -256,11 +275,11 @@ function showMessage(
    GET MEMORY TEXT
    =========================================================
 
-   Firestore uses:
+   New documents:
 
        quote
 
-   Older documents may use:
+   Older documents:
 
        description
 
@@ -278,25 +297,39 @@ function getMemoryText(
     memory
 ) {
 
-    return (
-        memory?.quote ??
-        memory?.description ??
-        ""
-    );
+    if (
+        memory &&
+        memory.quote !== undefined &&
+        memory.quote !== null
+    ) {
+
+        return String(
+            memory.quote
+        );
+
+    }
+
+
+    if (
+        memory &&
+        memory.description !== undefined &&
+        memory.description !== null
+    ) {
+
+        return String(
+            memory.description
+        );
+
+    }
+
+
+    return "";
 
 }
 
 
 /* =========================================================
    BUILD NEW FORM DATA
-   =========================================================
-
-   Firestore field:
-
-       quote
-
-   Empty fields are not stored.
-
    ========================================================= */
 
 function getNewFormData() {
@@ -304,14 +337,13 @@ function getNewFormData() {
     const data = {};
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        TITLE
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const title =
         titleInput?.value.trim() ||
         "";
-
 
     if (title) {
 
@@ -321,20 +353,18 @@ function getNewFormData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        YEAR
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const year =
         yearInput?.value.trim() ||
         "";
 
-
     if (year) {
 
         const numericYear =
             Number(year);
-
 
         if (
             Number.isFinite(
@@ -350,14 +380,13 @@ function getNewFormData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        PERSON
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const person =
         personInput?.value.trim() ||
         "";
-
 
     if (person) {
 
@@ -367,14 +396,13 @@ function getNewFormData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        CATEGORY
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const category =
         categoryInput?.value.trim() ||
         "";
-
 
     if (category) {
 
@@ -384,14 +412,13 @@ function getNewFormData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        MEMORY / QUOTE
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const quote =
         descriptionInput?.value.trim() ||
         "";
-
 
     if (quote) {
 
@@ -401,14 +428,13 @@ function getNewFormData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        IMAGE URL
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const imageUrl =
         imageInput?.value.trim() ||
         "";
-
 
     if (imageUrl) {
 
@@ -425,10 +451,6 @@ function getNewFormData() {
 
 /* =========================================================
    BUILD UPDATE DATA
-   =========================================================
-
-   Empty fields are removed from Firestore.
-
    ========================================================= */
 
 function getUpdateData() {
@@ -436,14 +458,13 @@ function getUpdateData() {
     const data = {};
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        TITLE
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const title =
         titleInput?.value.trim() ||
         "";
-
 
     if (title) {
 
@@ -451,6 +472,7 @@ function getUpdateData() {
             title;
 
     }
+
     else {
 
         data.title =
@@ -459,20 +481,18 @@ function getUpdateData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        YEAR
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const year =
         yearInput?.value.trim() ||
         "";
 
-
     if (year) {
 
         const numericYear =
             Number(year);
-
 
         if (
             Number.isFinite(
@@ -484,6 +504,7 @@ function getUpdateData() {
                 numericYear;
 
         }
+
         else {
 
             data.year =
@@ -492,6 +513,7 @@ function getUpdateData() {
         }
 
     }
+
     else {
 
         data.year =
@@ -500,14 +522,13 @@ function getUpdateData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        PERSON
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const person =
         personInput?.value.trim() ||
         "";
-
 
     if (person) {
 
@@ -515,6 +536,7 @@ function getUpdateData() {
             person;
 
     }
+
     else {
 
         data.person =
@@ -523,14 +545,13 @@ function getUpdateData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        CATEGORY
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const category =
         categoryInput?.value.trim() ||
         "";
-
 
     if (category) {
 
@@ -538,6 +559,7 @@ function getUpdateData() {
             category;
 
     }
+
     else {
 
         data.category =
@@ -546,14 +568,13 @@ function getUpdateData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        MEMORY / QUOTE
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const quote =
         descriptionInput?.value.trim() ||
         "";
-
 
     if (quote) {
 
@@ -561,6 +582,7 @@ function getUpdateData() {
             quote;
 
     }
+
     else {
 
         data.quote =
@@ -569,25 +591,31 @@ function getUpdateData() {
     }
 
 
-    /*
-       Remove old description field.
+    /* -----------------------------------------------------
+       REMOVE OLD DESCRIPTION FIELD
+       -----------------------------------------------------
 
-       This keeps old and new documents
-       consistent.
-    */
+       All edited documents are converted to:
+
+           quote
+
+       instead of:
+
+           description
+
+       ----------------------------------------------------- */
 
     data.description =
         deleteField();
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        IMAGE URL
-       ===================================================== */
+       ----------------------------------------------------- */
 
     const imageUrl =
         imageInput?.value.trim() ||
         "";
-
 
     if (imageUrl) {
 
@@ -595,6 +623,7 @@ function getUpdateData() {
             imageUrl;
 
     }
+
     else {
 
         data.imageUrl =
@@ -603,9 +632,9 @@ function getUpdateData() {
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        UPDATED TIME
-       ===================================================== */
+       ----------------------------------------------------- */
 
     data.updatedAt =
         serverTimestamp();
@@ -618,16 +647,6 @@ function getUpdateData() {
 
 /* =========================================================
    ACTIVITY SNAPSHOT
-   =========================================================
-
-   This creates a clean version of a memory only for
-   activity comparison.
-
-   IMPORTANT:
-
-   Old "description" and new "quote" are treated as
-   the same "Memory" field.
-
    ========================================================= */
 
 function getActivitySnapshot(
@@ -637,20 +656,16 @@ function getActivitySnapshot(
     return {
 
         title:
-            memory?.title ??
-            "",
+            memory?.title ?? "",
 
         year:
-            memory?.year ??
-            "",
+            memory?.year ?? "",
 
         person:
-            memory?.person ??
-            "",
+            memory?.person ?? "",
 
         category:
-            memory?.category ??
-            "",
+            memory?.category ?? "",
 
         quote:
             getMemoryText(
@@ -658,8 +673,7 @@ function getActivitySnapshot(
             ),
 
         imageUrl:
-            memory?.imageUrl ??
-            ""
+            memory?.imageUrl ?? ""
 
     };
 
@@ -667,7 +681,7 @@ function getActivitySnapshot(
 
 
 /* =========================================================
-   GET NEW ACTIVITY SNAPSHOT
+   NEW ACTIVITY SNAPSHOT
    ========================================================= */
 
 function getNewActivitySnapshot() {
@@ -705,18 +719,6 @@ function getNewActivitySnapshot() {
 
 /* =========================================================
    ACTIVITY LOGGER
-   =========================================================
-
-   DETAILS WILL ONLY SAY WHAT CHANGED.
-
-   Example:
-
-       Category changed
-
-   or:
-
-       Category changed, Person changed
-
    ========================================================= */
 
 async function logActivity({
@@ -755,9 +757,9 @@ async function logActivity({
             "Activity performed.";
 
 
-        /* =================================================
+        /* -------------------------------------------------
            CREATE
-           ================================================= */
+           ------------------------------------------------- */
 
         if (
             currentAction === "CREATE"
@@ -769,9 +771,9 @@ async function logActivity({
         }
 
 
-        /* =================================================
+        /* -------------------------------------------------
            DELETE
-           ================================================= */
+           ------------------------------------------------- */
 
         else if (
             currentAction === "DELETE"
@@ -783,9 +785,9 @@ async function logActivity({
         }
 
 
-        /* =================================================
+        /* -------------------------------------------------
            UPDATE
-           ================================================= */
+           ------------------------------------------------- */
 
         else if (
             currentAction === "UPDATE"
@@ -811,6 +813,7 @@ async function logActivity({
                         .join(", ");
 
             }
+
             else {
 
                 details =
@@ -821,9 +824,9 @@ async function logActivity({
         }
 
 
-        /* =================================================
+        /* -------------------------------------------------
            SAVE ACTIVITY
-           ================================================= */
+           ------------------------------------------------- */
 
         await addDoc(
             collection(
@@ -906,100 +909,49 @@ function getChangedFields(
     newData
 ) {
 
-    const changed =
-        [];
+    const changed = [];
 
 
-    if (!oldData) {
-
-        return changed;
-
-    }
-
-
-    if (!newData) {
+    if (
+        !oldData ||
+        !newData
+    ) {
 
         return changed;
 
     }
 
-
-    /* =====================================================
-       FIELD LABELS
-       =====================================================
-
-       Firestore field
-             ↓
-       Activity Details
-
-       title
-             → Title
-
-       year
-             → Year
-
-       person
-             → Person
-
-       category
-             → Category
-
-       quote
-             → Memory
-
-       imageUrl
-             → Image
-
-       ===================================================== */
 
     const fields = [
 
         {
-            key:
-                "title",
-
-            label:
-                "Title"
+            key: "title",
+            label: "Title"
         },
 
         {
-            key:
-                "year",
-
-            label:
-                "Year"
+            key: "year",
+            label: "Year"
         },
 
         {
-            key:
-                "person",
-
-            label:
-                "Person"
+            key: "person",
+            label: "Person"
         },
 
         {
-            key:
-                "category",
-
-            label:
-                "Category"
+            key: "category",
+            label: "Category"
         },
 
         {
-            key:
-                "quote",
-
-            label:
-                "Memory"
+            key: "quote",
+            label: "Memory"
         },
 
         {
-            key:
-                "imageUrl",
-
-            label:
-                "Image"
+            key: "imageUrl",
+            label: "Image"
         }
 
     ];
@@ -1062,9 +1014,9 @@ function normalizeActivityValue(
     }
 
 
-    /*
-       Firestore Timestamp
-    */
+    /* -----------------------------------------------------
+       FIRESTORE TIMESTAMP
+       ----------------------------------------------------- */
 
     if (
         typeof value.toDate ===
@@ -1079,9 +1031,9 @@ function normalizeActivityValue(
     }
 
 
-    /*
-       Array
-    */
+    /* -----------------------------------------------------
+       ARRAY
+       ----------------------------------------------------- */
 
     if (
         Array.isArray(
@@ -1096,9 +1048,9 @@ function normalizeActivityValue(
     }
 
 
-    /*
-       Object
-    */
+    /* -----------------------------------------------------
+       OBJECT
+       ----------------------------------------------------- */
 
     if (
         typeof value ===
@@ -1112,6 +1064,7 @@ function normalizeActivityValue(
             );
 
         }
+
         catch {
 
             return String(
@@ -1138,16 +1091,25 @@ async function loadMemories() {
 
     try {
 
+        /* -------------------------------------------------
+           LOADING STATE
+           ------------------------------------------------- */
+
         if (list) {
 
             list.innerHTML = `
-                <div class="empty-list">
-                    Loading memories...
+                <div class="loading-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Loading own-words...
                 </div>
             `;
 
         }
 
+
+        /* -------------------------------------------------
+           GET FIRESTORE DOCUMENTS
+           ------------------------------------------------- */
 
         const snapshot =
             await getDocs(
@@ -1160,6 +1122,10 @@ async function loadMemories() {
 
         memories = [];
 
+
+        /* -------------------------------------------------
+           BUILD ARRAY
+           ------------------------------------------------- */
 
         snapshot.forEach(
             memoryDoc => {
@@ -1177,9 +1143,15 @@ async function loadMemories() {
         );
 
 
-        /*
-           Sort newest year first.
-        */
+        /* -------------------------------------------------
+           SORT
+           -------------------------------------------------
+
+           Memories with a year are sorted newest first.
+
+           Memories without a valid year are sorted
+           alphabetically by title.
+           ------------------------------------------------- */
 
         memories.sort(
             (a, b) => {
@@ -1189,26 +1161,55 @@ async function loadMemories() {
                         a.year
                     );
 
-
                 const yearB =
                     Number(
                         b.year
                     );
 
 
-                if (
+                const validA =
                     Number.isFinite(
                         yearA
                     ) &&
+                    yearA > 0;
+
+
+                const validB =
                     Number.isFinite(
                         yearB
-                    )
+                    ) &&
+                    yearB > 0;
+
+
+                if (
+                    validA &&
+                    validB
                 ) {
 
                     return (
                         yearB -
                         yearA
                     );
+
+                }
+
+
+                if (
+                    validA &&
+                    !validB
+                ) {
+
+                    return -1;
+
+                }
+
+
+                if (
+                    !validA &&
+                    validB
+                ) {
+
+                    return 1;
 
                 }
 
@@ -1227,6 +1228,10 @@ async function loadMemories() {
         );
 
 
+        /* -------------------------------------------------
+           RENDER
+           ------------------------------------------------- */
+
         renderMemories();
 
     }
@@ -1243,11 +1248,30 @@ async function loadMemories() {
 
             list.innerHTML = `
                 <div class="empty-list">
-                    Unable to load memories.
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <strong>
+                        Unable to load memories
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(
+                            error.message ||
+                            "Please try again."
+                        )}
+                    </span>
+
                 </div>
             `;
 
         }
+
+
+        showMessage(
+            "Unable to load memories.",
+            "error"
+        );
 
     }
 
@@ -1260,9 +1284,9 @@ async function loadMemories() {
 
 function renderMemories() {
 
-    /*
+    /* -----------------------------------------------------
        COUNT
-    */
+       ----------------------------------------------------- */
 
     if (count) {
 
@@ -1274,9 +1298,9 @@ function renderMemories() {
     }
 
 
-    /*
+    /* -----------------------------------------------------
        EMPTY
-    */
+       ----------------------------------------------------- */
 
     if (!memories.length) {
 
@@ -1284,7 +1308,17 @@ function renderMemories() {
 
             list.innerHTML = `
                 <div class="empty-list">
-                    No memories found.
+
+                    <i class="fa-solid fa-heart"></i>
+
+                    <strong>
+                        No own-words found
+                    </strong>
+
+                    <span>
+                        Add the first family memory using the form.
+                    </span>
+
                 </div>
             `;
 
@@ -1295,17 +1329,17 @@ function renderMemories() {
     }
 
 
-    /*
-       CLEAR
-    */
+    /* -----------------------------------------------------
+       CLEAR LIST
+       ----------------------------------------------------- */
 
     list.innerHTML =
         "";
 
 
-    /*
+    /* -----------------------------------------------------
        RENDER EACH MEMORY
-    */
+       ----------------------------------------------------- */
 
     memories.forEach(
         memory => {
@@ -1320,15 +1354,25 @@ function renderMemories() {
                 "memory-item";
 
 
+            /* -------------------------------------------------
+               TAGS
+               ------------------------------------------------- */
+
             let tags =
                 "";
 
 
-            /*
-               YEAR
-            */
+            /* YEAR */
 
-            if (memory.year) {
+            if (
+                memory.year !==
+                undefined &&
+                memory.year !==
+                null &&
+                String(
+                    memory.year
+                ).trim()
+            ) {
 
                 tags += `
                     <span class="memory-tag">
@@ -1341,11 +1385,11 @@ function renderMemories() {
             }
 
 
-            /*
-               PERSON
-            */
+            /* PERSON */
 
-            if (memory.person) {
+            if (
+                memory.person
+            ) {
 
                 tags += `
                     <span class="memory-tag">
@@ -1358,11 +1402,11 @@ function renderMemories() {
             }
 
 
-            /*
-               CATEGORY
-            */
+            /* CATEGORY */
 
-            if (memory.category) {
+            if (
+                memory.category
+            ) {
 
                 tags += `
                     <span class="memory-tag">
@@ -1375,17 +1419,9 @@ function renderMemories() {
             }
 
 
-            /*
+            /* -------------------------------------------------
                MEMORY TEXT
-
-               Supports both:
-
-                   quote
-
-               and:
-
-                   description
-            */
+               ------------------------------------------------- */
 
             const memoryText =
                 getMemoryText(
@@ -1393,49 +1429,57 @@ function renderMemories() {
                 );
 
 
-            /*
+            /* -------------------------------------------------
                IMAGE
-            */
+               ------------------------------------------------- */
 
-            const imageHTML =
+            let imageHTML =
+                "";
+
+
+            if (
                 memory.imageUrl
-                    ? `
-                        <img
-                            src="${escapeHTML(
-                                memory.imageUrl
-                            )}"
-                            class="memory-image"
-                            alt="${escapeHTML(
-                                memory.title ||
-                                "Memory"
-                            )}"
-                            loading="lazy"
-                            onerror="this.style.display='none';"
-                        >
-                      `
-                    : "";
+            ) {
+
+                imageHTML = `
+                    <img
+                        src="${escapeHTML(
+                            memory.imageUrl
+                        )}"
+                        class="memory-image"
+                        alt="${escapeHTML(
+                            memory.title ||
+                            "Memory"
+                        )}"
+                        loading="lazy"
+                    >
+                `;
+
+            }
 
 
-            /*
-               CARD
-            */
+            /* -------------------------------------------------
+               CARD HTML
+               ------------------------------------------------- */
 
             item.innerHTML = `
 
-                <div class="memory-meta">
-
-                    ${tags}
-
-                </div>
+                ${
+                    tags
+                        ? `
+                            <div class="memory-meta">
+                                ${tags}
+                            </div>
+                          `
+                        : ""
+                }
 
 
                 <h3>
-
                     ${escapeHTML(
                         memory.title ||
                         "Untitled"
                     )}
-
                 </h3>
 
 
@@ -1443,11 +1487,9 @@ function renderMemories() {
                     memoryText
                         ? `
                             <div class="memory-description">
-
                                 ${escapeHTML(
                                     memoryText
                                 )}
-
                             </div>
                           `
                         : ""
@@ -1463,6 +1505,7 @@ function renderMemories() {
                         type="button"
                         class="edit-button"
                     >
+                        <i class="fa-solid fa-pen"></i>
                         Edit
                     </button>
 
@@ -1471,6 +1514,7 @@ function renderMemories() {
                         type="button"
                         class="delete-button"
                     >
+                        <i class="fa-solid fa-trash"></i>
                         Delete
                     </button>
 
@@ -1479,9 +1523,52 @@ function renderMemories() {
             `;
 
 
-            /*
-               EDIT
-            */
+            /* -------------------------------------------------
+               IMAGE ERROR HANDLING
+               ------------------------------------------------- */
+
+            const image =
+                item.querySelector(
+                    ".memory-image"
+                );
+
+
+            if (image) {
+
+                image.addEventListener(
+                    "error",
+                    () => {
+
+                        const errorBox =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        errorBox.className =
+                            "memory-image-error";
+
+
+                        errorBox.innerHTML = `
+                            <i class="fa-solid fa-image"></i>
+                            <br>
+                            Image could not be loaded.
+                        `;
+
+
+                        image.replaceWith(
+                            errorBox
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* -------------------------------------------------
+               EDIT BUTTON
+               ------------------------------------------------- */
 
             const editButton =
                 item.querySelector(
@@ -1505,9 +1592,9 @@ function renderMemories() {
             }
 
 
-            /*
-               DELETE
-            */
+            /* -------------------------------------------------
+               DELETE BUTTON
+               ------------------------------------------------- */
 
             const deleteButton =
                 item.querySelector(
@@ -1530,6 +1617,10 @@ function renderMemories() {
 
             }
 
+
+            /* -------------------------------------------------
+               APPEND
+               ------------------------------------------------- */
 
             list.appendChild(
                 item
@@ -1554,9 +1645,18 @@ if (form) {
             event.preventDefault();
 
 
-            /*
-               Validate title.
-            */
+            /* -------------------------------------------------
+               CLEAR OLD MESSAGE
+               ------------------------------------------------- */
+
+            showMessage(
+                ""
+            );
+
+
+            /* -------------------------------------------------
+               VALIDATE TITLE
+               ------------------------------------------------- */
 
             const title =
                 titleInput?.value.trim() ||
@@ -1578,9 +1678,9 @@ if (form) {
             }
 
 
-            /*
-               Validate Memory / Quote.
-            */
+            /* -------------------------------------------------
+               VALIDATE MEMORY
+               ------------------------------------------------- */
 
             const quote =
                 descriptionInput?.value.trim() ||
@@ -1602,9 +1702,9 @@ if (form) {
             }
 
 
-            /*
-               Disable button.
-            */
+            /* -------------------------------------------------
+               DISABLE SAVE BUTTON
+               ------------------------------------------------- */
 
             if (saveButton) {
 
@@ -1612,10 +1712,16 @@ if (form) {
                     true;
 
 
-                saveButton.textContent =
+                saveButton.innerHTML =
                     editingId
-                        ? "Updating..."
-                        : "Saving...";
+                        ? `
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Updating...
+                          `
+                        : `
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Saving...
+                          `;
 
             }
 
@@ -1623,14 +1729,14 @@ if (form) {
             try {
 
                 /* =================================================
-                   UPDATE EXISTING
+                   UPDATE EXISTING MEMORY
                    ================================================= */
 
                 if (editingId) {
 
-                    /*
-                       Find old memory.
-                    */
+                    /* -------------------------------------------------
+                       FIND OLD MEMORY
+                       ------------------------------------------------- */
 
                     const oldMemory =
                         memories.find(
@@ -1649,16 +1755,19 @@ if (form) {
                     }
 
 
+                    /* -------------------------------------------------
+                       ITEM NAME
+                       ------------------------------------------------- */
+
                     const itemName =
                         title ||
                         oldMemory.title ||
                         "Untitled Memory";
 
 
-                    /*
-                       Create activity snapshot
-                       BEFORE Firestore update.
-                    */
+                    /* -------------------------------------------------
+                       OLD ACTIVITY SNAPSHOT
+                       ------------------------------------------------- */
 
                     const oldActivityData =
                         getActivitySnapshot(
@@ -1666,19 +1775,17 @@ if (form) {
                         );
 
 
-                    /*
-                       Create new activity snapshot
-                       from current form.
-                    */
+                    /* -------------------------------------------------
+                       NEW ACTIVITY SNAPSHOT
+                       ------------------------------------------------- */
 
                     const newActivityData =
                         getNewActivitySnapshot();
 
 
-                    /*
-                       Calculate changed fields
-                       BEFORE update.
-                    */
+                    /* -------------------------------------------------
+                       FIND CHANGES
+                       ------------------------------------------------- */
 
                     const changedFields =
                         getChangedFields(
@@ -1693,11 +1800,11 @@ if (form) {
                     );
 
 
-                    /*
-                       Update Firestore.
-                    */
+                    /* -------------------------------------------------
+                       UPDATE FIRESTORE
+                       ------------------------------------------------- */
 
-                    const data =
+                    const updateData =
                         getUpdateData();
 
 
@@ -1709,17 +1816,14 @@ if (form) {
                             editingId
                         ),
 
-                        data
+                        updateData
 
                     );
 
 
-                    /*
-                       Activity log.
-
-                       Only changed field names
-                       are stored.
-                    */
+                    /* -------------------------------------------------
+                       LOG ACTIVITY
+                       ------------------------------------------------- */
 
                     await logActivity({
 
@@ -1741,45 +1845,68 @@ if (form) {
                     });
 
 
-                    showMessage(
+                    /* -------------------------------------------------
+                       SUCCESS MESSAGE
+                       ------------------------------------------------- */
+
+                    if (
                         changedFields.length
-                            ? `${changedFields.join(", ")} changed.`
-                            : "Memory updated successfully.",
-                        "success"
-                    );
+                    ) {
+
+                        showMessage(
+                            `${changedFields.join(
+                                ", "
+                            )} changed.`,
+                            "success"
+                        );
+
+                    }
+
+                    else {
+
+                        showMessage(
+                            "Memory updated successfully.",
+                            "success"
+                        );
+
+                    }
 
                 }
 
 
                 /* =================================================
-                   ADD NEW
+                   ADD NEW MEMORY
                    ================================================= */
 
                 else {
+
+                    /* -------------------------------------------------
+                       BUILD DATA
+                       ------------------------------------------------- */
 
                     const data =
                         getNewFormData();
 
 
-                    /*
-                       Created time.
-                    */
+                    /* -------------------------------------------------
+                       CREATED TIME
+                       ------------------------------------------------- */
 
                     data.createdAt =
                         serverTimestamp();
 
 
-                    /*
-                       Updated time.
-                    */
+                    /* -------------------------------------------------
+                       UPDATED TIME
+                       ------------------------------------------------- */
 
                     data.updatedAt =
                         serverTimestamp();
 
 
-                    /*
-                       Add document.
-                    */
+                    /* -------------------------------------------------
+                       ADD DOCUMENT
+                       ------------------------------------------------- */
 
                     const newDocument =
                         await addDoc(
@@ -1794,9 +1921,9 @@ if (form) {
                         );
 
 
-                    /*
-                       Activity log.
-                    */
+                    /* -------------------------------------------------
+                       LOG ACTIVITY
+                       ------------------------------------------------- */
 
                     await logActivity({
 
@@ -1813,6 +1940,10 @@ if (form) {
                     });
 
 
+                    /* -------------------------------------------------
+                       SUCCESS
+                       ------------------------------------------------- */
+
                     showMessage(
                         "Memory added successfully.",
                         "success"
@@ -1821,16 +1952,16 @@ if (form) {
                 }
 
 
-                /*
-                   Reset form.
-                */
+                /* -------------------------------------------------
+                   RESET FORM
+                   ------------------------------------------------- */
 
                 clearForm();
 
 
-                /*
-                   Reload.
-                */
+                /* -------------------------------------------------
+                   RELOAD MEMORIES
+                   ------------------------------------------------- */
 
                 await loadMemories();
 
@@ -1860,8 +1991,16 @@ if (form) {
                         false;
 
 
-                    saveButton.textContent =
-                        "Save Memory";
+                    saveButton.innerHTML =
+                        editingId
+                            ? `
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Update Memory
+                              `
+                            : `
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Save Memory
+                              `;
 
                 }
 
@@ -1891,22 +2030,27 @@ function editMemory(
 
     if (!memory) {
 
+        showMessage(
+            "Memory not found.",
+            "error"
+        );
+
         return;
 
     }
 
 
-    /*
-       Store editing ID.
-    */
+    /* -----------------------------------------------------
+       STORE EDITING ID
+       ----------------------------------------------------- */
 
     editingId =
         id;
 
 
-    /*
+    /* -----------------------------------------------------
        TITLE
-    */
+       ----------------------------------------------------- */
 
     if (titleInput) {
 
@@ -1917,9 +2061,9 @@ function editMemory(
     }
 
 
-    /*
+    /* -----------------------------------------------------
        YEAR
-    */
+       ----------------------------------------------------- */
 
     if (yearInput) {
 
@@ -1930,9 +2074,9 @@ function editMemory(
     }
 
 
-    /*
+    /* -----------------------------------------------------
        PERSON
-    */
+       ----------------------------------------------------- */
 
     if (personInput) {
 
@@ -1943,9 +2087,9 @@ function editMemory(
     }
 
 
-    /*
+    /* -----------------------------------------------------
        CATEGORY
-    */
+       ----------------------------------------------------- */
 
     if (categoryInput) {
 
@@ -1956,17 +2100,9 @@ function editMemory(
     }
 
 
-    /*
-       MEMORY / QUOTE
-
-       Supports:
-
-           quote
-
-       and old:
-
-           description
-    */
+    /* -----------------------------------------------------
+       MEMORY
+       ----------------------------------------------------- */
 
     if (descriptionInput) {
 
@@ -1978,9 +2114,9 @@ function editMemory(
     }
 
 
-    /*
+    /* -----------------------------------------------------
        IMAGE URL
-    */
+       ----------------------------------------------------- */
 
     if (imageInput) {
 
@@ -1991,9 +2127,9 @@ function editMemory(
     }
 
 
-    /*
-       Change UI.
-    */
+    /* -----------------------------------------------------
+       UPDATE FORM TITLE
+       ----------------------------------------------------- */
 
     if (formTitle) {
 
@@ -2003,17 +2139,32 @@ function editMemory(
     }
 
 
+    /* -----------------------------------------------------
+       UPDATE SAVE BUTTON
+       ----------------------------------------------------- */
+
     if (saveButton) {
 
-        saveButton.textContent =
-            "Update Memory";
+        saveButton.innerHTML = `
+            <i class="fa-solid fa-floppy-disk"></i>
+            Update Memory
+        `;
 
     }
 
 
-    /*
-       Scroll to form.
-    */
+    /* -----------------------------------------------------
+       CLEAR MESSAGE
+       ----------------------------------------------------- */
+
+    showMessage(
+        ""
+    );
+
+
+    /* -----------------------------------------------------
+       SCROLL TO FORM
+       ----------------------------------------------------- */
 
     if (form) {
 
@@ -2055,6 +2206,10 @@ async function deleteMemory(
     }
 
 
+    /* -----------------------------------------------------
+       CONFIRMATION
+       ----------------------------------------------------- */
+
     const confirmed =
         window.confirm(
             `Delete "${
@@ -2073,9 +2228,9 @@ async function deleteMemory(
 
     try {
 
-        /*
-           Delete memory.
-        */
+        /* -------------------------------------------------
+           DELETE FIRESTORE DOCUMENT
+           ------------------------------------------------- */
 
         await deleteDoc(
 
@@ -2088,9 +2243,9 @@ async function deleteMemory(
         );
 
 
-        /*
-           Activity log.
-        */
+        /* -------------------------------------------------
+           LOG ACTIVITY
+           ------------------------------------------------- */
 
         await logActivity({
 
@@ -2107,15 +2262,33 @@ async function deleteMemory(
         });
 
 
+        /* -------------------------------------------------
+           SUCCESS
+           ------------------------------------------------- */
+
         showMessage(
-            "Memory deleted.",
+            "Memory deleted successfully.",
             "success"
         );
 
 
-        /*
-           Reload.
-        */
+        /* -------------------------------------------------
+           IF DELETING CURRENT EDIT
+           ------------------------------------------------- */
+
+        if (
+            editingId ===
+            id
+        ) {
+
+            clearForm();
+
+        }
+
+
+        /* -------------------------------------------------
+           RELOAD
+           ------------------------------------------------- */
 
         await loadMemories();
 
@@ -2157,6 +2330,10 @@ function clearForm() {
         null;
 
 
+    /* -----------------------------------------------------
+       FORM TITLE
+       ----------------------------------------------------- */
+
     if (formTitle) {
 
         formTitle.textContent =
@@ -2165,10 +2342,16 @@ function clearForm() {
     }
 
 
+    /* -----------------------------------------------------
+       SAVE BUTTON
+       ----------------------------------------------------- */
+
     if (saveButton) {
 
-        saveButton.textContent =
-            "Save Memory";
+        saveButton.innerHTML = `
+            <i class="fa-solid fa-floppy-disk"></i>
+            Save Memory
+        `;
 
     }
 
@@ -2176,7 +2359,7 @@ function clearForm() {
 
 
 /* =========================================================
-   CANCEL
+   CANCEL EDIT
    ========================================================= */
 
 if (cancelButton) {
@@ -2209,6 +2392,16 @@ if (logoutButton) {
 
             try {
 
+                logoutButton.disabled =
+                    true;
+
+
+                logoutButton.innerHTML = `
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Logout
+                `;
+
+
                 await signOut(
                     auth
                 );
@@ -2225,9 +2418,9 @@ if (logoutButton) {
             }
 
 
-            /*
-               Remove local admin information.
-            */
+            /* -------------------------------------------------
+               REMOVE LOCAL ADMIN INFORMATION
+               ------------------------------------------------- */
 
             try {
 
@@ -2251,6 +2444,10 @@ if (logoutButton) {
 
             }
 
+
+            /* -------------------------------------------------
+               REDIRECT
+               ------------------------------------------------- */
 
             window.location.replace(
                 "./index.html"
@@ -2303,9 +2500,9 @@ function escapeHTML(
 
 
 /* =========================================================
-   START
+   STARTUP
    ========================================================= */
 
 console.log(
-    "Roy Bari Memories Admin loaded successfully."
+    "Roy Bari own-words Admin loaded successfully."
 );
