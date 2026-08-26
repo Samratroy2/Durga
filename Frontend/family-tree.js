@@ -187,12 +187,6 @@ async function loadFamilyTree() {
         );
 
 
-        console.log(
-            "Family members:",
-            members
-        );
-
-
         /* =================================================
            BUILD RELATIONSHIPS
            ================================================= */
@@ -355,18 +349,6 @@ function buildRelationshipMaps() {
         }
     );
 
-
-    console.log(
-        "Children:",
-        childrenOf
-    );
-
-
-    console.log(
-        "Parents:",
-        parentsOf
-    );
-
 }
 
 
@@ -418,11 +400,6 @@ function createGenerationGroups() {
         }
     );
 
-
-    console.log(
-        "Generations:",
-        generations
-    );
 
 }
 
@@ -801,12 +778,6 @@ function createPersonCard(
                 String(
                     person.id
                 );
-
-
-            console.log(
-                "TREE CARD CLICK:",
-                selectedPersonId
-            );
 
 
             /*
@@ -1640,45 +1611,6 @@ function createSearchResult(
             event.stopPropagation();
 
 
-            console.log(
-                "================================"
-            );
-
-
-            console.log(
-                "SEARCH RESULT CLICKED"
-            );
-
-
-            console.log(
-                "Name:",
-                person.name
-            );
-
-
-            console.log(
-                "Father:",
-                fatherName
-            );
-
-
-            console.log(
-                "EXACT PERSON ID:",
-                person.id
-            );
-
-
-            console.log(
-                "Generation:",
-                person.generation
-            );
-
-
-            console.log(
-                "================================"
-            );
-
-
             /*
                IMPORTANT:
 
@@ -2158,26 +2090,6 @@ function goToPerson(
         personId;
 
 
-    console.log(
-        "GO TO PERSON:",
-        {
-            id:
-                personId,
-
-            name:
-                person.name,
-
-            father:
-                getFather(
-                    personId
-                )?.name,
-
-            generation:
-                person.generation
-        }
-    );
-
-
     /* =====================================================
        FIND EXACT CARD
        ===================================================== */
@@ -2458,26 +2370,6 @@ function scrollToExactPerson(
             )
         );
 
-
-    console.log(
-        "TREE NAVIGATION:",
-        {
-            card:
-                card.dataset.personId,
-
-            zoom,
-
-            currentLeft:
-                treeWrapper.scrollLeft,
-
-            currentTop:
-                treeWrapper.scrollTop,
-
-            targetLeft,
-
-            targetTop
-        }
-    );
 
 
     /* =====================================================

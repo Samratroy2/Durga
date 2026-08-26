@@ -2417,10 +2417,6 @@ document.addEventListener(
 
 async function initializeGallery() {
 
-    console.log(
-        "ROY BARI GALLERY START"
-    );
-
 
     await Promise.all([
 
@@ -2432,10 +2428,6 @@ async function initializeGallery() {
 
     ]);
 
-
-    console.log(
-        "ROY BARI GALLERY READY"
-    );
 
 }
 

@@ -51,23 +51,6 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        console.log(
-            "========================================"
-        );
-
-        console.log(
-            "ROY BARI CONTACT PAGE"
-        );
-
-        console.log(
-            "Reading collection: contact"
-        );
-
-        console.log(
-            "========================================"
-        );
-
-
         loadContactInformation();
 
         initContactForm();
@@ -81,10 +64,6 @@ document.addEventListener(
    ========================================================= */
 
 async function loadContactInformation() {
-
-    console.log(
-        "Loading contact collection..."
-    );
 
 
     try {
@@ -118,12 +97,6 @@ async function loadContactInformation() {
             );
 
 
-        console.log(
-            "Contact documents found:",
-            snapshot.size
-        );
-
-
         /* =================================================
            CHECK COLLECTION
            ================================================= */
@@ -154,41 +127,6 @@ async function loadContactInformation() {
 
         const data =
             contactDocument.data();
-
-
-        console.log(
-            "Contact document ID:",
-            contactDocument.id
-        );
-
-
-        console.log(
-            "Complete contact data:",
-            data
-        );
-
-
-        /* =================================================
-           DEBUG PHONE FIELDS
-           ================================================= */
-
-        console.log(
-            "========================================"
-        );
-
-        console.log(
-            "PHONE 1:",
-            data.phone1
-        );
-
-        console.log(
-            "PHONE 2:",
-            data.phone2
-        );
-
-        console.log(
-            "========================================"
-        );
 
 
         /* =================================================
@@ -269,11 +207,6 @@ async function loadContactInformation() {
         displaySocialLink(
             "contact-youtube",
             data.youtube
-        );
-
-
-        console.log(
-            "CONTACT INFORMATION LOADED SUCCESSFULLY."
         );
 
     }
@@ -440,13 +373,6 @@ function displayPhone(
         return;
 
     }
-
-
-    console.log(
-        "Displaying:",
-        id,
-        phone
-    );
 
 
     /* -----------------------------------------------------
@@ -725,18 +651,10 @@ function initContactForm() {
 
     if (!form) {
 
-        console.log(
-            "No enquiry form found."
-        );
-
         return;
 
     }
 
-
-    console.log(
-        "Enquiry form initialized."
-    );
 
 
     form.addEventListener(
@@ -951,12 +869,6 @@ function initContactForm() {
                     );
 
 
-                console.log(
-                    "Enquiry saved successfully:",
-                    enquiryReference.id
-                );
-
-
                 /* =================================================
                    SUCCESS
                    ================================================= */
@@ -1023,10 +935,6 @@ function showMessage(
 
 
     if (!note) {
-
-        console.log(
-            `[${type}] ${message}`
-        );
 
         return;
 

@@ -55,17 +55,6 @@ let countdownInterval = null;
 
 
 /* =========================================================
-   START
-   ========================================================= */
-
-console.log("=================================");
-console.log("ROY BARI HOME");
-console.log("Home JS started");
-console.log("Firestore:", db);
-console.log("=================================");
-
-
-/* =========================================================
    LOAD HOMEPAGE COUNTDOWN
    ========================================================= */
 
@@ -113,11 +102,6 @@ async function loadHomepageCountdown() {
 
     try {
 
-        console.log(
-            "ROY BARI: Loading homepageCountdown..."
-        );
-
-
         /* =================================================
            GET HOMEPAGE COUNTDOWN COLLECTION
            ================================================= */
@@ -130,13 +114,7 @@ async function loadHomepageCountdown() {
                 )
             );
 
-
-        console.log(
-            "ROY BARI: homepageCountdown documents:",
-            snapshot.size
-        );
-
-
+            
         /* =================================================
            CHECK COLLECTION
            ================================================= */
@@ -170,18 +148,6 @@ async function loadHomepageCountdown() {
 
         const data =
             document.data();
-
-
-        console.log(
-            "ROY BARI: Countdown document ID:",
-            document.id
-        );
-
-
-        console.log(
-            "ROY BARI: Countdown data:",
-            data
-        );
 
 
         /* =================================================
@@ -236,28 +202,6 @@ async function loadHomepageCountdown() {
             return;
 
         }
-
-
-        /* =================================================
-           LOG DATA
-           ================================================= */
-
-        console.log(
-            "ROY BARI: Countdown title:",
-            title
-        );
-
-
-        console.log(
-            "ROY BARI: Countdown date/time:",
-            targetDate
-        );
-
-
-        console.log(
-            "ROY BARI: Countdown local date/time:",
-            targetDate.toLocaleString()
-        );
 
 
         /* =================================================
@@ -810,10 +754,6 @@ async function loadDurgaImage() {
 
     try {
 
-        console.log(
-            "ROY BARI: Loading Durga image..."
-        );
-
 
         /* =================================================
            GET GALLERY
@@ -826,12 +766,6 @@ async function loadDurgaImage() {
                     "gallery"
                 )
             );
-
-
-        console.log(
-            "ROY BARI: Gallery documents:",
-            snapshot.size
-        );
 
 
         let durgaImageURL = "";
@@ -887,12 +821,6 @@ async function loadDurgaImage() {
         }
 
 
-        console.log(
-            "ROY BARI: Durga image source:",
-            durgaImageURL
-        );
-
-
         /* =================================================
            CONVERT GOOGLE DRIVE URL
            ================================================= */
@@ -901,12 +829,6 @@ async function loadDurgaImage() {
             convertGoogleDriveURL(
                 durgaImageURL
             );
-
-
-        console.log(
-            "ROY BARI: Final image URL:",
-            imageURL
-        );
 
 
         /* =================================================
@@ -939,11 +861,6 @@ async function loadDurgaImage() {
                 "Roy Bari Durga";
 
         }
-
-
-        console.log(
-            "ROY BARI: Durga image loaded successfully."
-        );
 
     }
 

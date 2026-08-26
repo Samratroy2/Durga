@@ -12,10 +12,6 @@ import {
 } from "./firebase.js";
 
 
-console.log(
-    "ROY BARI: About JS started."
-);
-
 
 /* =========================================================
    GLOBAL DATA
@@ -513,10 +509,6 @@ async function loadIdolMakers() {
 
 
     try {
-
-        console.log(
-            "ROY BARI: Loading idol makers..."
-        );
 
 
         idolMakers =
@@ -1076,10 +1068,6 @@ async function loadRituals() {
 
     try {
 
-        console.log(
-            "ROY BARI: Loading rituals..."
-        );
-
 
         rituals =
             await getCollectionData(
@@ -1580,10 +1568,6 @@ async function loadOldPictures() {
 
     try {
 
-        console.log(
-            "ROY BARI: Loading old photographs..."
-        );
-
 
         oldPictures =
             await getCollectionData(
@@ -1864,10 +1848,6 @@ async function loadNewspaperArticles() {
 
 
     try {
-
-        console.log(
-            "ROY BARI: Loading newspaper articles..."
-        );
 
 
         newspaperArticles =
@@ -2417,10 +2397,6 @@ async function loadMemories() {
 
 
     try {
-
-        console.log(
-            "ROY BARI: Loading memories..."
-        );
 
 
         memories =
@@ -3428,8 +3404,3 @@ window.royBariAbout = {
         closeLightbox
 
 };
-
-
-console.log(
-    "ROY BARI: About JS ready."
-);

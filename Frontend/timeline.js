@@ -122,10 +122,6 @@ async function loadTimeline() {
 
     try {
 
-        console.log(
-            "ROY BARI: Loading family timeline..."
-        );
-
 
         /* =================================================
            FIRESTORE
@@ -138,12 +134,6 @@ async function loadTimeline() {
                     "timeline"
                 )
             );
-
-
-        console.log(
-            "ROY BARI: Timeline entries:",
-            snapshot.size
-        );
 
 
         /* =================================================
@@ -421,11 +411,6 @@ async function loadTimeline() {
 
         initTimelineAnimation();
 
-
-        console.log(
-            "ROY BARI: Timeline loaded successfully."
-        );
-
     }
 
     catch (error) {
@@ -575,10 +560,6 @@ function initTimelineAnimation() {
 document.addEventListener(
     "DOMContentLoaded",
     () => {
-
-        console.log(
-            "ROY BARI: Timeline JS started."
-        );
 
         loadTimeline();
 

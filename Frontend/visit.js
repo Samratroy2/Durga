@@ -82,28 +82,6 @@ const visitorGuide =
 
 
 /* =========================================================
-   DEBUG
-   ========================================================= */
-
-console.log(
-    "================================="
-);
-
-console.log(
-    "ROY BARI — VISIT JS"
-);
-
-console.log(
-    "Firestore:",
-    db
-);
-
-console.log(
-    "================================="
-);
-
-
-/* =========================================================
    ESCAPE HTML
    ========================================================= */
 
@@ -215,10 +193,6 @@ function setupGoogleMap(data) {
         googleMap.src =
             data.mapEmbedUrl;
 
-        console.log(
-            "Using Firestore mapEmbedUrl"
-        );
-
         return;
 
     }
@@ -254,10 +228,6 @@ function setupGoogleMap(data) {
 
             googleMap.src =
                 mapUrl;
-
-            console.log(
-                "Using Firestore mapUrl as embed URL"
-            );
 
             return;
 
@@ -302,10 +272,6 @@ function setupGoogleMap(data) {
         embedUrl;
 
 
-    console.log(
-        "Using address-based Google Maps embed"
-    );
-
 }
 
 
@@ -314,10 +280,6 @@ function setupGoogleMap(data) {
    ========================================================= */
 
 async function loadVisitInfo() {
-
-    console.log(
-        "Loading visit collection..."
-    );
 
 
     try {
@@ -337,12 +299,6 @@ async function loadVisitInfo() {
             await getDocs(
                 visitCollection
             );
-
-
-        console.log(
-            "Visit documents:",
-            snapshot.size
-        );
 
 
         /* -------------------------------------------------
@@ -408,18 +364,6 @@ async function loadVisitInfo() {
 
         const data =
             selectedDocument.data();
-
-
-        console.log(
-            "Selected visit document:",
-            selectedDocument.id
-        );
-
-
-        console.log(
-            "Visit document data:",
-            data
-        );
 
 
         /* -------------------------------------------------
@@ -504,11 +448,6 @@ async function loadVisitInfo() {
             showNoGuide();
 
         }
-
-
-        console.log(
-            "ROY BARI: Visit page loaded successfully."
-        );
 
     }
     catch (error) {
@@ -816,12 +755,6 @@ function loadTimings(data) {
     timings.innerHTML =
         html;
 
-
-    console.log(
-        "Puja timings loaded:",
-        data.length
-    );
-
 }
 
 
@@ -988,11 +921,6 @@ function loadVisitorGuide(data) {
     visitorGuide.innerHTML =
         html;
 
-
-    console.log(
-        "Visitor guide loaded:",
-        data.length
-    );
 
 }
 
@@ -1225,10 +1153,6 @@ if (
         "DOMContentLoaded",
         function () {
 
-            console.log(
-                "Visit page initialized"
-            );
-
             loadVisitInfo();
 
         }
@@ -1236,10 +1160,6 @@ if (
 
 }
 else {
-
-    console.log(
-        "Visit page initialized"
-    );
 
     loadVisitInfo();
 

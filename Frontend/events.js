@@ -54,10 +54,6 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        console.log(
-            "Roy Bari Events JS started"
-        );
-
 
         /*
            Initialize the event image modal
@@ -99,20 +95,12 @@ async function loadEvents() {
 
     if (!grid) {
 
-        console.error(
-            "events-grid not found."
-        );
-
         return;
 
     }
 
 
     try {
-
-        console.log(
-            "Connecting to Firestore..."
-        );
 
 
         const eventsRef =
@@ -128,17 +116,6 @@ async function loadEvents() {
             );
 
 
-        console.log(
-            "Firestore connected."
-        );
-
-
-        console.log(
-            "Number of events:",
-            snapshot.size
-        );
-
-
         events = [];
 
 
@@ -147,13 +124,6 @@ async function loadEvents() {
 
                 const data =
                     documentSnapshot.data();
-
-
-                console.log(
-                    "Event:",
-                    documentSnapshot.id,
-                    data
-                );
 
 
                 /* =================================================
@@ -1849,17 +1819,6 @@ function initEventImageModal() {
             );
 
 
-        console.log(
-            "Original event URL:",
-            event.url
-        );
-
-
-        console.log(
-            "Image preview URL:",
-            imageURL
-        );
-
 
         /*
            Start loading the image.
@@ -2030,10 +1989,6 @@ function initEventImageModal() {
             /*
                Image loaded successfully.
             */
-
-            console.log(
-                "Event image loaded successfully."
-            );
 
 
             loading.hidden =
@@ -2526,13 +2481,6 @@ function findNextEvent(
 
     currentNextEventId =
         nextEvent.id;
-
-
-    console.log(
-        "Next event:",
-        nextEvent
-    );
-
 
     nameElement.textContent =
         nextEvent.title;
