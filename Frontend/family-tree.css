@@ -21,6 +21,7 @@
    - Connectors
    - Modals
    - Pan
+   - Family photo + lightbox
    ========================================================= */
 
 
@@ -1557,6 +1558,361 @@
 
 
 /* =========================================================
+   FAMILY PHOTO SECTION
+   ========================================================= */
+
+.family-photo-section {
+
+    padding:
+        50px
+        0
+        10px;
+
+}
+
+
+/* =========================================================
+   FAMILY PHOTO FRAME
+   ========================================================= */
+
+.family-photo-frame {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+
+    padding:
+        30px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        var(--paper);
+
+    border:
+        1px solid
+        var(--border);
+
+    box-shadow:
+        0
+        10px
+        30px
+        rgba(
+            61,
+            17,
+            23,
+            0.05
+        );
+
+}
+
+
+/* =========================================================
+   FAMILY PHOTO IMAGE
+   ========================================================= */
+
+.family-photo-img {
+
+    max-width:
+        100%;
+
+    height:
+        auto;
+
+    border:
+        1px solid
+        var(--border-strong);
+
+    cursor:
+        zoom-in;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+/* =========================================================
+   FAMILY PHOTO IMAGE HOVER
+   ========================================================= */
+
+@media (hover: hover) {
+
+    .family-photo-img:hover {
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0
+            14px
+            30px
+            rgba(
+                61,
+                17,
+                23,
+                0.14
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   FAMILY PHOTO IMAGE FOCUS
+   ========================================================= */
+
+.family-photo-img:focus-visible {
+
+    outline:
+        2px solid
+        var(--gold);
+
+    outline-offset:
+        3px;
+
+}
+
+
+/* =========================================================
+   FAMILY PHOTO CAPTION
+   ========================================================= */
+
+.family-photo-caption {
+
+    margin:
+        0;
+
+    color:
+        var(--muted);
+
+    font-family:
+        var(--serif);
+
+    font-size:
+        15px;
+
+    font-style:
+        italic;
+
+    text-align:
+        center;
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL (LIGHTBOX)
+   ========================================================= */
+
+.photo-modal-backdrop {
+
+    position:
+        fixed !important;
+
+    inset:
+        0 !important;
+
+    z-index:
+        99999 !important;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        100vw;
+
+    height:
+        100vh;
+
+    padding:
+        20px;
+
+    box-sizing:
+        border-box;
+
+    background:
+        rgba(
+            45,
+            8,
+            14,
+            0.85
+        );
+
+    backdrop-filter:
+        blur(5px);
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL OPEN
+   ========================================================= */
+
+.photo-modal-backdrop.open {
+
+    display:
+        flex !important;
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL BOX
+   ========================================================= */
+
+.photo-modal {
+
+    position:
+        relative;
+
+    z-index:
+        100000;
+
+    width:
+        auto;
+
+    max-width:
+        95vw;
+
+    max-height:
+        90vh;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL IMAGE
+   ========================================================= */
+
+.photo-modal-img {
+
+    max-width:
+        100%;
+
+    max-height:
+        80vh;
+
+    width:
+        auto;
+
+    height:
+        auto;
+
+    object-fit:
+        contain;
+
+    border:
+        1px solid
+        var(--gold);
+
+    background:
+        var(--paper);
+
+    box-shadow:
+        0
+        25px
+        70px
+        rgba(
+            0,
+            0,
+            0,
+            0.45
+        );
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL CAPTION
+   ========================================================= */
+
+.photo-modal-caption {
+
+    margin:
+        0;
+
+    color:
+        var(--cream);
+
+    font-family:
+        var(--serif);
+
+    font-size:
+        15px;
+
+    font-style:
+        italic;
+
+    text-align:
+        center;
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL CLOSE
+   ========================================================= */
+
+.photo-modal-close {
+
+    position:
+        absolute;
+
+    top:
+        -34px;
+
+    right:
+        -6px;
+
+    color:
+        var(--cream);
+
+}
+
+
+/* =========================================================
+   PHOTO MODAL CLOSE HOVER
+   ========================================================= */
+
+.photo-modal-close:hover {
+
+    color:
+        var(--gold);
+
+}
+
+
+/* =========================================================
    MODAL BACKDROP
    ========================================================= */
 
@@ -2422,6 +2778,14 @@
     }
 
 
+    .family-photo-frame {
+
+        padding:
+            20px;
+
+    }
+
+
     .person-modal-backdrop {
 
         padding:
@@ -2448,6 +2812,17 @@
 
         font-size:
             30px;
+
+    }
+
+
+    .photo-modal-close {
+
+        top:
+            -30px;
+
+        right:
+            0;
 
     }
 
@@ -2538,42 +2913,13 @@
     .zoom-group button,
 
     .family-tree-events-section
-    .show-fathers-button {
+    .show-fathers-button,
+
+    .family-photo-img {
 
         transition:
             none;
 
     }
 
-}
-
-
-.family-photo-section {
-    padding: 40px 0 10px;
-}
-
-.family-photo-frame {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    padding: 24px;
-    background: var(--paper);
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 30px rgba(61, 17, 23, 0.05);
-}
-
-.family-photo-img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid var(--border-strong);
-}
-
-.family-photo-caption {
-    margin: 0;
-    color: var(--muted);
-    font-family: var(--serif);
-    font-size: 15px;
-    font-style: italic;
-    text-align: center;
 }

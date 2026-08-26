@@ -19,7 +19,6 @@
         content="Explore the Roy Bari family tree and genealogy, preserving generations of the Roy family across centuries."
     >
 
-
     <!-- =====================================================
          FONTS
          ===================================================== -->
@@ -40,7 +39,6 @@
         rel="stylesheet"
     >
 
-
     <!-- =====================================================
          MAIN WEBSITE CSS
          ===================================================== -->
@@ -49,7 +47,6 @@
         rel="stylesheet"
         href="style.css"
     >
-
 
     <!-- =====================================================
          FAMILY TREE CSS
@@ -118,13 +115,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="about.html">
                     About the Puja
                 </a>
             </li>
-
 
             <li>
                 <a
@@ -136,13 +131,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="gallery.html">
                     Gallery
                 </a>
             </li>
-
 
             <li>
                 <a href="events.html">
@@ -150,13 +143,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="visit.html">
                     Visit
                 </a>
             </li>
-
 
             <li>
                 <a href="contact.html">
@@ -242,11 +233,9 @@
                 The Family Archive
             </div>
 
-
             <h2>
                 The Roy Family Tree
             </h2>
-
 
             <p class="lead">
 
@@ -288,7 +277,6 @@
                         stroke="currentColor"
                         stroke-width="2"
                     ></circle>
-
 
                     <line
                         x1="16.6"
@@ -332,7 +320,6 @@
                     −
                 </button>
 
-
                 <button
                     type="button"
                     id="resetZoom"
@@ -340,7 +327,6 @@
                 >
                     100%
                 </button>
-
 
                 <button
                     type="button"
@@ -395,14 +381,8 @@
                 class="tree-stage"
             >
 
-
                 <!-- =================================================
                      SVG CONNECTOR LAYER
-
-                     The SVG remains in the original/unscaled
-                     coordinate system. JavaScript converts
-                     scaled card coordinates back into this
-                     coordinate system.
                      ================================================= -->
 
                 <svg
@@ -446,6 +426,70 @@
 
 
 <!-- =========================================================
+     FAMILY PHOTO SECTION
+     ========================================================= -->
+
+<section class="family-photo-section">
+
+    <div class="container">
+
+        <!-- =================================================
+             SECTION HEADER
+             ================================================= -->
+
+        <div class="section-head">
+
+            <div class="eyebrow">
+                The Family Archive
+            </div>
+
+            <h2>
+                Family Portrait
+            </h2>
+
+            <p class="lead">
+                A recorded photograph of the Roy family tree.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             PHOTO FRAME
+             ================================================= -->
+
+        <div class="family-photo-frame">
+
+            <p
+                id="familyImageStatus"
+                class="status"
+            >
+                Loading photo...
+            </p>
+
+            <img
+                id="familyTreeImage"
+                class="family-photo-img"
+                alt="Roy Bari family tree"
+                style="display: none;"
+                tabindex="0"
+                role="button"
+                aria-label="View larger family photo"
+            >
+
+            <p
+                id="familyImageCaption"
+                class="family-photo-caption"
+            ></p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
      PERSON DETAIL MODAL
      ========================================================= -->
 
@@ -460,7 +504,6 @@
         aria-modal="true"
         aria-labelledby="personModalName"
     >
-
 
         <!-- =================================================
              CLOSE
@@ -506,7 +549,6 @@
         aria-labelledby="fathersModalTitle"
     >
 
-
         <!-- =================================================
              CLOSE
              ================================================= -->
@@ -535,41 +577,59 @@
 </div>
 
 
-
 <!-- =========================================================
-     FAMILY PHOTO
+     FAMILY PHOTO MODAL (LIGHTBOX)
      ========================================================= -->
 
-<section class="family-photo-section">
+<div
+    id="familyPhotoModal"
+    class="photo-modal-backdrop"
+>
 
-    <div class="container">
+    <div
+        class="photo-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="familyPhotoModalCaption"
+    >
 
-        <div class="section-head">
-            <div class="eyebrow">The Family Archive</div>
-            <h2>Family Portrait</h2>
-        </div>
+        <!-- =================================================
+             CLOSE
+             ================================================= -->
 
-        <div class="family-photo-frame">
+        <button
+            type="button"
+            class="person-modal-close photo-modal-close"
+            id="familyPhotoModalClose"
+            aria-label="Close photo"
+        >
+            &times;
+        </button>
 
-            <p id="familyImageStatus" class="status">
-                Loading photo...
-            </p>
 
-            <img
-                id="familyTreeImage"
-                class="family-photo-img"
-                alt="Roy Bari family tree"
-                style="display:none;"
-            >
+        <!-- =================================================
+             IMAGE
+             ================================================= -->
 
-            <p id="familyImageCaption" class="family-photo-caption"></p>
+        <img
+            id="familyPhotoModalImg"
+            class="photo-modal-img"
+            alt=""
+        >
 
-        </div>
+
+        <!-- =================================================
+             CAPTION
+             ================================================= -->
+
+        <p
+            id="familyPhotoModalCaption"
+            class="photo-modal-caption"
+        ></p>
 
     </div>
 
-</section>
-
+</div>
 
 
 <!-- =========================================================
@@ -579,7 +639,6 @@
 <footer class="site-footer">
 
     <div class="container">
-
 
         <div class="footer-grid">
 
@@ -621,20 +680,17 @@
                         </a>
                     </li>
 
-
                     <li>
                         <a href="family-tree.html">
                             Family Tree
                         </a>
                     </li>
 
-
                     <li>
                         <a href="gallery.html">
                             Gallery
                         </a>
                     </li>
-
 
                     <li>
                         <a href="events.html">
@@ -664,7 +720,6 @@
                             Location &amp; Directions
                         </a>
                     </li>
-
 
                     <li>
                         <a href="gallery.html">
@@ -709,11 +764,9 @@
         <div class="footer-bottom">
 
             <span>
-
                 © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
-
             </span>
 
         </div>

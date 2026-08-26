@@ -31,6 +31,14 @@
    • Tree sorting is by document ID.
    • Search results are identified by document ID.
    • Father chain is calculated from document ID.
+
+   ADDITIONAL DOCUMENT
+   ---------------------------------------------------------
+   • familyMembers/image
+       - caption
+       - url (Google Drive share link)
+       This document is NOT a family member and is
+       excluded from the tree, search, and generations.
    ========================================================= */
 
 
@@ -51,7 +59,20 @@ import {
 
 
 /* =========================================================
-   DOM ELEMENTS
+   NON-MEMBER DOCUMENT IDS
+   =========================================================
+   Documents inside familyMembers that are NOT
+   people and must be excluded everywhere.
+   ========================================================= */
+
+const NON_MEMBER_DOC_IDS =
+    new Set([
+        "image"
+    ]);
+
+
+/* =========================================================
+   DOM ELEMENTS — TREE
    ========================================================= */
 
 const familyTree =
@@ -71,7 +92,7 @@ const status =
 
 
 /* =========================================================
-   CONTROLS
+   DOM ELEMENTS — CONTROLS
    ========================================================= */
 
 const zoomIn =
@@ -91,7 +112,7 @@ const showFathersButton =
 
 
 /* =========================================================
-   PERSON MODAL
+   DOM ELEMENTS — PERSON MODAL
    ========================================================= */
 
 const personModal =
@@ -105,7 +126,7 @@ const personModalClose =
 
 
 /* =========================================================
-   FATHERS MODAL
+   DOM ELEMENTS — FATHERS MODAL
    ========================================================= */
 
 const fathersModal =
@@ -119,7 +140,38 @@ const fathersModalClose =
 
 
 /* =========================================================
-   SEARCH RESULTS
+   DOM ELEMENTS — FAMILY PHOTO
+   ========================================================= */
+
+const familyPhotoImg =
+    document.getElementById("familyTreeImage");
+
+const familyPhotoStatus =
+    document.getElementById("familyImageStatus");
+
+const familyPhotoCaption =
+    document.getElementById("familyImageCaption");
+
+
+/* =========================================================
+   DOM ELEMENTS — FAMILY PHOTO MODAL (LIGHTBOX)
+   ========================================================= */
+
+const familyPhotoModal =
+    document.getElementById("familyPhotoModal");
+
+const familyPhotoModalImg =
+    document.getElementById("familyPhotoModalImg");
+
+const familyPhotoModalCaption =
+    document.getElementById("familyPhotoModalCaption");
+
+const familyPhotoModalClose =
+    document.getElementById("familyPhotoModalClose");
+
+
+/* =========================================================
+   SEARCH RESULTS CONTAINER
    ========================================================= */
 
 let searchResults =
@@ -127,10 +179,6 @@ let searchResults =
         "familySearchResults"
     );
 
-
-/* =========================================================
-   CREATE SEARCH RESULTS CONTAINER
-   ========================================================= */
 
 if (
     !searchResults &&
@@ -186,7 +234,7 @@ let selectedPerson =
 
 
 /* =========================================================
-   ZOOM
+   ZOOM STATE
    ========================================================= */
 
 let zoom =
@@ -243,6 +291,22 @@ async function loadFamilyTree() {
                     String(
                         documentSnapshot.id
                     );
+
+
+                /*
+                   Skip non-member documents
+                   (e.g. "image").
+                */
+
+                if (
+                    NON_MEMBER_DOC_IDS.has(
+                        documentId
+                    )
+                ) {
+
+                    return;
+
+                }
 
 
                 members[
@@ -330,6 +394,366 @@ async function loadFamilyTree() {
         }
 
     }
+
+}
+
+
+/* =========================================================
+   LOAD FAMILY PHOTO
+   =========================================================
+   Reads the single document:
+
+       familyMembers/image
+
+   Fields:
+
+       caption
+       url (Google Drive share link)
+   ========================================================= */
+
+async function loadFamilyPhoto() {
+
+    if (
+        !familyPhotoImg
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        if (
+            familyPhotoStatus
+        ) {
+
+            familyPhotoStatus.style.display =
+                "block";
+
+
+            familyPhotoStatus.textContent =
+                "Loading photo…";
+
+        }
+
+
+        const snapshot =
+            await getDoc(
+                doc(
+                    db,
+                    "familyMembers",
+                    "image"
+                )
+            );
+
+
+        if (
+            !snapshot.exists()
+        ) {
+
+            if (
+                familyPhotoStatus
+            ) {
+
+                familyPhotoStatus.textContent =
+                    "No family photo available.";
+
+            }
+
+
+            return;
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        const driveUrl =
+            String(
+                data.url ||
+                ""
+            );
+
+
+        const caption =
+            data.caption ||
+            "";
+
+
+        /* =================================================
+           EXTRACT DRIVE FILE ID
+
+           Example URL:
+
+               https://drive.google.com/file/d/FILE_ID/view?usp=...
+           ================================================= */
+
+        const match =
+            driveUrl.match(
+                /\/d\/([a-zA-Z0-9_-]+)/
+            );
+
+
+        const fileId =
+            match
+                ? match[1]
+                : null;
+
+
+        if (
+            !fileId
+        ) {
+
+            if (
+                familyPhotoStatus
+            ) {
+
+                familyPhotoStatus.textContent =
+                    "Family photo unavailable.";
+
+            }
+
+
+            return;
+
+        }
+
+
+        /* =================================================
+           DIRECT EMBEDDABLE URL
+
+           Requires the Drive file to be
+           shared as "Anyone with the link".
+           ================================================= */
+
+        const directUrl =
+            `https://lh3.googleusercontent.com/d/${fileId}`;
+
+
+        familyPhotoImg.onload =
+            () => {
+
+                familyPhotoImg.style.display =
+                    "block";
+
+
+                if (
+                    familyPhotoStatus
+                ) {
+
+                    familyPhotoStatus.style.display =
+                        "none";
+
+                }
+
+            };
+
+
+        familyPhotoImg.onerror =
+            () => {
+
+                if (
+                    familyPhotoStatus
+                ) {
+
+                    familyPhotoStatus.style.display =
+                        "block";
+
+
+                    familyPhotoStatus.textContent =
+                        "Unable to load family photo.";
+
+                }
+
+            };
+
+
+        familyPhotoImg.src =
+            directUrl;
+
+
+        familyPhotoImg.alt =
+            caption ||
+            "Roy Bari family tree";
+
+
+        if (
+            familyPhotoCaption
+        ) {
+
+            familyPhotoCaption.textContent =
+                caption;
+
+        }
+
+
+        /* =================================================
+           OPEN LIGHTBOX ON CLICK / KEYBOARD
+           ================================================= */
+
+        familyPhotoImg.addEventListener(
+            "click",
+            openFamilyPhotoModal
+        );
+
+
+        familyPhotoImg.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                        "Enter" ||
+                    event.key ===
+                        " "
+                ) {
+
+                    event.preventDefault();
+
+
+                    openFamilyPhotoModal();
+
+                }
+
+            }
+        );
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Family photo loading error:",
+            error
+        );
+
+
+        if (
+            familyPhotoStatus
+        ) {
+
+            familyPhotoStatus.style.display =
+                "block";
+
+
+            familyPhotoStatus.textContent =
+                "Unable to load family photo.";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   OPEN FAMILY PHOTO MODAL
+   ========================================================= */
+
+function openFamilyPhotoModal() {
+
+    if (
+        !familyPhotoImg ||
+        !familyPhotoImg.src ||
+        !familyPhotoModal ||
+        !familyPhotoModalImg
+    ) {
+
+        return;
+
+    }
+
+
+    familyPhotoModalImg.src =
+        familyPhotoImg.src;
+
+
+    familyPhotoModalImg.alt =
+        familyPhotoImg.alt ||
+        "";
+
+
+    if (
+        familyPhotoModalCaption
+    ) {
+
+        familyPhotoModalCaption.textContent =
+            familyPhotoCaption
+                ? familyPhotoCaption.textContent
+                : "";
+
+    }
+
+
+    familyPhotoModal.classList.add(
+        "open"
+    );
+
+
+    if (
+        familyPhotoModalClose
+    ) {
+
+        familyPhotoModalClose.focus();
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE FAMILY PHOTO MODAL
+   ========================================================= */
+
+function closeFamilyPhotoModal() {
+
+    if (
+        familyPhotoModal
+    ) {
+
+        familyPhotoModal.classList.remove(
+            "open"
+        );
+
+    }
+
+}
+
+
+if (
+    familyPhotoModalClose
+) {
+
+    familyPhotoModalClose.addEventListener(
+        "click",
+        closeFamilyPhotoModal
+    );
+
+}
+
+
+if (
+    familyPhotoModal
+) {
+
+    familyPhotoModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                familyPhotoModal
+            ) {
+
+                closeFamilyPhotoModal();
+
+            }
+
+        }
+    );
 
 }
 
@@ -548,10 +972,7 @@ function compareIds(
                 );
 
 
-            if (
-                numberA <
-                numberB
-            ) {
+            if (numberA < numberB) {
 
                 return -1;
 
@@ -3407,6 +3828,9 @@ document.addEventListener(
         }
 
 
+        closeFamilyPhotoModal();
+
+
         if (
             searchResults
         ) {
@@ -4097,70 +4521,6 @@ function escapeHTML(
         );
 
 }
-
-
-
-/* =========================================================
-   LOAD FAMILY PHOTO
-   ========================================================= */
-
-async function loadFamilyPhoto() {
-
-    const imageEl = document.getElementById("familyTreeImage");
-    const statusEl = document.getElementById("familyImageStatus");
-    const captionEl = document.getElementById("familyImageCaption");
-
-    if (!imageEl) return;
-
-    try {
-
-        const snapshot = await getDoc(
-            doc(db, "familyMembers", "image")
-        );
-
-        if (!snapshot.exists()) {
-            if (statusEl) statusEl.textContent = "No family photo available.";
-            return;
-        }
-
-        const data = snapshot.data();
-        const driveUrl = String(data.url || "");
-        const caption = data.caption || "";
-
-        const match = driveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-        const fileId = match ? match[1] : null;
-
-        if (!fileId) {
-            if (statusEl) statusEl.textContent = "Family photo unavailable.";
-            return;
-        }
-
-        const directUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
-
-        imageEl.onload = () => {
-            imageEl.style.display = "block";
-            if (statusEl) statusEl.style.display = "none";
-        };
-
-        imageEl.onerror = () => {
-            if (statusEl) statusEl.textContent = "Unable to load family photo.";
-        };
-
-        imageEl.src = directUrl;
-        imageEl.alt = caption || "Roy Bari family tree";
-
-        if (captionEl) captionEl.textContent = caption;
-
-    } catch (error) {
-
-        console.error("Family photo loading error:", error);
-
-        if (statusEl) statusEl.textContent = "Unable to load family photo.";
-
-    }
-
-}
-
 
 
 /* =========================================================
