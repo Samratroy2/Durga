@@ -15,7 +15,7 @@
    time          -> String, e.g. "7:30 PM"
    description
    location
-   url           -> String
+   url           -> Google Drive image URL
    createdAt
    updatedAt
 
@@ -57,6 +57,9 @@ document.addEventListener(
         console.log(
             "Roy Bari Events JS started"
         );
+
+
+        initEventImageModal();
 
 
         loadEvents();
@@ -142,17 +145,6 @@ async function loadEvents() {
 
                 /* =================================================
                    CATEGORY
-                   =================================================
-
-                   Firestore example:
-
-                   category: [
-                       "ritual",
-                       "family",
-                       "visitors",
-                       "culturals"
-                   ]
-
                    ================================================= */
 
                 let category = [];
@@ -219,16 +211,6 @@ async function loadEvents() {
                         data.date ||
                         null,
 
-                    /*
-                       IMPORTANT:
-
-                       Time is now stored separately
-                       in Firestore.
-
-                       Example:
-                       "7:30 PM"
-                    */
-
                     time:
                         data.time ||
                         "",
@@ -291,13 +273,6 @@ async function loadEvents() {
 
         /* =================================================
            SORT EVENTS
-           =================================================
-
-           Sort by:
-
-           1. Date
-           2. Separate time
-
            ================================================= */
 
         events.sort(
@@ -378,19 +353,6 @@ async function loadEvents() {
 
 /* =========================================================
    GET EVENT DATE + TIME
-   =========================================================
-
-   This is the most important function.
-
-   Firestore:
-
-   date = 18 October 2026
-   time = "7:30 PM"
-
-   The function creates:
-
-   18 October 2026, 7:30 PM
-
    ========================================================= */
 
 function getEventDate(
@@ -409,12 +371,6 @@ function getEventDate(
 
     }
 
-
-    /*
-       If a separate time exists,
-       replace the date object's
-       hours/minutes with that time.
-    */
 
     if (
         event.time &&
@@ -479,16 +435,6 @@ function getDateObject(
             event.date.toDate();
 
 
-        /*
-           The admin panel stores the date
-           at midnight and the time separately.
-
-           However, older records may have the
-           actual time inside the Timestamp.
-
-           We keep the timestamp as the base date.
-        */
-
         return new Date(
             date.getTime()
         );
@@ -537,14 +483,6 @@ function getDateObject(
         typeof event.date ===
             "string"
     ) {
-
-        /*
-           YYYY-MM-DD
-
-           We deliberately create a
-           local date to avoid timezone
-           shifting.
-        */
 
         const match =
             event.date.match(
@@ -600,17 +538,6 @@ function getDateObject(
 
 /* =========================================================
    PARSE EVENT TIME
-   =========================================================
-
-   Supports:
-
-   7:00 PM
-   7:30 PM
-   12:00 PM
-   12:00 AM
-   19:30
-   07:30
-
    ========================================================= */
 
 function parseEventTime(
@@ -809,13 +736,6 @@ function formatEventTime(
     event
 ) {
 
-    /*
-       IMPORTANT:
-
-       Prefer Firestore's separate
-       time field.
-    */
-
     if (
         event.time &&
         String(
@@ -862,25 +782,12 @@ function formatEventTime(
         }
 
 
-        /*
-           If the stored value is something
-           unusual such as "Evening",
-           show it exactly as stored.
-        */
-
         return String(
             event.time
         );
 
     }
 
-
-    /*
-       Backwards compatibility:
-
-       If old events don't have a time
-       field, use the timestamp's time.
-    */
 
     const date =
         getDateObject(
@@ -894,12 +801,6 @@ function formatEventTime(
 
     }
 
-
-    /*
-       If timestamp itself is exactly
-       midnight, don't display 12:00 AM
-       as a meaningful event time.
-    */
 
     if (
         date.getHours() === 0 &&
@@ -1104,7 +1005,6 @@ function renderEvents(
                                 )}
                             </span>
 
-
                             <span class="event-full-date">
                                 ${escapeHTML(
                                     formatEventDate(
@@ -1123,7 +1023,6 @@ function renderEvents(
                             <span class="event-day">
                                 Date
                             </span>
-
 
                             <span class="event-full-date">
                                 Not available
@@ -1147,7 +1046,6 @@ function renderEvents(
                             <span>
                                 Location
                             </span>
-
 
                             <strong>
                                 ${escapeHTML(
@@ -1181,7 +1079,6 @@ function renderEvents(
                                 Time
                             </span>
 
-
                             <strong>
                                 ${escapeHTML(
                                     time
@@ -1205,12 +1102,13 @@ function renderEvents(
 
 
             /* =================================================
-               URL
+               VIEW EVENT
                ================================================= */
 
             const urlHTML =
                 buildURLHTML(
-                    event.url
+                    event.url,
+                    event.id
                 );
 
 
@@ -1247,7 +1145,6 @@ function renderEvents(
                             <span>
                                 About this event
                             </span>
-
 
                             <span
                                 class="about-icon"
@@ -1292,7 +1189,6 @@ function renderEvents(
 
 
                 <div class="event-content">
-
 
                     <h3>
                         ${escapeHTML(
@@ -1341,7 +1237,6 @@ function renderEvents(
 
 
                     ${aboutHTML}
-
 
                 </div>
 
@@ -1419,11 +1314,13 @@ function buildCategoryHTML(
                     category => `
 
                         <span class="event-category">
+
                             ${escapeHTML(
                                 formatCategoryName(
                                     category
                                 )
                             )}
+
                         </span>
 
                     `
@@ -1482,11 +1379,12 @@ function formatCategoryName(
 
 
 /* =========================================================
-   URL HTML
+   VIEW EVENT BUTTON
    ========================================================= */
 
 function buildURLHTML(
-    url
+    url,
+    eventId
 ) {
 
     if (
@@ -1507,10 +1405,6 @@ function buildURLHTML(
         ).trim();
 
 
-    /*
-       Only allow HTTP/HTTPS URLs.
-    */
-
     if (
         !isSafeURL(
             cleanURL
@@ -1526,26 +1420,23 @@ function buildURLHTML(
 
         <div class="event-link">
 
-            <a
-                href="${escapeHTML(
-                    cleanURL
+            <button
+                type="button"
+                class="event-url event-view-button"
+                data-event-id="${escapeHTML(
+                    eventId
                 )}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="event-url"
             >
 
                 <span>
                     View Event
                 </span>
 
-                <span
-                    aria-hidden="true"
-                >
+                <span aria-hidden="true">
                     ↗
                 </span>
 
-            </a>
+            </button>
 
         </div>
 
@@ -1589,6 +1480,637 @@ function isSafeURL(
 }
 
 
+
+/* =========================================================
+   GOOGLE DRIVE IMAGE URL
+   ========================================================= */
+/* =========================================================
+   GOOGLE DRIVE IMAGE URL
+   ========================================================= */
+
+function convertGoogleDriveURL(
+    url
+) {
+
+    if (!url) {
+
+        return "";
+
+    }
+
+
+    const cleanURL =
+        String(
+            url
+        ).trim();
+
+
+    /* =====================================================
+       GOOGLE DRIVE /FILE/D/FILE_ID/VIEW
+       ===================================================== */
+
+    const fileMatch =
+        cleanURL.match(
+            /drive\.google\.com\/file\/d\/([^/?#]+)/
+        );
+
+
+    if (fileMatch) {
+
+        const fileId =
+            fileMatch[1];
+
+
+        /*
+           Google Drive thumbnail endpoint.
+
+           This is much more reliable for
+           displaying Drive images inside
+           an <img> element.
+        */
+
+        return (
+            "https://drive.google.com/thumbnail" +
+            "?id=" +
+            encodeURIComponent(
+                fileId
+            ) +
+            "&sz=w2000"
+        );
+
+    }
+
+
+    /* =====================================================
+       GOOGLE DRIVE OPEN?ID=FILE_ID
+       ===================================================== */
+
+    try {
+
+        const parsedURL =
+            new URL(
+                cleanURL
+            );
+
+
+        if (
+            parsedURL.hostname ===
+                "drive.google.com" ||
+            parsedURL.hostname.endsWith(
+                ".drive.google.com"
+            )
+        ) {
+
+            const fileId =
+                parsedURL.searchParams.get(
+                    "id"
+                );
+
+
+            if (fileId) {
+
+                return (
+                    "https://drive.google.com/thumbnail" +
+                    "?id=" +
+                    encodeURIComponent(
+                        fileId
+                    ) +
+                    "&sz=w2000"
+                );
+
+            }
+
+        }
+
+    }
+
+    catch {
+
+        return cleanURL;
+
+    }
+
+
+    /* =====================================================
+       NORMAL IMAGE URL
+       ===================================================== */
+
+    return cleanURL;
+
+}
+
+
+
+/* =========================================================
+   EVENT IMAGE MODAL
+   ========================================================= */
+
+/* =========================================================
+   EVENT IMAGE MODAL
+   ========================================================= */
+
+function initEventImageModal() {
+
+    const modal =
+        document.getElementById(
+            "event-image-modal"
+        );
+
+
+    const image =
+        document.getElementById(
+            "event-image"
+        );
+
+
+    const loading =
+        document.getElementById(
+            "event-image-loading"
+        );
+
+
+    const errorBox =
+        document.getElementById(
+            "event-image-error"
+        );
+
+
+    const title =
+        document.getElementById(
+            "event-image-title"
+        );
+
+
+    const closeButton =
+        document.getElementById(
+            "event-image-close"
+        );
+
+
+    const nextEventButton =
+        document.getElementById(
+            "next-event-link"
+        );
+
+
+    if (
+        !modal ||
+        !image ||
+        !loading ||
+        !errorBox ||
+        !title ||
+        !closeButton
+    ) {
+
+        console.error(
+            "Event image modal elements not found."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Remember which element opened
+       the modal.
+    */
+
+    let lastFocusedElement =
+        null;
+
+
+
+    /* =====================================================
+       OPEN MODAL
+       ===================================================== */
+
+    function openModal(
+        event
+    ) {
+
+        if (
+            !event ||
+            !event.url
+        ) {
+
+            return;
+
+        }
+
+
+        lastFocusedElement =
+            document.activeElement;
+
+
+        title.textContent =
+            event.title ||
+            "Event";
+
+
+        image.src =
+            "";
+
+
+        image.alt =
+            event.title ||
+            "Roy Bari event";
+
+
+        image.hidden =
+            true;
+
+
+        errorBox.hidden =
+            true;
+
+
+        loading.hidden =
+            false;
+
+
+        modal.hidden =
+            false;
+
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        document.body.classList.add(
+            "event-modal-open"
+        );
+
+
+        const imageURL =
+            convertGoogleDriveURL(
+                event.url
+            );
+
+
+        console.log(
+            "Original event URL:",
+            event.url
+        );
+
+
+        console.log(
+            "Image preview URL:",
+            imageURL
+        );
+
+
+        /*
+           Start loading the image.
+        */
+
+        requestAnimationFrame(
+            () => {
+
+                image.src =
+                    imageURL;
+
+            }
+        );
+
+
+        /*
+           Move keyboard focus into
+           the modal.
+        */
+
+        requestAnimationFrame(
+            () => {
+
+                closeButton.focus();
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE MODAL
+       ===================================================== */
+
+    function closeModal() {
+
+        /*
+           IMPORTANT:
+
+           Remove focus from the close button
+           BEFORE hiding the modal.
+
+           This prevents the browser warning:
+
+           "Blocked aria-hidden on an element
+           because its descendant retained focus."
+        */
+
+        if (
+            document.activeElement &&
+            modal.contains(
+                document.activeElement
+            )
+        ) {
+
+            document.activeElement.blur();
+
+        }
+
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        modal.hidden =
+            true;
+
+
+        document.body.classList.remove(
+            "event-modal-open"
+        );
+
+
+        image.src =
+            "";
+
+
+        image.hidden =
+            true;
+
+
+        loading.hidden =
+            true;
+
+
+        errorBox.hidden =
+            true;
+
+
+        /*
+           Return focus to the button that
+           originally opened the modal.
+        */
+
+        if (
+            lastFocusedElement &&
+            typeof lastFocusedElement.focus ===
+                "function"
+        ) {
+
+            /*
+               Small delay avoids focusing an
+               element while the modal is still
+               being hidden.
+            */
+
+            requestAnimationFrame(
+                () => {
+
+                    try {
+
+                        lastFocusedElement.focus();
+
+                    }
+
+                    catch {
+
+                        /* Ignore focus restoration errors */
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        lastFocusedElement =
+            null;
+
+    }
+
+
+
+    /* =====================================================
+       IMAGE LOADED
+       ===================================================== */
+
+    image.addEventListener(
+        "load",
+        () => {
+
+            console.log(
+                "Event image loaded successfully."
+            );
+
+
+            loading.hidden =
+                true;
+
+
+            errorBox.hidden =
+                true;
+
+
+            image.hidden =
+                false;
+
+        }
+    );
+
+
+
+    /* =====================================================
+       IMAGE ERROR
+       ===================================================== */
+
+    image.addEventListener(
+        "error",
+        () => {
+
+            console.error(
+                "Event image could not be loaded:",
+                image.src
+            );
+
+
+            loading.hidden =
+                true;
+
+
+            image.hidden =
+                true;
+
+
+            errorBox.hidden =
+                false;
+
+        }
+    );
+
+
+
+    /* =====================================================
+       CLOSE BUTTON
+       ===================================================== */
+
+    closeButton.addEventListener(
+        "click",
+        () => {
+
+            closeModal();
+
+        }
+    );
+
+
+
+    /* =====================================================
+       CLICK DARK BACKGROUND
+       ===================================================== */
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.matches(
+                    "[data-close-event-modal]"
+                )
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       ESC KEY
+       ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                !modal.hidden
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       EVENT CARD VIEW BUTTON
+       ===================================================== */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    ".event-view-button"
+                );
+
+
+            if (!button) {
+
+                return;
+
+            }
+
+
+            const eventId =
+                button.dataset.eventId;
+
+
+            const selectedEvent =
+                events.find(
+                    item =>
+                        item.id ===
+                        eventId
+                );
+
+
+            if (!selectedEvent) {
+
+                console.error(
+                    "Event not found:",
+                    eventId
+                );
+
+                return;
+
+            }
+
+
+            openModal(
+                selectedEvent
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       NEXT EVENT VIEW BUTTON
+       ===================================================== */
+
+    if (nextEventButton) {
+
+        nextEventButton.addEventListener(
+            "click",
+            () => {
+
+                const selectedEvent =
+                    events.find(
+                        event =>
+                            event.id ===
+                            currentNextEventId
+                    );
+
+
+                if (!selectedEvent) {
+
+                    console.error(
+                        "Next event not found."
+                    );
+
+                    return;
+
+                }
+
+
+                openModal(
+                    selectedEvent
+                );
+
+            }
+        );
+
+    }
+
+}
 
 /* =========================================================
    ABOUT BUTTONS
@@ -1909,10 +2431,6 @@ function findNextEvent(
             )
         ) {
 
-            linkElement.href =
-                nextEvent.url;
-
-
             linkElement.hidden =
                 false;
 
@@ -2145,11 +2663,6 @@ function startCountdown(
                 null;
 
 
-            /*
-               Find the next event from the
-               already-loaded Firestore data.
-            */
-
             findNextEvent(
                 events
             );
@@ -2160,13 +2673,13 @@ function startCountdown(
         }
 
 
-        /* =================================================
-           DAYS
-           ================================================= */
-
         let remaining =
             difference;
 
+
+        /* =================================================
+           DAYS
+           ================================================= */
 
         const days =
             Math.floor(
@@ -2373,10 +2886,6 @@ function initEventFilters() {
                 "click",
                 () => {
 
-                    /* =========================================
-                       REMOVE ACTIVE
-                       ========================================= */
-
                     buttons.forEach(
                         btn => {
 
@@ -2387,10 +2896,6 @@ function initEventFilters() {
                         }
                     );
 
-
-                    /* =========================================
-                       ADD ACTIVE
-                       ========================================= */
 
                     button.classList.add(
                         "active"
@@ -2406,10 +2911,6 @@ function initEventFilters() {
                             .toLowerCase();
 
 
-                    /* =========================================
-                       ALL
-                       ========================================= */
-
                     if (
                         filter === "all"
                     ) {
@@ -2423,10 +2924,6 @@ function initEventFilters() {
 
                     }
 
-
-                    /* =========================================
-                       FILTER
-                       ========================================= */
 
                     const filteredEvents =
                         events.filter(
@@ -2446,13 +2943,6 @@ function initEventFilters() {
                                                     .trim()
                                                     .toLowerCase();
 
-
-                                            /*
-                                               Accept both:
-
-                                               visitor
-                                               visitors
-                                            */
 
                                             if (
                                                 filter ===

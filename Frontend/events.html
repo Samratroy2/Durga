@@ -25,10 +25,6 @@
     >
 
 
-    <!-- =====================================================
-         EVENT PAGE ADDITIONAL STYLES
-         ===================================================== -->
-
     <style>
 
         /* =====================================================
@@ -87,7 +83,7 @@
 
 
         /* =====================================================
-           EVENT URL
+           EVENT URL / VIEW EVENT
            ===================================================== */
 
         .event-link {
@@ -128,6 +124,9 @@
             text-decoration:
                 none;
 
+            font-family:
+                inherit;
+
             font-size:
                 11px;
 
@@ -152,6 +151,20 @@
 
             transform:
                 translateY(-1px);
+
+        }
+
+
+        .event-view-button {
+
+            appearance:
+                none;
+
+            -webkit-appearance:
+                none;
+
+            cursor:
+                pointer;
 
         }
 
@@ -522,6 +535,333 @@
 
 
         /* =====================================================
+           EVENT IMAGE MODAL
+           ===================================================== */
+
+        .event-image-modal {
+
+            position:
+                fixed;
+
+            inset:
+                0;
+
+            z-index:
+                99999;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                20px;
+
+        }
+
+
+        .event-image-modal[hidden] {
+
+            display:
+                none;
+
+        }
+
+
+        .event-image-overlay {
+
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            background:
+                rgba(30, 23, 18, .78);
+
+            backdrop-filter:
+                blur(5px);
+
+            -webkit-backdrop-filter:
+                blur(5px);
+
+        }
+
+
+        .event-image-dialog {
+
+            position:
+                relative;
+
+            z-index:
+                2;
+
+            width:
+                min(100%, 950px);
+
+            max-height:
+                92vh;
+
+            overflow:
+                auto;
+
+            padding:
+                28px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .18);
+
+            border-radius:
+                16px;
+
+            background:
+                #fdfaf6;
+
+            box-shadow:
+                0 25px 80px
+                rgba(0, 0, 0, .35);
+
+        }
+
+
+        .event-image-close {
+
+            position:
+                absolute;
+
+            top:
+                14px;
+
+            right:
+                14px;
+
+            width:
+                40px;
+
+            height:
+                40px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .18);
+
+            border-radius:
+                50%;
+
+            background:
+                rgba(255, 255, 255, .9);
+
+            color:
+                #765236;
+
+            font-family:
+                inherit;
+
+            font-size:
+                26px;
+
+            line-height:
+                1;
+
+            cursor:
+                pointer;
+
+            transition:
+                all .2s ease;
+
+        }
+
+
+        .event-image-close:hover {
+
+            background:
+                rgba(120, 82, 52, .08);
+
+            transform:
+                rotate(90deg);
+
+        }
+
+
+        .event-image-header {
+
+            padding-right:
+                55px;
+
+            margin-bottom:
+                18px;
+
+        }
+
+
+        .event-image-header .eyebrow {
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .event-image-header h2 {
+
+            margin:
+                0;
+
+            color:
+                #4c4037;
+
+        }
+
+
+        .event-image-container {
+
+            position:
+                relative;
+
+            min-height:
+                220px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border-radius:
+                10px;
+
+            overflow:
+                hidden;
+
+            background:
+                #f3eee8;
+
+        }
+
+
+        .event-image {
+
+            display:
+                block;
+
+            max-width:
+                100%;
+
+            max-height:
+                68vh;
+
+            width:
+                auto;
+
+            height:
+                auto;
+
+            object-fit:
+                contain;
+
+            border-radius:
+                8px;
+
+        }
+
+
+        .event-image-loading {
+
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            color:
+                #765236;
+
+            font-size:
+                13px;
+
+            font-weight:
+                600;
+
+        }
+
+
+        .event-image-error {
+
+            padding:
+                40px 20px;
+
+            text-align:
+                center;
+
+            color:
+                #765236;
+
+        }
+
+
+        .event-image-error strong {
+
+            display:
+                block;
+
+            margin-bottom:
+                8px;
+
+        }
+
+
+        .event-image-error p {
+
+            margin:
+                0;
+
+            color:
+                #7b6b60;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.6;
+
+        }
+
+
+        body.event-modal-open {
+
+            overflow:
+                hidden;
+
+        }
+
+
+        /* =====================================================
            RESPONSIVE
            ===================================================== */
 
@@ -550,6 +890,44 @@
 
             }
 
+
+            .event-image-modal {
+
+                padding:
+                    10px;
+
+            }
+
+
+            .event-image-dialog {
+
+                padding:
+                    20px;
+
+                max-height:
+                    94vh;
+
+                border-radius:
+                    12px;
+
+            }
+
+
+            .event-image {
+
+                max-height:
+                    70vh;
+
+            }
+
+
+            .event-image-header h2 {
+
+                font-size:
+                    22px;
+
+            }
+
         }
 
     </style>
@@ -568,9 +946,6 @@
 
     <nav class="nav">
 
-
-        <!-- BRAND -->
-
         <a
             href="index.html"
             class="brand"
@@ -585,8 +960,6 @@
         </a>
 
 
-        <!-- MOBILE MENU -->
-
         <button
             type="button"
             class="nav-toggle"
@@ -599,82 +972,55 @@
         </button>
 
 
-        <!-- NAVIGATION -->
-
         <ul class="nav-links">
 
-
             <li>
-
                 <a href="index.html">
                     Home
                 </a>
-
             </li>
 
-
             <li>
-
                 <a href="about.html">
                     About the Puja
                 </a>
-
             </li>
 
-
             <li>
-
                 <a href="family-tree.html">
                     Family Tree
                 </a>
-
             </li>
 
-
             <li>
-
                 <a href="gallery.html">
                     Gallery
                 </a>
-
             </li>
 
-
             <li>
-
                 <a
                     href="events.html"
                     class="active"
                     aria-current="page"
                 >
-
                     Events
-
                 </a>
-
             </li>
 
-
             <li>
-
                 <a href="visit.html">
                     Visit
                 </a>
-
             </li>
 
-
             <li>
-
                 <a href="contact.html">
                     Contact
                 </a>
-
             </li>
 
-
         </ul>
-
 
     </nav>
 
@@ -695,16 +1041,13 @@
 
         <div class="hero-content">
 
-
             <div class="eyebrow">
                 The Puja Calendar
             </div>
 
-
             <h1>
                 The Days We Keep
             </h1>
-
 
             <p class="tagline">
 
@@ -714,7 +1057,6 @@
                 Durga Puja.
 
             </p>
-
 
         </div>
 
@@ -732,71 +1074,54 @@
 
     <div class="container">
 
-
         <div class="section-head">
-
 
             <div class="eyebrow">
                 Next at the Bari
             </div>
 
-
             <h2 id="next-event-name">
                 Loading...
             </h2>
-
 
             <p
                 class="lead"
                 id="next-event-description"
             >
-
                 Loading the next Puja event...
-
             </p>
 
-
-            <!-- NEXT EVENT DATE + TIME -->
 
             <div
                 class="next-event-meta"
                 aria-live="polite"
             >
 
-                <span
-                    id="next-event-date"
-                ></span>
+                <span id="next-event-date"></span>
 
-
-                <span
-                    id="next-event-time"
-                ></span>
+                <span id="next-event-time"></span>
 
             </div>
 
 
-            <!-- NEXT EVENT URL -->
+            <!-- NEXT EVENT VIEW BUTTON -->
 
-            <a
+            <button
+                type="button"
                 id="next-event-link"
                 class="next-event-link"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
                 hidden
             >
 
-                View Event
+                View Event Image
 
                 <span aria-hidden="true">
                     ↗
                 </span>
 
-            </a>
-
+            </button>
 
         </div>
-
 
 
         <!-- =================================================
@@ -808,9 +1133,6 @@
             id="event-timer"
         >
 
-
-            <!-- DAYS -->
-
             <div class="event-time-box">
 
                 <span
@@ -820,15 +1142,12 @@
                     00
                 </span>
 
-
                 <span class="event-time-label">
                     Days
                 </span>
 
             </div>
 
-
-            <!-- HOURS -->
 
             <div class="event-time-box">
 
@@ -839,15 +1158,12 @@
                     00
                 </span>
 
-
                 <span class="event-time-label">
                     Hours
                 </span>
 
             </div>
 
-
-            <!-- MINUTES -->
 
             <div class="event-time-box">
 
@@ -858,15 +1174,12 @@
                     00
                 </span>
 
-
                 <span class="event-time-label">
                     Minutes
                 </span>
 
             </div>
 
-
-            <!-- SECONDS -->
 
             <div class="event-time-box">
 
@@ -877,13 +1190,11 @@
                     00
                 </span>
 
-
                 <span class="event-time-label">
                     Seconds
                 </span>
 
             </div>
-
 
         </div>
 
@@ -901,21 +1212,15 @@
 
     <div class="container">
 
-
-        <!-- SECTION HEADER -->
-
         <div class="section-head">
-
 
             <div class="eyebrow">
                 The Calendar
             </div>
 
-
             <h2>
                 The Puja, Day by Day
             </h2>
-
 
             <p class="lead">
 
@@ -925,9 +1230,7 @@
 
             </p>
 
-
         </div>
-
 
 
         <!-- =================================================
@@ -940,74 +1243,51 @@
             aria-label="Filter events"
         >
 
-
-            <!-- ALL -->
-
             <button
                 type="button"
                 class="pill event-filter active"
                 data-filter="all"
             >
-
                 All Days
-
             </button>
 
-
-            <!-- RITUAL -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="ritual"
             >
-
                 Rituals
-
             </button>
 
-
-            <!-- FAMILY -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="family"
             >
-
                 Family
-
             </button>
 
-
-            <!-- VISITORS -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="visitors"
             >
-
                 Visitors
-
             </button>
 
-
-            <!-- CULTURALS -->
 
             <button
                 type="button"
                 class="pill event-filter"
                 data-filter="culturals"
             >
-
                 Culturals
-
             </button>
 
-
         </div>
-
 
 
         <!-- =================================================
@@ -1019,9 +1299,6 @@
             id="events-grid"
         >
 
-
-            <!-- INITIAL LOADING -->
-
             <div class="event-card">
 
                 <div class="event-content">
@@ -1030,21 +1307,16 @@
                         Loading events...
                     </h3>
 
-
                     <p>
-
                         Please wait while the
                         Puja calendar is loaded.
-
                     </p>
 
                 </div>
 
             </div>
 
-
         </div>
-
 
     </div>
 
@@ -1060,11 +1332,7 @@
 
     <div class="container">
 
-
         <div class="footer-grid">
-
-
-            <!-- ROY BARI -->
 
             <div>
 
@@ -1072,20 +1340,14 @@
                     Roy Bari
                 </h5>
 
-
                 <p>
-
                     V8J4+5FF,
                     Chhota Nohari,
                     West Bengal 721121
-
                 </p>
 
             </div>
 
-
-
-            <!-- EXPLORE -->
 
             <div>
 
@@ -1093,58 +1355,39 @@
                     Explore
                 </h5>
 
-
                 <ul>
 
-
                     <li>
-
                         <a href="about.html">
                             About the Puja
                         </a>
-
                     </li>
 
-
                     <li>
-
                         <a href="family-tree.html">
                             Family Tree
                         </a>
-
                     </li>
 
-
                     <li>
-
                         <a href="gallery.html">
                             Gallery
                         </a>
-
                     </li>
 
-
                     <li>
-
                         <a
                             href="events.html"
                             aria-current="page"
                         >
-
                             Events
-
                         </a>
-
                     </li>
-
 
                 </ul>
 
             </div>
 
-
-
-            <!-- VISIT -->
 
             <div>
 
@@ -1152,35 +1395,24 @@
                     Visit
                 </h5>
 
-
                 <ul>
 
-
                     <li>
-
                         <a href="visit.html">
                             Location &amp; Directions
                         </a>
-
                     </li>
 
-
                     <li>
-
                         <a href="gallery.html">
                             Gallery
                         </a>
-
                     </li>
-
 
                 </ul>
 
             </div>
 
-
-
-            <!-- CONTACT -->
 
             <div>
 
@@ -1188,46 +1420,126 @@
                     Contact
                 </h5>
 
-
                 <ul>
 
-
                     <li>
-
                         <a href="contact.html">
                             Get in Touch
                         </a>
-
                     </li>
-
 
                 </ul>
 
             </div>
 
-
         </div>
 
-
-
-        <!-- FOOTER BOTTOM -->
 
         <div class="footer-bottom">
 
             <span>
-
                 © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
-
             </span>
 
         </div>
 
-
     </div>
 
 </footer>
+
+
+
+<!-- =====================================================
+     EVENT IMAGE MODAL
+     ===================================================== -->
+
+<div
+    id="event-image-modal"
+    class="event-image-modal"
+    hidden
+    aria-hidden="true"
+>
+
+    <div
+        class="event-image-overlay"
+        data-close-event-modal
+    ></div>
+
+
+    <div
+        class="event-image-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="event-image-title"
+    >
+
+        <button
+            type="button"
+            class="event-image-close"
+            id="event-image-close"
+            aria-label="Close image"
+        >
+            ×
+        </button>
+
+
+        <div class="event-image-header">
+
+            <div class="eyebrow">
+                Roy Bari Event
+            </div>
+
+            <h2 id="event-image-title">
+                Event
+            </h2>
+
+        </div>
+
+
+        <div class="event-image-container">
+
+            <div
+                id="event-image-loading"
+                class="event-image-loading"
+            >
+                Loading image...
+            </div>
+
+
+            <img
+                id="event-image"
+                class="event-image"
+                src=""
+                alt=""
+                hidden
+            >
+
+
+            <div
+                id="event-image-error"
+                class="event-image-error"
+                hidden
+            >
+
+                <strong>
+                    Image could not be loaded.
+                </strong>
+
+                <p>
+                    Please make sure the Google Drive
+                    file is shared as
+                    "Anyone with the link".
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
