@@ -1,31 +1,39 @@
 /* =========================================================
-   ROY BARI — CONTACT
-   Firebase / Firestore
+   ROY BARI — CONTACT PAGE
+   FIREBASE / FIRESTORE
+   =========================================================
 
-   Firestore structure:
+   FIRESTORE COLLECTION:
 
-   visit
-   ├── contact
-   │    ├── address
-   │    ├── email
-   │    ├── facebook
-   │    ├── instagram
-   │    ├── phone
-   │    ├── whatsapp
-   │    └── youtube
-   │
-   └── main
+   contact
+
+   DOCUMENT:
+
+   Any document inside "contact"
+
+   FIELDS:
+
+   address
+   email
+   facebook
+   instagram
+   phone1
+   phone2
+   whatsapp
+   youtube
+
+
+   ENQUIRIES:
 
    enquiries
-   └── automatically created by contact form
+
    ========================================================= */
 
 
 import {
     collection,
+    getDocs,
     addDoc,
-    doc,
-    getDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -35,9 +43,8 @@ import {
 } from "./firebase.js";
 
 
-
 /* =========================================================
-   START
+   INITIALIZE
    ========================================================= */
 
 document.addEventListener(
@@ -45,20 +52,19 @@ document.addEventListener(
     () => {
 
         console.log(
-            "================================="
+            "========================================"
         );
 
         console.log(
-            "ROY BARI — CONTACT JS"
+            "ROY BARI CONTACT PAGE"
         );
 
         console.log(
-            "Firestore:",
-            db
+            "Reading collection: contact"
         );
 
         console.log(
-            "================================="
+            "========================================"
         );
 
 
@@ -70,7 +76,6 @@ document.addEventListener(
 );
 
 
-
 /* =========================================================
    LOAD CONTACT INFORMATION
    ========================================================= */
@@ -78,61 +83,111 @@ document.addEventListener(
 async function loadContactInformation() {
 
     console.log(
-        "Loading contact information..."
+        "Loading contact collection..."
     );
 
 
     try {
 
         /*
-         * Firestore structure:
+         * IMPORTANT
          *
-         * visit/contact
+         * We ONLY read:
          *
-         * visit = collection
-         * contact = document
+         * contact
+         *
+         * We do NOT read:
+         *
+         * visit
+         * main
+         * settings
+         * homepage
+         * etc.
          */
 
-        const contactReference =
-            doc(
+        const contactCollection =
+            collection(
                 db,
-                "visit",
                 "contact"
             );
 
 
-        const contactSnapshot =
-            await getDoc(
-                contactReference
+        const snapshot =
+            await getDocs(
+                contactCollection
             );
 
 
         console.log(
-            "Contact document exists:",
-            contactSnapshot.exists()
+            "Contact documents found:",
+            snapshot.size
         );
 
 
-        if (!contactSnapshot.exists()) {
+        /* =================================================
+           CHECK COLLECTION
+           ================================================= */
 
-            console.warn(
-                "visit/contact document does not exist."
+        if (
+            snapshot.empty
+        ) {
+
+            console.error(
+                "CONTACT COLLECTION IS EMPTY."
             );
 
-            showContactFallback();
+
+            showContactUnavailable();
 
             return;
 
         }
 
 
+        /* =================================================
+           USE FIRST DOCUMENT
+           ================================================= */
+
+        const contactDocument =
+            snapshot.docs[0];
+
+
         const data =
-            contactSnapshot.data();
+            contactDocument.data();
 
 
         console.log(
-            "Contact information:",
+            "Contact document ID:",
+            contactDocument.id
+        );
+
+
+        console.log(
+            "Complete contact data:",
             data
+        );
+
+
+        /* =================================================
+           DEBUG PHONE FIELDS
+           ================================================= */
+
+        console.log(
+            "========================================"
+        );
+
+        console.log(
+            "PHONE 1:",
+            data.phone1
+        );
+
+        console.log(
+            "PHONE 2:",
+            data.phone2
+        );
+
+        console.log(
+            "========================================"
         );
 
 
@@ -140,9 +195,10 @@ async function loadContactInformation() {
            ADDRESS
            ================================================= */
 
-        setText(
+        displayText(
             "contact-address",
-            data.address
+            data.address,
+            "Address not available"
         );
 
 
@@ -150,39 +206,29 @@ async function loadContactInformation() {
            EMAIL
            ================================================= */
 
-        setText(
-            "contact-email",
-            data.email
-        );
-
-
-        /*
-         * Make email clickable.
-         */
-
-        setMailLink(
+        displayEmail(
             "contact-email",
             data.email
         );
 
 
         /* =================================================
-           PHONE
+           PHONE 1
            ================================================= */
 
-        setText(
-            "contact-phone",
-            data.phone
+        displayPhone(
+            "contact-phone1",
+            data.phone1
         );
 
 
-        /*
-         * Make phone number clickable.
-         */
+        /* =================================================
+           PHONE 2
+           ================================================= */
 
-        setPhoneLink(
-            "contact-phone",
-            data.phone
+        displayPhone(
+            "contact-phone2",
+            data.phone2
         );
 
 
@@ -190,39 +236,9 @@ async function loadContactInformation() {
            WHATSAPP
            ================================================= */
 
-        /*
-         * If whatsapp exists:
-         *
-         * whatsapp: "https://wa.me/919083640748"
-         *
-         * use it.
-         *
-         * Otherwise:
-         *
-         * use phone number.
-         */
-
-        const whatsappValue =
-            data.whatsapp ||
-            data.phone ||
-            "";
-
-
-        setLink(
+        displaySocialLink(
             "contact-whatsapp",
-            getWhatsAppUrl(
-                whatsappValue
-            )
-        );
-
-
-        /* =================================================
-           YOUTUBE
-           ================================================= */
-
-        setLink(
-            "contact-youtube",
-            data.youtube
+            data.whatsapp
         );
 
 
@@ -230,7 +246,7 @@ async function loadContactInformation() {
            FACEBOOK
            ================================================= */
 
-        setLink(
+        displaySocialLink(
             "contact-facebook",
             data.facebook
         );
@@ -240,83 +256,89 @@ async function loadContactInformation() {
            INSTAGRAM
            ================================================= */
 
-        setLink(
+        displaySocialLink(
             "contact-instagram",
             data.instagram
         );
 
 
-        /*
-         * Alternative IDs supported.
-         */
+        /* =================================================
+           YOUTUBE
+           ================================================= */
 
-        setText(
-            "address",
-            data.address
-        );
-
-
-        setText(
-            "email",
-            data.email
-        );
-
-
-        setText(
-            "phone",
-            data.phone
+        displaySocialLink(
+            "contact-youtube",
+            data.youtube
         );
 
 
         console.log(
-            "Contact information loaded successfully."
+            "CONTACT INFORMATION LOADED SUCCESSFULLY."
         );
 
     }
-
-
     catch (error) {
 
         console.error(
-            "CONTACT FIREBASE ERROR:",
+            "========================================"
+        );
+
+        console.error(
+            "CONTACT FIRESTORE ERROR"
+        );
+
+        console.error(
             error
         );
 
+        console.error(
+            "========================================"
+        );
 
-        showContactFallback();
+
+        showContactUnavailable();
 
     }
 
 }
 
 
-
 /* =========================================================
-   SET TEXT
+   DISPLAY NORMAL TEXT
    ========================================================= */
 
-function setText(
+function displayText(
     id,
-    value
+    value,
+    fallback = "Not available"
 ) {
 
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
 
     if (!element) {
+
+        console.warn(
+            "Element not found:",
+            id
+        );
+
         return;
+
     }
 
 
     if (
-        value === null ||
         value === undefined ||
-        value === ""
+        value === null ||
+        String(value).trim() === ""
     ) {
 
         element.textContent =
-            "Not available";
+            fallback;
 
         return;
 
@@ -324,50 +346,307 @@ function setText(
 
 
     element.textContent =
-        value;
+        String(value).trim();
 
 }
 
 
-
 /* =========================================================
-   SET NORMAL LINK
+   DISPLAY EMAIL
    ========================================================= */
 
-function setLink(
+function displayEmail(
     id,
-    url
+    email
 ) {
 
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
 
     if (!element) {
+
+        console.warn(
+            "Email element not found:",
+            id
+        );
+
         return;
+
     }
 
 
     if (
-        !url ||
-        !isValidUrl(url)
+        email === undefined ||
+        email === null ||
+        String(email).trim() === ""
     ) {
 
-        /*
-         * Hide the button if the
-         * Firestore field is empty.
-         */
+        element.textContent =
+            "Email not available";
 
-        element.style.display =
-            "none";
+        element.removeAttribute(
+            "href"
+        );
 
         return;
 
     }
 
 
+    const cleanEmail =
+        String(email).trim();
+
+
+    element.textContent =
+        cleanEmail;
+
+
     element.href =
-        url;
+        "mailto:" +
+        cleanEmail;
+
+
+    element.style.display =
+        "inline";
+
+}
+
+
+/* =========================================================
+   DISPLAY PHONE
+   ========================================================= */
+
+function displayPhone(
+    id,
+    phone
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (!element) {
+
+        console.error(
+            "PHONE HTML ELEMENT NOT FOUND:",
+            id
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Displaying:",
+        id,
+        phone
+    );
+
+
+    /* -----------------------------------------------------
+       EMPTY PHONE
+       ----------------------------------------------------- */
+
+    if (
+        phone === undefined ||
+        phone === null ||
+        String(phone).trim() === ""
+    ) {
+
+        element.textContent =
+            "Phone number not available";
+
+
+        element.removeAttribute(
+            "href"
+        );
+
+
+        element.style.display =
+            "block";
+
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       DISPLAY EXACT FIRESTORE VALUE
+       ----------------------------------------------------- */
+
+    const displayValue =
+        String(phone).trim();
+
+
+    element.textContent =
+        displayValue;
+
+
+    /* -----------------------------------------------------
+       CREATE CALL LINK
+       ----------------------------------------------------- */
+
+    /*
+     * Example Firestore value:
+     *
+     * +91 9083640748 (For data update only)
+     *
+     * becomes:
+     *
+     * +919083640748
+     */
+
+    const telephoneNumber =
+        displayValue
+            .replace(
+                /[^\d+]/g,
+                ""
+            );
+
+
+    if (
+        telephoneNumber
+    ) {
+
+        element.href =
+            "tel:" +
+            telephoneNumber;
+
+    }
+
+
+    element.style.display =
+        "block";
+
+    element.style.visibility =
+        "visible";
+
+
+    element.style.opacity =
+        "1";
+
+}
+
+
+/* =========================================================
+   DISPLAY SOCIAL LINK
+   ========================================================= */
+
+function displaySocialLink(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (!element) {
+
+        console.warn(
+            "Social element not found:",
+            id
+        );
+
+        return;
+
+    }
+
+
+    if (
+        value === undefined ||
+        value === null ||
+        String(value).trim() === ""
+    ) {
+
+        element.hidden =
+            true;
+
+        element.style.display =
+            "none";
+
+        element.removeAttribute(
+            "href"
+        );
+
+        return;
+
+    }
+
+
+    const url =
+        String(value).trim();
+
+
+    /* -----------------------------------------------------
+       WHATSAPP PHONE NUMBER
+       ----------------------------------------------------- */
+
+    if (
+        id === "contact-whatsapp" &&
+        !isHttpUrl(url)
+    ) {
+
+        const phone =
+            url.replace(
+                /\D/g,
+                ""
+            );
+
+
+        if (!phone) {
+
+            element.hidden =
+                true;
+
+            element.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        element.href =
+            "https://wa.me/" +
+            phone;
+
+    }
+
+    /* -----------------------------------------------------
+       NORMAL URL
+       ----------------------------------------------------- */
+
+    else {
+
+        if (
+            !isHttpUrl(url)
+        ) {
+
+            element.hidden =
+                true;
+
+            element.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        element.href =
+            url;
+
+    }
 
 
     element.target =
@@ -378,187 +657,37 @@ function setLink(
         "noopener noreferrer";
 
 
-    element.style.display =
-        "";
-
-}
-
-
-
-/* =========================================================
-   SET EMAIL LINK
-   ========================================================= */
-
-function setMailLink(
-    id,
-    email
-) {
-
-    const element =
-        document.getElementById(id);
-
-
-    if (!element) {
-        return;
-    }
-
-
-    if (!email) {
-
-        element.textContent =
-            "Not available";
-
-        return;
-
-    }
-
-
-    element.textContent =
-        email;
-
-
-    element.href =
-        "mailto:" + email;
+    element.hidden =
+        false;
 
 
     element.style.display =
-        "";
+        "inline-flex";
 
 }
-
-
-
-/* =========================================================
-   SET PHONE LINK
-   ========================================================= */
-
-function setPhoneLink(
-    id,
-    phone
-) {
-
-    const element =
-        document.getElementById(id);
-
-
-    if (!element) {
-        return;
-    }
-
-
-    if (!phone) {
-
-        element.textContent =
-            "Not available";
-
-        return;
-
-    }
-
-
-    element.textContent =
-        phone;
-
-
-    const cleanPhone =
-        String(phone)
-            .replace(
-                /[^\d+]/g,
-                ""
-            );
-
-
-    element.href =
-        "tel:" + cleanPhone;
-
-
-    element.style.display =
-        "";
-
-}
-
-
-
-/* =========================================================
-   WHATSAPP URL
-   ========================================================= */
-
-function getWhatsAppUrl(
-    value
-) {
-
-    if (!value) {
-        return "";
-    }
-
-
-    /*
-     * If Firestore contains:
-     *
-     * https://wa.me/919083640748
-     *
-     * use it directly.
-     */
-
-    if (
-        String(value)
-            .startsWith("http")
-    ) {
-
-        return value;
-
-    }
-
-
-    /*
-     * If Firestore contains:
-     *
-     * +91 9083640748
-     *
-     * convert it into:
-     *
-     * https://wa.me/919083640748
-     */
-
-    const phone =
-        String(value)
-            .replace(
-                /\D/g,
-                ""
-            );
-
-
-    if (!phone) {
-        return "";
-    }
-
-
-    return (
-        "https://wa.me/" +
-        phone
-    );
-
-}
-
 
 
 /* =========================================================
    URL VALIDATION
    ========================================================= */
 
-function isValidUrl(
+function isHttpUrl(
     value
 ) {
 
     if (!value) {
+
         return false;
+
     }
 
 
     try {
 
         const url =
-            new URL(value);
+            new URL(
+                String(value).trim()
+            );
 
 
         return (
@@ -567,7 +696,6 @@ function isValidUrl(
         );
 
     }
-
     catch {
 
         return false;
@@ -575,7 +703,6 @@ function isValidUrl(
     }
 
 }
-
 
 
 /* =========================================================
@@ -608,24 +735,22 @@ function initContactForm() {
 
 
     console.log(
-        "Contact form initialized."
+        "Enquiry form initialized."
     );
 
 
-    /* =====================================================
-       SUBMIT
-       ===================================================== */
-
     form.addEventListener(
         "submit",
-        async event => {
+        async (
+            event
+        ) => {
 
             event.preventDefault();
 
 
-            /* =============================================
-               GET FORM VALUES
-               ============================================= */
+            /* =================================================
+               GET INPUTS
+               ================================================= */
 
             const nameInput =
                 document.getElementById(
@@ -651,6 +776,10 @@ function initContactForm() {
                 );
 
 
+            /* =================================================
+               GET VALUES
+               ================================================= */
+
             const name =
                 nameInput
                     ? nameInput.value.trim()
@@ -675,9 +804,9 @@ function initContactForm() {
                     : "";
 
 
-            /* =============================================
+            /* =================================================
                VALIDATION
-               ============================================= */
+               ================================================= */
 
             if (!name) {
 
@@ -685,6 +814,14 @@ function initContactForm() {
                     "Please enter your name.",
                     "error"
                 );
+
+
+                if (nameInput) {
+
+                    nameInput.focus();
+
+                }
+
 
                 return;
 
@@ -694,21 +831,41 @@ function initContactForm() {
             if (!email) {
 
                 showMessage(
-                    "Please enter your email.",
+                    "Please enter your email address.",
                     "error"
                 );
+
+
+                if (emailInput) {
+
+                    emailInput.focus();
+
+                }
+
 
                 return;
 
             }
 
 
-            if (!isValidEmail(email)) {
+            if (
+                !isValidEmail(
+                    email
+                )
+            ) {
 
                 showMessage(
                     "Please enter a valid email address.",
                     "error"
                 );
+
+
+                if (emailInput) {
+
+                    emailInput.focus();
+
+                }
+
 
                 return;
 
@@ -722,19 +879,28 @@ function initContactForm() {
                     "error"
                 );
 
+
+                if (messageInput) {
+
+                    messageInput.focus();
+
+                }
+
+
                 return;
 
             }
 
 
-            /* =============================================
+            /* =================================================
                DISABLE BUTTON
-               ============================================= */
+               ================================================= */
 
             if (submitButton) {
 
                 submitButton.disabled =
                     true;
+
 
                 submitButton.textContent =
                     "Sending...";
@@ -748,16 +914,11 @@ function initContactForm() {
             );
 
 
-            /* =============================================
-               SAVE TO FIRESTORE
-               ============================================= */
+            /* =================================================
+               SAVE ENQUIRY
+               ================================================= */
 
             try {
-
-                console.log(
-                    "Saving enquiry to Firestore..."
-                );
-
 
                 const enquiryData = {
 
@@ -791,19 +952,14 @@ function initContactForm() {
 
 
                 console.log(
-                    "Enquiry created successfully."
-                );
-
-
-                console.log(
-                    "Document ID:",
+                    "Enquiry saved successfully:",
                     enquiryReference.id
                 );
 
 
-                /* =========================================
+                /* =================================================
                    SUCCESS
-                   ========================================= */
+                   ================================================= */
 
                 showMessage(
                     "Your message has been sent successfully. Thank you for contacting Roy Bari.",
@@ -814,12 +970,10 @@ function initContactForm() {
                 form.reset();
 
             }
-
-
             catch (error) {
 
                 console.error(
-                    "FIRESTORE ENQUIRY ERROR:",
+                    "ENQUIRY FIRESTORE ERROR:",
                     error
                 );
 
@@ -832,14 +986,13 @@ function initContactForm() {
                 );
 
             }
-
-
             finally {
 
                 if (submitButton) {
 
                     submitButton.disabled =
                         false;
+
 
                     submitButton.textContent =
                         "Send Message";
@@ -854,9 +1007,8 @@ function initContactForm() {
 }
 
 
-
 /* =========================================================
-   SHOW FORM MESSAGE
+   FORM MESSAGE
    ========================================================= */
 
 function showMessage(
@@ -886,10 +1038,10 @@ function showMessage(
 
 
     note.className =
-        "form-note " + type;
+        "form-note " +
+        type;
 
 }
-
 
 
 /* =========================================================
@@ -901,37 +1053,103 @@ function isValidEmail(
 ) {
 
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email);
+        .test(
+            email
+        );
 
 }
-
 
 
 /* =========================================================
-   FALLBACK CONTACT INFORMATION
+   CONTACT ERROR
    ========================================================= */
 
-function showContactFallback() {
+function showContactUnavailable() {
 
-    setText(
+    displayText(
         "contact-address",
-        "Nohari Roy Bari, Chhota Nohari, West Bengal 721121"
+        "",
+        "Contact information unavailable"
     );
 
 
-    setText(
+    displayText(
         "contact-email",
+        "",
         "Contact information unavailable"
     );
 
 
-    setText(
-        "contact-phone",
-        "Contact information unavailable"
+    displayText(
+        "contact-phone1",
+        "",
+        "Phone number unavailable"
+    );
+
+
+    displayText(
+        "contact-phone2",
+        "",
+        "Phone number unavailable"
+    );
+
+
+    hideSocial(
+        "contact-whatsapp"
+    );
+
+
+    hideSocial(
+        "contact-facebook"
+    );
+
+
+    hideSocial(
+        "contact-instagram"
+    );
+
+
+    hideSocial(
+        "contact-youtube"
     );
 
 }
 
+
+/* =========================================================
+   HIDE SOCIAL
+   ========================================================= */
+
+function hideSocial(
+    id
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    element.hidden =
+        true;
+
+
+    element.style.display =
+        "none";
+
+
+    element.removeAttribute(
+        "href"
+    );
+
+}
 
 
 /* =========================================================
@@ -954,7 +1172,7 @@ function getFirebaseErrorMessage(
     ) {
 
         return (
-            "Your message could not be saved because Firestore permissions are blocking the request."
+            "Your message could not be sent because Firestore permissions are blocking the request."
         );
 
     }

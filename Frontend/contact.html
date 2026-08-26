@@ -16,13 +16,661 @@
 
     <meta
         name="description"
-        content="Get in touch with the Roy Bari family for enquiries, visits, press, and contributions to the family archive."
+        content="Get in touch with Roy Bari regarding the Durga Puja, visits, family archive, and general enquiries."
     >
 
     <link
         rel="stylesheet"
         href="style.css"
     >
+
+
+    <style>
+
+        /* =====================================================
+           CONTACT PAGE
+           ===================================================== */
+
+        .contact-section {
+            padding:
+                70px 0;
+        }
+
+
+        .contact-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap:
+                50px;
+
+            align-items:
+                start;
+
+        }
+
+
+        /* =====================================================
+           CONTACT INFORMATION
+           ===================================================== */
+
+        .contact-information {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                14px;
+
+        }
+
+
+        .contact-card {
+
+            display:
+                flex;
+
+            align-items:
+                flex-start;
+
+            gap:
+                16px;
+
+            padding:
+                20px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .13);
+
+            border-radius:
+                10px;
+
+            background:
+                rgba(120, 82, 52, .035);
+
+        }
+
+
+        .contact-icon {
+
+            width:
+                42px;
+
+            height:
+                42px;
+
+            min-width:
+                42px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .16);
+
+            border-radius:
+                50%;
+
+            background:
+                #f8f1e8;
+
+            color:
+                #765236;
+
+            font-size:
+                18px;
+
+        }
+
+
+        .contact-card-content {
+
+            min-width:
+                0;
+
+        }
+
+
+        .contact-card-content span {
+
+            display:
+                block;
+
+            margin-bottom:
+                5px;
+
+            color:
+                #95877c;
+
+            font-size:
+                10px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                .8px;
+
+            text-transform:
+                uppercase;
+
+        }
+
+
+        .contact-card-content a,
+        .contact-card-content p {
+
+            display:
+                block;
+
+            margin:
+                0;
+
+            color:
+                #4c4037;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.6;
+
+            text-decoration:
+                none;
+
+            word-break:
+                break-word;
+
+        }
+
+
+        .contact-card-content a:hover {
+
+            color:
+                #765236;
+
+        }
+
+
+        /* =====================================================
+           PHONE GROUP
+           ===================================================== */
+
+        .phone-list {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                5px;
+
+        }
+
+
+        .phone-list a {
+
+            width:
+                fit-content;
+
+        }
+
+
+        /* =====================================================
+           SOCIAL LINKS
+           ===================================================== */
+
+        .social-links {
+
+            display:
+                flex;
+
+            flex-wrap:
+                wrap;
+
+            gap:
+                10px;
+
+            margin-top:
+                10px;
+
+        }
+
+
+        .social-link {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                10px 14px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .18);
+
+            border-radius:
+                8px;
+
+            background:
+                rgba(120, 82, 52, .035);
+
+            color:
+                #765236;
+
+            text-decoration:
+                none;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            transition:
+                all .2s ease;
+
+        }
+
+
+        .social-link:hover {
+
+            background:
+                rgba(120, 82, 52, .08);
+
+            border-color:
+                rgba(120, 82, 52, .35);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        .social-link[hidden] {
+
+            display:
+                none !important;
+
+        }
+
+
+        /* =====================================================
+           ENQUIRY FORM
+           ===================================================== */
+
+        .contact-form-box {
+
+            padding:
+                30px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .14);
+
+            border-radius:
+                12px;
+
+            background:
+                #fdfaf6;
+
+            box-shadow:
+                0 10px 35px
+                rgba(50, 35, 20, .06);
+
+        }
+
+
+        .contact-form-box h3 {
+
+            margin:
+                0 0 8px;
+
+            color:
+                #4c4037;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size:
+                26px;
+
+            font-weight:
+                500;
+
+        }
+
+
+        .contact-form-box > p {
+
+            margin:
+                0 0 24px;
+
+            color:
+                #756b63;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.7;
+
+        }
+
+
+        .form-group {
+
+            margin-bottom:
+                16px;
+
+        }
+
+
+        .form-group label {
+
+            display:
+                block;
+
+            margin-bottom:
+                7px;
+
+            color:
+                #5c5048;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+
+            width:
+                100%;
+
+            box-sizing:
+                border-box;
+
+            padding:
+                12px 13px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .18);
+
+            border-radius:
+                7px;
+
+            background:
+                #ffffff;
+
+            color:
+                #4c4037;
+
+            font-family:
+                inherit;
+
+            font-size:
+                13px;
+
+            outline:
+                none;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+
+            border-color:
+                rgba(120, 82, 52, .5);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(120, 82, 52, .08);
+
+        }
+
+
+        .form-group textarea {
+
+            min-height:
+                140px;
+
+            resize:
+                vertical;
+
+        }
+
+
+        .submit-button {
+
+            width:
+                100%;
+
+            padding:
+                12px 18px;
+
+            border:
+                0;
+
+            border-radius:
+                7px;
+
+            background:
+                #765236;
+
+            color:
+                #ffffff;
+
+            font-family:
+                inherit;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            cursor:
+                pointer;
+
+            transition:
+                background .2s ease,
+                transform .2s ease;
+
+        }
+
+
+        .submit-button:hover {
+
+            background:
+                #5f412a;
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        .submit-button:disabled {
+
+            opacity:
+                .6;
+
+            cursor:
+                not-allowed;
+
+            transform:
+                none;
+
+        }
+
+
+        /* =====================================================
+           FORM MESSAGE
+           ===================================================== */
+
+        .form-note {
+
+            min-height:
+                20px;
+
+            margin:
+                14px 0 0;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.5;
+
+        }
+
+
+        .form-note.success {
+
+            color:
+                #477044;
+
+        }
+
+
+        .form-note.error {
+
+            color:
+                #9a3d3d;
+
+        }
+
+
+        .form-note.loading {
+
+            color:
+                #765236;
+
+        }
+
+
+        /* =====================================================
+           CONTACT UNAVAILABLE
+           ===================================================== */
+
+        .contact-unavailable {
+
+            padding:
+                18px;
+
+            border:
+                1px solid
+                rgba(120, 82, 52, .12);
+
+            border-radius:
+                9px;
+
+            background:
+                rgba(120, 82, 52, .035);
+
+            color:
+                #756b63;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.6;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (
+            max-width: 800px
+        ) {
+
+            .contact-grid {
+
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                    35px;
+
+            }
+
+        }
+
+
+        @media (
+            max-width: 500px
+        ) {
+
+            .contact-section {
+
+                padding:
+                    50px 0;
+
+            }
+
+
+            .contact-form-box {
+
+                padding:
+                    22px;
+
+            }
+
+
+            .contact-card {
+
+                padding:
+                    16px;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -39,9 +687,7 @@
     <nav class="nav">
 
 
-        <!-- =================================================
-             BRAND
-             ================================================= -->
+        <!-- BRAND -->
 
         <a
             href="index.html"
@@ -57,25 +703,27 @@
         </a>
 
 
-        <!-- =================================================
-             MOBILE MENU
-             ================================================= -->
+        <!-- MOBILE NAV -->
 
         <button
             type="button"
             class="nav-toggle"
+            id="nav-toggle"
             aria-label="Toggle navigation"
             aria-expanded="false"
         >
+
             ☰
+
         </button>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
-        <ul class="nav-links">
+        <ul
+            class="nav-links"
+            id="nav-links"
+        >
 
             <li>
 
@@ -138,7 +786,9 @@
                     class="active"
                     aria-current="page"
                 >
+
                     Contact
+
                 </a>
 
             </li>
@@ -161,27 +811,29 @@
 
     <div class="hero-inner">
 
-        <div class="eyebrow">
-            Get in touch
+        <div class="hero-content">
+
+
+            <div class="eyebrow">
+                Get in Touch
+            </div>
+
+
+            <h1>
+                Contact Roy Bari
+            </h1>
+
+
+            <p class="tagline">
+
+                For questions about the Puja,
+                visiting the Bari, the family archive,
+                or general enquiries, please get in touch.
+
+            </p>
+
+
         </div>
-
-
-        <h1>
-
-            Contact
-            <br>
-            the Family
-
-        </h1>
-
-
-        <p class="tagline">
-
-            For visits, press enquiries,
-            or to contribute a photograph,
-            memory, or story to the family archive.
-
-        </p>
 
     </div>
 
@@ -189,354 +841,419 @@
 
 
 <!-- =====================================================
-     CONTACT SECTION
+     CONTACT
      ===================================================== -->
 
-<section>
+<section class="contact-section">
 
-    <div class="container contact-grid">
+    <div class="container">
 
 
-        <!-- =================================================
-             CONTACT INFORMATION
-             ================================================= -->
-
-        <div>
+        <div class="section-head">
 
             <div class="eyebrow">
-                Official contact
+                Contact
             </div>
 
-
             <h2>
-                Reach us directly
+                Reach the Roy Bari
             </h2>
+
+            <p class="lead">
+
+                Contact information is maintained
+                directly through the family archive.
+
+            </p>
+
+        </div>
+
+
+        <div class="contact-grid">
 
 
             <!-- =================================================
-                 CONTACT TABLE
+                 CONTACT INFORMATION
                  ================================================= -->
 
-            <table class="info-table">
+            <div class="contact-information">
 
-                <tbody>
+
+                <!-- ADDRESS -->
+
+                <div class="contact-card">
+
+                    <div
+                        class="contact-icon"
+                        aria-hidden="true"
+                    >
+                        ⌂
+                    </div>
+
+
+                    <div
+                        class="contact-card-content"
+                    >
+
+                        <span>
+                            Address
+                        </span>
+
+
+                        <p
+                            id="contact-address"
+                        >
+                            Loading...
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="contact-card">
+
+                    <div
+                        class="contact-icon"
+                        aria-hidden="true"
+                    >
+                        @
+                    </div>
+
+
+                    <div
+                        class="contact-card-content"
+                    >
+
+                        <span>
+                            Email
+                        </span>
+
+
+                        <a
+                            id="contact-email"
+                            href="#"
+                        >
+                            Loading...
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="contact-card">
+
+                    <div
+                        class="contact-icon"
+                        aria-hidden="true"
+                    >
+                        ☎
+                    </div>
+
+
+                    <div
+                        class="contact-card-content"
+                    >
+
+                        <span>
+                            Phone
+                        </span>
+
+
+                        <div
+                            class="phone-list"
+                        >
+
+                            <a
+                                id="contact-phone1"
+                                href="#"
+                            >
+                                Loading...
+                            </a>
+
+
+                            <a
+                                id="contact-phone2"
+                                href="#"
+                            >
+                                Loading...
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SOCIAL -->
+
+                <div class="contact-card">
+
+                    <div
+                        class="contact-icon"
+                        aria-hidden="true"
+                    >
+                        ◉
+                    </div>
+
+
+                    <div
+                        class="contact-card-content"
+                    >
+
+                        <span>
+                            Connect
+                        </span>
+
+
+                        <div
+                            class="social-links"
+                        >
+
+                            <a
+                                id="contact-whatsapp"
+                                class="social-link"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                hidden
+                            >
+                                WhatsApp
+                            </a>
+
+
+                            <a
+                                id="contact-facebook"
+                                class="social-link"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                hidden
+                            >
+                                Facebook
+                            </a>
+
+
+                            <a
+                                id="contact-instagram"
+                                class="social-link"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                hidden
+                            >
+                                Instagram
+                            </a>
+
+
+                            <a
+                                id="contact-youtube"
+                                class="social-link"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                hidden
+                            >
+                                YouTube
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 ENQUIRY FORM
+                 ================================================= -->
+
+            <div
+                class="contact-form-box"
+            >
+
+                <h3>
+                    Send an Enquiry
+                </h3>
+
+
+                <p>
+
+                    Have a question about the Puja,
+                    visiting the Bari, or the family archive?
+                    Send us a message.
+
+                </p>
+
+
+                <form
+                    id="enquiry-form"
+                    novalidate
+                >
+
+
+                    <!-- NAME -->
+
+                    <div
+                        class="form-group"
+                    >
+
+                        <label
+                            for="name"
+                        >
+                            Your Name
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            autocomplete="name"
+                            placeholder="Enter your name"
+                            required
+                        >
+
+                    </div>
 
 
                     <!-- EMAIL -->
 
-                    <tr>
+                    <div
+                        class="form-group"
+                    >
 
-                        <th>
-                            Email
-                        </th>
-
-                        <td>
-
-                            <a
-                                id="contact-email"
-                                href="#"
-                            >
-                                Loading...
-                            </a>
-
-                        </td>
-
-                    </tr>
+                        <label
+                            for="email"
+                        >
+                            Email Address
+                        </label>
 
 
-                    <!-- PUJA COMMITTEE -->
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            autocomplete="email"
+                            placeholder="you@example.com"
+                            required
+                        >
 
-                    <tr>
-
-                        <th>
-                            Puja Committee
-                        </th>
-
-                        <td>
-
-                            <a
-                                id="contact-phone"
-                                href="#"
-                            >
-                                Loading...
-                            </a>
-
-                        </td>
-
-                    </tr>
+                    </div>
 
 
-                    <!-- ADDRESS -->
+                    <!-- REASON -->
 
-                    <tr>
+                    <div
+                        class="form-group"
+                    >
 
-                        <th>
-                            Address
-                        </th>
-
-                        <td id="contact-address">
-
-                            Loading...
-
-                        </td>
-
-                    </tr>
+                        <label
+                            for="reason"
+                        >
+                            Reason for Contact
+                        </label>
 
 
-                </tbody>
+                        <select
+                            id="reason"
+                            name="reason"
+                        >
 
-            </table>
-
-
-            <!-- =================================================
-                 SOCIAL MEDIA
-                 ================================================= -->
-
-            <h3
-                style="margin-top:40px;"
-            >
-
-                Connect with us
-
-            </h3>
+                            <option value="">
+                                Select an option
+                            </option>
 
 
-            <div
-                class="pill-row"
-                style="margin-top:16px;"
-            >
+                            <option value="Puja enquiry">
+                                Puja enquiry
+                            </option>
 
 
-                <!-- INSTAGRAM -->
-
-                <a
-                    class="pill"
-                    id="contact-instagram"
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-
-                    Instagram
-
-                </a>
+                            <option value="Visit enquiry">
+                                Visit enquiry
+                            </option>
 
 
-                <!-- FACEBOOK -->
-
-                <a
-                    class="pill"
-                    id="contact-facebook"
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-
-                    Facebook
-
-                </a>
+                            <option value="Family archive">
+                                Family archive
+                            </option>
 
 
-                <!-- WHATSAPP -->
-
-                <a
-                    class="pill"
-                    id="contact-whatsapp"
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-
-                    WhatsApp
-
-                </a>
+                            <option value="General enquiry">
+                                General enquiry
+                            </option>
 
 
-                <!-- YOUTUBE -->
+                            <option value="Other">
+                                Other
+                            </option>
 
-                <a
-                    class="pill"
-                    id="contact-youtube"
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                        </select>
 
-                    YouTube
+                    </div>
 
-                </a>
 
+                    <!-- MESSAGE -->
+
+                    <div
+                        class="form-group"
+                    >
+
+                        <label
+                            for="message"
+                        >
+                            Message
+                        </label>
+
+
+                        <textarea
+                            id="message"
+                            name="message"
+                            placeholder="Write your message..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        id="submit-button"
+                        class="submit-button"
+                    >
+
+                        Send Message
+
+                    </button>
+
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="form-note"
+                        class="form-note"
+                        aria-live="polite"
+                    ></div>
+
+
+                </form>
 
             </div>
 
 
-            <p
-                class="small-caps"
-                style="margin-top:20px;"
-            >
-
-                Contact information is maintained
-                by the Roy Bari family.
-
-            </p>
-
         </div>
-
-
-        <!-- =================================================
-             CONTACT FORM
-             ================================================= -->
-
-        <div>
-
-            <div class="eyebrow">
-                Send a message
-            </div>
-
-
-            <h2>
-                Enquiry Form
-            </h2>
-
-
-            <p class="lead">
-
-                Have a question about the Puja,
-                want to arrange a visit, or have
-                something to contribute to the archive?
-
-            </p>
-
-
-            <!-- =================================================
-                 FORM
-                 ================================================= -->
-
-            <form
-                id="enquiry-form"
-                novalidate
-            >
-
-
-                <!-- =================================================
-                     NAME
-                     ================================================= -->
-
-                <div class="form-field">
-
-                    <label for="name">
-                        Your name
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        autocomplete="name"
-                        placeholder="Enter your name"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- =================================================
-                     EMAIL
-                     ================================================= -->
-
-                <div class="form-field">
-
-                    <label for="email">
-                        Email
-                    </label>
-
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        autocomplete="email"
-                        placeholder="you@example.com"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- =================================================
-                     REASON
-                     ================================================= -->
-
-                <div class="form-field">
-
-                    <label for="reason">
-                        Reason for writing
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="reason"
-                        name="reason"
-                        placeholder="Visit, press, archive contribution..."
-                    >
-
-                </div>
-
-
-                <!-- =================================================
-                     MESSAGE
-                     ================================================= -->
-
-                <div class="form-field">
-
-                    <label for="message">
-                        Message
-                    </label>
-
-
-                    <textarea
-                        id="message"
-                        name="message"
-                        rows="7"
-                        placeholder="Write your message here..."
-                        required
-                    ></textarea>
-
-                </div>
-
-
-                <!-- =================================================
-                     SUBMIT
-                     ================================================= -->
-
-                <button
-                    type="submit"
-                    class="btn btn-solid"
-                    id="submit-button"
-                >
-
-                    Send Message
-
-                </button>
-
-
-                <!-- =================================================
-                     STATUS
-                     ================================================= -->
-
-                <p
-                    class="form-note"
-                    id="form-note"
-                    aria-live="polite"
-                ></p>
-
-
-            </form>
-
-        </div>
-
 
     </div>
 
@@ -555,9 +1272,7 @@
         <div class="footer-grid">
 
 
-            <!-- =================================================
-                 ROY BARI
-                 ================================================= -->
+            <!-- ROY BARI -->
 
             <div>
 
@@ -567,19 +1282,14 @@
 
 
                 <p>
-
-                    V8J4+5FF,
-                    Chhota Nohari,
-                    West Bengal 721121
-
+                    Family archive of the Roy Bari
+                    Durga Puja.
                 </p>
 
             </div>
 
 
-            <!-- =================================================
-                 EXPLORE
-                 ================================================= -->
+            <!-- EXPLORE -->
 
             <div>
 
@@ -630,9 +1340,7 @@
             </div>
 
 
-            <!-- =================================================
-                 VISIT
-                 ================================================= -->
+            <!-- VISIT -->
 
             <div>
 
@@ -651,23 +1359,12 @@
 
                     </li>
 
-
-                    <li>
-
-                        <a href="gallery.html">
-                            Gallery
-                        </a>
-
-                    </li>
-
                 </ul>
 
             </div>
 
 
-            <!-- =================================================
-                 CONTACT
-                 ================================================= -->
+            <!-- CONTACT -->
 
             <div>
 
@@ -697,10 +1394,6 @@
         </div>
 
 
-        <!-- =================================================
-             FOOTER BOTTOM
-             ================================================= -->
-
         <div class="footer-bottom">
 
             <span>
@@ -720,11 +1413,15 @@
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     MAIN WEBSITE JS
      ===================================================== -->
 
 <script src="main.js"></script>
 
+
+<!-- =====================================================
+     CONTACT FIREBASE JS
+     ===================================================== -->
 
 <script
     type="module"

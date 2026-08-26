@@ -1,6 +1,34 @@
 /* =========================================================
    ROY BARI — VISIT PAGE
    Firebase / Firestore
+   =========================================================
+
+   FIRESTORE COLLECTION:
+
+   visit
+
+   CURRENT DOCUMENT FIELDS:
+
+   address
+   mapUrl
+   parking
+   railOne
+   railTwo
+
+   OPTIONAL FIELDS:
+
+   mapEmbedUrl
+
+   timings
+   pujaTimings
+
+   guide
+   visitorGuide
+   ========================================================= */
+
+
+/* =========================================================
+   FIREBASE
    ========================================================= */
 
 import {
@@ -18,35 +46,61 @@ import {
    ========================================================= */
 
 const address =
-    document.getElementById("visit-address");
+    document.getElementById(
+        "visit-address"
+    );
 
 const railOne =
-    document.getElementById("rail-one");
+    document.getElementById(
+        "rail-one"
+    );
 
 const railTwo =
-    document.getElementById("rail-two");
+    document.getElementById(
+        "rail-two"
+    );
 
 const parking =
-    document.getElementById("parking");
+    document.getElementById(
+        "parking"
+    );
 
 const googleMap =
-    document.getElementById("google-map");
+    document.getElementById(
+        "google-map"
+    );
 
 const timings =
-    document.getElementById("visit-timings");
+    document.getElementById(
+        "visit-timings"
+    );
 
 const visitorGuide =
-    document.getElementById("visitor-guide");
+    document.getElementById(
+        "visitor-guide"
+    );
 
 
 /* =========================================================
    DEBUG
    ========================================================= */
 
-console.log("=================================");
-console.log("ROY BARI — VISIT JS");
-console.log("Firestore:", db);
-console.log("=================================");
+console.log(
+    "================================="
+);
+
+console.log(
+    "ROY BARI — VISIT JS"
+);
+
+console.log(
+    "Firestore:",
+    db
+);
+
+console.log(
+    "================================="
+);
 
 
 /* =========================================================
@@ -59,70 +113,103 @@ function escapeHTML(value) {
         value === null ||
         value === undefined
     ) {
+
         return "";
+
     }
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
 }
 
 
 /* =========================================================
-   SAFE URL
+   SAFE HTTP URL CHECK
    ========================================================= */
 
 function isValidHttpUrl(url) {
 
     if (!url) {
+
         return false;
+
     }
 
     try {
 
         const parsed =
-            new URL(url);
+            new URL(
+                String(url).trim()
+            );
 
         return (
+
             parsed.protocol === "http:" ||
+
             parsed.protocol === "https:"
+
         );
 
-    } catch {
+    }
+    catch (error) {
 
         return false;
 
     }
+
 }
 
 
 /* =========================================================
-   GOOGLE MAP HANDLER
+   GOOGLE MAP EMBED
    ========================================================= */
 
 function setupGoogleMap(data) {
 
     if (!googleMap) {
+
         return;
+
     }
 
 
-    /*
-     * Best option:
-     *
-     * mapEmbedUrl
-     *
-     * Example:
-     *
-     * https://www.google.com/maps/embed?pb=...
-     */
+    /* -----------------------------------------------------
+       1. BEST OPTION — mapEmbedUrl
+       ----------------------------------------------------- */
 
     if (
+
         data.mapEmbedUrl &&
-        isValidHttpUrl(data.mapEmbedUrl)
+
+        isValidHttpUrl(
+            data.mapEmbedUrl
+        )
+
     ) {
 
         googleMap.src =
@@ -133,56 +220,81 @@ function setupGoogleMap(data) {
         );
 
         return;
+
     }
 
 
-    /*
-     * If mapUrl itself is already an
-     * iframe/embed URL.
-     */
+    /* -----------------------------------------------------
+       2. If mapUrl is already an embed URL
+       ----------------------------------------------------- */
 
     if (
+
         data.mapUrl &&
-        isValidHttpUrl(data.mapUrl)
+
+        isValidHttpUrl(
+            data.mapUrl
+        )
+
     ) {
 
+        const mapUrl =
+            String(
+                data.mapUrl
+            ).trim();
+
+
         if (
-            data.mapUrl.includes(
+
+            mapUrl.includes(
                 "google.com/maps/embed"
             )
+
         ) {
 
             googleMap.src =
-                data.mapUrl;
+                mapUrl;
 
             console.log(
                 "Using Firestore mapUrl as embed URL"
             );
 
             return;
+
         }
+
     }
 
 
-    /*
-     * Your current mapUrl is:
-     *
-     * https://share.google/...
-     *
-     * That is a sharing URL, not an iframe URL.
-     *
-     * So we use the address to create
-     * a Google Maps embed search.
-     */
+    /* -----------------------------------------------------
+       3. Address-based Google Maps embed
+       -----------------------------------------------------
+
+       Your current Firestore mapUrl is:
+
+       https://share.google/...
+
+       That is a sharing URL and should NOT be
+       placed directly inside an iframe.
+
+       Therefore we use the Firestore address.
+       ----------------------------------------------------- */
 
     const mapAddress =
+
         data.address ||
+
         "Chhota Nohari, West Bengal 721121";
 
 
     const embedUrl =
+
         "https://www.google.com/maps?q=" +
-        encodeURIComponent(mapAddress) +
+
+        encodeURIComponent(
+            mapAddress
+        ) +
+
         "&output=embed";
 
 
@@ -210,9 +322,9 @@ async function loadVisitInfo() {
 
     try {
 
-        /* ---------------------------------------------
-           GET VISIT COLLECTION
-           --------------------------------------------- */
+        /* -------------------------------------------------
+           GET COLLECTION
+           ------------------------------------------------- */
 
         const visitCollection =
             collection(
@@ -233,54 +345,75 @@ async function loadVisitInfo() {
         );
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            NO DOCUMENT
-           --------------------------------------------- */
+           ------------------------------------------------- */
 
-        if (snapshot.empty) {
+        if (
+            snapshot.empty
+        ) {
 
             console.warn(
                 "No documents found in visit collection."
             );
 
+
             showNoVisitData();
 
             return;
+
         }
 
 
-        /* ---------------------------------------------
-           GET MAIN DOCUMENT
-           --------------------------------------------- */
+        /* -------------------------------------------------
+           SELECT DOCUMENT
+           -------------------------------------------------
 
-        let data = null;
+           Prefer:
 
+           visit/main
 
-        /*
-         * Prefer document named "main".
-         */
+           Otherwise use the first document.
+           ------------------------------------------------- */
+
+        let selectedDocument =
+            null;
+
 
         const mainDocument =
             snapshot.docs.find(
-                doc => doc.id === "main"
+                function (doc) {
+
+                    return (
+                        doc.id === "main"
+                    );
+
+                }
             );
 
 
         if (mainDocument) {
 
-            data =
-                mainDocument.data();
-
-        } else {
-
-            /*
-             * Otherwise use first document.
-             */
-
-            data =
-                snapshot.docs[0].data();
+            selectedDocument =
+                mainDocument;
 
         }
+        else {
+
+            selectedDocument =
+                snapshot.docs[0];
+
+        }
+
+
+        const data =
+            selectedDocument.data();
+
+
+        console.log(
+            "Selected visit document:",
+            selectedDocument.id
+        );
 
 
         console.log(
@@ -289,68 +422,84 @@ async function loadVisitInfo() {
         );
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            LOCATION
-           --------------------------------------------- */
+           ------------------------------------------------- */
 
-        loadLocation(data);
+        loadLocation(
+            data
+        );
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            GOOGLE MAP
-           --------------------------------------------- */
+           ------------------------------------------------- */
 
-        setupGoogleMap(data);
+        setupGoogleMap(
+            data
+        );
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            TIMINGS
-           --------------------------------------------- */
+           ------------------------------------------------- */
 
         if (
-            Array.isArray(data.timings)
+            Array.isArray(
+                data.timings
+            )
         ) {
 
             loadTimings(
                 data.timings
             );
 
-        } else if (
-            Array.isArray(data.pujaTimings)
+        }
+        else if (
+            Array.isArray(
+                data.pujaTimings
+            )
         ) {
 
             loadTimings(
                 data.pujaTimings
             );
 
-        } else {
+        }
+        else {
 
             showNoTimings();
 
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            VISITOR GUIDE
-           --------------------------------------------- */
+           ------------------------------------------------- */
 
         if (
-            Array.isArray(data.guide)
+            Array.isArray(
+                data.guide
+            )
         ) {
 
             loadVisitorGuide(
                 data.guide
             );
 
-        } else if (
-            Array.isArray(data.visitorGuide)
+        }
+        else if (
+            Array.isArray(
+                data.visitorGuide
+            )
         ) {
 
             loadVisitorGuide(
                 data.visitorGuide
             );
 
-        } else {
+        }
+        else {
 
             showNoGuide();
 
@@ -361,8 +510,8 @@ async function loadVisitInfo() {
             "ROY BARI: Visit page loaded successfully."
         );
 
-
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "ROY BARI VISIT FIREBASE ERROR:",
@@ -383,55 +532,83 @@ async function loadVisitInfo() {
 
 function loadLocation(data) {
 
-    /* ---------------------------------------------
+    if (!data) {
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
        ADDRESS
-       --------------------------------------------- */
+       ----------------------------------------------------- */
 
     if (address) {
 
         address.textContent =
+
             data.address ||
+
             "Chhota Nohari, West Bengal 721121";
 
     }
 
 
-    /* ---------------------------------------------
+    /* -----------------------------------------------------
        RAIL ONE
-       --------------------------------------------- */
+       -----------------------------------------------------
+
+       IMPORTANT:
+
+       Correct field:
+
+       railOne
+
+       NOT:
+
+       raiIOne
+       ----------------------------------------------------- */
 
     if (railOne) {
 
         railOne.textContent =
-            data.raiIOne ||
+
+            data.railOne ||
+
             data.nearestRailOne ||
+
             "Information not available";
 
     }
 
 
-    /* ---------------------------------------------
+    /* -----------------------------------------------------
        RAIL TWO
-       --------------------------------------------- */
+       ----------------------------------------------------- */
 
     if (railTwo) {
 
         railTwo.textContent =
+
             data.railTwo ||
+
             data.nearestRailTwo ||
+
             "Information not available";
 
     }
 
 
-    /* ---------------------------------------------
+    /* -----------------------------------------------------
        PARKING
-       --------------------------------------------- */
+       ----------------------------------------------------- */
 
     if (parking) {
 
         parking.textContent =
+
             data.parking ||
+
             "Information not available";
 
     }
@@ -446,18 +623,24 @@ function loadLocation(data) {
 function loadTimings(data) {
 
     if (!timings) {
+
         return;
+
     }
 
 
     if (
+
         !Array.isArray(data) ||
+
         data.length === 0
+
     ) {
 
         showNoTimings();
 
         return;
+
     }
 
 
@@ -465,37 +648,90 @@ function loadTimings(data) {
 
 
     data.forEach(
-        (item, index) => {
+        function (
+            item,
+            index
+        ) {
+
+            /*
+               Support both object and string
+               timing formats.
+            */
+
+            if (
+                typeof item === "string"
+            ) {
+
+                html += `
+
+                    <div
+                        class="visit-timing-card"
+                    >
+
+                        <div
+                            class="visit-timing-time"
+                        >
+
+                            ${escapeHTML(
+                                item
+                            )}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
 
             const day =
+
                 item.day ||
+
                 item.name ||
+
                 `Day ${index + 1}`;
 
 
             const date =
+
                 item.date ||
+
                 "";
 
 
             const time =
+
                 item.time ||
+
                 item.timing ||
+
                 "";
 
 
             const description =
+
                 item.description ||
+
                 "";
 
 
             html += `
 
-                <div class="visit-timing-card">
+                <div
+                    class="visit-timing-card"
+                >
 
-                    <div class="visit-timing-day">
+                    <div
+                        class="visit-timing-day"
+                    >
 
-                        ${escapeHTML(day)}
+                        ${escapeHTML(
+                            day
+                        )}
 
                     </div>
 
@@ -504,11 +740,17 @@ function loadTimings(data) {
                         date
                         ?
                         `
-                            <div class="visit-timing-date">
 
-                                ${escapeHTML(date)}
+                            <div
+                                class="visit-timing-date"
+                            >
+
+                                ${escapeHTML(
+                                    date
+                                )}
 
                             </div>
+
                         `
                         :
                         ""
@@ -519,11 +761,17 @@ function loadTimings(data) {
                         time
                         ?
                         `
-                            <div class="visit-timing-time">
 
-                                ${escapeHTML(time)}
+                            <div
+                                class="visit-timing-time"
+                            >
+
+                                ${escapeHTML(
+                                    time
+                                )}
 
                             </div>
+
                         `
                         :
                         ""
@@ -534,6 +782,7 @@ function loadTimings(data) {
                         description
                         ?
                         `
+
                             <p>
 
                                 ${escapeHTML(
@@ -541,6 +790,7 @@ function loadTimings(data) {
                                 )}
 
                             </p>
+
                         `
                         :
                         ""
@@ -552,6 +802,15 @@ function loadTimings(data) {
 
         }
     );
+
+
+    if (!html) {
+
+        showNoTimings();
+
+        return;
+
+    }
 
 
     timings.innerHTML =
@@ -573,18 +832,24 @@ function loadTimings(data) {
 function loadVisitorGuide(data) {
 
     if (!visitorGuide) {
+
         return;
+
     }
 
 
     if (
+
         !Array.isArray(data) ||
+
         data.length === 0
+
     ) {
 
         showNoGuide();
 
         return;
+
     }
 
 
@@ -592,40 +857,105 @@ function loadVisitorGuide(data) {
 
 
     data.forEach(
-        (item, index) => {
+        function (
+            item,
+            index
+        ) {
+
+            /*
+               Support simple string entries.
+            */
+
+            if (
+                typeof item === "string"
+            ) {
+
+                html += `
+
+                    <article
+                        class="card"
+                    >
+
+                        <div class="num">
+
+                            ${String(
+                                index + 1
+                            ).padStart(
+                                2,
+                                "0"
+                            )}
+
+                        </div>
+
+
+                        <h4>
+                            Visitor Information
+                        </h4>
+
+
+                        <p>
+
+                            ${escapeHTML(
+                                item
+                            )}
+
+                        </p>
+
+                    </article>
+
+                `;
+
+                return;
+
+            }
+
 
             const number =
+
                 item.number ||
-                String(index + 1).padStart(
+
+                String(
+                    index + 1
+                ).padStart(
                     2,
                     "0"
                 );
 
 
             const title =
+
                 item.title ||
+
                 "Visitor Information";
 
 
             const description =
+
                 item.description ||
+
                 "";
 
 
             html += `
 
-                <article class="card">
+                <article
+                    class="card"
+                >
 
                     <div class="num">
 
-                        ${escapeHTML(number)}
+                        ${escapeHTML(
+                            number
+                        )}
 
                     </div>
 
 
                     <h4>
 
-                        ${escapeHTML(title)}
+                        ${escapeHTML(
+                            title
+                        )}
 
                     </h4>
 
@@ -644,6 +974,15 @@ function loadVisitorGuide(data) {
 
         }
     );
+
+
+    if (!html) {
+
+        showNoGuide();
+
+        return;
+
+    }
 
 
     visitorGuide.innerHTML =
@@ -665,26 +1004,34 @@ function loadVisitorGuide(data) {
 function showNoTimings() {
 
     if (!timings) {
+
         return;
+
     }
 
 
     timings.innerHTML = `
 
-        <div class="visit-empty">
+        <div
+            class="visit-empty"
+        >
 
             <div class="eyebrow">
                 Puja Calendar
             </div>
 
+
             <h4>
                 Timings will be announced soon
             </h4>
 
+
             <p>
+
                 Puja timings will appear here
                 when they are added to the
                 family calendar.
+
             </p>
 
         </div>
@@ -701,13 +1048,17 @@ function showNoTimings() {
 function showNoGuide() {
 
     if (!visitorGuide) {
+
         return;
+
     }
 
 
     visitorGuide.innerHTML = `
 
-        <article class="card">
+        <article
+            class="card"
+        >
 
             <div class="num">
                 01
@@ -720,8 +1071,10 @@ function showNoGuide() {
 
 
             <p>
+
                 Visitor guidelines will be
                 added here before the Puja.
+
             </p>
 
         </article>
@@ -771,12 +1124,19 @@ function showNoVisitData() {
 
     if (googleMap) {
 
-        googleMap.src =
+        const defaultMap =
+
             "https://www.google.com/maps?q=" +
+
             encodeURIComponent(
                 "Chhota Nohari, West Bengal 721121"
             ) +
+
             "&output=embed";
+
+
+        googleMap.src =
+            defaultMap;
 
     }
 
@@ -789,7 +1149,7 @@ function showNoVisitData() {
 
 
 /* =========================================================
-   ERROR
+   FIREBASE ERROR
    ========================================================= */
 
 function showVisitError() {
@@ -826,6 +1186,25 @@ function showVisitError() {
     }
 
 
+    if (googleMap) {
+
+        const defaultMap =
+
+            "https://www.google.com/maps?q=" +
+
+            encodeURIComponent(
+                "Chhota Nohari, West Bengal 721121"
+            ) +
+
+            "&output=embed";
+
+
+        googleMap.src =
+            defaultMap;
+
+    }
+
+
     showNoTimings();
 
     showNoGuide();
@@ -837,15 +1216,31 @@ function showVisitError() {
    START
    ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+if (
+    document.readyState ===
+    "loading"
+) {
 
-        console.log(
-            "Visit page initialized"
-        );
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
 
-        loadVisitInfo();
+            console.log(
+                "Visit page initialized"
+            );
 
-    }
-);
+            loadVisitInfo();
+
+        }
+    );
+
+}
+else {
+
+    console.log(
+        "Visit page initialized"
+    );
+
+    loadVisitInfo();
+
+}
