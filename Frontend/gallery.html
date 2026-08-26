@@ -36,8 +36,11 @@
            ----------------------------------------------------- */
 
         .simple-comparison {
+
             width: 100%;
+
             margin-top: 40px;
+
         }
 
 
@@ -46,8 +49,11 @@
            ----------------------------------------------------- */
 
         .comparison-item {
+
             width: 100%;
+
             margin-bottom: 50px;
+
         }
 
 
@@ -56,6 +62,7 @@
            ----------------------------------------------------- */
 
         .comparison-images {
+
             display: grid;
 
             grid-template-columns:
@@ -64,6 +71,7 @@
             gap: 20px;
 
             width: 100%;
+
         }
 
 
@@ -72,6 +80,9 @@
            ----------------------------------------------------- */
 
         .comparison-photo {
+
+            position: relative;
+
             width: 100%;
 
             background:
@@ -82,10 +93,14 @@
             border:
                 1px solid
                 rgba(101, 28, 36, 0.18);
+
+            cursor: zoom-in;
+
         }
 
 
         .comparison-photo img {
+
             display: block;
 
             width: 100%;
@@ -98,6 +113,9 @@
 
             background:
                 #eee7d9;
+
+            cursor: zoom-in;
+
         }
 
 
@@ -106,6 +124,7 @@
            ----------------------------------------------------- */
 
         .comparison-label {
+
             padding:
                 10px
                 14px;
@@ -120,9 +139,11 @@
                 Arial,
                 sans-serif;
 
-            font-size: 11px;
+            font-size:
+                11px;
 
-            font-weight: 700;
+            font-weight:
+                700;
 
             letter-spacing:
                 0.12em;
@@ -132,6 +153,7 @@
 
             text-align:
                 center;
+
         }
 
 
@@ -140,14 +162,17 @@
            ----------------------------------------------------- */
 
         .comparison-info {
+
             padding:
                 18px
                 4px
                 0;
+
         }
 
 
         .comparison-info h3 {
+
             margin:
                 0
                 0
@@ -165,10 +190,12 @@
 
             color:
                 #3d1117;
+
         }
 
 
         .comparison-info p {
+
             margin:
                 0;
 
@@ -180,10 +207,12 @@
 
             line-height:
                 1.6;
+
         }
 
 
         .comparison-year {
+
             margin-top:
                 8px;
 
@@ -201,6 +230,7 @@
 
             text-transform:
                 uppercase;
+
         }
 
 
@@ -209,6 +239,7 @@
            ----------------------------------------------------- */
 
         .comparison-navigation {
+
             display: flex;
 
             justify-content:
@@ -218,10 +249,12 @@
 
             margin-top:
                 20px;
+
         }
 
 
         .comparison-navigation button {
+
             border:
                 1px solid
                 rgba(101, 28, 36, 0.25);
@@ -244,12 +277,15 @@
 
             border-radius:
                 3px;
+
         }
 
 
         .comparison-navigation button:hover {
+
             background:
                 #b58a45;
+
         }
 
 
@@ -258,6 +294,7 @@
            ----------------------------------------------------- */
 
         .comparison-loading {
+
             width: 100%;
 
             min-height:
@@ -276,6 +313,7 @@
 
             color:
                 #756d63;
+
         }
 
 
@@ -284,6 +322,7 @@
            ----------------------------------------------------- */
 
         .comparison-error {
+
             padding:
                 30px;
 
@@ -299,11 +338,45 @@
 
             color:
                 #756d63;
+
+        }
+
+
+        /* =====================================================
+           GALLERY IMAGE
+           ===================================================== */
+
+        .gallery-image {
+
+            position: relative;
+
+            cursor: zoom-in;
+
+            overflow: hidden;
+
+        }
+
+
+        .gallery-image img {
+
+            cursor: zoom-in;
+
+            display: block;
+
+            width: 100%;
+
+        }
+
+
+        .gallery-image img:hover {
+
+            opacity: 0.94;
+
         }
 
 
         /* -----------------------------------------------------
-           MOBILE
+           MOBILE COMPARISON
            ----------------------------------------------------- */
 
         @media (max-width: 700px) {
@@ -327,7 +400,8 @@
 
             .comparison-info h3 {
 
-                font-size: 22px;
+                font-size:
+                    22px;
 
             }
 
@@ -352,10 +426,11 @@
 
             justify-content: center;
 
-            padding: 20px;
+            padding:
+                20px;
 
             background:
-                rgba(0, 0, 0, 0.92);
+                rgba(0, 0, 0, 0.94);
 
         }
 
@@ -369,11 +444,13 @@
 
         #simple-lightbox img {
 
+            display: block;
+
             max-width:
                 95vw;
 
             max-height:
-                90vh;
+                88vh;
 
             width:
                 auto;
@@ -384,6 +461,9 @@
             object-fit:
                 contain;
 
+            cursor:
+                default;
+
         }
 
 
@@ -391,17 +471,26 @@
 
             position: fixed;
 
-            top: 15px;
+            top:
+                15px;
 
-            right: 20px;
+            right:
+                20px;
 
-            width: 45px;
+            z-index:
+                100001;
 
-            height: 45px;
+            width:
+                45px;
 
-            border: 0;
+            height:
+                45px;
 
-            border-radius: 50%;
+            border:
+                0;
+
+            border-radius:
+                50%;
 
             background:
                 #ffffff;
@@ -412,8 +501,31 @@
             font-size:
                 30px;
 
+            line-height:
+                45px;
+
             cursor:
                 pointer;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+        }
+
+
+        #simple-lightbox-close:hover {
+
+            background:
+                #b58a45;
+
+            color:
+                #ffffff;
 
         }
 
@@ -422,14 +534,41 @@
 
             position: fixed;
 
-            left: 20px;
+            left:
+                20px;
 
-            right: 20px;
+            right:
+                20px;
 
-            bottom: 18px;
+            bottom:
+                18px;
+
+            z-index:
+                100000;
 
             text-align:
                 center;
+
+            color:
+                #ffffff;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.4;
+
+            pointer-events:
+                none;
+
+        }
+
+
+        /* -----------------------------------------------------
+           LIGHTBOX LOADING
+           ----------------------------------------------------- */
+
+        .lightbox-loading {
 
             color:
                 #ffffff;
@@ -454,11 +593,14 @@
 
             display: none;
 
-            align-items: center;
+            align-items:
+                center;
 
-            justify-content: center;
+            justify-content:
+                center;
 
-            padding: 20px;
+            padding:
+                20px;
 
             background:
                 rgba(0, 0, 0, 0.92);
@@ -475,6 +617,8 @@
 
         .video-viewer-box {
 
+            position: relative;
+
             width:
                 min(1100px, 95vw);
 
@@ -488,11 +632,14 @@
 
             display: block;
 
-            width: 100%;
+            width:
+                100%;
 
-            height: 620px;
+            height:
+                620px;
 
-            border: 0;
+            border:
+                0;
 
         }
 
@@ -501,34 +648,80 @@
 
             position: fixed;
 
-            top: 15px;
+            top:
+                15px;
 
-            right: 20px;
+            right:
+                20px;
 
-            width: 45px;
+            z-index:
+                100001;
 
-            height: 45px;
+            width:
+                45px;
 
-            border: 0;
+            height:
+                45px;
 
-            border-radius: 50%;
+            border:
+                0;
 
-            background: #ffffff;
+            border-radius:
+                50%;
 
-            color: #3d1117;
+            background:
+                #ffffff;
 
-            font-size: 30px;
+            color:
+                #3d1117;
 
-            cursor: pointer;
+            font-size:
+                30px;
+
+            cursor:
+                pointer;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
 
         }
 
 
+        .video-viewer-close:hover {
+
+            background:
+                #b58a45;
+
+            color:
+                #ffffff;
+
+        }
+
+
+        /* -----------------------------------------------------
+           MOBILE VIDEO
+           ----------------------------------------------------- */
+
         @media (max-width: 700px) {
+
+            .video-viewer {
+
+                padding:
+                    10px;
+
+            }
+
 
             .video-viewer-box iframe {
 
-                height: 300px;
+                height:
+                    300px;
 
             }
 
@@ -571,7 +764,9 @@
             aria-label="Toggle navigation"
             aria-expanded="false"
         >
+
             ☰
+
         </button>
 
 
@@ -581,55 +776,71 @@
         >
 
             <li>
+
                 <a href="index.html">
                     Home
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="about.html">
                     About the Puja
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="family-tree.html">
                     Family Tree
                 </a>
+
             </li>
 
 
             <li>
+
                 <a
                     href="gallery.html"
                     class="active"
                     aria-current="page"
                 >
+
                     Gallery
+
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="events.html">
                     Events
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="visit.html">
                     Visit
                 </a>
+
             </li>
 
 
             <li>
+
                 <a href="contact.html">
                     Contact
                 </a>
+
             </li>
 
         </ul>
@@ -653,6 +864,7 @@
                 Experience
             </div>
 
+
             <h1>
 
                 Gallery
@@ -660,6 +872,7 @@
                 &amp; Films
 
             </h1>
+
 
             <p class="tagline">
 
@@ -690,6 +903,7 @@
                 Photo Gallery
             </div>
 
+
             <h2>
 
                 The House, The Idol,
@@ -697,6 +911,7 @@
                 The Rituals
 
             </h2>
+
 
             <p class="lead">
 
@@ -717,7 +932,9 @@
                 id="gallery-prev"
                 aria-label="Previous photographs"
             >
+
                 ‹
+
             </button>
 
 
@@ -745,7 +962,9 @@
                 id="gallery-next"
                 aria-label="Next photographs"
             >
+
                 ›
+
             </button>
 
 
@@ -773,9 +992,11 @@
                 Then &amp; Now
             </div>
 
+
             <h2>
                 The Roy Bari Through Time
             </h2>
+
 
             <p class="lead">
 
@@ -786,10 +1007,6 @@
 
         </div>
 
-
-        <!-- =================================================
-             COMPARISON WILL LOAD HERE
-             ================================================= -->
 
         <div
             id="gallery-compare"
@@ -825,9 +1042,11 @@
                 Films
             </div>
 
+
             <h2>
                 Watch the Puja
             </h2>
+
 
             <p class="lead">
 
@@ -849,6 +1068,7 @@
                 <div class="play">
                     ▶
                 </div>
+
 
                 <div class="video-info">
 
@@ -886,6 +1106,7 @@
                     Roy Bari
                 </h5>
 
+
                 <p>
 
                     V8J4+5FF,
@@ -903,30 +1124,42 @@
                     Explore
                 </h5>
 
+
                 <ul>
 
                     <li>
+
                         <a href="about.html">
                             About the Puja
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="family-tree.html">
                             Family Tree
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="gallery.html">
                             Gallery
                         </a>
+
                     </li>
 
+
                     <li>
+
                         <a href="events.html">
                             Events
                         </a>
+
                     </li>
 
                 </ul>
@@ -940,12 +1173,15 @@
                     Visit
                 </h5>
 
+
                 <ul>
 
                     <li>
+
                         <a href="visit.html">
                             Location &amp; Directions
                         </a>
+
                     </li>
 
                 </ul>
@@ -959,12 +1195,15 @@
                     Contact
                 </h5>
 
+
                 <ul>
 
                     <li>
+
                         <a href="contact.html">
                             Get in Touch
                         </a>
+
                     </li>
 
                 </ul>
@@ -978,9 +1217,11 @@
         <div class="footer-bottom">
 
             <span>
+
                 © 2026 Roy Bari.
                 A family archive,
                 not a commercial event.
+
             </span>
 
         </div>
@@ -995,14 +1236,22 @@
      IMAGE LIGHTBOX
      ===================================================== -->
 
-<div id="simple-lightbox">
+<div
+    id="simple-lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image viewer"
+>
+
 
     <button
         type="button"
         id="simple-lightbox-close"
         aria-label="Close image"
     >
+
         ×
+
     </button>
 
 
@@ -1017,6 +1266,7 @@
         id="simple-lightbox-title"
     ></div>
 
+
 </div>
 
 
@@ -1024,14 +1274,23 @@
      VIDEO VIEWER
      ===================================================== -->
 
-<div id="video-viewer">
+<div
+    id="video-viewer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Video viewer"
+>
+
 
     <button
         type="button"
         class="video-viewer-close"
         id="video-viewer-close"
+        aria-label="Close video"
     >
+
         ×
+
     </button>
 
 
@@ -1046,7 +1305,6 @@
                 fullscreen;
                 picture-in-picture
             "
-            allowfullscreen
         ></iframe>
 
     </div>

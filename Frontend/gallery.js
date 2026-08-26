@@ -8,6 +8,12 @@
    videos
    comparisons
 
+   GALLERY IMAGE FIELDS
+
+   image
+   imageUrl
+   link
+   url
 
    COMPARISON FIELDS
 
@@ -17,13 +23,13 @@
    oldImage
    newImage
 
-   SIMPLE VERSION:
+   IMAGE BEHAVIOUR
 
-   THEN | NOW
+   Click anywhere on a gallery image
+   -> Open full image lightbox
 
-   No slider.
-   No overlay.
-   No dragging.
+   No View button.
+   No image overlay.
    ========================================================= */
 
 
@@ -93,7 +99,7 @@ const navLinks =
 
 
 /* =========================================================
-   LIGHTBOX ELEMENTS
+   LIGHTBOX
    ========================================================= */
 
 const lightbox =
@@ -121,7 +127,7 @@ const lightboxClose =
 
 
 /* =========================================================
-   VIDEO ELEMENTS
+   VIDEO VIEWER
    ========================================================= */
 
 const videoViewer =
@@ -155,9 +161,7 @@ let comparisonIndex = 0;
    ESCAPE HTML
    ========================================================= */
 
-function escapeHTML(
-    value
-) {
+function escapeHTML(value) {
 
     if (
         value === null ||
@@ -203,9 +207,7 @@ function escapeHTML(
    GOOGLE DRIVE FILE ID
    ========================================================= */
 
-function getGoogleDriveFileId(
-    link
-) {
+function getGoogleDriveFileId(link) {
 
     if (!link) {
 
@@ -219,9 +221,7 @@ function getGoogleDriveFileId(
 
 
     /*
-
-       https://drive.google.com/file/d/FILE_ID/view
-
+       /file/d/FILE_ID/view
     */
 
     let match =
@@ -238,9 +238,7 @@ function getGoogleDriveFileId(
 
 
     /*
-
-       https://drive.google.com/open?id=FILE_ID
-
+       /open?id=FILE_ID
     */
 
     match =
@@ -257,9 +255,7 @@ function getGoogleDriveFileId(
 
 
     /*
-
-       https://drive.google.com/uc?id=FILE_ID
-
+       /uc?id=FILE_ID
     */
 
     match =
@@ -276,9 +272,7 @@ function getGoogleDriveFileId(
 
 
     /*
-
-       https://drive.google.com/thumbnail?id=FILE_ID
-
+       /thumbnail?id=FILE_ID
     */
 
     match =
@@ -295,13 +289,17 @@ function getGoogleDriveFileId(
 
 
     /*
-       If it already looks like a file ID.
+       Already a file ID
     */
 
     if (
+
         !url.includes("/") &&
+
         !url.includes(":") &&
+
         url.length > 15
+
     ) {
 
         return url;
@@ -315,12 +313,10 @@ function getGoogleDriveFileId(
 
 
 /* =========================================================
-   GOOGLE DRIVE IMAGE URL
+   GOOGLE DRIVE DIRECT IMAGE URL
    ========================================================= */
 
-function getGoogleDriveImageUrl(
-    link
-) {
+function getGoogleDriveImageUrl(link) {
 
     if (!link) {
 
@@ -330,9 +326,7 @@ function getGoogleDriveImageUrl(
 
 
     const fileId =
-        getGoogleDriveFileId(
-            link
-        );
+        getGoogleDriveFileId(link);
 
 
     if (!fileId) {
@@ -345,18 +339,22 @@ function getGoogleDriveImageUrl(
 
 
     return (
+
         "https://drive.google.com/uc" +
+
         "?export=view&id=" +
+
         encodeURIComponent(
             fileId
         )
+
     );
 
 }
 
 
 /* =========================================================
-   GOOGLE DRIVE THUMBNAIL
+   GOOGLE DRIVE THUMBNAIL URL
    ========================================================= */
 
 function getGoogleDriveThumbnailUrl(
@@ -372,9 +370,7 @@ function getGoogleDriveThumbnailUrl(
 
 
     const fileId =
-        getGoogleDriveFileId(
-            link
-        );
+        getGoogleDriveFileId(link);
 
 
     if (!fileId) {
@@ -387,26 +383,39 @@ function getGoogleDriveThumbnailUrl(
 
 
     return (
+
         "https://drive.google.com/thumbnail" +
+
         "?id=" +
+
         encodeURIComponent(
             fileId
         ) +
+
         "&sz=w" +
+
         encodeURIComponent(
             size
         )
+
     );
 
 }
 
 
 /* =========================================================
-   GOOGLE DRIVE VIDEO URL
+   BEST IMAGE URL
+   =========================================================
+
+   Google Drive thumbnail is used first because it is
+   much more reliable for browser display.
+
+   The direct URL remains available as fallback.
    ========================================================= */
 
-function getGoogleDriveVideoUrl(
-    link
+function getBestImageUrl(
+    link,
+    size = 2400
 ) {
 
     if (!link) {
@@ -416,127 +425,23 @@ function getGoogleDriveVideoUrl(
     }
 
 
-    const value =
-        String(link).trim();
-
-
-    /*
-       YouTube
-    */
-
-    if (
-        value.includes(
-            "youtube.com"
-        ) ||
-        value.includes(
-            "youtu.be"
-        )
-    ) {
-
-        const youtubeId =
-            getYouTubeVideoId(
-                value
-            );
-
-
-        if (youtubeId) {
-
-            return (
-                "https://www.youtube.com/embed/" +
-                encodeURIComponent(
-                    youtubeId
-                ) +
-                "?rel=0"
-            );
-
-        }
-
-    }
-
-
-    /*
-       Google Drive
-    */
-
     const fileId =
-        getGoogleDriveFileId(
-            value
+        getGoogleDriveFileId(link);
+
+
+    if (fileId) {
+
+        return getGoogleDriveThumbnailUrl(
+            link,
+            size
         );
 
-
-    if (!fileId) {
-
-        return value;
-
     }
 
 
-    return (
-        "https://drive.google.com/file/d/" +
-        encodeURIComponent(
-            fileId
-        ) +
-        "/preview"
-    );
-
-}
-
-
-/* =========================================================
-   YOUTUBE ID
-   ========================================================= */
-
-function getYouTubeVideoId(
-    url
-) {
-
-    if (!url) {
-
-        return "";
-
-    }
-
-
-    let match =
-        String(url).match(
-            /youtu\.be\/([^?&#/]+)/
-        );
-
-
-    if (match) {
-
-        return match[1];
-
-    }
-
-
-    match =
-        String(url).match(
-            /youtube\.com\/watch\?[^#]*v=([^&#]+)/
-        );
-
-
-    if (match) {
-
-        return match[1];
-
-    }
-
-
-    match =
-        String(url).match(
-            /youtube\.com\/embed\/([^?&#/]+)/
-        );
-
-
-    if (match) {
-
-        return match[1];
-
-    }
-
-
-    return "";
+    return String(
+        link
+    ).trim();
 
 }
 
@@ -605,9 +510,7 @@ if (
 
 function getGalleryScrollAmount() {
 
-    if (
-        !galleryGrid
-    ) {
+    if (!galleryGrid) {
 
         return 300;
 
@@ -640,15 +543,18 @@ function getGalleryScrollAmount() {
 
 
     return (
+
         card.getBoundingClientRect().width +
+
         gap
+
     );
 
 }
 
 
 /* =========================================================
-   GALLERY ARROWS
+   GALLERY PREVIOUS
    ========================================================= */
 
 if (
@@ -675,6 +581,10 @@ if (
 
 }
 
+
+/* =========================================================
+   GALLERY NEXT
+   ========================================================= */
 
 if (
     galleryNext &&
@@ -707,9 +617,7 @@ if (
 
 async function loadGallery() {
 
-    if (
-        !galleryGrid
-    ) {
+    if (!galleryGrid) {
 
         return;
 
@@ -763,11 +671,14 @@ async function loadGallery() {
                 */
 
                 if (
+
                     data.type &&
+
                     String(
                         data.type
                     ).toLowerCase() ===
                     "video"
+
                 ) {
 
                     return;
@@ -776,10 +687,15 @@ async function loadGallery() {
 
 
                 const image =
+
                     data.image ||
+
                     data.imageUrl ||
+
                     data.link ||
+
                     data.url ||
+
                     "";
 
 
@@ -830,8 +746,15 @@ async function loadGallery() {
             ) {
 
                 return (
-                    (parseInt(b.year) || 0) -
-                    (parseInt(a.year) || 0)
+
+                    (parseInt(
+                        b.year
+                    ) || 0) -
+
+                    (parseInt(
+                        a.year
+                    ) || 0)
+
                 );
 
             }
@@ -867,16 +790,39 @@ async function loadGallery() {
                 item
             ) {
 
-                const imageUrl =
-                    getGoogleDriveImageUrl(
-                        item.image
-                    );
-
+                /*
+                   Normal thumbnail for gallery.
+                */
 
                 const thumbnailUrl =
                     getGoogleDriveThumbnailUrl(
                         item.image,
                         1600
+                    );
+
+
+                /*
+                   Large image for lightbox.
+
+                   IMPORTANT:
+                   Use Drive thumbnail at 2400px rather
+                   than uc?export=view.
+                */
+
+                const fullImageUrl =
+                    getBestImageUrl(
+                        item.image,
+                        2400
+                    );
+
+
+                /*
+                   Direct URL as second fallback.
+                */
+
+                const directImageUrl =
+                    getGoogleDriveImageUrl(
+                        item.image
                     );
 
 
@@ -894,7 +840,8 @@ async function loadGallery() {
 
                                 src="${escapeHTML(
                                     thumbnailUrl ||
-                                    imageUrl
+                                    fullImageUrl ||
+                                    directImageUrl
                                 )}"
 
                                 alt="${escapeHTML(
@@ -902,7 +849,12 @@ async function loadGallery() {
                                 )}"
 
                                 data-full="${escapeHTML(
-                                    imageUrl
+                                    fullImageUrl ||
+                                    directImageUrl
+                                )}"
+
+                                data-fallback="${escapeHTML(
+                                    directImageUrl
                                 )}"
 
                                 data-title="${escapeHTML(
@@ -914,15 +866,8 @@ async function loadGallery() {
                                 referrerpolicy="no-referrer"
 
                                 draggable="false"
-                            >
 
-
-                            <button
-                                type="button"
-                                class="gallery-view-button"
                             >
-                                View
-                            </button>
 
                         </div>
 
@@ -942,6 +887,7 @@ async function loadGallery() {
                                 ${
                                     item.year
                                         ? `
+
                                             <span>
                                                 ·
                                             </span>
@@ -949,6 +895,7 @@ async function loadGallery() {
                                             ${escapeHTML(
                                                 item.year
                                             )}
+
                                           `
                                         : ""
                                 }
@@ -968,11 +915,15 @@ async function loadGallery() {
                             ${
                                 item.description
                                     ? `
+
                                         <p>
+
                                             ${escapeHTML(
                                                 item.description
                                             )}
+
                                         </p>
+
                                       `
                                     : ""
                             }
@@ -992,50 +943,70 @@ async function loadGallery() {
 
 
         /*
-           Image click.
+           =====================================================
+           CLICK ANYWHERE ON IMAGE
+           =====================================================
+
+           No View button.
+
+           The image itself opens the lightbox.
         */
 
         galleryGrid
             .querySelectorAll(
-                ".gallery-card"
+                ".gallery-card img"
             )
             .forEach(
-                function (card) {
-
-                    const image =
-                        card.querySelector(
-                            "img"
-                        );
-
-
-                    const button =
-                        card.querySelector(
-                            ".gallery-view-button"
-                        );
-
-
-                    function open() {
-
-                        openLightbox(
-
-                            image.dataset.full,
-
-                            image.dataset.title
-
-                        );
-
-                    }
-
+                function (image) {
 
                     image.addEventListener(
                         "click",
-                        open
+                        function () {
+
+                            openLightbox(
+
+                                image.dataset.full,
+
+                                image.dataset.title,
+
+                                image.dataset.fallback
+
+                            );
+
+                        }
                     );
 
 
-                    button.addEventListener(
-                        "click",
-                        open
+                    /*
+                       If thumbnail fails,
+                       try direct image.
+                    */
+
+                    image.addEventListener(
+                        "error",
+                        function () {
+
+                            const fallback =
+                                image.dataset.fallback;
+
+
+                            if (
+
+                                fallback &&
+
+                                !image.dataset.fallbackUsed
+
+                            ) {
+
+                                image.dataset.fallbackUsed =
+                                    "true";
+
+                                image.src =
+                                    fallback;
+
+                            }
+
+                        }
                     );
 
                 }
@@ -1059,9 +1030,11 @@ async function loadGallery() {
                 </h3>
 
                 <p>
+
                     ${escapeHTML(
                         error.message
                     )}
+
                 </p>
 
             </div>
@@ -1094,22 +1067,34 @@ function getComparisonImage(
     ) {
 
         return (
+
             data.oldImage ||
+
             data.before ||
+
             data.oldLink ||
+
             data.old ||
+
             ""
+
         );
 
     }
 
 
     return (
+
         data.newImage ||
+
         data.after ||
+
         data.newLink ||
+
         data.new ||
+
         ""
+
     );
 
 }
@@ -1121,9 +1106,7 @@ function getComparisonImage(
 
 async function loadComparisons() {
 
-    if (
-        !compareBox
-    ) {
+    if (!compareBox) {
 
         return;
 
@@ -1165,10 +1148,6 @@ async function loadComparisons() {
                     );
 
 
-                /*
-                   Both images are required.
-                */
-
                 if (
                     !oldImage ||
                     !newImage
@@ -1206,10 +1185,6 @@ async function loadComparisons() {
         );
 
 
-        /*
-           Sort by year.
-        */
-
         comparisonItems.sort(
             function (
                 a,
@@ -1217,8 +1192,15 @@ async function loadComparisons() {
             ) {
 
                 return (
-                    (parseInt(b.year) || 0) -
-                    (parseInt(a.year) || 0)
+
+                    (parseInt(
+                        b.year
+                    ) || 0) -
+
+                    (parseInt(
+                        a.year
+                    ) || 0)
+
                 );
 
             }
@@ -1238,6 +1220,7 @@ async function loadComparisons() {
                     <h3>
                         No comparison images found
                     </h3>
+
 
                     <p>
 
@@ -1293,10 +1276,13 @@ async function loadComparisons() {
                     Comparison could not be loaded
                 </h3>
 
+
                 <p>
+
                     ${escapeHTML(
                         error.message
                     )}
+
                 </p>
 
             </div>
@@ -1309,7 +1295,7 @@ async function loadComparisons() {
 
 
 /* =========================================================
-   RENDER SIMPLE SIDE-BY-SIDE COMPARISON
+   RENDER COMPARISON
    ========================================================= */
 
 function renderComparison(
@@ -1317,8 +1303,11 @@ function renderComparison(
 ) {
 
     if (
+
         !comparisonItems.length ||
+
         !compareBox
+
     ) {
 
         return;
@@ -1343,19 +1332,29 @@ function renderComparison(
         ];
 
 
+    /*
+       Large Drive thumbnails.
+
+       These are used for the comparison images.
+    */
+
     const oldImage =
-        getGoogleDriveThumbnailUrl(
+        getBestImageUrl(
             item.oldImage,
             2400
         );
 
 
     const newImage =
-        getGoogleDriveThumbnailUrl(
+        getBestImageUrl(
             item.newImage,
             2400
         );
 
+
+    /*
+       Direct fallback.
+    */
 
     const oldDirect =
         getGoogleDriveImageUrl(
@@ -1376,18 +1375,10 @@ function renderComparison(
         >
 
 
-            <!-- =============================================
-                 TWO IMAGES
-                 ============================================= -->
-
             <div
                 class="comparison-images"
             >
 
-
-                <!-- =========================================
-                     THEN
-                     ========================================= -->
 
                 <div
                     class="comparison-photo"
@@ -1420,14 +1411,11 @@ function renderComparison(
                         loading="eager"
 
                         draggable="false"
+
                     >
 
                 </div>
 
-
-                <!-- =========================================
-                     NOW
-                     ========================================= -->
 
                 <div
                     class="comparison-photo"
@@ -1460,6 +1448,7 @@ function renderComparison(
                         loading="eager"
 
                         draggable="false"
+
                     >
 
                 </div>
@@ -1467,10 +1456,6 @@ function renderComparison(
 
             </div>
 
-
-            <!-- =============================================
-                 INFORMATION
-                 ============================================= -->
 
             <div
                 class="comparison-info"
@@ -1523,12 +1508,6 @@ function renderComparison(
             </div>
 
 
-            <!-- =============================================
-                 NAVIGATION
-                 Only appears if there are multiple
-                 comparisons.
-                 ============================================= -->
-
             ${
                 total > 1
                     ? `
@@ -1541,7 +1520,9 @@ function renderComparison(
                                 type="button"
                                 id="comparison-prev"
                             >
+
                                 Previous
+
                             </button>
 
 
@@ -1549,7 +1530,9 @@ function renderComparison(
                                 type="button"
                                 id="comparison-next"
                             >
+
                                 Next
+
                             </button>
 
                         </div>
@@ -1565,7 +1548,7 @@ function renderComparison(
 
 
     /*
-       Image fallback.
+       Comparison image events.
     */
 
     compareBox
@@ -1574,6 +1557,11 @@ function renderComparison(
         )
         .forEach(
             function (image) {
+
+
+                /*
+                   Fallback if Drive thumbnail fails.
+                */
 
                 image.addEventListener(
                     "error",
@@ -1584,9 +1572,11 @@ function renderComparison(
 
 
                         if (
+
                             fallback &&
-                            image.src !== fallback &&
+
                             !image.dataset.used
+
                         ) {
 
                             image.dataset.used =
@@ -1602,8 +1592,7 @@ function renderComparison(
 
 
                 /*
-                   Clicking the comparison image
-                   also opens the full image.
+                   Click comparison image.
                 */
 
                 image.addEventListener(
@@ -1614,7 +1603,9 @@ function renderComparison(
 
                             image.src,
 
-                            image.alt
+                            image.alt,
+
+                            image.dataset.direct
 
                         );
 
@@ -1626,7 +1617,7 @@ function renderComparison(
 
 
     /*
-       Previous.
+       Previous comparison.
     */
 
     const previous =
@@ -1635,17 +1626,14 @@ function renderComparison(
         );
 
 
-    if (
-        previous
-    ) {
+    if (previous) {
 
         previous.addEventListener(
             "click",
             function () {
 
                 renderComparison(
-                    comparisonIndex -
-                    1
+                    comparisonIndex - 1
                 );
 
             }
@@ -1655,7 +1643,7 @@ function renderComparison(
 
 
     /*
-       Next.
+       Next comparison.
     */
 
     const next =
@@ -1664,17 +1652,14 @@ function renderComparison(
         );
 
 
-    if (
-        next
-    ) {
+    if (next) {
 
         next.addEventListener(
             "click",
             function () {
 
                 renderComparison(
-                    comparisonIndex +
-                    1
+                    comparisonIndex + 1
                 );
 
             }
@@ -1691,9 +1676,7 @@ function renderComparison(
 
 async function loadVideos() {
 
-    if (
-        !videoList
-    ) {
+    if (!videoList) {
 
         return;
 
@@ -1723,11 +1706,13 @@ async function loadVideos() {
                         ▶
                     </div>
 
+
                     <div class="video-info">
 
                         <h4>
                             No films yet
                         </h4>
+
 
                         <p>
                             Films will appear here.
@@ -1755,11 +1740,17 @@ async function loadVideos() {
 
 
                 const link =
+
                     data.youtubeUrl ||
+
                     data.youtube ||
+
                     data.link ||
+
                     data.url ||
+
                     data.videoUrl ||
+
                     "";
 
 
@@ -1792,6 +1783,7 @@ async function loadVideos() {
                             data.title ||
                             "Roy Bari Film"
                         )}"
+
                     >
 
                         <div class="play">
@@ -1814,11 +1806,15 @@ async function loadVideos() {
                             ${
                                 data.description
                                     ? `
+
                                         <p>
+
                                             ${escapeHTML(
                                                 data.description
                                             )}
+
                                         </p>
+
                                       `
                                     : ""
                             }
@@ -1827,11 +1823,15 @@ async function loadVideos() {
                             ${
                                 data.year
                                     ? `
+
                                         <p class="dur">
+
                                             ${escapeHTML(
                                                 data.year
                                             )}
+
                                         </p>
+
                                       `
                                     : ""
                             }
@@ -1855,6 +1855,7 @@ async function loadVideos() {
                     <div class="play">
                         !
                     </div>
+
 
                     <div class="video-info">
 
@@ -1919,16 +1920,20 @@ async function loadVideos() {
                     !
                 </div>
 
+
                 <div class="video-info">
 
                     <h4>
                         Films could not be loaded
                     </h4>
 
+
                     <p>
+
                         ${escapeHTML(
                             error.message
                         )}
+
                     </p>
 
                 </div>
@@ -1943,12 +1948,13 @@ async function loadVideos() {
 
 
 /* =========================================================
-   IMAGE LIGHTBOX
+   OPEN IMAGE LIGHTBOX
    ========================================================= */
 
 function openLightbox(
     image,
-    title
+    title,
+    fallback = ""
 ) {
 
     if (
@@ -1961,23 +1967,44 @@ function openLightbox(
     }
 
 
-    lightboxImage.src =
-        image;
+    if (!image) {
 
+        return;
+
+    }
+
+
+    /*
+       Reset previous image state.
+    */
+
+    lightboxImage.dataset.fallback =
+        fallback || "";
+
+
+    lightboxImage.dataset.fallbackUsed =
+        "false";
+
+
+    /*
+       Set title.
+    */
 
     lightboxImage.alt =
         title || "";
 
 
-    if (
-        lightboxTitle
-    ) {
+    if (lightboxTitle) {
 
         lightboxTitle.textContent =
             title || "";
 
     }
 
+
+    /*
+       Open first.
+    */
 
     lightbox.classList.add(
         "open"
@@ -1986,6 +2013,63 @@ function openLightbox(
 
     document.body.style.overflow =
         "hidden";
+
+
+    /*
+       Load requested image.
+    */
+
+    lightboxImage.src =
+        image;
+
+}
+
+
+/* =========================================================
+   LIGHTBOX IMAGE ERROR FALLBACK
+   ========================================================= */
+
+if (lightboxImage) {
+
+    lightboxImage.addEventListener(
+        "error",
+        function () {
+
+            const fallback =
+                lightboxImage.dataset.fallback;
+
+
+            if (
+
+                fallback &&
+
+                lightboxImage.dataset.fallbackUsed !==
+                "true"
+
+            ) {
+
+                lightboxImage.dataset.fallbackUsed =
+                    "true";
+
+
+                lightboxImage.src =
+                    fallback;
+
+                return;
+
+            }
+
+
+            /*
+               If both fail, show a useful message.
+            */
+
+            console.error(
+                "LIGHTBOX IMAGE COULD NOT BE LOADED"
+            );
+
+        }
+    );
 
 }
 
@@ -1996,9 +2080,7 @@ function openLightbox(
 
 function closeLightbox() {
 
-    if (
-        !lightbox
-    ) {
+    if (!lightbox) {
 
         return;
 
@@ -2010,23 +2092,53 @@ function closeLightbox() {
     );
 
 
-    lightboxImage.src =
-        "";
+    if (lightboxImage) {
+
+        lightboxImage.src =
+            "";
+
+        lightboxImage.alt =
+            "";
+
+        lightboxImage.dataset.fallback =
+            "";
+
+        lightboxImage.dataset.fallbackUsed =
+            "false";
+
+    }
 
 
-    document.body.style.overflow =
-        "";
+    if (lightboxTitle) {
+
+        lightboxTitle.textContent =
+            "";
+
+    }
+
+
+    /*
+       Only restore scrolling if video is also closed.
+    */
+
+    if (
+        !videoViewer ||
+        !videoViewer.classList.contains("open")
+    ) {
+
+        document.body.style.overflow =
+            "";
+
+    }
 
 }
 
 
 /* =========================================================
-   LIGHTBOX EVENTS
+   LIGHTBOX CLOSE BUTTON
    ========================================================= */
 
-if (
-    lightboxClose
-) {
+if (lightboxClose) {
 
     lightboxClose.addEventListener(
         "click",
@@ -2036,9 +2148,11 @@ if (
 }
 
 
-if (
-    lightbox
-) {
+/* =========================================================
+   LIGHTBOX BACKGROUND CLICK
+   ========================================================= */
+
+if (lightbox) {
 
     lightbox.addEventListener(
         "click",
@@ -2060,7 +2174,7 @@ if (
 
 
 /* =========================================================
-   VIDEO VIEWER
+   OPEN VIDEO
    ========================================================= */
 
 function openVideo(
@@ -2078,12 +2192,20 @@ function openVideo(
     }
 
 
+    if (!url) {
+
+        return;
+
+    }
+
+
     videoFrame.src =
         url;
 
 
     videoFrame.title =
-        title || "Roy Bari Film";
+        title ||
+        "Roy Bari Film";
 
 
     videoViewer.classList.add(
@@ -2122,8 +2244,15 @@ function closeVideo() {
         "";
 
 
-    document.body.style.overflow =
-        "";
+    if (
+        !lightbox ||
+        !lightbox.classList.contains("open")
+    ) {
+
+        document.body.style.overflow =
+            "";
+
+    }
 
 }
 
@@ -2132,9 +2261,7 @@ function closeVideo() {
    VIDEO CLOSE BUTTON
    ========================================================= */
 
-if (
-    videoViewerClose
-) {
+if (videoViewerClose) {
 
     videoViewerClose.addEventListener(
         "click",
@@ -2148,9 +2275,7 @@ if (
    VIDEO BACKGROUND CLICK
    ========================================================= */
 
-if (
-    videoViewer
-) {
+if (videoViewer) {
 
     videoViewer.addEventListener(
         "click",
@@ -2166,6 +2291,157 @@ if (
             }
 
         }
+    );
+
+}
+
+
+/* =========================================================
+   YOUTUBE VIDEO ID
+   ========================================================= */
+
+function getYouTubeVideoId(
+    url
+) {
+
+    if (!url) {
+
+        return "";
+
+    }
+
+
+    let match =
+        String(url).match(
+            /youtu\.be\/([^?&#/]+)/
+        );
+
+
+    if (match) {
+
+        return match[1];
+
+    }
+
+
+    match =
+        String(url).match(
+            /youtube\.com\/watch\?[^#]*v=([^&#]+)/
+        );
+
+
+    if (match) {
+
+        return match[1];
+
+    }
+
+
+    match =
+        String(url).match(
+            /youtube\.com\/embed\/([^?&#/]+)/
+        );
+
+
+    if (match) {
+
+        return match[1];
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================================
+   GOOGLE DRIVE VIDEO URL
+   ========================================================= */
+
+function getGoogleDriveVideoUrl(
+    link
+) {
+
+    if (!link) {
+
+        return "";
+
+    }
+
+
+    const value =
+        String(link).trim();
+
+
+    /*
+       YouTube
+    */
+
+    if (
+
+        value.includes(
+            "youtube.com"
+        ) ||
+
+        value.includes(
+            "youtu.be"
+        )
+
+    ) {
+
+        const youtubeId =
+            getYouTubeVideoId(
+                value
+            );
+
+
+        if (youtubeId) {
+
+            return (
+
+                "https://www.youtube.com/embed/" +
+
+                encodeURIComponent(
+                    youtubeId
+                ) +
+
+                "?rel=0"
+
+            );
+
+        }
+
+    }
+
+
+    /*
+       Google Drive
+    */
+
+    const fileId =
+        getGoogleDriveFileId(
+            value
+        );
+
+
+    if (!fileId) {
+
+        return value;
+
+    }
+
+
+    return (
+
+        "https://drive.google.com/file/d/" +
+
+        encodeURIComponent(
+            fileId
+        ) +
+
+        "/preview"
+
     );
 
 }
