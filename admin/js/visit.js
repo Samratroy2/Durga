@@ -13,6 +13,10 @@
    railOne
    railTwo
 
+   ACTIVITY LOG COLLECTION:
+
+   activityLogs
+
    ADMIN STRUCTURE:
 
    admin/
@@ -34,19 +38,35 @@
    ========================================================= */
 
 
+
 import {
+
     collection,
     getDocs,
     addDoc,
     updateDoc,
     doc,
     serverTimestamp
+
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
+
 import {
+
+    getAuth
+
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+
+import {
+
     db
+
 } from "../firebase.js";
+
+
 
 
 
@@ -64,6 +84,20 @@ let visitDocumentId = null;
 
 
 
+/*
+   Stores the values loaded from Firestore.
+
+   These values are used to compare:
+
+       OLD VALUE → NEW VALUE
+*/
+
+let originalVisitData = {};
+
+
+
+
+
 /* =========================================================
    START
    ========================================================= */
@@ -72,6 +106,8 @@ document.addEventListener(
     "DOMContentLoaded",
     initializeVisit
 );
+
+
 
 
 
@@ -99,6 +135,7 @@ function initializeVisit() {
     );
 
 
+
     /* =====================================================
        ELEMENTS
        ===================================================== */
@@ -109,16 +146,19 @@ function initializeVisit() {
         );
 
 
+
     statusBox =
         document.getElementById(
             "visit-status"
         );
 
 
+
     saveButton =
         document.getElementById(
             "save-visit"
         );
+
 
 
     /* =====================================================
@@ -136,6 +176,27 @@ function initializeVisit() {
     }
 
 
+
+    if (!statusBox) {
+
+        console.warn(
+            "WARNING: #visit-status was not found."
+        );
+
+    }
+
+
+
+    if (!saveButton) {
+
+        console.warn(
+            "WARNING: #save-visit was not found."
+        );
+
+    }
+
+
+
     /* =====================================================
        FORM SUBMIT
        ===================================================== */
@@ -146,6 +207,7 @@ function initializeVisit() {
     );
 
 
+
     /* =====================================================
        LOAD FIRESTORE
        ===================================================== */
@@ -153,6 +215,8 @@ function initializeVisit() {
     loadVisit();
 
 }
+
+
 
 
 
@@ -168,11 +232,13 @@ async function loadVisit() {
     );
 
 
+
     try {
 
         console.log(
             "Reading Firestore collection: visit"
         );
+
 
 
         const visitCollection =
@@ -182,16 +248,19 @@ async function loadVisit() {
             );
 
 
+
         const snapshot =
             await getDocs(
                 visitCollection
             );
 
 
+
         console.log(
             "Visit documents found:",
             snapshot.size
         );
+
 
 
         /* =================================================
@@ -207,11 +276,19 @@ async function loadVisit() {
             );
 
 
+
             visitDocumentId =
                 null;
 
 
+
+            originalVisitData =
+                {};
+
+
+
             clearForm();
+
 
 
             showStatus(
@@ -220,9 +297,11 @@ async function loadVisit() {
             );
 
 
+
             return;
 
         }
+
 
 
         /* =================================================
@@ -234,6 +313,7 @@ async function loadVisit() {
                 document =>
                     document.id === "main"
             );
+
 
 
         /* =================================================
@@ -248,12 +328,14 @@ async function loadVisit() {
         }
 
 
+
         /* =================================================
            DOCUMENT ID
            ================================================= */
 
         visitDocumentId =
             visitDocument.id;
+
 
 
         /* =================================================
@@ -264,16 +346,70 @@ async function loadVisit() {
             visitDocument.data();
 
 
+
         console.log(
             "Visit document ID:",
             visitDocumentId
         );
 
 
+
         console.log(
             "Visit Firestore data:",
             data
         );
+
+
+
+        /* =================================================
+           STORE ORIGINAL VALUES
+
+           These are used later for activity logging.
+           ================================================= */
+
+        originalVisitData = {
+
+            address:
+                normalizeValue(
+                    data.address
+                ),
+
+            mapUrl:
+                normalizeValue(
+                    data.mapUrl
+                ),
+
+            parking:
+                normalizeValue(
+                    data.parking
+                ),
+
+            railOne:
+                normalizeValue(
+                    firstAvailable(
+                        data.railOne,
+                        data.raiIOne,
+                        data.nearestRailOne
+                    )
+                ),
+
+            railTwo:
+                normalizeValue(
+                    firstAvailable(
+                        data.railTwo,
+                        data.nearestRailTwo
+                    )
+                )
+
+        };
+
+
+
+        console.log(
+            "Original visit data:",
+            originalVisitData
+        );
+
 
 
         /* =================================================
@@ -286,6 +422,7 @@ async function loadVisit() {
         );
 
 
+
         /* =================================================
            MAP URL
            ================================================= */
@@ -294,6 +431,7 @@ async function loadVisit() {
             "mapUrl",
             data.mapUrl
         );
+
 
 
         /* =================================================
@@ -306,9 +444,9 @@ async function loadVisit() {
         );
 
 
+
         /* =================================================
            RAIL ONE
-           =================================================
 
            New field:
 
@@ -321,7 +459,7 @@ async function loadVisit() {
            Other possible old field:
 
                nearestRailOne
-        */
+           ================================================= */
 
         setValue(
             "railOne",
@@ -331,6 +469,7 @@ async function loadVisit() {
                 data.nearestRailOne
             )
         );
+
 
 
         /* =================================================
@@ -346,6 +485,7 @@ async function loadVisit() {
         );
 
 
+
         /* =================================================
            DEBUG
            ================================================= */
@@ -355,25 +495,34 @@ async function loadVisit() {
             getValue("address")
         );
 
+
+
         console.log(
             "Map URL:",
             getValue("mapUrl")
         );
+
+
 
         console.log(
             "Parking:",
             getValue("parking")
         );
 
+
+
         console.log(
             "Rail One:",
             getValue("railOne")
         );
 
+
+
         console.log(
             "Rail Two:",
             getValue("railTwo")
         );
+
 
 
         /* =================================================
@@ -394,6 +543,7 @@ async function loadVisit() {
         );
 
 
+
         showStatus(
             getFirebaseErrorMessage(
                 error
@@ -404,6 +554,8 @@ async function loadVisit() {
     }
 
 }
+
+
 
 
 
@@ -432,9 +584,12 @@ function firstAvailable(
     }
 
 
+
     return "";
 
 }
+
+
 
 
 
@@ -447,6 +602,7 @@ async function handleSubmit(
 ) {
 
     event.preventDefault();
+
 
 
     /* =====================================================
@@ -478,18 +634,17 @@ async function handleSubmit(
         railTwo:
             getValue(
                 "railTwo"
-            ),
-
-        updatedAt:
-            serverTimestamp()
+            )
 
     };
+
 
 
     console.log(
         "Visit data prepared for saving:",
         data
     );
+
 
 
     /* =====================================================
@@ -508,6 +663,7 @@ async function handleSubmit(
         return;
 
     }
+
 
 
     /* =====================================================
@@ -531,6 +687,7 @@ async function handleSubmit(
     }
 
 
+
     /* =====================================================
        SAVE BUTTON
        ===================================================== */
@@ -540,10 +697,12 @@ async function handleSubmit(
     );
 
 
+
     showStatus(
         "Saving visit information...",
         "loading"
     );
+
 
 
     try {
@@ -562,6 +721,57 @@ async function handleSubmit(
             );
 
 
+
+            /* =============================================
+               FIND CHANGES BEFORE UPDATE
+               ============================================= */
+
+            const changes =
+                getChangedFields(
+                    originalVisitData,
+                    data
+                );
+
+
+
+            console.log(
+                "Detected visit changes:",
+                changes
+            );
+
+
+
+            /* =============================================
+               NOTHING CHANGED
+               ============================================= */
+
+            if (
+                changes.length === 0
+            ) {
+
+                showStatus(
+                    "No changes were made.",
+                    "info"
+                );
+
+
+
+                setSaving(
+                    false
+                );
+
+
+
+                return;
+
+            }
+
+
+
+            /* =============================================
+               UPDATE FIRESTORE
+               ============================================= */
+
             await updateDoc(
 
                 doc(
@@ -570,9 +780,17 @@ async function handleSubmit(
                     visitDocumentId
                 ),
 
-                data
+                {
+
+                    ...data,
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
 
             );
+
 
 
             console.log(
@@ -580,12 +798,70 @@ async function handleSubmit(
             );
 
 
+
+            /* =============================================
+               CREATE ACTIVITY LOG
+               ============================================= */
+
+            await createActivityLog({
+
+                action:
+                    "edit",
+
+                section:
+                    "Visit",
+
+                collection:
+                    "visit",
+
+                activity:
+                    "Visit Information",
+
+                details:
+                    formatChanges(
+                        changes
+                    ),
+
+                documentId:
+                    visitDocumentId
+
+            });
+
+
+
+            /* =============================================
+               UPDATE ORIGINAL DATA
+
+               This is important because if the admin
+               saves again, comparison should happen
+               against the latest saved values.
+               ============================================= */
+
+            originalVisitData = {
+
+                ...data
+
+            };
+
+
+
+            /* =============================================
+               SUCCESS
+               ============================================= */
+
             showStatus(
                 "Visit information updated successfully.",
                 "success"
             );
 
+
+
+            console.log(
+                "Visit activity log created."
+            );
+
         }
+
 
 
         /* =================================================
@@ -599,9 +875,24 @@ async function handleSubmit(
             );
 
 
-            data.createdAt =
-                serverTimestamp();
 
+            const visitData = {
+
+                ...data,
+
+                createdAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+
+            /* =============================================
+               CREATE VISIT DOCUMENT
+               ============================================= */
 
             const reference =
                 await addDoc(
@@ -611,13 +902,15 @@ async function handleSubmit(
                         "visit"
                     ),
 
-                    data
+                    visitData
 
                 );
 
 
+
             visitDocumentId =
                 reference.id;
+
 
 
             console.log(
@@ -626,9 +919,60 @@ async function handleSubmit(
             );
 
 
+
+            /* =============================================
+               CREATE ACTIVITY LOG
+               ============================================= */
+
+            await createActivityLog({
+
+                action:
+                    "create",
+
+                section:
+                    "Visit",
+
+                collection:
+                    "visit",
+
+                activity:
+                    "Visit Information",
+
+                details:
+                    "Created visit information.",
+
+                documentId:
+                    visitDocumentId
+
+            });
+
+
+
+            /* =============================================
+               STORE CURRENT DATA
+               ============================================= */
+
+            originalVisitData = {
+
+                ...data
+
+            };
+
+
+
+            /* =============================================
+               SUCCESS
+               ============================================= */
+
             showStatus(
                 "Visit information saved successfully.",
                 "success"
+            );
+
+
+
+            console.log(
+                "Visit creation activity log created."
             );
 
         }
@@ -640,6 +984,7 @@ async function handleSubmit(
             "VISIT SAVE ERROR:",
             error
         );
+
 
 
         showStatus(
@@ -662,6 +1007,425 @@ async function handleSubmit(
 
 
 
+
+
+/* =========================================================
+   FIND CHANGED FIELDS
+   ========================================================= */
+
+function getChangedFields(
+    oldData,
+    newData
+) {
+
+    const fields = [
+
+        {
+            key: "address",
+            label: "Address"
+        },
+
+        {
+            key: "mapUrl",
+            label: "Map URL"
+        },
+
+        {
+            key: "parking",
+            label: "Parking"
+        },
+
+        {
+            key: "railOne",
+            label: "Railway 1"
+        },
+
+        {
+            key: "railTwo",
+            label: "Railway 2"
+        }
+
+    ];
+
+
+
+    const changes = [];
+
+
+
+    fields.forEach(
+        function (field) {
+
+            const oldValue =
+                normalizeValue(
+                    oldData?.[field.key]
+                );
+
+
+
+            const newValue =
+                normalizeValue(
+                    newData?.[field.key]
+                );
+
+
+
+            if (
+                oldValue !== newValue
+            ) {
+
+                changes.push({
+
+                    field:
+                        field.label,
+
+                    oldValue:
+                        oldValue,
+
+                    newValue:
+                        newValue
+
+                });
+
+            }
+
+        }
+    );
+
+
+
+    return changes;
+
+}
+
+
+
+
+
+/* =========================================================
+   FORMAT CHANGES
+
+   Example:
+
+   Address: "Old address" → "New address"
+
+   Map URL: "old URL" → "new URL"
+
+   Parking: "Available" → "Not available"
+   ========================================================= */
+
+function formatChanges(
+    changes
+) {
+
+    if (
+        !changes ||
+        changes.length === 0
+    ) {
+
+        return "No changes.";
+
+    }
+
+
+
+    return changes
+        .map(
+            function (change) {
+
+                return (
+
+                    `${change.field}: "${displayLogValue(change.oldValue)}" → "${displayLogValue(change.newValue)}"`
+
+                );
+
+            }
+        )
+        .join(
+            " | "
+        );
+
+}
+
+
+
+
+
+/* =========================================================
+   DISPLAY LOG VALUE
+   ========================================================= */
+
+function displayLogValue(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "(empty)";
+
+    }
+
+
+
+    return String(
+        value
+    );
+
+}
+
+
+
+
+
+/* =========================================================
+   NORMALIZE VALUE
+   ========================================================= */
+
+function normalizeValue(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+
+    return String(
+        value
+    ).trim();
+
+}
+
+
+
+
+
+/* =========================================================
+   CREATE ACTIVITY LOG
+
+   FIRESTORE COLLECTION:
+
+       activityLogs
+
+   This is the collection used by your
+   Activity History page.
+   ========================================================= */
+
+async function createActivityLog(
+    logData
+) {
+
+    try {
+
+        /* =================================================
+           GET CURRENT ADMIN
+           ================================================= */
+
+        const auth =
+            getAuth();
+
+
+
+        const currentUser =
+            auth.currentUser;
+
+
+
+        const adminEmail =
+            currentUser?.email ||
+            "Administrator";
+
+
+
+        /* =================================================
+           ACTIVITY LOG DATA
+           ================================================= */
+
+        const activityLog = {
+
+            /* =============================================
+               ACTION
+
+               create
+               edit
+               ============================================= */
+
+            action:
+                logData.action,
+
+
+
+            /* =============================================
+               SECTION
+               ============================================= */
+
+            section:
+                logData.section,
+
+
+
+            /* =============================================
+               COLLECTION
+               ============================================= */
+
+            collection:
+                logData.collection,
+
+
+
+            collectionName:
+                logData.collection,
+
+
+
+            /* =============================================
+               ACTIVITY
+               ============================================= */
+
+            activity:
+                logData.activity,
+
+
+
+            /* =============================================
+               DETAILS
+               ============================================= */
+
+            details:
+                logData.details,
+
+
+
+            description:
+                logData.details,
+
+
+
+            /* =============================================
+               ADMIN
+               ============================================= */
+
+            performedBy:
+                adminEmail,
+
+
+
+            email:
+                adminEmail,
+
+
+
+            adminEmail:
+                adminEmail,
+
+
+
+            userEmail:
+                adminEmail,
+
+
+
+            /* =============================================
+               DOCUMENT ID
+               ============================================= */
+
+            documentId:
+                logData.documentId,
+
+
+
+            docId:
+                logData.documentId,
+
+
+
+            /* =============================================
+               TIMESTAMP
+               ============================================= */
+
+            performedAt:
+                serverTimestamp(),
+
+            createdAt:
+                serverTimestamp()
+
+        };
+
+
+
+        console.log(
+            "Creating Visit activity log:",
+            activityLog
+        );
+
+
+
+        /* =================================================
+           WRITE ACTIVITY LOG
+           ================================================= */
+
+        const activityReference =
+            await addDoc(
+
+                collection(
+                    db,
+                    "activityLogs"
+                ),
+
+                activityLog
+
+            );
+
+
+
+        console.log(
+            "Visit activity log created:",
+            activityReference.id
+        );
+
+
+
+        return activityReference.id;
+
+    }
+    catch (error) {
+
+        /*
+           The Visit document has already been saved.
+
+           Therefore, do not undo the Visit update
+           if only the activity log fails.
+
+           The error is shown in the console.
+        */
+
+        console.error(
+            "VISIT ACTIVITY LOG ERROR:",
+            error
+        );
+
+
+
+        return null;
+
+    }
+
+}
+
+
+
+
+
 /* =========================================================
    GET VALUE
 
@@ -680,6 +1444,7 @@ function getValue(
         );
 
 
+
     if (!element) {
 
         console.warn(
@@ -692,6 +1457,7 @@ function getValue(
     }
 
 
+
     return String(
         element.value || ""
     ).trim();
@@ -700,10 +1466,10 @@ function getValue(
 
 
 
+
+
 /* =========================================================
    SET VALUE
-
-   IMPORTANT:
 
    Firestore data is placed into:
 
@@ -724,6 +1490,7 @@ function setValue(
         );
 
 
+
     if (!element) {
 
         console.warn(
@@ -734,6 +1501,7 @@ function setValue(
         return;
 
     }
+
 
 
     if (
@@ -755,12 +1523,15 @@ function setValue(
     }
 
 
+
     console.log(
         `Visit field #${id} loaded:`,
         element.value
     );
 
 }
+
+
 
 
 
@@ -775,6 +1546,7 @@ function clearForm() {
         return;
 
     }
+
 
 
     const fields = [
@@ -792,6 +1564,7 @@ function clearForm() {
     ];
 
 
+
     fields.forEach(
         id => {
 
@@ -799,6 +1572,7 @@ function clearForm() {
                 document.getElementById(
                     id
                 );
+
 
 
             if (element) {
@@ -812,6 +1586,8 @@ function clearForm() {
     );
 
 }
+
+
 
 
 
@@ -830,8 +1606,10 @@ function setSaving(
     }
 
 
+
     saveButton.disabled =
         saving;
+
 
 
     saveButton.textContent =
@@ -842,6 +1620,8 @@ function setSaving(
             : "Save Visit Information";
 
 }
+
+
 
 
 
@@ -865,12 +1645,15 @@ function showStatus(
     }
 
 
+
     statusBox.hidden =
         false;
 
 
+
     statusBox.textContent =
         message;
+
 
 
     statusBox.className =
@@ -878,6 +1661,8 @@ function showStatus(
         type;
 
 }
+
+
 
 
 
@@ -896,12 +1681,14 @@ function isValidHttpUrl(
     }
 
 
+
     try {
 
         const url =
             new URL(
                 value
             );
+
 
 
         return (
@@ -923,6 +1710,8 @@ function isValidHttpUrl(
 
 
 
+
+
 /* =========================================================
    FIREBASE ERROR MESSAGE
    ========================================================= */
@@ -937,6 +1726,7 @@ function getFirebaseErrorMessage(
     );
 
 
+
     if (
         error?.code ===
         "permission-denied"
@@ -947,6 +1737,7 @@ function getFirebaseErrorMessage(
         );
 
     }
+
 
 
     if (
@@ -961,6 +1752,7 @@ function getFirebaseErrorMessage(
     }
 
 
+
     if (
         error?.code ===
         "failed-precondition"
@@ -973,6 +1765,7 @@ function getFirebaseErrorMessage(
     }
 
 
+
     if (
         error?.code ===
         "not-found"
@@ -983,6 +1776,7 @@ function getFirebaseErrorMessage(
         );
 
     }
+
 
 
     return (

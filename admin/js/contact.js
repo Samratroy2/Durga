@@ -16,6 +16,23 @@
    whatsapp
    youtube
 
+   ACTIVITY LOG COLLECTION:
+
+   activityLogs
+
+   LOG FORMAT:
+
+   action
+   section
+   collection
+   activity
+   details
+   performedBy
+   email
+   adminEmail
+   documentId
+   performedAt
+
    IMPORTANT:
 
    Admin structure:
@@ -32,7 +49,6 @@
 
    ========================================================= */
 
-
 import {
 
     collection,
@@ -43,6 +59,13 @@ import {
     serverTimestamp
 
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+import {
+
+    getAuth
+
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
 import {
@@ -64,6 +87,19 @@ let statusBox = null;
 let saveButton = null;
 
 let contactDocumentId = null;
+
+
+/*
+   Keep the original Firestore data.
+
+   This allows us to compare:
+
+       OLD VALUE → NEW VALUE
+
+   and put that information inside activityLogs.
+*/
+
+let originalContactData = {};
 
 
 
@@ -102,6 +138,7 @@ function initializeContact() {
     );
 
 
+
     /* =====================================================
        ELEMENTS
        ===================================================== */
@@ -112,16 +149,19 @@ function initializeContact() {
         );
 
 
+
     statusBox =
         document.getElementById(
             "contact-status"
         );
 
 
+
     saveButton =
         document.getElementById(
             "save-contact"
         );
+
 
 
     /* =====================================================
@@ -139,6 +179,7 @@ function initializeContact() {
     }
 
 
+
     if (!statusBox) {
 
         console.warn(
@@ -146,6 +187,7 @@ function initializeContact() {
         );
 
     }
+
 
 
     if (!saveButton) {
@@ -157,6 +199,7 @@ function initializeContact() {
     }
 
 
+
     /* =====================================================
        FORM SUBMIT
        ===================================================== */
@@ -165,6 +208,7 @@ function initializeContact() {
         "submit",
         handleSubmit
     );
+
 
 
     /* =====================================================
@@ -189,11 +233,13 @@ async function loadContact() {
     );
 
 
+
     try {
 
         console.log(
             "Reading Firestore collection: contact"
         );
+
 
 
         const contactCollection =
@@ -203,16 +249,19 @@ async function loadContact() {
             );
 
 
+
         const snapshot =
             await getDocs(
                 contactCollection
             );
 
 
+
         console.log(
             "Contact documents found:",
             snapshot.size
         );
+
 
 
         /* =================================================
@@ -228,11 +277,19 @@ async function loadContact() {
             );
 
 
+
             contactDocumentId =
                 null;
 
 
+
+            originalContactData =
+                {};
+
+
+
             clearForm();
+
 
 
             showStatus(
@@ -241,9 +298,11 @@ async function loadContact() {
             );
 
 
+
             return;
 
         }
+
 
 
         /* =================================================
@@ -254,12 +313,69 @@ async function loadContact() {
             snapshot.docs[0];
 
 
+
         contactDocumentId =
             contactDocument.id;
 
 
+
         const data =
             contactDocument.data();
+
+
+
+        /*
+           Save original data.
+
+           We use this later to calculate:
+
+               old value → new value
+        */
+
+        originalContactData = {
+
+            address:
+                normalizeValue(
+                    data.address
+                ),
+
+            email:
+                normalizeValue(
+                    data.email
+                ),
+
+            phone1:
+                normalizeValue(
+                    data.phone1
+                ),
+
+            phone2:
+                normalizeValue(
+                    data.phone2
+                ),
+
+            facebook:
+                normalizeValue(
+                    data.facebook
+                ),
+
+            instagram:
+                normalizeValue(
+                    data.instagram
+                ),
+
+            whatsapp:
+                normalizeValue(
+                    data.whatsapp
+                ),
+
+            youtube:
+                normalizeValue(
+                    data.youtube
+                )
+
+        };
+
 
 
         console.log(
@@ -268,14 +384,16 @@ async function loadContact() {
         );
 
 
+
         console.log(
-            "Contact Firestore data:",
-            data
+            "Original contact data:",
+            originalContactData
         );
 
 
+
         /* =================================================
-           LOAD ADDRESS
+           LOAD FORM
            ================================================= */
 
         setValue(
@@ -284,9 +402,6 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD EMAIL
-           ================================================= */
 
         setValue(
             "email",
@@ -294,9 +409,6 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD PHONE 1
-           ================================================= */
 
         setValue(
             "phone1",
@@ -304,9 +416,6 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD PHONE 2
-           ================================================= */
 
         setValue(
             "phone2",
@@ -314,9 +423,6 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD FACEBOOK
-           ================================================= */
 
         setValue(
             "facebook",
@@ -324,9 +430,6 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD INSTAGRAM
-           ================================================= */
 
         setValue(
             "instagram",
@@ -334,9 +437,6 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD WHATSAPP
-           ================================================= */
 
         setValue(
             "whatsapp",
@@ -344,59 +444,12 @@ async function loadContact() {
         );
 
 
-        /* =================================================
-           LOAD YOUTUBE
-           ================================================= */
 
         setValue(
             "youtube",
             data.youtube
         );
 
-
-        /* =================================================
-           DEBUG
-           ================================================= */
-
-        console.log(
-            "Address:",
-            data.address
-        );
-
-        console.log(
-            "Email:",
-            data.email
-        );
-
-        console.log(
-            "Phone 1:",
-            data.phone1
-        );
-
-        console.log(
-            "Phone 2:",
-            data.phone2
-        );
-
-        console.log(
-            "Facebook:",
-            data.facebook
-        );
-
-        console.log(
-            "Instagram:",
-            data.instagram
-        );
-
-        console.log(
-            "WhatsApp:",
-            data.whatsapp
-        );
-
-        console.log(
-            "YouTube:",
-            data.youtube
-        );
 
 
         /* =================================================
@@ -417,6 +470,7 @@ async function loadContact() {
         );
 
 
+
         showStatus(
             getFirebaseErrorMessage(
                 error
@@ -432,19 +486,6 @@ async function loadContact() {
 
 /* =========================================================
    SET VALUE
-
-   IMPORTANT:
-
-   This uses:
-
-       element.value
-
-   NOT:
-
-       element.placeholder
-
-   Therefore Firestore data appears as
-   actual editable field content.
    ========================================================= */
 
 function setValue(
@@ -458,6 +499,7 @@ function setValue(
         );
 
 
+
     if (!element) {
 
         console.warn(
@@ -468,6 +510,7 @@ function setValue(
         return;
 
     }
+
 
 
     if (
@@ -487,6 +530,7 @@ function setValue(
             );
 
     }
+
 
 
     console.log(
@@ -512,6 +556,7 @@ function getValue(
         );
 
 
+
     if (!element) {
 
         console.warn(
@@ -524,8 +569,39 @@ function getValue(
     }
 
 
+
     return String(
         element.value || ""
+    ).trim();
+
+}
+
+
+
+/* =========================================================
+   NORMALIZE VALUE
+
+   Used for comparing Firestore data with
+   the values currently inside the form.
+   ========================================================= */
+
+function normalizeValue(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+
+    return String(
+        value
     ).trim();
 
 }
@@ -559,6 +635,7 @@ function clearForm() {
     ];
 
 
+
     fields.forEach(
         function (id) {
 
@@ -566,6 +643,7 @@ function clearForm() {
                 document.getElementById(
                     id
                 );
+
 
 
             if (element) {
@@ -591,6 +669,7 @@ async function handleSubmit(
 ) {
 
     event.preventDefault();
+
 
 
     /* =====================================================
@@ -637,18 +716,17 @@ async function handleSubmit(
         youtube:
             getValue(
                 "youtube"
-            ),
-
-        updatedAt:
-            serverTimestamp()
+            )
 
     };
+
 
 
     console.log(
         "Data being saved:",
         data
     );
+
 
 
     /* =====================================================
@@ -669,6 +747,7 @@ async function handleSubmit(
     }
 
 
+
     if (
         data.email &&
         !isValidEmail(
@@ -686,6 +765,7 @@ async function handleSubmit(
     }
 
 
+
     /* =====================================================
        DISABLE BUTTON
        ===================================================== */
@@ -695,16 +775,18 @@ async function handleSubmit(
     );
 
 
+
     showStatus(
         "Saving contact information...",
         "loading"
     );
 
 
+
     try {
 
         /* =================================================
-           UPDATE EXISTING
+           UPDATE EXISTING DOCUMENT
            ================================================= */
 
         if (
@@ -717,6 +799,59 @@ async function handleSubmit(
             );
 
 
+
+            /*
+               Find exactly what changed BEFORE
+               updating Firestore.
+            */
+
+            const changes =
+                getChangedFields(
+                    originalContactData,
+                    data
+                );
+
+
+
+            console.log(
+                "Detected changes:",
+                changes
+            );
+
+
+
+            /*
+               If nothing changed, do not create
+               a useless activity log.
+            */
+
+            if (
+                changes.length === 0
+            ) {
+
+                showStatus(
+                    "No changes were made.",
+                    "info"
+                );
+
+
+
+                setSaving(
+                    false
+                );
+
+
+
+                return;
+
+            }
+
+
+
+            /* =============================================
+               UPDATE FIRESTORE
+               ============================================= */
+
             await updateDoc(
 
                 doc(
@@ -725,9 +860,66 @@ async function handleSubmit(
                     contactDocumentId
                 ),
 
-                data
+                {
+
+                    ...data,
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
 
             );
+
+
+
+            console.log(
+                "Contact document updated successfully."
+            );
+
+
+
+            /* =============================================
+               CREATE ACTIVITY LOG
+               ============================================= */
+
+            await createActivityLog({
+
+                action:
+                    "edit",
+
+                section:
+                    "Contact",
+
+                collection:
+                    "contact",
+
+                activity:
+                    "Contact Information",
+
+                details:
+                    formatChanges(
+                        changes
+                    ),
+
+                documentId:
+                    contactDocumentId
+
+            });
+
+
+
+            /*
+               Update our local copy so that the next
+               save compares against the new values.
+            */
+
+            originalContactData = {
+
+                ...data
+
+            };
+
 
 
             showStatus(
@@ -736,15 +928,17 @@ async function handleSubmit(
             );
 
 
+
             console.log(
-                "Contact information updated."
+                "Contact update activity log created."
             );
 
         }
 
 
+
         /* =================================================
-           CREATE NEW
+           CREATE NEW DOCUMENT
            ================================================= */
 
         else {
@@ -754,22 +948,89 @@ async function handleSubmit(
             );
 
 
-            data.createdAt =
-                serverTimestamp();
 
+            const contactData = {
+
+                ...data,
+
+                createdAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+
+            /* =============================================
+               CREATE CONTACT
+               ============================================= */
 
             const reference =
                 await addDoc(
+
                     collection(
                         db,
                         "contact"
                     ),
-                    data
+
+                    contactData
+
                 );
+
 
 
             contactDocumentId =
                 reference.id;
+
+
+
+            console.log(
+                "New contact document:",
+                reference.id
+            );
+
+
+
+            /* =============================================
+               CREATE ACTIVITY LOG
+               ============================================= */
+
+            await createActivityLog({
+
+                action:
+                    "create",
+
+                section:
+                    "Contact",
+
+                collection:
+                    "contact",
+
+                activity:
+                    "Contact Information",
+
+                details:
+                    "Created contact information.",
+
+                documentId:
+                    contactDocumentId
+
+            });
+
+
+
+            /*
+               Save current values as original values.
+            */
+
+            originalContactData = {
+
+                ...data
+
+            };
+
 
 
             showStatus(
@@ -778,9 +1039,9 @@ async function handleSubmit(
             );
 
 
+
             console.log(
-                "New contact document:",
-                reference.id
+                "Contact creation activity log created."
             );
 
         }
@@ -792,6 +1053,7 @@ async function handleSubmit(
             "CONTACT SAVE ERROR:",
             error
         );
+
 
 
         showStatus(
@@ -815,6 +1077,390 @@ async function handleSubmit(
 
 
 /* =========================================================
+   FIND CHANGED FIELDS
+   ========================================================= */
+
+function getChangedFields(
+    oldData,
+    newData
+) {
+
+    const fields = [
+
+        {
+            key: "address",
+            label: "Address"
+        },
+
+        {
+            key: "email",
+            label: "Email"
+        },
+
+        {
+            key: "phone1",
+            label: "Phone 1"
+        },
+
+        {
+            key: "phone2",
+            label: "Phone 2"
+        },
+
+        {
+            key: "facebook",
+            label: "Facebook"
+        },
+
+        {
+            key: "instagram",
+            label: "Instagram"
+        },
+
+        {
+            key: "whatsapp",
+            label: "WhatsApp"
+        },
+
+        {
+            key: "youtube",
+            label: "YouTube"
+        }
+
+    ];
+
+
+
+    const changes = [];
+
+
+
+    fields.forEach(
+        function (field) {
+
+            const oldValue =
+                normalizeValue(
+                    oldData?.[field.key]
+                );
+
+
+
+            const newValue =
+                normalizeValue(
+                    newData?.[field.key]
+                );
+
+
+
+            if (
+                oldValue !== newValue
+            ) {
+
+                changes.push({
+
+                    field:
+                        field.label,
+
+                    oldValue:
+                        oldValue,
+
+                    newValue:
+                        newValue
+
+                });
+
+            }
+
+        }
+    );
+
+
+
+    return changes;
+
+}
+
+
+
+/* =========================================================
+   FORMAT CHANGES
+
+   Example:
+
+   Phone 1: "1234567890" → "9876543210"
+   Email: "old@email.com" → "new@email.com"
+   ========================================================= */
+
+function formatChanges(
+    changes
+) {
+
+    if (
+        !changes ||
+        changes.length === 0
+    ) {
+
+        return "No changes.";
+
+    }
+
+
+
+    return changes
+        .map(
+            function (change) {
+
+                return (
+                    `${change.field}: "${displayLogValue(change.oldValue)}" → "${displayLogValue(change.newValue)}"`
+                );
+
+            }
+        )
+        .join(
+            " | "
+        );
+
+}
+
+
+
+/* =========================================================
+   DISPLAY LOG VALUE
+   ========================================================= */
+
+function displayLogValue(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "(empty)";
+
+    }
+
+
+
+    return String(
+        value
+    );
+
+}
+
+
+
+/* =========================================================
+   CREATE ACTIVITY LOG
+
+   FIRESTORE:
+
+       activityLogs
+
+   This is what the Activity History page
+   reads.
+   ========================================================= */
+
+async function createActivityLog(
+    logData
+) {
+
+    try {
+
+        /*
+           Get currently signed-in admin.
+        */
+
+        const auth =
+            getAuth();
+
+
+
+        const currentUser =
+            auth.currentUser;
+
+
+
+        const adminEmail =
+            currentUser?.email ||
+            "Administrator";
+
+
+
+        const activityLog = {
+
+            /* =============================================
+               ACTION
+
+               create
+               edit
+               ============================================= */
+
+            action:
+                logData.action,
+
+
+
+            /* =============================================
+               SECTION
+               ============================================= */
+
+            section:
+                logData.section,
+
+
+
+            /* =============================================
+               COLLECTION
+               ============================================= */
+
+            collection:
+                logData.collection,
+
+
+
+            collectionName:
+                logData.collection,
+
+
+
+            /* =============================================
+               ACTIVITY
+               ============================================= */
+
+            activity:
+                logData.activity,
+
+
+
+            /* =============================================
+               DETAILS
+               ============================================= */
+
+            details:
+                logData.details,
+
+
+
+            description:
+                logData.details,
+
+
+
+            /* =============================================
+               ADMIN
+               ============================================= */
+
+            performedBy:
+                adminEmail,
+
+
+
+            email:
+                adminEmail,
+
+
+
+            adminEmail:
+                adminEmail,
+
+
+
+            userEmail:
+                adminEmail,
+
+
+
+            /* =============================================
+               DOCUMENT ID
+               ============================================= */
+
+            documentId:
+                logData.documentId,
+
+
+
+            docId:
+                logData.documentId,
+
+
+
+            /* =============================================
+               TIMESTAMP
+               ============================================= */
+
+            performedAt:
+                serverTimestamp(),
+
+            createdAt:
+                serverTimestamp()
+
+        };
+
+
+
+        console.log(
+            "Creating activity log:",
+            activityLog
+        );
+
+
+
+        const activityReference =
+            await addDoc(
+
+                collection(
+                    db,
+                    "activityLogs"
+                ),
+
+                activityLog
+
+            );
+
+
+
+        console.log(
+            "Activity log created:",
+            activityReference.id
+        );
+
+
+
+        return activityReference.id;
+
+    }
+    catch (error) {
+
+        /*
+           IMPORTANT:
+
+           We don't throw this error back to the
+           contact save operation.
+
+           Therefore, even if the activity log
+           fails, the contact information has
+           already been successfully saved.
+        */
+
+        console.error(
+            "ACTIVITY LOG ERROR:",
+            error
+        );
+
+
+
+        return null;
+
+    }
+
+}
+
+
+
+/* =========================================================
    SAVE BUTTON
    ========================================================= */
 
@@ -829,8 +1475,10 @@ function setSaving(
     }
 
 
+
     saveButton.disabled =
         saving;
+
 
 
     saveButton.textContent =
@@ -864,12 +1512,15 @@ function showStatus(
     }
 
 
+
     statusBox.hidden =
         false;
 
 
+
     statusBox.textContent =
         message;
+
 
 
     statusBox.className =
@@ -911,6 +1562,7 @@ function getFirebaseErrorMessage(
     );
 
 
+
     if (
         error?.code ===
         "permission-denied"
@@ -921,6 +1573,7 @@ function getFirebaseErrorMessage(
         );
 
     }
+
 
 
     if (
@@ -935,6 +1588,7 @@ function getFirebaseErrorMessage(
     }
 
 
+
     if (
         error?.code ===
         "failed-precondition"
@@ -947,6 +1601,7 @@ function getFirebaseErrorMessage(
     }
 
 
+
     if (
         error?.code ===
         "not-found"
@@ -957,6 +1612,7 @@ function getFirebaseErrorMessage(
         );
 
     }
+
 
 
     return (
