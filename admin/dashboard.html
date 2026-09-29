@@ -256,13 +256,15 @@
         .status-dot.online {
             background: #3b9b55;
             box-shadow:
-                0 0 0 4px rgba(59, 155, 85, .10);
+                0 0 0 4px
+                rgba(59, 155, 85, .10);
         }
 
         .status-dot.offline {
             background: #c44;
             box-shadow:
-                0 0 0 4px rgba(204, 68, 68, .10);
+                0 0 0 4px
+                rgba(204, 68, 68, .10);
         }
 
         .status-right {
@@ -477,7 +479,7 @@
 
 
         /* =====================================================
-           ADDITIONAL QUICK STATS
+           ADDITIONAL STATS
            ===================================================== */
 
         .additional-stat-grid {
@@ -532,18 +534,13 @@
             font-size: 22px;
         }
 
-
-        /* =====================================================
-           WELCOME
-           ===================================================== */
-
         .welcome-circle {
             overflow: hidden;
         }
 
 
         /* =====================================================
-           MOBILE
+           RESPONSIVE
            ===================================================== */
 
         @media (max-width: 1200px) {
@@ -559,7 +556,6 @@
             }
 
         }
-
 
         @media (max-width: 900px) {
 
@@ -578,7 +574,6 @@
             }
 
         }
-
 
         @media (max-width: 700px) {
 
@@ -633,9 +628,6 @@
 
 <aside class="sidebar">
 
-
-    <!-- BRAND -->
-
     <div class="sidebar-brand">
 
         <div class="sidebar-logo">
@@ -656,8 +648,6 @@
 
     </div>
 
-
-    <!-- NAVIGATION -->
 
     <nav class="sidebar-nav">
 
@@ -727,6 +717,23 @@
 
             <span>
                 Gallery
+            </span>
+
+        </a>
+
+
+        <!-- RELATED TEMPLES -->
+
+        <a
+            href="./temples.html"
+            class="nav-item"
+            id="templesNav"
+        >
+
+            <i class="fa-solid fa-gopuram"></i>
+
+            <span>
+                Related Temples
             </span>
 
         </a>
@@ -855,7 +862,6 @@
         <a
             href="./own-words.html"
             class="nav-item"
-            id="own-wordsNav"
         >
 
             <i class="fa-solid fa-heart"></i>
@@ -869,7 +875,6 @@
         <a
             href="./rituals.html"
             class="nav-item"
-            id="ritualsNav"
         >
 
             <span class="nav-icon">
@@ -892,7 +897,6 @@
         <a
             href="./enquiries.html"
             class="nav-item"
-            id="enquiriesNav"
         >
 
             <i class="fa-regular fa-circle-question"></i>
@@ -906,7 +910,6 @@
         <a
             href="./activity.html"
             class="nav-item"
-            id="activityNav"
         >
 
             <i class="fa-solid fa-book"></i>
@@ -920,7 +923,6 @@
         <a
             href="./change-password.html"
             class="nav-item"
-            id="changePasswordNav"
         >
 
             <i class="fa-solid fa-key"></i>
@@ -956,6 +958,7 @@
 
         </div>
 
+
         <button
             type="button"
             id="logoutButton"
@@ -974,7 +977,7 @@
 
 
 <!-- =====================================================
-     MAIN DASHBOARD
+     MAIN
      ===================================================== -->
 
 <main class="dashboard-main">
@@ -987,7 +990,7 @@
         <div class="topbar-left">
 
             <span class="page-eyebrow">
-                ROY BARI ADMINISTRATION
+                ADMINISTRATION
             </span>
 
             <h1>
@@ -995,7 +998,7 @@
             </h1>
 
             <p>
-                Manage the digital heritage of Roy Bari.
+                Manage the Roy Bari Durga Puja website.
             </p>
 
         </div>
@@ -1003,10 +1006,7 @@
 
         <div class="admin-user">
 
-            <div
-                class="user-avatar"
-                id="userAvatar"
-            >
+            <div class="user-avatar">
                 A
             </div>
 
@@ -1022,10 +1022,6 @@
 
             </div>
 
-            <span class="user-status">
-                ●
-            </span>
-
         </div>
 
     </header>
@@ -1035,35 +1031,34 @@
          WELCOME
          ===================================================== -->
 
-    <section class="welcome-card">
+    <section class="welcome-section">
 
-        <div class="welcome-content">
+        <div class="welcome-card">
 
-            <span class="welcome-label">
-                WELCOME BACK
-            </span>
+            <div class="welcome-content">
 
-            <h2>
-                Preserve the Roy Bari legacy.
-            </h2>
+                <span class="page-eyebrow">
+                    ROY BARI
+                </span>
 
-            <p>
-                Add, update and manage the stories,
-                people, traditions and own-words that
-                make Roy Bari special.
-            </p>
+                <h2>
+                    Welcome to the
+                    Administration
+                </h2>
 
-        </div>
+                <p>
+                    Manage the stories, traditions,
+                    family history and information
+                    of Roy Bari Durga Puja.
+                </p>
 
-        <div class="welcome-art">
-
-            <div class="welcome-circle">
-                🪔
             </div>
 
-            <span class="welcome-flower">
-                ✦
-            </span>
+            <div class="welcome-circle">
+
+                🪔
+
+            </div>
 
         </div>
 
@@ -1071,13 +1066,11 @@
 
 
     <!-- =====================================================
-         MAIN QUICK STATS
+         STATISTICS
          ===================================================== -->
 
     <section class="stats-grid">
 
-
-        <!-- FAMILY -->
 
         <article
             class="stat-card"
@@ -1109,8 +1102,6 @@
         </article>
 
 
-        <!-- EVENTS -->
-
         <article
             class="stat-card"
             id="eventsStatCard"
@@ -1140,8 +1131,6 @@
 
         </article>
 
-
-        <!-- GALLERY -->
 
         <article
             class="stat-card"
@@ -1173,8 +1162,6 @@
         </article>
 
 
-        <!-- ENQUIRIES -->
-
         <article
             class="stat-card"
             id="enquiriesStatCard"
@@ -1204,8 +1191,6 @@
 
         </article>
 
-
-        <!-- ACTIVITY -->
 
         <article
             class="stat-card"
@@ -1241,13 +1226,11 @@
 
 
     <!-- =====================================================
-         ADDITIONAL COLLECTION STATS
+         ADDITIONAL STATISTICS
          ===================================================== -->
 
     <section class="additional-stat-grid">
 
-
-        <!-- HOMEPAGE COUNTDOWN -->
 
         <article
             class="additional-stat"
@@ -1282,8 +1265,6 @@
         </article>
 
 
-        <!-- COMPARISONS -->
-
         <article
             class="additional-stat"
             id="comparisonsStatCard"
@@ -1316,8 +1297,6 @@
 
         </article>
 
-
-        <!-- IDOL MAKERS -->
 
         <article
             class="additional-stat"
@@ -1352,8 +1331,6 @@
         </article>
 
 
-        <!-- NEWSPAPER ARTICLES -->
-
         <article
             class="additional-stat"
             id="newspaperArticlesStatCard"
@@ -1386,8 +1363,6 @@
 
         </article>
 
-
-        <!-- OLD PICTURES -->
 
         <article
             class="additional-stat"
@@ -1451,7 +1426,7 @@
         <div class="admin-grid">
 
 
-            <!-- FAMILY -->
+            <!-- FAMILY TREE -->
 
             <article class="admin-card">
 
@@ -1473,8 +1448,8 @@
 
                 <p>
                     Add family members, define
-                    relationships and maintain the
-                    Roy Bari genealogy.
+                    relationships and maintain
+                    the Roy Bari genealogy.
                 </p>
 
                 <button
@@ -1496,7 +1471,7 @@
             </article>
 
 
-            <!-- EVENTS -->
+            <!-- PUJA EVENTS -->
 
             <article class="admin-card">
 
@@ -1518,8 +1493,8 @@
 
                 <p>
                     Manage Durga Puja events,
-                    rituals, schedules and important
-                    celebrations.
+                    rituals, schedules and
+                    important celebrations.
                 </p>
 
                 <button
@@ -1586,7 +1561,54 @@
             </article>
 
 
-            <!-- own-words -->
+            <!-- =================================================
+                 RELATED TEMPLES — NEW
+                 ================================================= -->
+
+            <article class="admin-card">
+
+                <div class="card-top">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-gopuram"></i>
+                    </div>
+
+                    <span class="card-badge">
+                        HERITAGE
+                    </span>
+
+                </div>
+
+                <h3>
+                    Related Temples
+                </h3>
+
+                <p>
+                    Add, edit and manage the temples
+                    displayed on the Roy Bari website.
+                </p>
+
+                <button
+                    type="button"
+                    class="card-button"
+                    id="templesButton"
+                    onclick="window.location.href='./temples.html'"
+                >
+
+                    <span>
+                        Manage Temples
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </article>
+
+
+            <!-- OWN WORDS -->
 
             <article class="admin-card">
 
@@ -1726,8 +1748,9 @@
                 </h3>
 
                 <p>
-                    Set the title and date/time displayed
-                    in the homepage countdown.
+                    Set the title and date/time
+                    displayed in the homepage
+                    countdown.
                 </p>
 
                 <button
@@ -1770,8 +1793,8 @@
                 </h3>
 
                 <p>
-                    Manage then-and-now comparison images
-                    from the Roy Bari archive.
+                    Manage then-and-now comparison
+                    images from the Roy Bari archive.
                 </p>
 
                 <button
@@ -1858,8 +1881,9 @@
                 </h3>
 
                 <p>
-                    Preserve newspaper coverage and
-                    published articles about Roy Bari.
+                    Preserve newspaper coverage
+                    and published articles about
+                    Roy Bari.
                 </p>
 
                 <button
@@ -1902,8 +1926,9 @@
                 </h3>
 
                 <p>
-                    Manage historical photographs and
-                    descriptions from the family archive.
+                    Manage historical photographs
+                    and descriptions from the
+                    family archive.
                 </p>
 
                 <button
@@ -1935,7 +1960,6 @@
          ===================================================== -->
 
     <section class="information-section">
-
 
         <div class="section-heading">
 
@@ -1978,9 +2002,10 @@
                 </h3>
 
                 <p>
-                    Manage the public visiting information,
-                    address, Google Maps link, parking details
-                    and nearest railway stations.
+                    Manage the public visiting
+                    information, address, Google Maps
+                    link, parking details and nearest
+                    railway stations.
                 </p>
 
                 <button

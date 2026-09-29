@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Roy Bari — Related Temples</title>
+
+    <link
+        rel="stylesheet"
+        href="./css/admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           PAGE
+           ===================================================== */
+
+        .temple-admin-layout {
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .temple-page-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .temple-page-header-left span {
+            display: block;
+            margin-bottom: 6px;
+            color: #a67c52;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .temple-page-header-left h1 {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 32px;
+            color: #3f2920;
+        }
+
+        .temple-page-header-left p {
+            margin: 8px 0 0;
+            color: #7b6b5e;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+           ===================================================== */
+
+        .temple-button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            transition: .2s ease;
+        }
+
+        .temple-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .temple-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .temple-button-primary {
+            background: #795337;
+            color: white;
+        }
+
+        .temple-button-secondary {
+            background: #eee5dc;
+            color: #5d493b;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        #templeMessage {
+            min-height: 20px;
+            margin: 0 0 18px;
+            font-size: 13px;
+        }
+
+        .message-success {
+            color: #39734a;
+        }
+
+        .message-error {
+            color: #a33d3d;
+        }
+
+        .message-info {
+            color: #735b48;
+        }
+
+
+        /* =====================================================
+           FORM CARD
+           ===================================================== */
+
+        .temple-form-card {
+            background: #ffffff;
+            border: 1px solid #e7ddd3;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+
+        .temple-form-title {
+            margin: 0 0 22px;
+            font-family: Georgia, serif;
+            font-size: 22px;
+            color: #3f2920;
+        }
+
+        .temple-form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .temple-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .temple-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .temple-field label {
+            color: #67584c;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .temple-field small {
+            color: #8b7b6d;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .temple-field input,
+        .temple-field textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid #ddd1c6;
+            border-radius: 8px;
+            background: #fffdf9;
+            color: #3c3028;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .temple-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .temple-field input:focus,
+        .temple-field textarea:focus {
+            border-color: #795337;
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 83, 55, 0.08);
+        }
+
+
+        /* =====================================================
+           CHECKBOX
+           ===================================================== */
+
+        .temple-checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .temple-checkbox-row input {
+            width: 17px;
+            height: 17px;
+            accent-color: #795337;
+        }
+
+        .temple-checkbox-row label {
+            margin: 0;
+        }
+
+
+        /* =====================================================
+           IMAGE PREVIEW
+           ===================================================== */
+
+        .temple-image-preview {
+            margin-top: 12px;
+            width: 180px;
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5ecdf;
+            border: 1px solid #e2d4c6;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .temple-image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .temple-image-preview-placeholder {
+            font-size: 38px;
+            color: #795337;
+        }
+
+
+        /* =====================================================
+           FORM ACTIONS
+           ===================================================== */
+
+        .temple-form-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+
+        /* =====================================================
+           LIST
+           ===================================================== */
+
+        .temple-list-card {
+            background: #ffffff;
+            border: 1px solid #e7ddd3;
+            border-radius: 14px;
+            padding: 28px;
+        }
+
+        .temple-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .temple-list-header h2 {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 22px;
+            color: #3f2920;
+        }
+
+        .temple-count {
+            color: #795337;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           TABLE
+           ===================================================== */
+
+        .temple-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e4d9cf;
+            border-radius: 10px;
+        }
+
+        .temple-table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        .temple-table thead {
+            background: #f6f0e9;
+        }
+
+        .temple-table th {
+            padding: 14px 15px;
+            border-bottom: 1px solid #ddd1c6;
+            color: #6b5849;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .temple-table td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #eee6df;
+            color: #55483f;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .temple-table tbody tr:hover {
+            background: #fffaf5;
+        }
+
+        .temple-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* =====================================================
+           TABLE IMAGE
+           ===================================================== */
+
+        .temple-table-image {
+            width: 70px;
+            height: 55px;
+            border-radius: 7px;
+            overflow: hidden;
+            background: #f5ecdf;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .temple-table-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .temple-table-symbol {
+            color: #795337;
+            font-size: 25px;
+        }
+
+
+        /* =====================================================
+           STATUS
+           ===================================================== */
+
+        .temple-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .temple-status.active {
+            background: #e7f5e9;
+            color: #327442;
+        }
+
+        .temple-status.inactive {
+            background: #f6e8e8;
+            color: #9d4444;
+        }
+
+
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
+        .temple-actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .temple-small-button {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            transition: .15s ease;
+        }
+
+        .temple-small-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .temple-edit-button {
+            background: #f4eadc;
+            color: #795337;
+        }
+
+        .temple-delete-button {
+            background: #f8e3e3;
+            color: #a13d3d;
+        }
+
+
+        /* =====================================================
+           EMPTY / LOADING
+           ===================================================== */
+
+        .temple-loading,
+        .temple-empty {
+            padding: 40px !important;
+            text-align: center;
+            color: #8b7b6d !important;
+            font-size: 13px !important;
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .temple-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .temple-field.full {
+                grid-column: auto;
+            }
+
+            .temple-page-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .temple-form-card,
+            .temple-list-card {
+                padding: 20px;
+            }
+
+            .temple-form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .temple-button {
+                width: 100%;
+            }
+
+            .temple-image-preview {
+                width: 100%;
+                max-width: 300px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            🪔
+        </div>
+
+        <div class="sidebar-brand-text">
+
+            <h2>Roy Bari</h2>
+
+            <span>
+                Administration
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <!-- MAIN -->
+
+        <div class="nav-section-title">
+            MAIN
+        </div>
+
+        <a
+            href="./dashboard.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-display"></i>
+            <span>Dashboard</span>
+        </a>
+
+
+        <!-- CONTENT -->
+
+        <div class="nav-section-title">
+            CONTENT
+        </div>
+
+        <a
+            href="./family.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-people-roof"></i>
+            <span>Family Tree</span>
+        </a>
+
+        <a
+            href="./events.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Puja Events</span>
+        </a>
+
+        <a
+            href="./gallery.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-image"></i>
+            <span>Gallery</span>
+        </a>
+
+        <a
+            href="./temples.html"
+            class="nav-item active"
+        >
+            <i class="fa-solid fa-gopuram"></i>
+            <span>Related Temples</span>
+        </a>
+
+        <!-- HOMEPAGE -->
+
+        <div class="nav-section-title">
+            HOMEPAGE
+        </div>
+
+        <a
+            href="./homepage-countdown.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-hourglass-half"></i>
+            <span>Homepage Countdown</span>
+        </a>
+
+
+        <!-- INFORMATION -->
+
+        <div class="nav-section-title">
+            INFORMATION
+        </div>
+
+        <a
+            href="./visit.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Visit</span>
+        </a>
+
+        <a
+            href="./contact.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-address-book"></i>
+            <span>Contact</span>
+        </a>
+
+
+        <!-- ARCHIVE / MEDIA -->
+
+        <div class="nav-section-title">
+            ARCHIVE / MEDIA
+        </div>
+
+        <a
+            href="./comparisons.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-code-compare"></i>
+            <span>Comparisons</span>
+        </a>
+
+        <a
+            href="./idol-makers.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Idol Makers</span>
+        </a>
+
+        <a
+            href="./newspaper-articles.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Newspaper Articles</span>
+        </a>
+
+        <a
+            href="./old-pictures.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-images"></i>
+            <span>Old Pictures</span>
+        </a>
+
+
+        <!-- MORE -->
+
+        <div class="nav-section-title">
+            MORE
+        </div>
+
+        <a
+            href="./own-words.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-heart"></i>
+            <span>Own Words</span>
+        </a>
+
+        <a
+            href="./rituals.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">ॐ</span>
+            <span>Rituals</span>
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <div class="nav-section-title">
+            ADMIN
+        </div>
+
+        <a
+            href="./enquiries.html"
+            class="nav-item"
+        >
+            <i class="fa-regular fa-circle-question"></i>
+            <span>Enquiries</span>
+        </a>
+
+        <a
+            href="./activity.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-book"></i>
+            <span>Activity History</span>
+        </a>
+
+        <a
+            href="./change-password.html"
+            class="nav-item"
+        >
+            <i class="fa-solid fa-key"></i>
+            <span>Change Password</span>
+        </a>
+
+    </nav>
+
+
+    <!-- SIDEBAR BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <div>
+
+                <strong>
+                    Admin Access
+                </strong>
+
+                <small>
+                    Protected area
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="logoutButton"
+            class="logout-button"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
+
+<main class="dashboard-main">
+
+
+    <!-- =================================================
+         TOPBAR
+         ================================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <span class="page-eyebrow">
+                CONTENT MANAGEMENT
+            </span>
+
+            <h1>
+                Related Temples
+            </h1>
+
+            <p>
+                Add, edit and manage temples displayed
+                on the public website.
+            </p>
+
+        </div>
+
+
+        <div class="admin-user">
+
+            <div class="user-avatar">
+                A
+            </div>
+
+            <div class="user-details">
+
+                <strong id="adminEmail">
+                    Admin
+                </strong>
+
+                <span>
+                    Administrator
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         CONTENT
+         ================================================= -->
+
+    <section class="temple-admin-layout">
+
+
+        <!-- =================================================
+             ADD / EDIT FORM
+             ================================================= -->
+
+        <div class="temple-form-card">
+
+
+            <h2
+                class="temple-form-title"
+                id="formTitle"
+            >
+                Add Temple
+            </h2>
+
+
+            <form id="templeForm">
+
+
+                <div class="temple-form-grid">
+
+
+                    <!-- TEMPLE NAME -->
+
+                    <div class="temple-field">
+
+                        <label for="templeName">
+                            Temple Name *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="templeName"
+                            placeholder="e.g. Sasthi temple"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DISPLAY ORDER -->
+
+                    <div class="temple-field">
+
+                        <label for="templeOrder">
+                            Display Order
+                        </label>
+
+                        <input
+                            type="number"
+                            id="templeOrder"
+                            min="1"
+                            value="1"
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="temple-field full">
+
+                        <label for="templeDescription">
+                            Description *
+                        </label>
+
+                        <textarea
+                            id="templeDescription"
+                            placeholder="Write a short description of the temple..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- GOOGLE DRIVE IMAGE -->
+
+                    <div class="temple-field full">
+
+                        <label for="templeImageUrl">
+                            Google Drive Image URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="templeImageUrl"
+                            placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
+                            autocomplete="off"
+                        >
+
+                        <small>
+                            Google Drive:
+                            <strong>
+                                Anyone with the link → Viewer
+                            </strong>
+                        </small>
+
+
+                        <div
+                            id="imagePreview"
+                            class="temple-image-preview"
+                        >
+
+                            <span
+                                class="temple-image-preview-placeholder"
+                            >
+                                ॐ
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- GOOGLE MAP -->
+
+                    <div class="temple-field full">
+
+                        <label for="templeMapUrl">
+                            Google Maps URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="templeMapUrl"
+                            placeholder="https://maps.google.com/..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- ACTIVE -->
+
+                    <div class="temple-field">
+
+                        <div class="temple-checkbox-row">
+
+                            <input
+                                type="checkbox"
+                                id="templeActive"
+                                checked
+                            >
+
+                            <label for="templeActive">
+                                Show this temple on the website
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <p
+                    id="templeMessage"
+                    class="message-info"
+                    aria-live="polite"
+                ></p>
+
+
+                <!-- ACTIONS -->
+
+                <div class="temple-form-actions">
+
+
+                    <!-- SAVE / UPDATE -->
+
+                    <button
+                        type="submit"
+                        class="temple-button temple-button-primary"
+                        id="saveTempleButton"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Save Temple
+
+                    </button>
+
+
+                    <!-- CANCEL EDIT -->
+
+                    <button
+                        type="button"
+                        class="temple-button temple-button-secondary"
+                        id="cancelEditButton"
+                        hidden
+                    >
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                        Cancel Edit
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             EXISTING TEMPLES
+             ================================================= -->
+
+        <div class="temple-list-card">
+
+
+            <div class="temple-list-header">
+
+                <h2>
+                    Existing Temples
+                </h2>
+
+                <span
+                    id="templeCount"
+                    class="temple-count"
+                >
+                    0 temples
+                </span>
+
+            </div>
+
+
+            <div class="temple-table-wrapper">
+
+                <table class="temple-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Image
+                            </th>
+
+                            <th>
+                                Temple
+                            </th>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Order
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="templeList">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="temple-loading"
+                            >
+                                Loading temples...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         FOOTER
+         ================================================= -->
+
+    <footer class="dashboard-footer">
+
+        <span>
+            Roy Bari
+        </span>
+
+        <span>
+            Related Temples Management
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script
+    type="module"
+    src="./js/temples-admin.js"
+></script>
+
+
+</body>
+
+</html>
