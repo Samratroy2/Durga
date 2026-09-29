@@ -3,7 +3,69 @@
    Page-specific styles
    Works with the existing style.css
    ========================================================= */
-   
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.temples-hero {
+    min-height: 72vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.temples-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 75% 35%,
+            rgba(180, 132, 55, 0.14),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 20% 75%,
+            rgba(112, 45, 35, 0.10),
+            transparent 40%
+        );
+
+    pointer-events: none;
+}
+
+.temples-hero .hero-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.temples-hero .hero-content {
+    width: 58%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.temples-hero .hero-content h1 {
+    width: 100%;
+    display: block;
+    margin-bottom: 24px;
+}
+
+.temples-hero .tagline {
+    display: block;
+
+    width: 100%;
+    max-width: 650px;
+
+    margin: 20px 0 0;
+}
+
+
 /* =========================================================
    INTRO
    ========================================================= */
@@ -20,61 +82,24 @@
 
 
 /* =========================================================
-   FILTER BUTTONS
-   ========================================================= */
-
-.temple-filters {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 38px;
-}
-
-.temple-filter {
-    appearance: none;
-    border: 1px solid rgba(112, 45, 35, 0.28);
-    background: transparent;
-    color: #702d23;
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.25s ease;
-}
-
-.temple-filter:hover {
-    background: rgba(112, 45, 35, 0.07);
-    border-color: #702d23;
-    transform: translateY(-2px);
-}
-
-.temple-filter.active {
-    background: #702d23;
-    border-color: #702d23;
-    color: #fffaf2;
-}
-
-
-/* =========================================================
-   TEMPLES SECTION
+   TEMPLE SECTION
    ========================================================= */
 
 .temples-section {
     padding: 55px 0 105px;
 }
 
+
+/* =========================================================
+   TEMPLE GRID
+   ========================================================= */
+
 .temple-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
     gap: 28px;
 }
 
@@ -85,11 +110,20 @@
 
 .temple-card {
     position: relative;
+
     overflow: hidden;
+
     background: #fffaf2;
-    border: 1px solid rgba(112, 45, 35, 0.12);
+
+    border:
+        1px solid
+        rgba(112, 45, 35, 0.12);
+
     border-radius: 4px;
-    box-shadow: 0 12px 35px rgba(62, 36, 25, 0.07);
+
+    box-shadow:
+        0 12px 35px
+        rgba(62, 36, 25, 0.07);
 
     transition:
         transform 0.35s ease,
@@ -99,17 +133,23 @@
 
 .temple-card:hover {
     transform: translateY(-7px);
-    box-shadow: 0 20px 45px rgba(62, 36, 25, 0.13);
-    border-color: rgba(180, 132, 55, 0.4);
+
+    box-shadow:
+        0 20px 45px
+        rgba(62, 36, 25, 0.13);
+
+    border-color:
+        rgba(180, 132, 55, 0.4);
 }
 
 
 /* =========================================================
-   CARD IMAGE / DECORATIVE AREA
+   IMAGE
    ========================================================= */
 
 .temple-card-image {
     position: relative;
+
     height: 220px;
 
     display: flex;
@@ -127,22 +167,62 @@
     overflow: hidden;
 }
 
+.temple-card-image.has-image {
+    background: #eee0d0;
+}
+
+.temple-card-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition:
+        transform 0.5s ease;
+}
+
+.temple-card:hover
+.temple-card-image img {
+    transform: scale(1.05);
+}
+
+
+/* Decorative circles */
+
 .temple-card-image::before {
     content: "";
+
     position: absolute;
+
     width: 180px;
     height: 180px;
-    border: 1px solid rgba(112, 45, 35, 0.15);
+
+    border:
+        1px solid
+        rgba(112, 45, 35, 0.15);
+
     border-radius: 50%;
+
+    pointer-events: none;
 }
 
 .temple-card-image::after {
     content: "";
+
     position: absolute;
+
     width: 125px;
     height: 125px;
-    border: 1px solid rgba(180, 132, 55, 0.22);
+
+    border:
+        1px solid
+        rgba(180, 132, 55, 0.22);
+
     border-radius: 50%;
+
+    pointer-events: none;
 }
 
 
@@ -152,6 +232,7 @@
 
 .temple-symbol {
     position: relative;
+
     z-index: 2;
 
     display: flex;
@@ -161,23 +242,43 @@
     width: 105px;
     height: 105px;
 
-    border: 1px solid rgba(112, 45, 35, 0.22);
+    border:
+        1px solid
+        rgba(112, 45, 35, 0.22);
+
     border-radius: 50%;
 
     color: #702d23;
-    font-family: Georgia, "Times New Roman", serif;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
     font-size: 54px;
 
-    background: rgba(255, 250, 242, 0.55);
+    background:
+        rgba(255, 250, 242, 0.55);
 
     transition:
         transform 0.35s ease,
         background 0.35s ease;
 }
 
-.temple-card:hover .temple-symbol {
+.temple-card:hover
+.temple-symbol {
     transform: scale(1.08);
-    background: rgba(255, 250, 242, 0.8);
+
+    background:
+        rgba(255, 250, 242, 0.8);
+}
+
+
+/* Hide symbol when image exists */
+
+.temple-card-image.has-image
+.temple-symbol {
+    display: none;
 }
 
 
@@ -187,39 +288,23 @@
 
 .temple-number {
     position: absolute;
+
     top: 16px;
     left: 18px;
-    z-index: 3;
 
-    font-family: Georgia, "Times New Roman", serif;
+    z-index: 4;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
     font-size: 13px;
+
     letter-spacing: 0.12em;
-    color: rgba(112, 45, 35, 0.65);
-}
 
-
-/* =========================================================
-   CATEGORY BADGE
-   ========================================================= */
-
-.temple-category {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 3;
-
-    padding: 6px 10px;
-
-    border: 1px solid rgba(112, 45, 35, 0.15);
-    border-radius: 999px;
-
-    background: rgba(255, 250, 242, 0.75);
-
-    color: #702d23;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    color:
+        rgba(112, 45, 35, 0.65);
 }
 
 
@@ -231,19 +316,18 @@
     padding: 28px 28px 30px;
 }
 
-.temple-card-content .eyebrow {
-    margin-bottom: 9px;
-    color: #9a6c27;
-    font-size: 11px;
-    letter-spacing: 0.16em;
-}
-
 .temple-card-content h3 {
     margin: 0 0 13px;
 
     color: #3e2419;
-    font-family: Georgia, "Times New Roman", serif;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
     font-size: 25px;
+
     line-height: 1.2;
 }
 
@@ -251,24 +335,32 @@
     margin: 0 0 22px;
 
     color: #67574d;
+
     font-size: 15px;
+
     line-height: 1.75;
 }
 
 
 /* =========================================================
-   MAP / TEMPLE LINK
+   MAP LINK
    ========================================================= */
 
 .temple-link {
     display: inline-flex;
+
     align-items: center;
+
     gap: 8px;
 
     color: #702d23;
+
     font-size: 12px;
+
     font-weight: 700;
+
     letter-spacing: 0.08em;
+
     text-transform: uppercase;
 
     text-decoration: none;
@@ -280,12 +372,16 @@
 
 .temple-link::after {
     content: "→";
+
     font-size: 16px;
-    transition: transform 0.25s ease;
+
+    transition:
+        transform 0.25s ease;
 }
 
 .temple-link:hover {
     color: #a06a22;
+
     gap: 11px;
 }
 
@@ -295,24 +391,133 @@
 
 
 /* =========================================================
-   EMPTY FILTER STATE
+   LOADING
+   ========================================================= */
+
+.temple-loading {
+    min-height: 260px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+.temple-loading p {
+    margin-top: 18px;
+
+    color: #67574d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 18px;
+}
+
+.temple-loader {
+    width: 42px;
+    height: 42px;
+
+    border:
+        3px solid
+        rgba(112, 45, 35, 0.15);
+
+    border-top-color:
+        #702d23;
+
+    border-radius: 50%;
+
+    animation:
+        templeSpin 0.8s linear infinite;
+}
+
+@keyframes templeSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.temple-error {
+    padding: 55px 25px;
+
+    text-align: center;
+
+    border:
+        1px solid
+        rgba(112, 45, 35, 0.15);
+
+    background:
+        rgba(255, 250, 242, 0.7);
+}
+
+.temple-error h3 {
+    margin: 12px 0;
+
+    color: #3e2419;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+}
+
+.temple-error p {
+    margin: 0;
+
+    color: #67574d;
+}
+
+
+/* =========================================================
+   EMPTY
    ========================================================= */
 
 .temple-empty {
     margin-top: 35px;
+
     padding: 45px 25px;
 
     text-align: center;
 
-    border: 1px dashed rgba(112, 45, 35, 0.25);
-    background: rgba(255, 250, 242, 0.55);
+    border:
+        1px dashed
+        rgba(112, 45, 35, 0.25);
+
+    background:
+        rgba(255, 250, 242, 0.55);
+}
+
+.temple-empty h3 {
+    margin: 12px 0;
+
+    color: #3e2419;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 24px;
 }
 
 .temple-empty p {
     margin: 0;
+
     color: #67574d;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 20px;
 }
 
 
@@ -322,6 +527,7 @@
 
 .temple-heritage {
     position: relative;
+
     overflow: hidden;
 
     padding: 100px 0;
@@ -336,35 +542,47 @@
 
 .temple-heritage::before {
     content: "";
+
     position: absolute;
+
     width: 400px;
     height: 400px;
 
     top: -220px;
     right: -150px;
 
-    border: 1px solid rgba(112, 45, 35, 0.12);
+    border:
+        1px solid
+        rgba(112, 45, 35, 0.12);
+
     border-radius: 50%;
 }
 
 .temple-heritage::after {
     content: "";
+
     position: absolute;
+
     width: 280px;
     height: 280px;
 
     bottom: -170px;
     left: -120px;
 
-    border: 1px solid rgba(180, 132, 55, 0.15);
+    border:
+        1px solid
+        rgba(180, 132, 55, 0.15);
+
     border-radius: 50%;
 }
 
 .temple-heritage-inner {
     position: relative;
+
     z-index: 1;
 
     max-width: 850px;
+
     margin: 0 auto;
 
     text-align: center;
@@ -380,34 +598,44 @@
 
 .temple-heritage-inner p {
     max-width: 700px;
+
     margin: 0 auto 32px;
 
     color: #5e4c41;
+
     font-size: 16px;
+
     line-height: 1.8;
 }
 
 
 /* =========================================================
-   HERITAGE BUTTON
+   BUTTON
    ========================================================= */
 
 .temple-button {
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
     padding: 13px 24px;
 
-    border: 1px solid #702d23;
+    border:
+        1px solid #702d23;
+
     background: #702d23;
+
     color: #fffaf2;
 
     text-decoration: none;
 
     font-size: 12px;
+
     font-weight: 700;
+
     letter-spacing: 0.09em;
+
     text-transform: uppercase;
 
     transition:
@@ -418,27 +646,34 @@
 
 .temple-button:hover {
     background: transparent;
+
     color: #702d23;
+
     transform: translateY(-2px);
 }
 
 
 /* =========================================================
-   DECORATIVE HERITAGE MARK
+   HERITAGE MARK
    ========================================================= */
 
 .heritage-mark {
     margin-top: 35px;
 
-    color: rgba(112, 45, 35, 0.35);
+    color:
+        rgba(112, 45, 35, 0.35);
 
-    font-family: Georgia, "Times New Roman", serif;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
     font-size: 34px;
 }
 
 
 /* =========================================================
-   RESPONSIVE — TABLET
+   RESPONSIVE
    ========================================================= */
 
 @media (max-width: 1000px) {
@@ -448,7 +683,8 @@
     }
 
     .temple-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
     .temples-intro {
@@ -461,14 +697,20 @@
 }
 
 
-/* =========================================================
-   RESPONSIVE — MOBILE
-   ========================================================= */
-
 @media (max-width: 700px) {
 
     .temples-hero {
         min-height: 60vh;
+    }
+
+    .temples-hero .hero-content {
+        width: 100%;
+    }
+
+    .temples-hero .tagline {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 20px;
     }
 
     .temples-intro {
@@ -481,6 +723,7 @@
 
     .temple-grid {
         grid-template-columns: 1fr;
+
         gap: 22px;
     }
 
@@ -496,25 +739,11 @@
         font-size: 23px;
     }
 
-    .temple-filters {
-        gap: 8px;
-        margin-top: 30px;
-    }
-
-    .temple-filter {
-        padding: 9px 15px;
-        font-size: 11px;
-    }
-
     .temple-heritage {
         padding: 75px 0;
     }
 }
 
-
-/* =========================================================
-   RESPONSIVE — SMALL MOBILE
-   ========================================================= */
 
 @media (max-width: 480px) {
 
@@ -524,6 +753,7 @@
 
     .temples-hero h1 {
         font-size: 42px;
+
         line-height: 1.05;
     }
 
@@ -538,6 +768,7 @@
     .temple-symbol {
         width: 90px;
         height: 90px;
+
         font-size: 45px;
     }
 
@@ -563,10 +794,11 @@
    ACCESSIBILITY
    ========================================================= */
 
-.temple-filter:focus-visible,
 .temple-link:focus-visible,
 .temple-button:focus-visible {
-    outline: 2px solid #b48437;
+    outline:
+        2px solid #b48437;
+
     outline-offset: 4px;
 }
 
@@ -579,9 +811,9 @@
 
     .temple-card,
     .temple-symbol,
-    .temple-filter,
     .temple-link,
-    .temple-button {
+    .temple-button,
+    .temple-card-image img {
         transition: none;
     }
 
@@ -592,4 +824,18 @@
     .temple-symbol {
         transform: none;
     }
+
+    .temple-loader {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   HIDDEN ELEMENT FIX
+   ========================================================= */
+
+.temple-loading[hidden],
+.temple-error[hidden],
+.temple-empty[hidden] {
+    display: none !important;
 }

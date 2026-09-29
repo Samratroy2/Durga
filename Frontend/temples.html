@@ -2,58 +2,41 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Related Temples | Roy Bari
-    </title>
+    <title>Related Temples | Roy Bari</title>
 
     <meta
         name="description"
         content="Explore temples and sacred places connected with the cultural and devotional heritage of Bengal."
     >
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    <!-- EXISTING SITE CSS -->
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <!-- Main Site CSS -->
+    <link rel="stylesheet" href="style.css">
 
-    <!-- RELATED TEMPLES PAGE CSS -->
-    <link
-        rel="stylesheet"
-        href="temples.css"
-    >
-
+    <!-- Temple Page CSS -->
+    <link rel="stylesheet" href="temples.css">
 </head>
 
 
 <body>
 
-
-<!-- =====================================================
+<!-- =========================================================
      HEADER
-     ===================================================== -->
+     ========================================================= -->
 
 <header class="site-header">
 
     <nav class="nav">
 
-        <a
-            href="index.html"
-            class="brand"
-        >
+        <a href="index.html" class="brand">
             ROY BARI
-
-            <span>
-                Est. 1671 · Nohari
-            </span>
+            <span>Est. 1671 · Nohari</span>
         </a>
 
 
@@ -75,13 +58,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="about.html">
                     About the Puja
                 </a>
             </li>
-
 
             <li>
                 <a href="family-tree.html">
@@ -89,13 +70,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="gallery.html">
                     Gallery
                 </a>
             </li>
-
 
             <li>
                 <a href="events.html">
@@ -103,15 +82,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="visit.html">
                     Visit
                 </a>
             </li>
-
-
-            <!-- NEW -->
 
             <li>
                 <a
@@ -122,7 +97,6 @@
                     Related Temples
                 </a>
             </li>
-
 
             <li>
                 <a href="contact.html">
@@ -137,10 +111,9 @@
 </header>
 
 
-
-<!-- =====================================================
+<!-- =========================================================
      HERO
-     ===================================================== -->
+     ========================================================= -->
 
 <section class="hero temples-hero">
 
@@ -152,13 +125,11 @@
                 Sacred Bengal
             </div>
 
-
             <h1>
                 Temples,
                 <br>
                 Faith &amp; Heritage
             </h1>
-
 
             <p class="tagline">
                 A collection of temples and sacred places
@@ -173,10 +144,9 @@
 </section>
 
 
-
-<!-- =====================================================
-     PAGE INTRODUCTION
-     ===================================================== -->
+<!-- =========================================================
+     INTRODUCTION
+     ========================================================= -->
 
 <section class="temples-intro">
 
@@ -188,11 +158,9 @@
                 Related Temples
             </div>
 
-
             <h2>
                 Beyond the Bari
             </h2>
-
 
             <p class="lead">
                 The tradition of Durga Puja exists within
@@ -204,497 +172,63 @@
 
         </div>
 
-
-        <!-- =================================================
-             FILTER
-             ================================================= -->
-
-        <div
-            class="temple-filters"
-            aria-label="Temple categories"
-        >
-
-            <button
-                type="button"
-                class="temple-filter active"
-                data-filter="all"
-            >
-                All
-            </button>
-
-
-            <button
-                type="button"
-                class="temple-filter"
-                data-filter="shakti"
-            >
-                Shakti
-            </button>
-
-
-            <button
-                type="button"
-                class="temple-filter"
-                data-filter="heritage"
-            >
-                Heritage
-            </button>
-
-
-            <button
-                type="button"
-                class="temple-filter"
-                data-filter="spiritual"
-            >
-                Spiritual
-            </button>
-
-        </div>
-
     </div>
 
 </section>
 
 
-
-<!-- =====================================================
+<!-- =========================================================
      TEMPLE COLLECTION
-     ===================================================== -->
+     ========================================================= -->
 
 <section class="temples-section">
 
     <div class="container">
 
+        <!-- Loading -->
+        <div
+            id="temple-loading"
+            class="temple-loading"
+        >
+            <div class="temple-loader"></div>
+
+            <p>
+                Loading sacred places...
+            </p>
+        </div>
+
+
+        <!-- Error -->
+        <div
+            id="temple-error"
+            class="temple-error"
+            hidden
+        >
+            <div class="eyebrow">
+                Sacred Bengal
+            </div>
+
+            <h3>
+                Unable to load temples
+            </h3>
+
+            <p>
+                Please try again later.
+            </p>
+        </div>
+
+
+        <!-- Temple Grid -->
+
         <div
             class="temple-grid"
             id="temple-grid"
         >
-
-
-            <!-- =================================================
-                 01 · KALIGHAT
-                 ================================================= -->
-
-            <article
-                class="temple-card"
-                data-category="shakti"
-            >
-
-                <div class="temple-card-image">
-
-                    <div class="temple-number">
-                        01
-                    </div>
-
-
-                    <div
-                        class="temple-symbol"
-                        aria-hidden="true"
-                    >
-                        ॐ
-                    </div>
-
-
-                    <span class="temple-category">
-                        Shakti
-                    </span>
-
-                </div>
-
-
-                <div class="temple-card-content">
-
-                    <div class="eyebrow">
-                        Kolkata
-                    </div>
-
-
-                    <h3>
-                        Kalighat Kali Temple
-                    </h3>
-
-
-                    <p>
-                        One of Kolkata's most renowned
-                        sacred places, associated with
-                        Goddess Kali and the Shakti
-                        tradition of Bengal.
-                    </p>
-
-
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=Kalighat+Kali+Temple"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="temple-link"
-                    >
-                        Explore Place
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 02 · DAKSHINESWAR
-                 ================================================= -->
-
-            <article
-                class="temple-card"
-                data-category="spiritual"
-            >
-
-                <div class="temple-card-image">
-
-                    <div class="temple-number">
-                        02
-                    </div>
-
-
-                    <div
-                        class="temple-symbol"
-                        aria-hidden="true"
-                    >
-                        ॐ
-                    </div>
-
-
-                    <span class="temple-category">
-                        Spiritual
-                    </span>
-
-                </div>
-
-
-                <div class="temple-card-content">
-
-                    <div class="eyebrow">
-                        Kolkata
-                    </div>
-
-
-                    <h3>
-                        Dakshineswar Kali Temple
-                    </h3>
-
-
-                    <p>
-                        A historic temple complex dedicated
-                        to Bhavatarini Kali, situated beside
-                        the Hooghly River and closely
-                        associated with Sri Ramakrishna.
-                    </p>
-
-
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=Dakshineswar+Kali+Temple"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="temple-link"
-                    >
-                        Explore Place
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 03 · TARAPITH
-                 ================================================= -->
-
-            <article
-                class="temple-card"
-                data-category="shakti"
-            >
-
-                <div class="temple-card-image">
-
-                    <div class="temple-number">
-                        03
-                    </div>
-
-
-                    <div
-                        class="temple-symbol"
-                        aria-hidden="true"
-                    >
-                        ॐ
-                    </div>
-
-
-                    <span class="temple-category">
-                        Shakti
-                    </span>
-
-                </div>
-
-
-                <div class="temple-card-content">
-
-                    <div class="eyebrow">
-                        Birbhum
-                    </div>
-
-
-                    <h3>
-                        Tarapith Temple
-                    </h3>
-
-
-                    <p>
-                        A prominent pilgrimage centre
-                        dedicated to Goddess Tara and
-                        deeply connected with Bengal's
-                        Shakta devotional traditions.
-                    </p>
-
-
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=Tarapith+Temple"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="temple-link"
-                    >
-                        Explore Place
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 04 · BELUR MATH
-                 ================================================= -->
-
-            <article
-                class="temple-card"
-                data-category="spiritual"
-            >
-
-                <div class="temple-card-image">
-
-                    <div class="temple-number">
-                        04
-                    </div>
-
-
-                    <div
-                        class="temple-symbol"
-                        aria-hidden="true"
-                    >
-                        ॐ
-                    </div>
-
-
-                    <span class="temple-category">
-                        Spiritual
-                    </span>
-
-                </div>
-
-
-                <div class="temple-card-content">
-
-                    <div class="eyebrow">
-                        Howrah
-                    </div>
-
-
-                    <h3>
-                        Belur Math
-                    </h3>
-
-
-                    <p>
-                        The headquarters of the Ramakrishna
-                        Math and Ramakrishna Mission, known
-                        for its distinctive architecture and
-                        spiritual heritage.
-                    </p>
-
-
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=Belur+Math"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="temple-link"
-                    >
-                        Explore Place
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 05 · HANSESHWARI
-                 ================================================= -->
-
-            <article
-                class="temple-card"
-                data-category="heritage"
-            >
-
-                <div class="temple-card-image">
-
-                    <div class="temple-number">
-                        05
-                    </div>
-
-
-                    <div
-                        class="temple-symbol"
-                        aria-hidden="true"
-                    >
-                        ॐ
-                    </div>
-
-
-                    <span class="temple-category">
-                        Heritage
-                    </span>
-
-                </div>
-
-
-                <div class="temple-card-content">
-
-                    <div class="eyebrow">
-                        Hooghly
-                    </div>
-
-
-                    <h3>
-                        Hangseshwari Temple
-                    </h3>
-
-
-                    <p>
-                        Famous for its distinctive thirteen
-                        towers and its association with
-                        Goddess Hangseshwari.
-                    </p>
-
-
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=Hangseshwari+Temple"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="temple-link"
-                    >
-                        Explore Place
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 06 · 108 SHIVA TEMPLES
-                 ================================================= -->
-
-            <article
-                class="temple-card"
-                data-category="heritage"
-            >
-
-                <div class="temple-card-image">
-
-                    <div class="temple-number">
-                        06
-                    </div>
-
-
-                    <div
-                        class="temple-symbol"
-                        aria-hidden="true"
-                    >
-                        ॐ
-                    </div>
-
-
-                    <span class="temple-category">
-                        Heritage
-                    </span>
-
-                </div>
-
-
-                <div class="temple-card-content">
-
-                    <div class="eyebrow">
-                        Kalna
-                    </div>
-
-
-                    <h3>
-                        108 Shiva Temples
-                    </h3>
-
-
-                    <p>
-                        A remarkable temple complex arranged
-                        in two concentric circles and known
-                        for its distinctive collection of
-                        Shiva shrines.
-                    </p>
-
-
-                    <a
-                        href="https://www.google.com/maps/search/?api=1&query=108+Shiva+Temples+Kalna"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="temple-link"
-                    >
-                        Explore Place
-
-                        <span aria-hidden="true">
-                            →
-                        </span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
+            <!-- Firebase temple cards will appear here -->
         </div>
 
 
-        <!-- =================================================
-             EMPTY RESULT
-             ================================================= -->
+        <!-- Empty -->
 
         <div
             class="temple-empty"
@@ -706,10 +240,13 @@
                 Sacred Bengal
             </div>
 
-
             <h3>
-                No temples in this category
+                No temples available
             </h3>
+
+            <p>
+                No active temple records have been added yet.
+            </p>
 
         </div>
 
@@ -718,10 +255,9 @@
 </section>
 
 
-
-<!-- =====================================================
+<!-- =========================================================
      HERITAGE CONNECTION
-     ===================================================== -->
+     ========================================================= -->
 
 <section class="temple-heritage">
 
@@ -735,11 +271,9 @@
                     A Shared Heritage
                 </div>
 
-
                 <h2>
                     A Living Cultural Landscape
                 </h2>
-
 
                 <p class="lead">
                     Bengal's heritage is preserved not only
@@ -748,7 +282,6 @@
                     photographs and memories passed from
                     one generation to another.
                 </p>
-
 
                 <a
                     href="about.html"
@@ -764,11 +297,7 @@
                 class="heritage-mark"
                 aria-hidden="true"
             >
-
-                <span>
-                    श्री
-                </span>
-
+                श्री
             </div>
 
         </div>
@@ -778,10 +307,9 @@
 </section>
 
 
-
-<!-- =====================================================
+<!-- =========================================================
      FOOTER
-     ===================================================== -->
+     ========================================================= -->
 
 <footer class="site-footer">
 
@@ -789,15 +317,11 @@
 
         <div class="footer-grid">
 
-
-            <!-- COLUMN 1 -->
-
             <div>
 
                 <h5>
                     Roy Bari
                 </h5>
-
 
                 <p>
                     V8J4+5FF,
@@ -810,15 +334,11 @@
             </div>
 
 
-
-            <!-- COLUMN 2 -->
-
             <div>
 
                 <h5>
                     Explore
                 </h5>
-
 
                 <ul>
 
@@ -828,20 +348,17 @@
                         </a>
                     </li>
 
-
                     <li>
                         <a href="family-tree.html">
                             Family Tree
                         </a>
                     </li>
 
-
                     <li>
                         <a href="gallery.html">
                             Gallery
                         </a>
                     </li>
-
 
                     <li>
                         <a href="events.html">
@@ -854,15 +371,11 @@
             </div>
 
 
-
-            <!-- COLUMN 3 -->
-
             <div>
 
                 <h5>
                     Visit
                 </h5>
-
 
                 <ul>
 
@@ -871,7 +384,6 @@
                             Location &amp; Directions
                         </a>
                     </li>
-
 
                     <li>
                         <a
@@ -887,15 +399,11 @@
             </div>
 
 
-
-            <!-- COLUMN 4 -->
-
             <div>
 
                 <h5>
                     Contact
                 </h5>
-
 
                 <ul>
 
@@ -927,20 +435,13 @@
 </footer>
 
 
-
-<!-- =====================================================
+<!-- =========================================================
      JAVASCRIPT
-     ===================================================== -->
-
-<!-- EXISTING SITE JS -->
+     ========================================================= -->
 
 <script src="main.js"></script>
 
-
-<!-- PAGE JS -->
-
-<script src="temples.js"></script>
-
+<script type="module" src="temples.js"></script>
 
 </body>
 
