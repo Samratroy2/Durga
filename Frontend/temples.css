@@ -1,0 +1,595 @@
+/* =========================================================
+   ROY BARI — RELATED TEMPLES
+   Page-specific styles
+   Works with the existing style.css
+   ========================================================= */
+   
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.temples-intro {
+    padding: 100px 0 55px;
+}
+
+.temples-intro .lead {
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+   ========================================================= */
+
+.temple-filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 38px;
+}
+
+.temple-filter {
+    appearance: none;
+    border: 1px solid rgba(112, 45, 35, 0.28);
+    background: transparent;
+    color: #702d23;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.temple-filter:hover {
+    background: rgba(112, 45, 35, 0.07);
+    border-color: #702d23;
+    transform: translateY(-2px);
+}
+
+.temple-filter.active {
+    background: #702d23;
+    border-color: #702d23;
+    color: #fffaf2;
+}
+
+
+/* =========================================================
+   TEMPLES SECTION
+   ========================================================= */
+
+.temples-section {
+    padding: 55px 0 105px;
+}
+
+.temple-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+}
+
+
+/* =========================================================
+   TEMPLE CARD
+   ========================================================= */
+
+.temple-card {
+    position: relative;
+    overflow: hidden;
+    background: #fffaf2;
+    border: 1px solid rgba(112, 45, 35, 0.12);
+    border-radius: 4px;
+    box-shadow: 0 12px 35px rgba(62, 36, 25, 0.07);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+.temple-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 20px 45px rgba(62, 36, 25, 0.13);
+    border-color: rgba(180, 132, 55, 0.4);
+}
+
+
+/* =========================================================
+   CARD IMAGE / DECORATIVE AREA
+   ========================================================= */
+
+.temple-card-image {
+    position: relative;
+    height: 220px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eee0c9 0%,
+            #f5ead8 50%,
+            #e8d5b8 100%
+        );
+
+    overflow: hidden;
+}
+
+.temple-card-image::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border: 1px solid rgba(112, 45, 35, 0.15);
+    border-radius: 50%;
+}
+
+.temple-card-image::after {
+    content: "";
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    border: 1px solid rgba(180, 132, 55, 0.22);
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   OM SYMBOL
+   ========================================================= */
+
+.temple-symbol {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 105px;
+    height: 105px;
+
+    border: 1px solid rgba(112, 45, 35, 0.22);
+    border-radius: 50%;
+
+    color: #702d23;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 54px;
+
+    background: rgba(255, 250, 242, 0.55);
+
+    transition:
+        transform 0.35s ease,
+        background 0.35s ease;
+}
+
+.temple-card:hover .temple-symbol {
+    transform: scale(1.08);
+    background: rgba(255, 250, 242, 0.8);
+}
+
+
+/* =========================================================
+   CARD NUMBER
+   ========================================================= */
+
+.temple-number {
+    position: absolute;
+    top: 16px;
+    left: 18px;
+    z-index: 3;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: rgba(112, 45, 35, 0.65);
+}
+
+
+/* =========================================================
+   CATEGORY BADGE
+   ========================================================= */
+
+.temple-category {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 3;
+
+    padding: 6px 10px;
+
+    border: 1px solid rgba(112, 45, 35, 0.15);
+    border-radius: 999px;
+
+    background: rgba(255, 250, 242, 0.75);
+
+    color: #702d23;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.temple-card-content {
+    padding: 28px 28px 30px;
+}
+
+.temple-card-content .eyebrow {
+    margin-bottom: 9px;
+    color: #9a6c27;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+}
+
+.temple-card-content h3 {
+    margin: 0 0 13px;
+
+    color: #3e2419;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    line-height: 1.2;
+}
+
+.temple-card-content p {
+    margin: 0 0 22px;
+
+    color: #67574d;
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   MAP / TEMPLE LINK
+   ========================================================= */
+
+.temple-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #702d23;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    text-decoration: none;
+
+    transition:
+        color 0.25s ease,
+        gap 0.25s ease;
+}
+
+.temple-link::after {
+    content: "→";
+    font-size: 16px;
+    transition: transform 0.25s ease;
+}
+
+.temple-link:hover {
+    color: #a06a22;
+    gap: 11px;
+}
+
+.temple-link:hover::after {
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   EMPTY FILTER STATE
+   ========================================================= */
+
+.temple-empty {
+    margin-top: 35px;
+    padding: 45px 25px;
+
+    text-align: center;
+
+    border: 1px dashed rgba(112, 45, 35, 0.25);
+    background: rgba(255, 250, 242, 0.55);
+}
+
+.temple-empty p {
+    margin: 0;
+    color: #67574d;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   HERITAGE SECTION
+   ========================================================= */
+
+.temple-heritage {
+    position: relative;
+    overflow: hidden;
+
+    padding: 100px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0e3ce,
+            #e9d6b7
+        );
+}
+
+.temple-heritage::before {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+
+    top: -220px;
+    right: -150px;
+
+    border: 1px solid rgba(112, 45, 35, 0.12);
+    border-radius: 50%;
+}
+
+.temple-heritage::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+
+    bottom: -170px;
+    left: -120px;
+
+    border: 1px solid rgba(180, 132, 55, 0.15);
+    border-radius: 50%;
+}
+
+.temple-heritage-inner {
+    position: relative;
+    z-index: 1;
+
+    max-width: 850px;
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+.temple-heritage-inner .eyebrow {
+    color: #9a6c27;
+}
+
+.temple-heritage-inner h2 {
+    margin-bottom: 20px;
+}
+
+.temple-heritage-inner p {
+    max-width: 700px;
+    margin: 0 auto 32px;
+
+    color: #5e4c41;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   HERITAGE BUTTON
+   ========================================================= */
+
+.temple-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 13px 24px;
+
+    border: 1px solid #702d23;
+    background: #702d23;
+    color: #fffaf2;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.temple-button:hover {
+    background: transparent;
+    color: #702d23;
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   DECORATIVE HERITAGE MARK
+   ========================================================= */
+
+.heritage-mark {
+    margin-top: 35px;
+
+    color: rgba(112, 45, 35, 0.35);
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .temples-hero {
+        min-height: 65vh;
+    }
+
+    .temple-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .temples-intro {
+        padding-top: 80px;
+    }
+
+    .temples-section {
+        padding-bottom: 80px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .temples-hero {
+        min-height: 60vh;
+    }
+
+    .temples-intro {
+        padding: 70px 0 35px;
+    }
+
+    .temples-section {
+        padding: 35px 0 70px;
+    }
+
+    .temple-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .temple-card-image {
+        height: 200px;
+    }
+
+    .temple-card-content {
+        padding: 24px 22px 26px;
+    }
+
+    .temple-card-content h3 {
+        font-size: 23px;
+    }
+
+    .temple-filters {
+        gap: 8px;
+        margin-top: 30px;
+    }
+
+    .temple-filter {
+        padding: 9px 15px;
+        font-size: 11px;
+    }
+
+    .temple-heritage {
+        padding: 75px 0;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .temples-hero {
+        min-height: 55vh;
+    }
+
+    .temples-hero h1 {
+        font-size: 42px;
+        line-height: 1.05;
+    }
+
+    .temples-intro {
+        padding-top: 55px;
+    }
+
+    .temple-card-image {
+        height: 180px;
+    }
+
+    .temple-symbol {
+        width: 90px;
+        height: 90px;
+        font-size: 45px;
+    }
+
+    .temple-card-content h3 {
+        font-size: 21px;
+    }
+
+    .temple-card-content p {
+        font-size: 14px;
+    }
+
+    .temple-heritage {
+        padding: 60px 0;
+    }
+
+    .temple-heritage-inner p {
+        font-size: 14px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.temple-filter:focus-visible,
+.temple-link:focus-visible,
+.temple-button:focus-visible {
+    outline: 2px solid #b48437;
+    outline-offset: 4px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .temple-card,
+    .temple-symbol,
+    .temple-filter,
+    .temple-link,
+    .temple-button {
+        transition: none;
+    }
+
+    .temple-card:hover {
+        transform: none;
+    }
+
+    .temple-symbol {
+        transform: none;
+    }
+}
