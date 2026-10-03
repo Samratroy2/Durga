@@ -12,12 +12,13 @@ import {
 } from "./firebase.js";
 
 
-
 /* =========================================================
    GLOBAL DATA
    ========================================================= */
 
 let idolMakers = [];
+
+let priests = [];
 
 let rituals = [];
 
@@ -56,6 +57,8 @@ async function initializeAboutPage() {
     await Promise.allSettled([
 
         loadIdolMakers(),
+
+        loadPriests(),
 
         loadRituals(),
 
@@ -509,7 +512,6 @@ async function loadIdolMakers() {
 
 
     try {
-
 
         idolMakers =
             await getCollectionData(
@@ -1047,6 +1049,512 @@ function renderIdolMakerGallery() {
 
 /* =========================================================
    =========================================================
+   PRIESTS & PUROHITS
+   =========================================================
+   ========================================================= */
+
+async function loadPriests() {
+
+    const feature =
+        document.getElementById(
+            "priest-feature"
+        );
+
+
+    const gallery =
+        document.getElementById(
+            "priest-gallery"
+        );
+
+
+    try {
+
+        priests =
+            await getCollectionData(
+                "priests"
+            );
+
+
+        priests.sort(
+            sortByOrder
+        );
+
+
+        renderCurrentPriest();
+
+        renderPriestGallery();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "ROY BARI: Priest error:",
+            error
+        );
+
+
+        if (feature) {
+
+            feature.innerHTML =
+                errorBox(
+                    "Unable to load priest information.",
+                    error
+                );
+
+        }
+
+
+        if (gallery) {
+
+            gallery.innerHTML = "";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   CURRENT PRIEST
+   ========================================================= */
+
+function getCurrentPriest() {
+
+    if (
+        priests.length === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    const current =
+        priests.find(
+            priest =>
+                priest.current === true ||
+                priest.isCurrent === true ||
+                priest.status === "current"
+        );
+
+
+    return current ||
+        priests[0];
+
+}
+
+
+/* =========================================================
+   RENDER CURRENT PRIEST
+   ========================================================= */
+
+function renderCurrentPriest() {
+
+    const priest =
+        getCurrentPriest();
+
+
+    const feature =
+        document.getElementById(
+            "priest-feature"
+        );
+
+
+    const nameElement =
+        document.getElementById(
+            "current-priest-name"
+        );
+
+
+    const descriptionElement =
+        document.getElementById(
+            "current-priest-description"
+        );
+
+
+    const locationElement =
+        document.getElementById(
+            "current-priest-location"
+        );
+
+
+    if (!priest) {
+
+        if (nameElement) {
+
+            nameElement.textContent =
+                "Information coming soon";
+
+        }
+
+
+        if (descriptionElement) {
+
+            descriptionElement.textContent =
+                "Current priest information has not been added yet.";
+
+        }
+
+
+        if (feature) {
+
+            feature.innerHTML = `
+
+                <div class="card">
+
+                    <p class="lead">
+
+                        Current priest
+                        information will appear here.
+
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+
+        return;
+
+    }
+
+
+    const name =
+        firstValue(
+            priest,
+            [
+                "name",
+                "title"
+            ]
+        ) ||
+        "Current Priest";
+
+
+    const description =
+        firstValue(
+            priest,
+            [
+                "description",
+                "bio",
+                "story"
+            ]
+        );
+
+
+    const location =
+        firstValue(
+            priest,
+            [
+                "location",
+                "place"
+            ]
+        );
+
+
+    const role =
+        firstValue(
+            priest,
+            [
+                "role"
+            ]
+        );
+
+
+    const image =
+        firstValue(
+            priest,
+            [
+                "image",
+                "photo",
+                "imageUrl",
+                "url"
+            ]
+        );
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            name;
+
+    }
+
+
+    if (descriptionElement) {
+
+        descriptionElement.textContent =
+            description ||
+            "Information about the current priest has not been added yet.";
+
+    }
+
+
+    if (locationElement) {
+
+        locationElement.textContent =
+            location
+                ? `Based in ${location}`
+                : "";
+
+    }
+
+
+    if (!feature) {
+
+        return;
+
+    }
+
+
+    const imageHTML =
+        image
+            ? createImageButtonHTML(
+                image,
+                name,
+                "archive-image"
+            )
+            : "";
+
+
+    feature.innerHTML = `
+
+        <article class="card maker-feature-card">
+
+            ${imageHTML}
+
+            <div class="maker-feature-content">
+
+                <div class="small-caps">
+                    Current Priest
+                </div>
+
+
+                <h3>
+                    ${escapeHTML(name)}
+                </h3>
+
+
+                ${
+                    role
+                        ? `
+                            <div class="small-caps">
+                                ${escapeHTML(role)}
+                            </div>
+                          `
+                        : ""
+                }
+
+
+                ${
+                    description
+                        ? `
+                            <p>
+                                ${escapeHTML(description)}
+                            </p>
+                          `
+                        : ""
+                }
+
+
+                ${
+                    location
+                        ? `
+                            <p class="small-caps">
+                                ${escapeHTML(location)}
+                            </p>
+                          `
+                        : ""
+                }
+
+            </div>
+
+        </article>
+
+    `;
+
+
+    initializeImageButtons(
+        feature
+    );
+
+}
+
+
+/* =========================================================
+   PRIEST GALLERY
+   ========================================================= */
+
+function renderPriestGallery() {
+
+    const gallery =
+        document.getElementById(
+            "priest-gallery"
+        );
+
+
+    if (!gallery) {
+
+        return;
+
+    }
+
+
+    const records =
+        priests.filter(
+            priest =>
+                firstValue(
+                    priest,
+                    [
+                        "image",
+                        "photo",
+                        "imageUrl",
+                        "url"
+                    ]
+                )
+        );
+
+
+    if (
+        records.length === 0
+    ) {
+
+        gallery.innerHTML = `
+
+            <div class="card">
+
+                <p>
+                    Priest photographs
+                    have not been added yet.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    gallery.innerHTML = "";
+
+
+    records.forEach(
+        priest => {
+
+            const image =
+                firstValue(
+                    priest,
+                    [
+                        "image",
+                        "photo",
+                        "imageUrl",
+                        "url"
+                    ]
+                );
+
+
+            const name =
+                firstValue(
+                    priest,
+                    [
+                        "name",
+                        "title"
+                    ]
+                ) ||
+                "Priest";
+
+
+            const description =
+                firstValue(
+                    priest,
+                    [
+                        "caption",
+                        "description",
+                        "role"
+                    ]
+                );
+
+
+            const location =
+                firstValue(
+                    priest,
+                    [
+                        "location",
+                        "place"
+                    ]
+                );
+
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "card maker-gallery-card";
+
+
+            card.innerHTML = `
+
+                ${createImageButtonHTML(
+                    image,
+                    name,
+                    "archive-image"
+                )}
+
+
+                <h4>
+                    ${escapeHTML(name)}
+                </h4>
+
+
+                ${
+                    location
+                        ? `
+                            <div class="small-caps">
+                                ${escapeHTML(location)}
+                            </div>
+                          `
+                        : ""
+                }
+
+
+                ${
+                    description
+                        ? `
+                            <p>
+                                ${escapeHTML(description)}
+                            </p>
+                          `
+                        : ""
+                }
+
+            `;
+
+
+            gallery.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    initializeImageButtons(
+        gallery
+    );
+
+}
+
+
+/* =========================================================
+   =========================================================
    RITUALS
    =========================================================
    ========================================================= */
@@ -1067,7 +1575,6 @@ async function loadRituals() {
 
 
     try {
-
 
         rituals =
             await getCollectionData(
@@ -1568,7 +2075,6 @@ async function loadOldPictures() {
 
     try {
 
-
         oldPictures =
             await getCollectionData(
                 "oldPictures"
@@ -1849,7 +2355,6 @@ async function loadNewspaperArticles() {
 
     try {
 
-
         newspaperArticles =
             await getCollectionData(
                 "newspaperArticles"
@@ -1997,12 +2502,6 @@ function renderNewspaperArticles() {
     newspaperArticles.forEach(
         article => {
 
-            /*
-             * =================================================
-             * IMAGE
-             * =================================================
-             */
-
             const image =
                 firstValue(
                     article,
@@ -2015,12 +2514,6 @@ function renderNewspaperArticles() {
                 );
 
 
-            /*
-             * =================================================
-             * TITLE
-             * =================================================
-             */
-
             const title =
                 firstValue(
                     article,
@@ -2030,12 +2523,6 @@ function renderNewspaperArticles() {
                 ) ||
                 "Roy Bari Durga Puja";
 
-
-            /*
-             * =================================================
-             * HEADLINE
-             * =================================================
-             */
 
             const headline =
                 firstValue(
@@ -2047,12 +2534,6 @@ function renderNewspaperArticles() {
                 );
 
 
-            /*
-             * =================================================
-             * NEWSPAPER / PUBLICATION
-             * =================================================
-             */
-
             const newspaper =
                 firstValue(
                     article,
@@ -2063,12 +2544,6 @@ function renderNewspaperArticles() {
                 );
 
 
-            /*
-             * =================================================
-             * PAGE
-             * =================================================
-             */
-
             const page =
                 firstValue(
                     article,
@@ -2078,26 +2553,11 @@ function renderNewspaperArticles() {
                 );
 
 
-            /*
-             * =================================================
-             * FIRESTORE DATE
-             * =================================================
-             */
-
             const articleDate =
                 getDateValue(
                     article
                 );
 
-
-            /*
-             * =================================================
-             * DISPLAY DATE
-             *
-             * Firestore Timestamp:
-             * 4 Oct 2024
-             * =================================================
-             */
 
             const displayDate =
                 articleDate
@@ -2112,15 +2572,6 @@ function renderNewspaperArticles() {
                         ]
                     );
 
-
-            /*
-             * =================================================
-             * YEAR
-             *
-             * If year is not stored separately,
-             * get it from Firestore Timestamp.
-             * =================================================
-             */
 
             let year =
                 firstValue(
@@ -2142,12 +2593,6 @@ function renderNewspaperArticles() {
             }
 
 
-            /*
-             * =================================================
-             * SOURCE
-             * =================================================
-             */
-
             const source =
                 firstValue(
                     article,
@@ -2156,12 +2601,6 @@ function renderNewspaperArticles() {
                     ]
                 );
 
-
-            /*
-             * =================================================
-             * SOURCE URL
-             * =================================================
-             */
 
             const sourceUrl =
                 firstValue(
@@ -2174,12 +2613,6 @@ function renderNewspaperArticles() {
                 );
 
 
-            /*
-             * =================================================
-             * CARD
-             * =================================================
-             */
-
             const card =
                 document.createElement(
                     "article"
@@ -2189,12 +2622,6 @@ function renderNewspaperArticles() {
             card.className =
                 "newspaper-card";
 
-
-            /*
-             * =================================================
-             * IMAGE HTML
-             * =================================================
-             */
 
             const imageHTML =
                 image
@@ -2209,12 +2636,6 @@ function renderNewspaperArticles() {
                         </div>
                     `;
 
-
-            /*
-             * =================================================
-             * CARD CONTENT
-             * =================================================
-             */
 
             card.innerHTML = `
 
@@ -2363,11 +2784,6 @@ function renderNewspaperArticles() {
     );
 
 
-    /*
-     * Initialize full-image lightbox
-     * for newspaper images.
-     */
-
     initializeImageButtons(
         grid
     );
@@ -2397,7 +2813,6 @@ async function loadMemories() {
 
 
     try {
-
 
         memories =
             await getCollectionData(
