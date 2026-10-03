@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Roy Bari Administration — Priests"
+    >
+
+    <title>
+        Roy Bari — Priests
+    </title>
+
+    <!-- =====================================================
+         ADMIN CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="./css/admin.css"
+    >
+
+    <!-- =====================================================
+         FONT AWESOME
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           PRIEST MANAGEMENT LAYOUT
+           ===================================================== */
+
+        .manager-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(420px, 0.9fr)
+                minmax(500px, 1.5fr);
+
+            gap: 24px;
+
+            align-items: start;
+
+        }
+
+
+        .manager-form-card,
+        .manager-list-card {
+
+            background: #fff;
+
+            border: 1px solid #e8e0d7;
+
+            border-radius: 16px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 4px 18px
+                rgba(70, 45, 30, .035);
+
+        }
+
+
+        .manager-form-card {
+
+            min-height: 700px;
+
+        }
+
+
+        /* =====================================================
+           FORM
+           ===================================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+
+            margin-top: 24px;
+
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            min-width: 0;
+
+        }
+
+
+        .form-group.full-width {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .form-group label {
+
+            color: #3b3029;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .form-group label .required {
+
+            color: #b13a35;
+
+        }
+
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px 14px;
+
+            border: 1px solid #ddd2c8;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: #302820;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+
+            border-color: #8a5c3c;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(111, 75, 53, .08);
+
+        }
+
+
+        .form-group textarea {
+
+            min-height: 150px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+
+        }
+
+
+        .field-help {
+
+            margin-top: 2px;
+
+            color: #92877f;
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+        }
+
+
+        .required-note {
+
+            color: #a33b3b;
+
+            font-size: 10px;
+
+        }
+
+
+        /* =====================================================
+           CHECKBOX
+           ===================================================== */
+
+        .checkbox-card {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 15px;
+
+            border: 1px solid #ddd2c8;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            cursor: pointer;
+
+        }
+
+
+        .checkbox-card input {
+
+            width: 18px;
+
+            height: 18px;
+
+            margin: 0;
+
+            accent-color: #6f4b35;
+
+            cursor: pointer;
+
+        }
+
+
+        .checkbox-content {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
+
+        }
+
+
+        .checkbox-content strong {
+
+            color: #3b3029;
+
+            font-size: 12px;
+
+        }
+
+
+        .checkbox-content span {
+
+            color: #92877f;
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+        }
+
+
+        /* =====================================================
+           IMAGE PREVIEW
+           ===================================================== */
+
+        .image-preview {
+
+            display: none;
+
+            margin-top: 8px;
+
+            width: 100%;
+
+            max-height: 220px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+
+            border: 1px solid #e8e0d7;
+
+        }
+
+
+        .image-preview.visible {
+
+            display: block;
+
+        }
+
+
+        /* =====================================================
+           FORM BUTTONS
+           ===================================================== */
+
+        .form-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+
+            gap: 12px;
+
+            margin-top: 26px;
+
+        }
+
+
+        .primary-button,
+        .secondary-button {
+
+            min-height: 48px;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            font-family: inherit;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .primary-button {
+
+            border: 1px solid #6f4b35;
+
+            background: #6f4b35;
+
+            color: #fff;
+
+        }
+
+
+        .primary-button:hover {
+
+            background: #5c3d2b;
+
+        }
+
+
+        .primary-button:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .secondary-button {
+
+            min-width: 100px;
+
+            border: 1px solid #ddd2c8;
+
+            background: #fff;
+
+            color: #6f4b35;
+
+        }
+
+
+        .secondary-button:hover {
+
+            background: #f7f1eb;
+
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        .message {
+
+            min-height: 20px;
+
+            margin-top: 14px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .message.success {
+
+            color: #327442;
+
+        }
+
+
+        .message.error {
+
+            color: #a33b3b;
+
+        }
+
+
+        /* =====================================================
+           LIST HEADER
+           ===================================================== */
+
+        .manager-list-card .section-heading {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .manager-list-card .section-heading > span {
+
+            color: #8c715e;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           PRIEST LIST
+           ===================================================== */
+
+        .manager-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+        .manager-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 18px;
+
+            border: 1px solid #e8e0d7;
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .manager-item:hover {
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 7px 20px
+                rgba(70, 45, 30, .06);
+
+        }
+
+
+        .manager-item-main {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            min-width: 0;
+
+            flex: 1;
+
+        }
+
+
+        /* =====================================================
+           AVATAR
+           ===================================================== */
+
+        .manager-avatar {
+
+            width: 64px;
+
+            height: 64px;
+
+            min-width: 64px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: hidden;
+
+            border-radius: 12px;
+
+            background: #f2e7da;
+
+            color: #6f4b35;
+
+            font-size: 22px;
+
+        }
+
+
+        .manager-avatar img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+        /* =====================================================
+           CONTENT
+           ===================================================== */
+
+        .manager-item-content {
+
+            min-width: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        .manager-item-content h3 {
+
+            margin: 0 0 5px;
+
+            color: #3b3029;
+
+            font-family: Georgia, serif;
+
+            font-size: 18px;
+
+            line-height: 1.25;
+
+        }
+
+
+        .priest-role {
+
+            color: #6f4b35;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+        }
+
+
+        .priest-location {
+
+            display: block;
+
+            margin-top: 6px;
+
+            color: #777;
+
+            font-size: 10px;
+
+        }
+
+
+        .priest-description {
+
+            max-width: 500px;
+
+            display: -webkit-box;
+
+            -webkit-line-clamp: 2;
+
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
+
+            margin-top: 7px;
+
+            color: #777;
+
+            font-size: 10px;
+
+            line-height: 1.45;
+
+        }
+
+
+        /* =====================================================
+           CURRENT TAG
+           ===================================================== */
+
+        .current-tag {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            width: fit-content;
+
+            margin-top: 8px;
+
+            padding: 4px 9px;
+
+            border-radius: 20px;
+
+            background: #edf6ed;
+
+            color: #327442;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+        }
+
+
+        .current-tag i {
+
+            margin-right: 4px;
+
+        }
+
+
+        .inactive-tag {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            width: fit-content;
+
+            margin-top: 8px;
+
+            padding: 4px 9px;
+
+            border-radius: 20px;
+
+            background: #f4f0ec;
+
+            color: #8b8179;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           ACTIONS
+           ===================================================== */
+
+        .manager-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .edit-button,
+        .delete-button {
+
+            padding: 9px 13px;
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            font-family: inherit;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .edit-button {
+
+            border: 1px solid #d9c6b5;
+
+            color: #6f4b35;
+
+        }
+
+
+        .edit-button:hover {
+
+            background: #f6eee7;
+
+        }
+
+
+        .delete-button {
+
+            border: 1px solid #edc8c3;
+
+            color: #a33b3b;
+
+        }
+
+
+        .delete-button:hover {
+
+            background: #fdebea;
+
+        }
+
+
+        /* =====================================================
+           EMPTY / LOADING
+           ===================================================== */
+
+        .loading-state,
+        .empty-state {
+
+            padding: 50px 20px;
+
+            text-align: center;
+
+            color: #888;
+
+        }
+
+
+        .empty-icon {
+
+            margin-bottom: 12px;
+
+            font-size: 32px;
+
+        }
+
+
+        .empty-state h3 {
+
+            margin: 0 0 6px;
+
+            color: #3b3029;
+
+            font-family: Georgia, serif;
+
+        }
+
+
+        .empty-state p {
+
+            margin: 0;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .manager-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .manager-form-card,
+            .manager-list-card {
+
+                padding: 20px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-group.full-width {
+
+                grid-column: auto;
+
+            }
+
+
+            .form-actions {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .manager-item {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+
+            .manager-item-main {
+
+                width: 100%;
+
+            }
+
+
+            .manager-actions {
+
+                width: 100%;
+
+            }
+
+
+            .edit-button,
+            .delete-button {
+
+                flex: 1;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                🪔
+            </div>
+
+            <div class="sidebar-brand-text">
+
+                <h2>
+                    Roy Bari
+                </h2>
+
+                <span>
+                    Administration
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- MAIN -->
+
+            <div class="nav-section-title">
+                MAIN
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-display"></i>
+                <span>
+                    Dashboard
+                </span>
+            </a>
+
+
+            <!-- CONTENT -->
+
+            <div class="nav-section-title">
+                CONTENT
+            </div>
+
+
+            <a
+                href="./family.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-people-roof"></i>
+                <span>
+                    Family Tree
+                </span>
+            </a>
+
+
+            <a
+                href="./events.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>
+                    Puja Events
+                </span>
+            </a>
+
+
+            <a
+                href="./gallery.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-image"></i>
+                <span>
+                    Gallery
+                </span>
+            </a>
+
+
+            <a
+                href="./temples.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-gopuram"></i>
+                <span>
+                    Related Temples
+                </span>
+            </a>
+
+
+            <!-- HOMEPAGE -->
+
+            <div class="nav-section-title">
+                HOMEPAGE
+            </div>
+
+
+            <a
+                href="./homepage-countdown.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-hourglass-half"></i>
+                <span>
+                    Homepage Countdown
+                </span>
+            </a>
+
+
+            <!-- INFORMATION -->
+
+            <div class="nav-section-title">
+                INFORMATION
+            </div>
+
+
+            <a
+                href="./visit.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-location-dot"></i>
+                <span>
+                    Visit
+                </span>
+            </a>
+
+
+            <a
+                href="./contact.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-address-book"></i>
+                <span>
+                    Contact
+                </span>
+            </a>
+
+
+            <!-- MEDIA -->
+
+            <div class="nav-section-title">
+                MEDIA &amp; ARCHIVE
+            </div>
+
+
+            <a
+                href="./comparisons.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-code-compare"></i>
+                <span>
+                    Comparisons
+                </span>
+            </a>
+
+
+            <a
+                href="./idol-makers.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-user-gear"></i>
+                <span>
+                    Idol Makers
+                </span>
+            </a>
+
+
+            <a
+                href="./priest.html"
+                class="nav-item active"
+                aria-current="page"
+            >
+                <i class="fa-solid fa-user-tie"></i>
+                <span>
+                    Priests
+                </span>
+            </a>
+
+
+            <a
+                href="./newspaper-articles.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-newspaper"></i>
+                <span>
+                    Newspaper Articles
+                </span>
+            </a>
+
+
+            <a
+                href="./old-pictures.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-images"></i>
+                <span>
+                    Old Pictures
+                </span>
+            </a>
+
+
+            <!-- MORE -->
+
+            <div class="nav-section-title">
+                MORE
+            </div>
+
+
+            <a
+                href="./own-words.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-heart"></i>
+                <span>
+                    Own Words
+                </span>
+            </a>
+
+
+            <a
+                href="./rituals.html"
+                class="nav-item"
+            >
+                <span class="nav-icon">
+                    ॐ
+                </span>
+
+                <span>
+                    Rituals
+                </span>
+            </a>
+
+
+            <!-- ADMIN -->
+
+            <div class="nav-section-title">
+                ADMIN
+            </div>
+
+
+            <a
+                href="./enquiries.html"
+                class="nav-item"
+            >
+                <i class="fa-regular fa-circle-question"></i>
+                <span>
+                    Enquiries
+                </span>
+            </a>
+
+
+            <a
+                href="./activity.html"
+                class="nav-item"
+            >
+                <i class="fa-solid fa-book"></i>
+                <span>
+                    Activity History
+                </span>
+            </a>
+
+
+            <a
+                href="./change-password.html"
+                class="nav-item"
+                id="changePasswordNav"
+            >
+                <i class="fa-solid fa-key"></i>
+                <span>
+                    Change Password
+                </span>
+            </a>
+
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-note">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <div>
+
+                    <strong>
+                        Admin Access
+                    </strong>
+
+                    <small>
+                        Protected area
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+                type="button"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <span class="page-eyebrow">
+                    CONTENT MANAGEMENT
+                </span>
+
+                <h1>
+                    Priests
+                </h1>
+
+                <p>
+                    Manage the priests and purohits connected with the Roy Bari Durga Puja.
+                </p>
+
+            </div>
+
+
+            <div class="admin-user">
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    A
+                </div>
+
+                <div class="user-details">
+
+                    <strong id="adminEmail">
+                        Admin
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             PRIEST MANAGEMENT
+             ================================================= -->
+
+        <section class="manager-layout">
+
+
+            <!-- =================================================
+                 ADD / EDIT PRIEST
+                 ================================================= -->
+
+            <div class="manager-form-card">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span>
+                            PRIEST PROFILE
+                        </span>
+
+                        <h2 id="formTitle">
+                            Add Priest
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <form id="priestForm">
+
+
+                    <!-- DOCUMENT ID -->
+
+                    <input
+                        type="hidden"
+                        id="priestId"
+                    >
+
+
+                    <div class="form-grid">
+
+
+                        <!-- NAME -->
+
+                        <div class="form-group">
+
+                            <label for="name">
+
+                                Name
+
+                                <span class="required">
+                                    *
+                                </span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                required
+                                placeholder="Priest / Purohit name"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <!-- ROLE -->
+
+                        <div class="form-group">
+
+                            <label for="role">
+                                Role / Designation
+                            </label>
+
+                            <input
+                                type="text"
+                                id="role"
+                                placeholder="Example: Chief Purohit"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <!-- LOCATION -->
+
+                        <div class="form-group">
+
+                            <label for="location">
+                                Location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="location"
+                                placeholder="Example: Kolkata, West Bengal"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <!-- DISPLAY ORDER -->
+
+                        <div class="form-group">
+
+                            <label for="displayOrder">
+                                Display Order
+                            </label>
+
+                            <input
+                                type="number"
+                                id="displayOrder"
+                                min="0"
+                                step="1"
+                                value="0"
+                                placeholder="0"
+                            >
+
+                            <span class="field-help">
+                                Lower numbers appear first.
+                            </span>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="form-group full-width">
+
+                            <label for="description">
+
+                                Description / Biography
+
+                                <span class="required">
+                                    *
+                                </span>
+
+                            </label>
+
+                            <textarea
+                                id="description"
+                                rows="6"
+                                required
+                                placeholder="Write about the priest, their role in the Puja, family connection, traditions, memories, etc."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- IMAGE -->
+
+                        <div class="form-group full-width">
+
+                            <label for="image">
+                                Image URL
+                            </label>
+
+                            <input
+                                type="url"
+                                id="image"
+                                placeholder="https://..."
+                                autocomplete="off"
+                            >
+
+                            <span class="field-help">
+                                Paste the direct image URL or your Google Drive image URL.
+                            </span>
+
+                            <img
+                                id="imagePreview"
+                                class="image-preview"
+                                alt="Priest preview"
+                            >
+
+                        </div>
+
+
+                        <!-- CURRENT PRIEST -->
+
+                        <div class="form-group full-width">
+
+                            <label class="checkbox-card">
+
+                                <input
+                                    type="checkbox"
+                                    id="current"
+                                >
+
+                                <span class="checkbox-content">
+
+                                    <strong>
+                                        Mark as Current Priest
+                                    </strong>
+
+                                    <span>
+                                        This priest will be displayed in the main "Priests & Purohits" section of the public About page.
+                                        Only one priest can be current.
+                                    </span>
+
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            id="saveButton"
+                        >
+                            Save Priest
+                        </button>
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="cancelButton"
+                        >
+                            Cancel
+                        </button>
+
+                    </div>
+
+
+                    <!-- MESSAGE -->
+
+                    <p
+                        id="priestMessage"
+                        class="message"
+                        aria-live="polite"
+                    ></p>
+
+
+                </form>
+
+            </div>
+
+
+            <!-- =================================================
+                 PRIEST LIST
+                 ================================================= -->
+
+            <div class="manager-list-card">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span>
+                            FIRESTORE
+                        </span>
+
+                        <h2>
+                            Priests
+                        </h2>
+
+                    </div>
+
+                    <span id="priestCount">
+                        0 priests
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="priestList"
+                    class="manager-list"
+                >
+
+                    <div class="loading-state">
+                        Loading priests...
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Roy Bari
+            </span>
+
+            <span>
+                Priest Management
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+    <script
+        type="module"
+        src="js/priest.js"
+    ></script>
+
+</body>
+
+</html>

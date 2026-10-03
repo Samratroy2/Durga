@@ -4825,3 +4825,41 @@ img {
     }
 
 }
+
+.manager-avatar {
+    width: 76px;
+    height: 76px;
+    min-width: 76px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: #f2e7da;
+
+    color: #6f4b35;
+
+    font-size: 24px;
+}
+
+.priest-list-image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.priest-no-image {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,6 +1,12 @@
 /* =========================================================
    ROY BARI — ADMIN DASHBOARD
+
    FIREBASE AUTH + FIRESTORE
+
+   Updated:
+   - Priests & Purohits
+   - Priest Firestore count
+   - Priest navigation
    ========================================================= */
 
 
@@ -44,10 +50,8 @@ import {
 const adminEmail =
     document.getElementById("adminEmail");
 
-
 const userAvatar =
     document.getElementById("userAvatar");
-
 
 const logoutButton =
     document.getElementById("logoutButton");
@@ -60,64 +64,69 @@ const logoutButton =
 const familyCount =
     document.getElementById("familyCount");
 
-
 const eventsCount =
     document.getElementById("eventsCount");
-
 
 const archiveCount =
     document.getElementById("archiveCount");
 
-
 const galleryCount =
     document.getElementById("galleryCount");
-
 
 const timelineCount =
     document.getElementById("timelineCount");
 
-
 const enquiriesCount =
     document.getElementById("enquiriesCount");
-
 
 const activityCount =
     document.getElementById("activityCount");
 
 
-/*
- * Optional new counts.
- *
- * These will only be used if the corresponding
- * elements exist in dashboard.html.
- */
+/* =========================================================
+   NEW COUNTS
+   ========================================================= */
 
 const memoriesCount =
     document.getElementById("memoriesCount");
 
-
 const ritualsCount =
     document.getElementById("ritualsCount");
 
-
 const homepageCountdownCount =
-    document.getElementById("homepageCountdownCount");
-
+    document.getElementById(
+        "homepageCountdownCount"
+    );
 
 const comparisonsCount =
-    document.getElementById("comparisonsCount");
-
+    document.getElementById(
+        "comparisonsCount"
+    );
 
 const idolMakersCount =
-    document.getElementById("idolMakersCount");
-
+    document.getElementById(
+        "idolMakersCount"
+    );
 
 const newspaperArticlesCount =
-    document.getElementById("newspaperArticlesCount");
-
+    document.getElementById(
+        "newspaperArticlesCount"
+    );
 
 const oldPicturesCount =
-    document.getElementById("oldPicturesCount");
+    document.getElementById(
+        "oldPicturesCount"
+    );
+
+
+/* =========================================================
+   PRIEST COUNT
+   ========================================================= */
+
+const priestCount =
+    document.getElementById(
+        "priestCount"
+    );
 
 
 /* =========================================================
@@ -125,11 +134,14 @@ const oldPicturesCount =
    ========================================================= */
 
 const recentActivityList =
-    document.getElementById("recentActivityList");
-
+    document.getElementById(
+        "recentActivityList"
+    );
 
 const activitySummary =
-    document.getElementById("activitySummary");
+    document.getElementById(
+        "activitySummary"
+    );
 
 
 /* =========================================================
@@ -137,15 +149,19 @@ const activitySummary =
    ========================================================= */
 
 const statusDot =
-    document.getElementById("statusDot");
-
+    document.getElementById(
+        "statusDot"
+    );
 
 const statusText =
-    document.getElementById("statusText");
-
+    document.getElementById(
+        "statusText"
+    );
 
 const statusRight =
-    document.getElementById("statusRight");
+    document.getElementById(
+        "statusRight"
+    );
 
 
 /* =========================================================
@@ -156,11 +172,9 @@ onAuthStateChanged(
     auth,
     async (user) => {
 
-        /*
-         * -------------------------------------------------
-         * USER NOT LOGGED IN
-         * -------------------------------------------------
-         */
+        /* -------------------------------------------------
+           USER NOT LOGGED IN
+           ------------------------------------------------- */
 
         if (!user) {
 
@@ -169,15 +183,12 @@ onAuthStateChanged(
             );
 
             return;
-
         }
 
 
-        /*
-         * -------------------------------------------------
-         * ADMIN EMAIL
-         * -------------------------------------------------
-         */
+        /* -------------------------------------------------
+           ADMIN EMAIL
+           ------------------------------------------------- */
 
         if (adminEmail) {
 
@@ -188,11 +199,9 @@ onAuthStateChanged(
         }
 
 
-        /*
-         * -------------------------------------------------
-         * USER AVATAR
-         * -------------------------------------------------
-         */
+        /* -------------------------------------------------
+           USER AVATAR
+           ------------------------------------------------- */
 
         if (userAvatar) {
 
@@ -208,11 +217,9 @@ onAuthStateChanged(
         }
 
 
-        /*
-         * -------------------------------------------------
-         * LOAD DASHBOARD
-         * -------------------------------------------------
-         */
+        /* -------------------------------------------------
+           LOAD DASHBOARD
+           ------------------------------------------------- */
 
         await loadDashboard();
 
@@ -265,6 +272,14 @@ async function loadDashboard() {
             ),
 
 
+            /* PRIESTS */
+
+            loadCollectionCount(
+                "priests",
+                priestCount
+            ),
+
+
             /* MORE */
 
             loadCollectionCount(
@@ -291,7 +306,7 @@ async function loadDashboard() {
             ),
 
 
-            /* OPTIONAL MEDIA COLLECTIONS */
+            /* MEDIA */
 
             loadCollectionCount(
                 "comparisons",
@@ -337,7 +352,6 @@ async function loadDashboard() {
             error
         );
 
-
         setFirebaseStatus(
             "offline",
             "Connection problem",
@@ -358,15 +372,8 @@ async function loadCollectionCount(
     element
 ) {
 
-    /*
-     * If the dashboard does not have this
-     * counter element, simply skip it.
-     */
-
     if (!element) {
-
         return;
-
     }
 
 
@@ -393,7 +400,6 @@ async function loadCollectionCount(
             error
         );
 
-
         element.textContent =
             "—";
 
@@ -404,15 +410,12 @@ async function loadCollectionCount(
 
 /* =========================================================
    LOAD RECENT ACTIVITY
-   SHOW ONLY LATEST 4
    ========================================================= */
 
 async function loadRecentActivity() {
 
     if (!recentActivityList) {
-
         return;
-
     }
 
 
@@ -425,14 +428,12 @@ async function loadRecentActivity() {
         `;
 
 
-        /*
-         * -------------------------------------------------
-         * FIRST TRY performedAt
-         * -------------------------------------------------
-         */
-
         let snapshot;
 
+
+        /* -------------------------------------------------
+           TRY performedAt
+           ------------------------------------------------- */
 
         try {
 
@@ -458,11 +459,9 @@ async function loadRecentActivity() {
         }
 
 
-        /*
-         * -------------------------------------------------
-         * FALLBACK TO createdAt
-         * -------------------------------------------------
-         */
+        /* -------------------------------------------------
+           FALLBACK TO createdAt
+           ------------------------------------------------- */
 
         catch (performedAtError) {
 
@@ -494,12 +493,6 @@ async function loadRecentActivity() {
         }
 
 
-        /*
-         * -------------------------------------------------
-         * CONVERT SNAPSHOT
-         * -------------------------------------------------
-         */
-
         const activities = [];
 
 
@@ -519,12 +512,6 @@ async function loadRecentActivity() {
         );
 
 
-        /*
-         * -------------------------------------------------
-         * SHOW ONLY 4
-         * -------------------------------------------------
-         */
-
         renderRecentActivity(
             activities.slice(
                 0,
@@ -543,11 +530,9 @@ async function loadRecentActivity() {
         );
 
 
-        /*
-         * -------------------------------------------------
-         * FINAL FALLBACK
-         * -------------------------------------------------
-         */
+        /* -------------------------------------------------
+           FINAL FALLBACK
+           ------------------------------------------------- */
 
         try {
 
@@ -579,12 +564,6 @@ async function loadRecentActivity() {
             );
 
 
-            /*
-             * -------------------------------------------------
-             * SORT MANUALLY
-             * -------------------------------------------------
-             */
-
             activities.sort(
                 (a, b) => {
 
@@ -596,12 +575,6 @@ async function loadRecentActivity() {
                 }
             );
 
-
-            /*
-             * -------------------------------------------------
-             * SHOW TOP 4
-             * -------------------------------------------------
-             */
 
             renderRecentActivity(
                 activities.slice(
@@ -657,9 +630,7 @@ function getActivityTime(
 
 
     if (!value) {
-
         return 0;
-
     }
 
 
@@ -771,23 +742,11 @@ function renderRecentActivity(
                 "activity-item";
 
 
-            /*
-             * -------------------------------------------------
-             * ICON
-             * -------------------------------------------------
-             */
-
             const icon =
                 getActivityIcon(
                     activity.action
                 );
 
-
-            /*
-             * -------------------------------------------------
-             * ACTION
-             * -------------------------------------------------
-             */
 
             const action =
                 String(
@@ -808,12 +767,6 @@ function renderRecentActivity(
                 );
 
 
-            /*
-             * -------------------------------------------------
-             * TITLE
-             * -------------------------------------------------
-             */
-
             const title =
                 activity.title ||
                 activity.itemName ||
@@ -821,39 +774,18 @@ function renderRecentActivity(
                 "Website content";
 
 
-            /*
-             * -------------------------------------------------
-             * SECTION
-             * -------------------------------------------------
-             */
-
             const section =
                 activity.section ||
                 activity.collection ||
+                activity.collectionName ||
                 "Admin";
 
-
-            /*
-             * -------------------------------------------------
-             * USER
-             * -------------------------------------------------
-             */
 
             const user =
                 activity.userEmail ||
                 activity.email ||
                 "Administrator";
 
-
-            /*
-             * -------------------------------------------------
-             * DATE
-             * -------------------------------------------------
-             *
-             * IMPORTANT:
-             * Use performedAt first because that is the
-             * field used by the activity logger.
-             */
 
             const date =
                 formatActivityDate(
@@ -862,12 +794,6 @@ function renderRecentActivity(
                     activity.timestamp
                 );
 
-
-            /*
-             * -------------------------------------------------
-             * HTML
-             * -------------------------------------------------
-             */
 
             item.innerHTML = `
 
@@ -956,8 +882,7 @@ function getActivityIcon(
 
     const value =
         String(
-            action ||
-            ""
+            action || ""
         ).toLowerCase();
 
 
@@ -1025,8 +950,7 @@ function getActionClass(
 
     const value =
         String(
-            action ||
-            ""
+            action || ""
         ).toLowerCase();
 
 
@@ -1075,8 +999,7 @@ function getActionLabel(
 
     const value =
         String(
-            action ||
-            "other"
+            action || "other"
         ).toLowerCase();
 
 
@@ -1154,10 +1077,6 @@ function formatActivityDate(
         let date;
 
 
-        /*
-         * Firestore Timestamp
-         */
-
         if (
             value?.toDate
         ) {
@@ -1166,11 +1085,6 @@ function formatActivityDate(
                 value.toDate();
 
         }
-
-
-        /*
-         * Firestore Timestamp-like object
-         */
 
         else if (
             value?.seconds !== undefined
@@ -1185,17 +1099,10 @@ function formatActivityDate(
 
         }
 
-
-        /*
-         * JavaScript Date / ISO string
-         */
-
         else {
 
             date =
-                new Date(
-                    value
-                );
+                new Date(value);
 
         }
 
@@ -1293,17 +1200,13 @@ function setFirebaseStatus(
 
 const navigation = {
 
-    /*
-     * MAIN
-     */
+    /* MAIN */
 
     dashboardButton:
         "./dashboard.html",
 
 
-    /*
-     * CONTENT
-     */
+    /* CONTENT */
 
     familyButton:
         "./family.html",
@@ -1311,24 +1214,32 @@ const navigation = {
     eventsButton:
         "./events.html",
 
+    priestsButton:
+        "./priest.html",
+
     archiveButton:
         "./archive.html",
 
     galleryButton:
         "./gallery.html",
 
+    templesButton:
+        "./temples.html",
 
-    /*
-     * HOMEPAGE
-     */
+    ownWordsButton:
+        "./own-words.html",
+
+    ritualsButton:
+        "./rituals.html",
+
+
+    /* HOMEPAGE */
 
     homepageCountdownButton:
         "./homepage-countdown.html",
 
 
-    /*
-     * MEDIA & ARCHIVE
-     */
+    /* MEDIA */
 
     comparisonsButton:
         "./comparisons.html",
@@ -1343,23 +1254,7 @@ const navigation = {
         "./old-pictures.html",
 
 
-    /*
-     * MORE
-     */
-
-    memoriesButton:
-        "./memories.html",
-
-    ritualsButton:
-        "./rituals.html",
-
-    timelineButton:
-        "./timeline.html",
-
-
-    /*
-     * ADMIN
-     */
+    /* ADMIN */
 
     enquiriesButton:
         "./enquiries.html",
@@ -1389,9 +1284,7 @@ Object.entries(
 
 
         if (!button) {
-
             return;
-
         }
 
 
@@ -1421,6 +1314,9 @@ const statNavigation = {
     eventsStatCard:
         "./events.html",
 
+    priestStatCard:
+        "./priest.html",
+
     archiveStatCard:
         "./archive.html",
 
@@ -1435,13 +1331,6 @@ const statNavigation = {
 
     activityStatCard:
         "./activity.html",
-
-
-    /*
-     * Optional new stat cards.
-     * They work only if the corresponding
-     * IDs exist in dashboard.html.
-     */
 
     memoriesStatCard:
         "./memories.html",
@@ -1483,15 +1372,9 @@ Object.entries(
 
 
         if (!card) {
-
             return;
-
         }
 
-
-        /*
-         * Make non-button cards keyboard accessible.
-         */
 
         if (
             card.tagName !== "BUTTON" &&
@@ -1502,6 +1385,7 @@ Object.entries(
                 "role",
                 "link"
             );
+
 
             card.setAttribute(
                 "tabindex",
@@ -1588,10 +1472,6 @@ if (logoutButton) {
                     false;
 
 
-                /*
-                 * Restore icon + text
-                 */
-
                 logoutButton.innerHTML = `
                     <i class="fa-solid fa-right-from-bracket"></i>
                     Logout
@@ -1606,7 +1486,7 @@ if (logoutButton) {
 
 
 /* =========================================================
-   ESCAPE HTML
+   HTML ESCAPE
    ========================================================= */
 
 function escapeHTML(
@@ -1644,21 +1524,6 @@ function escapeHTML(
 
 }
 
-document.getElementById("visitButton")?.addEventListener(
-    "click",
-    () => {
-        window.location.href = "./visit.html";
-    }
-);
-
-
-document.getElementById("contactButton")?.addEventListener(
-    "click",
-    () => {
-        window.location.href = "./contact.html";
-    }
-);
-
 
 /* =========================================================
    START
@@ -1667,5 +1532,3 @@ document.getElementById("contactButton")?.addEventListener(
 console.log(
     "Roy Bari Admin Dashboard loaded successfully."
 );
-
-
