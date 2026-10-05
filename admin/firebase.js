@@ -27,7 +27,8 @@ import {
    ========================================================= */
 
 import {
-    getAuth
+    initializeAuth,
+    browserSessionPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
@@ -69,7 +70,13 @@ const db =
    ========================================================= */
 
 const auth =
-    getAuth(app);
+    initializeAuth(
+        app,
+        {
+            persistence:
+                browserSessionPersistence
+        }
+    );
 
 
 /* =========================================================
