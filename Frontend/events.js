@@ -1225,7 +1225,7 @@ function renderEvents(
 
                 <div class="event-content">
 
-                    <h3>
+                    <h3  style="margin: 13px;">
                         ${escapeHTML(
                             event.title
                         )}
