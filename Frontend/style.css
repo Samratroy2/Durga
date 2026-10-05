@@ -5783,10 +5783,9 @@ body.about-lightbox-open {
 .old-album-slideshow {
     position: relative;
     width: 100%;
-    max-width: 1100px;
-    margin: 50px auto 0;
+    max-width: 900px;
+    margin: 45px auto 0;
 }
-
 
 /* =========================================================
    MAIN SLIDESHOW
@@ -5849,18 +5848,16 @@ body.about-lightbox-open {
 /* =========================================================
    OLD ALBUM — SAME IMAGE SIZE FOR EVERY PHOTO
    ========================================================= */
-
 .old-album-image-wrap {
     position: relative;
 
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
 
     overflow: hidden;
 
     background: #eee7d9;
 }
-
 
 .old-album-image {
     display: block;

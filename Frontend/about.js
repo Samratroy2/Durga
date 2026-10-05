@@ -2181,6 +2181,17 @@ function renderOldPictures() {
     }
 
 
+    /*
+     * IMPORTANT
+     *
+     * Prevent the browser from trying to
+     * automatically adjust the page position
+     * when the active slide changes.
+     */
+
+    container.style.overflowAnchor = "none";
+
+
     container.innerHTML = `
 
         <div class="old-album-stage">
@@ -2255,6 +2266,23 @@ function renderOldPictures() {
         );
 
 
+    if (
+        !slides ||
+        !dots ||
+        !thumbnails
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * =====================================================
+     * CREATE SLIDES
+     * =====================================================
+     */
+
     records.forEach(
         (picture, index) => {
 
@@ -2317,9 +2345,11 @@ function renderOldPictures() {
                 getLargeImageUrl(image);
 
 
-            /* =================================================
-               SLIDE
-               ================================================= */
+            /*
+             * =================================================
+             * SLIDE
+             * =================================================
+             */
 
             const slide =
                 document.createElement(
@@ -2434,9 +2464,11 @@ function renderOldPictures() {
             );
 
 
-            /* =================================================
-               DOT
-               ================================================= */
+            /*
+             * =================================================
+             * DOT
+             * =================================================
+             */
 
             const dot =
                 document.createElement(
@@ -2476,9 +2508,11 @@ function renderOldPictures() {
             );
 
 
-            /* =================================================
-               THUMBNAIL
-               ================================================= */
+            /*
+             * =================================================
+             * THUMBNAIL
+             * =================================================
+             */
 
             const thumbnailButton =
                 document.createElement(
@@ -2537,11 +2571,32 @@ function renderOldPictures() {
     );
 
 
-    let currentIndex = 0;
+    /*
+     * =====================================================
+     * SLIDESHOW STATE
+     * =====================================================
+     */
 
+    let currentIndex = 0;
 
     let autoSlideTimer = null;
 
+    let userInteracting = false;
+
+
+    /*
+     * =====================================================
+     * SHOW SLIDE
+     * =====================================================
+     *
+     * IMPORTANT:
+     *
+     * There is NO scrollIntoView() here.
+     *
+     * Therefore changing the image will NEVER
+     * intentionally move the webpage to the slideshow.
+     * =====================================================
+     */
 
     function showSlide(
         index,
@@ -2556,6 +2611,10 @@ function renderOldPictures() {
 
         }
 
+
+        /*
+         * Keep index inside the valid range.
+         */
 
         if (
             index < 0
@@ -2580,6 +2639,24 @@ function renderOldPictures() {
             index;
 
 
+        /*
+         * Remember current page position.
+         *
+         * This protects the visitor's viewport
+         * if the browser tries to adjust the page
+         * while the slide changes.
+         */
+
+        const currentScrollPosition =
+            window.scrollY;
+
+
+        /*
+         * =================================================
+         * SLIDES
+         * =================================================
+         */
+
         const allSlides =
             slides.querySelectorAll(
                 ".old-album-slide"
@@ -2587,7 +2664,10 @@ function renderOldPictures() {
 
 
         allSlides.forEach(
-            (slide, slideIndex) => {
+            (
+                slide,
+                slideIndex
+            ) => {
 
                 slide.classList.toggle(
                     "active",
@@ -2598,6 +2678,12 @@ function renderOldPictures() {
         );
 
 
+        /*
+         * =================================================
+         * DOTS
+         * =================================================
+         */
+
         const allDots =
             dots.querySelectorAll(
                 ".old-album-dot"
@@ -2605,7 +2691,10 @@ function renderOldPictures() {
 
 
         allDots.forEach(
-            (dot, dotIndex) => {
+            (
+                dot,
+                dotIndex
+            ) => {
 
                 dot.classList.toggle(
                     "active",
@@ -2615,6 +2704,12 @@ function renderOldPictures() {
             }
         );
 
+
+        /*
+         * =================================================
+         * THUMBNAILS
+         * =================================================
+         */
 
         const allThumbnails =
             thumbnails.querySelectorAll(
@@ -2637,6 +2732,12 @@ function renderOldPictures() {
         );
 
 
+        /*
+         * =================================================
+         * COUNTER
+         * =================================================
+         */
+
         const counter =
             document.getElementById(
                 "old-album-counter"
@@ -2651,25 +2752,29 @@ function renderOldPictures() {
         }
 
 
-        const activeThumbnail =
-            thumbnails.querySelector(
-                `.old-album-thumbnail[data-index="${currentIndex}"]`
-            );
-
+        /*
+         * =================================================
+         * RESTORE EXACT PAGE POSITION
+         * =================================================
+         *
+         * Do NOT use scrollIntoView().
+         */
 
         if (
-            activeThumbnail &&
-            window.innerWidth <= 700
+            window.scrollY !== currentScrollPosition
         ) {
 
-            activeThumbnail.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "center"
-            });
+            window.scrollTo(
+                0,
+                currentScrollPosition
+            );
 
         }
 
+
+        /*
+         * Restart the timer only when required.
+         */
 
         if (resetTimer) {
 
@@ -2679,6 +2784,12 @@ function renderOldPictures() {
 
     }
 
+
+    /*
+     * =====================================================
+     * START AUTO SLIDE
+     * =====================================================
+     */
 
     function startAutoSlide() {
 
@@ -2696,9 +2807,21 @@ function renderOldPictures() {
         }
 
 
+        if (userInteracting) {
+
+            return;
+
+        }
+
+
         autoSlideTimer =
             setInterval(
                 () => {
+
+                    /*
+                     * Do not move the page.
+                     * Only change the active image.
+                     */
 
                     showSlide(
                         currentIndex + 1,
@@ -2712,24 +2835,32 @@ function renderOldPictures() {
     }
 
 
+    /*
+     * =====================================================
+     * STOP AUTO SLIDE
+     * =====================================================
+     */
+
     function stopAutoSlide() {
 
         clearInterval(
             autoSlideTimer
         );
 
+        autoSlideTimer = null;
+
     }
 
+
+    /*
+     * =====================================================
+     * PREVIOUS BUTTON
+     * =====================================================
+     */
 
     const previous =
         document.getElementById(
             "old-album-prev"
-        );
-
-
-    const next =
-        document.getElementById(
-            "old-album-next"
         );
 
 
@@ -2739,14 +2870,32 @@ function renderOldPictures() {
             "click",
             () => {
 
+                userInteracting = true;
+
+                stopAutoSlide();
+
+
                 showSlide(
-                    currentIndex - 1
+                    currentIndex - 1,
+                    false
                 );
 
             }
         );
 
     }
+
+
+    /*
+     * =====================================================
+     * NEXT BUTTON
+     * =====================================================
+     */
+
+    const next =
+        document.getElementById(
+            "old-album-next"
+        );
 
 
     if (next) {
@@ -2755,8 +2904,14 @@ function renderOldPictures() {
             "click",
             () => {
 
+                userInteracting = true;
+
+                stopAutoSlide();
+
+
                 showSlide(
-                    currentIndex + 1
+                    currentIndex + 1,
+                    false
                 );
 
             }
@@ -2764,6 +2919,12 @@ function renderOldPictures() {
 
     }
 
+
+    /*
+     * =====================================================
+     * DOT NAVIGATION
+     * =====================================================
+     */
 
     dots.querySelectorAll(
         ".old-album-dot"
@@ -2774,10 +2935,16 @@ function renderOldPictures() {
                 "click",
                 () => {
 
+                    userInteracting = true;
+
+                    stopAutoSlide();
+
+
                     showSlide(
                         Number(
                             dot.dataset.index
-                        )
+                        ),
+                        false
                     );
 
                 }
@@ -2786,6 +2953,12 @@ function renderOldPictures() {
         }
     );
 
+
+    /*
+     * =====================================================
+     * THUMBNAIL NAVIGATION
+     * =====================================================
+     */
 
     thumbnails.querySelectorAll(
         ".old-album-thumbnail"
@@ -2796,10 +2969,16 @@ function renderOldPictures() {
                 "click",
                 () => {
 
+                    userInteracting = true;
+
+                    stopAutoSlide();
+
+
                     showSlide(
                         Number(
                             thumbnail.dataset.index
-                        )
+                        ),
+                        false
                     );
 
                 }
@@ -2809,28 +2988,52 @@ function renderOldPictures() {
     );
 
 
-    /* =================================================
-       PAUSE WHILE HOVERING
-       ================================================= */
+    /*
+     * =====================================================
+     * PAUSE WHILE HOVERING
+     * =====================================================
+     *
+     * Hovering does NOT change the page position.
+     * =====================================================
+     */
 
     container.addEventListener(
         "mouseenter",
-        stopAutoSlide
+        () => {
+
+            stopAutoSlide();
+
+        }
     );
 
 
     container.addEventListener(
         "mouseleave",
-        startAutoSlide
+        () => {
+
+            /*
+             * If the visitor has manually selected
+             * an image, don't immediately start
+             * changing images again.
+             */
+
+            if (!userInteracting) {
+
+                startAutoSlide();
+
+            }
+
+        }
     );
 
 
-    /* =================================================
-       TOUCH / SWIPE
-       ================================================= */
+    /*
+     * =====================================================
+     * TOUCH / SWIPE
+     * =====================================================
+     */
 
     let touchStartX = 0;
-
 
     let touchEndX = 0;
 
@@ -2838,6 +3041,11 @@ function renderOldPictures() {
     slides.addEventListener(
         "touchstart",
         event => {
+
+            userInteracting = true;
+
+            stopAutoSlide();
+
 
             touchStartX =
                 event.changedTouches[0].screenX;
@@ -2876,14 +3084,16 @@ function renderOldPictures() {
             ) {
 
                 showSlide(
-                    currentIndex + 1
+                    currentIndex + 1,
+                    false
                 );
 
             }
             else {
 
                 showSlide(
-                    currentIndex - 1
+                    currentIndex - 1,
+                    false
                 );
 
             }
@@ -2895,20 +3105,34 @@ function renderOldPictures() {
     );
 
 
-    /* =================================================
-       LIGHTBOX
-       ================================================= */
+    /*
+     * =====================================================
+     * LIGHTBOX
+     * =====================================================
+     */
 
     initializeImageButtons(
         slides
     );
 
 
+    /*
+     * =====================================================
+     * INITIAL SLIDE
+     * =====================================================
+     */
+
     showSlide(
         0,
         false
     );
 
+
+    /*
+     * =====================================================
+     * START AUTO SLIDESHOW
+     * =====================================================
+     */
 
     startAutoSlide();
 
