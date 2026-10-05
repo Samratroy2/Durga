@@ -2127,27 +2127,43 @@ async function loadOldPictures() {
 /* =========================================================
    RENDER OLD PICTURES
    ========================================================= */
+/* =========================================================
+   RENDER OLD PICTURES — SLIDESHOW
+   ========================================================= */
 
 function renderOldPictures() {
 
-    const grid =
+    const container =
         document.getElementById(
             "old-photo-grid"
         );
 
 
-    if (!grid) {
+    if (!container) {
 
         return;
 
     }
 
 
-    if (
-        oldPictures.length === 0
-    ) {
+    const records =
+        oldPictures.filter(
+            picture =>
+                firstValue(
+                    picture,
+                    [
+                        "image",
+                        "photo",
+                        "imageUrl",
+                        "url"
+                    ]
+                )
+        );
 
-        grid.innerHTML = `
+
+    if (records.length === 0) {
+
+        container.innerHTML = `
 
             <div class="card">
 
@@ -2165,14 +2181,82 @@ function renderOldPictures() {
     }
 
 
-    grid.innerHTML = "";
+    container.innerHTML = `
+
+        <div class="old-album-stage">
+
+            <div
+                class="old-album-counter"
+                id="old-album-counter"
+            >
+                1 / ${records.length}
+            </div>
 
 
-    let count = 0;
+            <div
+                id="old-album-slides"
+                class="old-album-slides"
+            ></div>
 
 
-    oldPictures.forEach(
-        picture => {
+            <button
+                type="button"
+                class="old-album-prev"
+                id="old-album-prev"
+                aria-label="Previous photograph"
+            >
+                ‹
+            </button>
+
+
+            <button
+                type="button"
+                class="old-album-next"
+                id="old-album-next"
+                aria-label="Next photograph"
+            >
+                ›
+            </button>
+
+        </div>
+
+
+        <div
+            class="old-album-dots"
+            id="old-album-dots"
+            aria-label="Photograph navigation"
+        ></div>
+
+
+        <div
+            class="old-album-thumbnails"
+            id="old-album-thumbnails"
+            aria-label="Photograph thumbnails"
+        ></div>
+
+    `;
+
+
+    const slides =
+        document.getElementById(
+            "old-album-slides"
+        );
+
+
+    const dots =
+        document.getElementById(
+            "old-album-dots"
+        );
+
+
+    const thumbnails =
+        document.getElementById(
+            "old-album-thumbnails"
+        );
+
+
+    records.forEach(
+        (picture, index) => {
 
             const image =
                 firstValue(
@@ -2184,17 +2268,6 @@ function renderOldPictures() {
                         "url"
                     ]
                 );
-
-
-            /*
-             * Ignore records without images.
-             */
-
-            if (!image) {
-
-                return;
-
-            }
 
 
             const title =
@@ -2227,103 +2300,617 @@ function renderOldPictures() {
                 );
 
 
-            const card =
+            const year =
+                firstValue(
+                    picture,
+                    [
+                        "year"
+                    ]
+                );
+
+
+            const thumbnail =
+                getImageUrl(image);
+
+
+            const largeImage =
+                getLargeImageUrl(image);
+
+
+            /* =================================================
+               SLIDE
+               ================================================= */
+
+            const slide =
                 document.createElement(
                     "article"
                 );
 
 
-            card.className =
-                "card archive-card";
+            slide.className =
+                "old-album-slide";
 
 
-            card.innerHTML = `
+            if (index === 0) {
 
-                ${createImageButtonHTML(
-                    image,
-                    title,
-                    "archive-image"
-                )}
+                slide.classList.add(
+                    "active"
+                );
 
-
-                ${
-                    picture.year
-                        ? `
-                            <div class="num">
-                                ${escapeHTML(
-                                    picture.year
-                                )}
-                            </div>
-                          `
-                        : ""
-                }
+            }
 
 
-                ${
-                    category
-                        ? `
-                            <div class="small-caps">
-                                ${escapeHTML(category)}
-                            </div>
-                          `
-                        : ""
-                }
+            slide.dataset.index =
+                String(index);
 
 
-                <h4>
-                    ${escapeHTML(title)}
-                </h4>
+            slide.innerHTML = `
+
+                <button
+                    type="button"
+                    class="old-album-image-button"
+                    data-lightbox-image="${escapeAttribute(
+                        largeImage
+                    )}"
+                    data-lightbox-alt="${escapeAttribute(
+                        title
+                    )}"
+                    aria-label="Open photograph in full screen"
+                >
+
+                    <div class="old-album-image-wrap">
+
+                        <img
+                            src="${escapeAttribute(
+                                thumbnail
+                            )}"
+                            alt="${escapeAttribute(
+                                title
+                            )}"
+                            class="old-album-image"
+                            loading="${
+                                index === 0
+                                    ? "eager"
+                                    : "lazy"
+                            }"
+                            decoding="async"
+                        >
+
+                    </div>
+
+                </button>
 
 
-                ${
-                    description
-                        ? `
-                            <p>
-                                ${escapeHTML(description)}
-                            </p>
-                          `
-                        : ""
-                }
+                <div class="old-album-caption">
+
+                    ${
+                        year
+                            ? `
+                                <div class="old-album-year">
+                                    ${escapeHTML(year)}
+                                </div>
+                              `
+                            : ""
+                    }
+
+
+                    <h3>
+                        ${escapeHTML(title)}
+                    </h3>
+
+
+                    ${
+                        description
+                            ? `
+                                <p>
+                                    ${escapeHTML(
+                                        description
+                                    )}
+                                </p>
+                              `
+                            : ""
+                    }
+
+
+                    ${
+                        category
+                            ? `
+                                <div class="small-caps old-album-category">
+                                    ${escapeHTML(
+                                        category
+                                    )}
+                                </div>
+                              `
+                            : ""
+                    }
+
+                </div>
 
             `;
 
 
-            grid.appendChild(
-                card
+            slides.appendChild(
+                slide
             );
 
 
-            count++;
+            /* =================================================
+               DOT
+               ================================================= */
+
+            const dot =
+                document.createElement(
+                    "button"
+                );
+
+
+            dot.type =
+                "button";
+
+
+            dot.className =
+                "old-album-dot";
+
+
+            if (index === 0) {
+
+                dot.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            dot.dataset.index =
+                String(index);
+
+
+            dot.setAttribute(
+                "aria-label",
+                `Go to photograph ${index + 1}`
+            );
+
+
+            dots.appendChild(
+                dot
+            );
+
+
+            /* =================================================
+               THUMBNAIL
+               ================================================= */
+
+            const thumbnailButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            thumbnailButton.type =
+                "button";
+
+
+            thumbnailButton.className =
+                "old-album-thumbnail";
+
+
+            if (index === 0) {
+
+                thumbnailButton.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            thumbnailButton.dataset.index =
+                String(index);
+
+
+            thumbnailButton.setAttribute(
+                "aria-label",
+                `Show ${title}`
+            );
+
+
+            thumbnailButton.innerHTML = `
+
+                <img
+                    src="${escapeAttribute(
+                        thumbnail
+                    )}"
+                    alt="${escapeAttribute(
+                        title
+                    )}"
+                    loading="lazy"
+                    decoding="async"
+                >
+
+            `;
+
+
+            thumbnails.appendChild(
+                thumbnailButton
+            );
 
         }
     );
 
 
-    if (
-        count === 0
+    let currentIndex = 0;
+
+
+    let autoSlideTimer = null;
+
+
+    function showSlide(
+        index,
+        resetTimer = true
     ) {
 
-        grid.innerHTML = `
+        if (
+            records.length === 0
+        ) {
 
-            <div class="card">
+            return;
 
-                <p>
-                    No image links have
-                    been added yet.
-                </p>
+        }
 
-            </div>
 
-        `;
+        if (
+            index < 0
+        ) {
 
-        return;
+            index =
+                records.length - 1;
+
+        }
+
+
+        if (
+            index >= records.length
+        ) {
+
+            index = 0;
+
+        }
+
+
+        currentIndex =
+            index;
+
+
+        const allSlides =
+            slides.querySelectorAll(
+                ".old-album-slide"
+            );
+
+
+        allSlides.forEach(
+            (slide, slideIndex) => {
+
+                slide.classList.toggle(
+                    "active",
+                    slideIndex === currentIndex
+                );
+
+            }
+        );
+
+
+        const allDots =
+            dots.querySelectorAll(
+                ".old-album-dot"
+            );
+
+
+        allDots.forEach(
+            (dot, dotIndex) => {
+
+                dot.classList.toggle(
+                    "active",
+                    dotIndex === currentIndex
+                );
+
+            }
+        );
+
+
+        const allThumbnails =
+            thumbnails.querySelectorAll(
+                ".old-album-thumbnail"
+            );
+
+
+        allThumbnails.forEach(
+            (
+                thumbnail,
+                thumbnailIndex
+            ) => {
+
+                thumbnail.classList.toggle(
+                    "active",
+                    thumbnailIndex === currentIndex
+                );
+
+            }
+        );
+
+
+        const counter =
+            document.getElementById(
+                "old-album-counter"
+            );
+
+
+        if (counter) {
+
+            counter.textContent =
+                `${currentIndex + 1} / ${records.length}`;
+
+        }
+
+
+        const activeThumbnail =
+            thumbnails.querySelector(
+                `.old-album-thumbnail[data-index="${currentIndex}"]`
+            );
+
+
+        if (
+            activeThumbnail &&
+            window.innerWidth <= 700
+        ) {
+
+            activeThumbnail.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center"
+            });
+
+        }
+
+
+        if (resetTimer) {
+
+            startAutoSlide();
+
+        }
 
     }
 
 
-    initializeImageButtons(
-        grid
+    function startAutoSlide() {
+
+        clearInterval(
+            autoSlideTimer
+        );
+
+
+        if (
+            records.length <= 1
+        ) {
+
+            return;
+
+        }
+
+
+        autoSlideTimer =
+            setInterval(
+                () => {
+
+                    showSlide(
+                        currentIndex + 1,
+                        false
+                    );
+
+                },
+                5000
+            );
+
+    }
+
+
+    function stopAutoSlide() {
+
+        clearInterval(
+            autoSlideTimer
+        );
+
+    }
+
+
+    const previous =
+        document.getElementById(
+            "old-album-prev"
+        );
+
+
+    const next =
+        document.getElementById(
+            "old-album-next"
+        );
+
+
+    if (previous) {
+
+        previous.addEventListener(
+            "click",
+            () => {
+
+                showSlide(
+                    currentIndex - 1
+                );
+
+            }
+        );
+
+    }
+
+
+    if (next) {
+
+        next.addEventListener(
+            "click",
+            () => {
+
+                showSlide(
+                    currentIndex + 1
+                );
+
+            }
+        );
+
+    }
+
+
+    dots.querySelectorAll(
+        ".old-album-dot"
+    ).forEach(
+        dot => {
+
+            dot.addEventListener(
+                "click",
+                () => {
+
+                    showSlide(
+                        Number(
+                            dot.dataset.index
+                        )
+                    );
+
+                }
+            );
+
+        }
     );
+
+
+    thumbnails.querySelectorAll(
+        ".old-album-thumbnail"
+    ).forEach(
+        thumbnail => {
+
+            thumbnail.addEventListener(
+                "click",
+                () => {
+
+                    showSlide(
+                        Number(
+                            thumbnail.dataset.index
+                        )
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =================================================
+       PAUSE WHILE HOVERING
+       ================================================= */
+
+    container.addEventListener(
+        "mouseenter",
+        stopAutoSlide
+    );
+
+
+    container.addEventListener(
+        "mouseleave",
+        startAutoSlide
+    );
+
+
+    /* =================================================
+       TOUCH / SWIPE
+       ================================================= */
+
+    let touchStartX = 0;
+
+
+    let touchEndX = 0;
+
+
+    slides.addEventListener(
+        "touchstart",
+        event => {
+
+            touchStartX =
+                event.changedTouches[0].screenX;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    slides.addEventListener(
+        "touchend",
+        event => {
+
+            touchEndX =
+                event.changedTouches[0].screenX;
+
+
+            const difference =
+                touchStartX -
+                touchEndX;
+
+
+            if (
+                Math.abs(difference) < 50
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                difference > 0
+            ) {
+
+                showSlide(
+                    currentIndex + 1
+                );
+
+            }
+            else {
+
+                showSlide(
+                    currentIndex - 1
+                );
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    /* =================================================
+       LIGHTBOX
+       ================================================= */
+
+    initializeImageButtons(
+        slides
+    );
+
+
+    showSlide(
+        0,
+        false
+    );
+
+
+    startAutoSlide();
 
 }
 
