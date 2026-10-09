@@ -1,909 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Roy Bari Durga Puja
-    </title>
+    <title>Roy Bari Durga Puja</title>
 
     <meta
         name="description"
         content="The digital home of Roy Bari Durga Puja — its traditions, idol makers, rituals, family memories, photographs, and living history."
     >
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
-<!-- =====================================================
-     HEADER
-     ===================================================== -->
-
-<header class="site-header">
-
-    <nav class="nav">
-
-
-        <!-- =================================================
-             BRAND
-             ================================================= -->
-
-        <a
-            href="index.html"
-            class="brand"
-        >
-
-            ROY BARI
-
-            <span>
-                Est. 1671 · Nohari
-            </span>
-
-        </a>
-
-
-        <!-- =================================================
-             MOBILE MENU
-             ================================================= -->
-
-        <button
-            type="button"
-            class="nav-toggle"
-            aria-label="Toggle navigation"
-            aria-expanded="false"
-        >
-            ☰
-        </button>
-
-
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
-
-        <ul class="nav-links">
-
-            <li>
-
-                <a
-                    href="index.html"
-                    class="active"
-                    aria-current="page"
-                >
-                    Home
-                </a>
-
-            </li>
-
-
-            <li>
-
-                <a href="about.html">
-                    About the Puja
-                </a>
-
-            </li>
-
-
-            <li>
-
-                <a href="family-tree.html">
-                    Family Tree
-                </a>
-
-            </li>
-
-
-            <li>
-
-                <a href="gallery.html">
-                    Gallery
-                </a>
-
-            </li>
-
-
-            <li>
-
-                <a href="events.html">
-                    Events
-                </a>
-
-            </li>
-
-
-            <li>
-
-                <a href="visit.html">
-                    Visit
-                </a>
-
-            </li>
-
-            <li>
-                <a href="temples.html">
-                    Others Temples
-                </a>
-            </li>
-
-            <li>
-
-                <a href="contact.html">
-                    Contact
-                </a>
-
-            </li>
-
-        </ul>
-
-    </nav>
-
-</header>
-
-
-<!-- =====================================================
-     HERO
-     ===================================================== -->
-
-<section class="hero">
-
-    <div class="hero-inner">
-
-
-        <!-- =================================================
-             HERO CONTENT
-             ================================================= -->
-
-        <div class="hero-content">
-
-
-            <div class="eyebrow">
-                A Bonedi Bari of Nohari
-            </div>
-
-
-            <h1>
-
-                Roy Bari
-                <br>
-                Durga Puja
-
-            </h1>
-
-
-            <p class="tagline">
-
-                Not simply a website about Durga Puja —
-                the digital home of one family's
-                living tradition.
-
-            </p>
-
-
-            <!-- =================================================
-                 COUNTDOWN
-                 
-                 Countdown is controlled by home.js.
-                 It uses the next ritual/event from
-                 the Puja calendar.
-                 ================================================= -->
-
-            <div
-                class="small-caps"
-                id="countdown-label"
-                style="margin-top:36px;"
+    <!-- HEADER -->
+    <header class="site-header">
+        <nav class="nav">
+
+            <a href="index.html" class="brand">
+                ROY BARI
+                <span>Est. 1671 · Nohari</span>
+            </a>
+
+            <button
+                type="button"
+                class="nav-toggle"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
             >
+                ☰
+            </button>
 
-                Counting down to the next Puja ritual
+            <ul class="nav-links">
+                <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+                <li><a href="about.html">About the Puja</a></li>
+                <li><a href="family-tree.html">Family Tree</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="visit.html">Visit</a></li>
+                <li><a href="temples.html">Other Temples</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
 
-            </div>
+        </nav>
+    </header>
 
 
-            <div
-                class="countdown"
-                id="countdown"
-            >
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-inner">
 
+            <div class="hero-content">
 
-                <!-- DAYS -->
+                <div class="eyebrow">A Bonedi Bari of Nohari</div>
 
-                <div class="box">
+                <h1>Roy Bari<br>Durga Puja</h1>
 
-                    <span class="n">
-                        --
-                    </span>
+                <p class="tagline">
+                    Not simply a website about Durga Puja —
+                    the digital home of one family's
+                    living tradition.
+                </p>
 
-                    <span class="u">
-                        Days
-                    </span>
-
+                <!-- Countdown label (margin handled in CSS) -->
+                <div class="small-caps" id="countdown-label">
+                    Counting down to the next Puja ritual
                 </div>
 
-
-                <!-- HOURS -->
-
-                <div class="box">
-
-                    <span class="n">
-                        --
-                    </span>
-
-                    <span class="u">
-                        Hours
-                    </span>
-
+                <div class="countdown" id="countdown">
+                    <div class="box"><span class="n">--</span><span class="u">Days</span></div>
+                    <div class="box"><span class="n">--</span><span class="u">Hours</span></div>
+                    <div class="box"><span class="n">--</span><span class="u">Minutes</span></div>
+                    <div class="box"><span class="n">--</span><span class="u">Seconds</span></div>
                 </div>
 
-
-                <!-- MINUTES -->
-
-                <div class="box">
-
-                    <span class="n">
-                        --
-                    </span>
-
-                    <span class="u">
-                        Minutes
-                    </span>
-
-                </div>
-
-
-                <!-- SECONDS -->
-
-                <div class="box">
-
-                    <span class="n">
-                        --
-                    </span>
-
-                    <span class="u">
-                        Seconds
-                    </span>
-
-                </div>
-
-
-            </div>
-
-
-            <!-- =================================================
-                 HERO ACTIONS
-                 ================================================= -->
-
-            <div class="hero-actions">
-
-
-                <a
-                    href="about.html"
-                    class="btn btn-solid"
+                <h2
+                    id="countdown-event-title"
+                    class="countdown-event-title"
+                    aria-live="polite"
                 >
-                    Discover the Puja
+                    Next Puja ritual
+                </h2>
+
+                <!-- Audio player: a <div>, not a <section>, so the global
+                     "section { padding: 110px 0 }" rule never applies. -->
+                <div
+                    id="countdownAudioSection"
+                    class="countdown-audio"
+                    role="region"
+                    aria-label="Countdown event audio"
+                    hidden
+                >
+                    <p id="countdownAudioTitle" class="countdown-audio-title">
+                        Listen to the current event
+                    </p>
+
+                    <iframe
+                        id="countdownAudioFrame"
+                        title="Roy Bari event audio player"
+                        width="100%"
+                        height="110"
+                        allow="autoplay"
+                        loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="about.html" class="btn btn-solid">Discover the Puja</a>
+                    <a href="events.html" class="btn">See the Events</a>
+                </div>
+
+                <div class="hero-meta">
+                    <div>
+                        <span class="num">355+</span>
+                        <span class="label">Years of tradition</span>
+                    </div>
+
+                    <div>
+                        <span class="num">10th</span>
+                        <span class="label">Generation</span>
+                    </div>
+
+                    <div>
+                        <span class="num">Living</span>
+                        <span class="label">Tradition</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="hero-deity">
+                <div class="hero-deity-ring ring-outer"></div>
+                <div class="hero-deity-ring ring-inner"></div>
+
+                <img id="hero-durga" alt="Roy Bari Durga idol" decoding="async">
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- WHERE TO BEGIN -->
+    <section>
+        <div class="container">
+
+            <div class="section-head">
+                <div class="eyebrow">Where to begin</div>
+                <h2>Find your way into the Bari</h2>
+                <p class="lead">
+                    Discover the people, rituals,
+                    photographs, and stories that
+                    keep the Roy Bari tradition alive.
+                </p>
+            </div>
+
+            <div class="grid grid-4">
+
+                <a class="card" href="about.html">
+                    <div class="num">01</div>
+                    <h4>About the Puja</h4>
+                    <p>
+                        Meet the idol makers, discover important rituals,
+                        explore old photographs, and read memories in
+                        the family's own words.
+                    </p>
                 </a>
 
-
-                <a
-                    href="events.html"
-                    class="btn"
-                >
-                    See the Events
+                <a class="card" href="family-tree.html">
+                    <div class="num">02</div>
+                    <h4>Family Tree</h4>
+                    <p>
+                        Explore generations of the Roy family and follow
+                        the connections that shaped the Bari.
+                    </p>
                 </a>
 
+                <a class="card" href="gallery.html">
+                    <div class="num">03</div>
+                    <h4>Gallery &amp; Films</h4>
+                    <p>
+                        Photographs of the idol, courtyard, family, rituals,
+                        old images, comparisons, and films from the archive.
+                    </p>
+                </a>
+
+                <a class="card" href="events.html">
+                    <div class="num">04</div>
+                    <h4>Puja Calendar</h4>
+                    <p>
+                        Follow the Puja day by day, from Mahalaya through
+                        Dashami, with ritual timings and upcoming events.
+                    </p>
+                </a>
 
             </div>
 
+        </div>
+    </section>
 
-            <!-- =================================================
-                 HERO META
-                 ================================================= -->
 
-            <div class="hero-meta">
+    <!-- FAMILY WORDS -->
+    <section class="section-alt">
+        <div class="container">
 
+            <div class="deity-art">
+                <img id="eye" alt="Durga" decoding="async">
+            </div>
+
+            <div class="section-head center family-words-head">
+
+                <div class="eyebrow">In the family's own words</div>
+
+                <h2>
+                    “Without the bael flower, the sandhi puja is
+                    incomplete on the day of ashtami.”
+                </h2>
+
+                <p class="lead">
+                    A memory preserved in the family archive,
+                    reflecting the quiet discipline and
+                    devotion surrounding the Puja.
+                </p>
+
+                <a href="about.html#their-words" class="btn btn-light">
+                    Read More Memories
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- VISIT -->
+    <section>
+        <div class="container">
+
+            <div class="section-head">
+                <div class="eyebrow">Plan your visit</div>
+                <h2>Come see the Bari for yourself</h2>
+                <p class="lead">
+                    Find the location, directions, visitor information,
+                    and ways to contact the family.
+                </p>
+            </div>
+
+            <div class="pill-row">
+                <a class="pill" href="visit.html#location">Location &amp; Directions</a>
+                <a class="pill" href="events.html">Puja Events &amp; Timings</a>
+                <a class="pill" href="visit.html#guide">Visitor Guide</a>
+                <a class="pill" href="contact.html">Contact the Family</a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container">
+
+            <div class="footer-grid">
 
                 <div>
-
-                    <span class="num">
-                        355+
-                    </span>
-
-                    <span class="label">
-                        Years of tradition
-                    </span>
-
+                    <h5>Roy Bari</h5>
+                    <p>V8J4+5FF, Chhota Nohari, West Bengal 721121</p>
                 </div>
-
 
                 <div>
-
-                    <span class="num">
-                        10th
-                    </span>
-
-                    <span class="label">
-                        Generation
-                    </span>
-
+                    <h5>Explore</h5>
+                    <ul>
+                        <li><a href="about.html">About the Puja</a></li>
+                        <li><a href="family-tree.html">Family Tree</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
                 </div>
-
 
                 <div>
-
-                    <span class="num">
-                        A LIVING
-                    </span>
-
-                    <span class="label">
-                        Living tradition
-                    </span>
-
+                    <h5>Visit</h5>
+                    <ul>
+                        <li><a href="visit.html">Location &amp; Directions</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                    </ul>
                 </div>
 
-
-            </div>
-
-
-        </div>
-
-
-        <!-- =================================================
-             DURGA IMAGE
-             ================================================= -->
-
-        <div class="hero-deity">
-
-
-            <div
-                class="hero-deity-ring ring-outer"
-            ></div>
-
-
-            <div
-                class="hero-deity-ring ring-inner"
-            ></div>
-
-
-            <img
-                id="hero-durga"
-                alt="Roy Bari Durga idol"
-            >
-
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     WHERE TO BEGIN
-     ===================================================== -->
-
-<section>
-
-    <div class="container">
-
-
-        <div class="section-head">
-
-
-            <div class="eyebrow">
-                Where to begin
-            </div>
-
-
-            <h2>
-                Find your way into the Bari
-            </h2>
-
-
-            <p class="lead">
-
-                Discover the people, rituals,
-                photographs, and stories that
-                keep the Roy Bari tradition alive.
-
-            </p>
-
-
-        </div>
-
-
-        <div class="grid grid-4">
-
-
-            <!-- =================================================
-                 ABOUT
-                 ================================================= -->
-
-            <a
-                class="card"
-                href="about.html"
-            >
-
-                <div class="num">
-                    01
+                <div>
+                    <h5>Contact</h5>
+                    <ul>
+                        <li><a href="contact.html">Get in Touch</a></li>
+                    </ul>
                 </div>
 
-
-                <h4>
-                    About the Puja
-                </h4>
-
-
-                <p>
-
-                    Meet the idol makers,
-                    discover important rituals,
-                    explore old photographs,
-                    and read memories in
-                    the family's own words.
-
-                </p>
-
-            </a>
-
-
-            <!-- =================================================
-                 FAMILY TREE
-                 ================================================= -->
-
-            <a
-                class="card"
-                href="family-tree.html"
-            >
-
-                <div class="num">
-                    02
-                </div>
-
-
-                <h4>
-                    Family Tree
-                </h4>
-
-
-                <p>
-
-                    Explore generations of the
-                    Roy family and follow the
-                    connections that shaped
-                    the Bari.
-
-                </p>
-
-            </a>
-
-
-            <!-- =================================================
-                 GALLERY
-                 ================================================= -->
-
-            <a
-                class="card"
-                href="gallery.html"
-            >
-
-                <div class="num">
-                    03
-                </div>
-
-
-                <h4>
-                    Gallery &amp; Films
-                </h4>
-
-
-                <p>
-
-                    Photographs of the idol,
-                    courtyard, family, rituals,
-                    old images, comparisons,
-                    and films from the archive.
-
-                </p>
-
-            </a>
-
-
-            <!-- =================================================
-                 EVENTS
-                 ================================================= -->
-
-            <a
-                class="card"
-                href="events.html"
-            >
-
-                <div class="num">
-                    04
-                </div>
-
-
-                <h4>
-                    Puja Calendar
-                </h4>
-
-
-                <p>
-
-                    Follow the Puja day by day,
-                    from Mahalaya through Dashami,
-                    with ritual timings and
-                    upcoming events.
-
-                </p>
-
-            </a>
-
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     FAMILY WORDS
-     ===================================================== -->
-
-<section class="section-alt">
-
-    <div class="container">
-
-
-        <div class="deity-art">
-
-
-            <img
-                id="eye"
-                alt="Durga"
-            >
-
-
-        </div>
-
-
-        <div
-            class="section-head center"
-            style="margin-top:36px;"
-        >
-
-
-            <div class="eyebrow">
-                In the family's own words
             </div>
 
-
-            <h2>
-
-                “Without the bael flower,
-                the sandhi puja is incomplete on the
-                day of ashtami.”
-
-            </h2>
-
-
-            <p class="lead">
-
-                A memory preserved in the family archive,
-                reflecting the quiet discipline and
-                devotion surrounding the Puja.
-
-            </p>
-
-
-            <a
-                href="about.html#their-words"
-                class="btn"
-                style="margin-top:20px; color: black; background-color:whitesmoke ;"
-            >
-                Read More Memories
-            </a>
-
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     VISIT
-     ===================================================== -->
-
-<section>
-
-    <div class="container">
-
-
-        <div class="section-head">
-
-
-            <div class="eyebrow">
-                Plan your visit
+            <div class="footer-bottom">
+                <span>© 2026 Roy Bari. A family archive, not a commercial event.</span>
             </div>
 
-
-            <h2>
-                Come see the Bari for yourself
-            </h2>
-
-
-            <p class="lead">
-
-                Find the location, directions,
-                visitor information, and ways
-                to contact the family.
-
-            </p>
-
-
         </div>
+    </footer>
 
 
-        <div class="pill-row">
-
-
-            <!-- LOCATION -->
-
-            <a
-                class="pill"
-                href="visit.html#location"
-            >
-                Location &amp; Directions
-            </a>
-
-
-            <!-- EVENTS -->
-
-            <a
-                class="pill"
-                href="events.html"
-            >
-                Puja Events &amp; Timings
-            </a>
-
-
-            <!-- VISITOR GUIDE -->
-
-            <a
-                class="pill"
-                href="visit.html#guide"
-            >
-                Visitor Guide
-            </a>
-
-
-            <!-- CONTACT -->
-
-            <a
-                class="pill"
-                href="contact.html"
-            >
-                Contact the Family
-            </a>
-
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
-
-<footer class="site-footer">
-
-    <div class="container">
-
-
-        <div class="footer-grid">
-
-
-            <!-- =================================================
-                 ROY BARI
-                 ================================================= -->
-
-            <div>
-
-                <h5>
-                    Roy Bari
-                </h5>
-
-
-                <p>
-
-                    V8J4+5FF,
-                    Chhota Nohari,
-                    West Bengal 721121
-
-                </p>
-
-            </div>
-
-
-            <!-- =================================================
-                 EXPLORE
-                 ================================================= -->
-
-            <div>
-
-                <h5>
-                    Explore
-                </h5>
-
-
-                <ul>
-
-
-                    <li>
-
-                        <a href="about.html">
-                            About the Puja
-                        </a>
-
-                    </li>
-
-
-                    <li>
-
-                        <a href="family-tree.html">
-                            Family Tree
-                        </a>
-
-                    </li>
-
-
-                    <li>
-
-                        <a href="gallery.html">
-                            Gallery
-                        </a>
-
-                    </li>
-
-
-                    <li>
-
-                        <a href="events.html">
-                            Events
-                        </a>
-
-                    </li>
-
-
-                </ul>
-
-            </div>
-
-
-            <!-- =================================================
-                 VISIT
-                 ================================================= -->
-
-            <div>
-
-                <h5>
-                    Visit
-                </h5>
-
-
-                <ul>
-
-
-                    <li>
-
-                        <a href="visit.html">
-                            Location &amp; Directions
-                        </a>
-
-                    </li>
-
-
-                    <li>
-
-                        <a href="gallery.html">
-                            Gallery
-                        </a>
-
-                    </li>
-
-
-                </ul>
-
-            </div>
-
-
-            <!-- =================================================
-                 CONTACT
-                 ================================================= -->
-
-            <div>
-
-                <h5>
-                    Contact
-                </h5>
-
-
-                <ul>
-
-
-                    <li>
-
-                        <a href="contact.html">
-                            Get in Touch
-                        </a>
-
-                    </li>
-
-
-                </ul>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- =================================================
-             FOOTER BOTTOM
-             ================================================= -->
-
-        <div class="footer-bottom">
-
-            <span>
-
-                © 2026 Roy Bari.
-                A family archive,
-                not a commercial event.
-
-            </span>
-
-        </div>
-
-
-    </div>
-
-</footer>
-
-
-<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
-
-<script src="main.js"></script>
-
-
-<script
-    type="module"
-    src="home.js"
-></script>
-
+    <!-- JAVASCRIPT -->
+    <script src="main.js" defer></script>
+    <script type="module" src="home.js"></script>
 
 </body>
-
 </html>
