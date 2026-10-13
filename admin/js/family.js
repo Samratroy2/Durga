@@ -43,6 +43,7 @@
 
 import {
     onAuthStateChanged,
+    getIdTokenResult,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -292,38 +293,67 @@ let members = [];
 let originalId = "";
 
 
+
+
+
 /* =========================================================
-   AUTHENTICATION
+   AUTHENTICATION — ADMIN CUSTOM CLAIM VERIFICATION
    ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+let familyAuthCheckInProgress = false;
 
-        if (!user) {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.replace("./index.html");
+        return;
+    }
 
-            window.location.replace(
-                "./index.html"
-            );
+    if (familyAuthCheckInProgress) return;
+    familyAuthCheckInProgress = true;
 
+    try {
+        let tokenResult = await getIdTokenResult(user);
+
+        // Refresh the token if the admin claim is missing.
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
+        }
+
+        // Reject users who do not have the admin claim.
+        if (tokenResult.claims.admin !== true) {
+            await signOut(auth);
+            window.location.replace("./index.html");
             return;
         }
 
+        console.log("Family admin verified:", user.email);
 
+        // Display the authenticated admin's email.
         if (adminEmail) {
-
-            adminEmail.textContent =
-                user.email ||
-                "Admin";
-
+            adminEmail.textContent = user.email || "Admin";
         }
 
-
+        // Load this page's actual Firestore data.
         await loadMembers();
 
-    }
-);
+    } catch (error) {
+        console.error(
+            "Family admin authentication/loading error:",
+            error
+        );
 
+        if (message) {
+            message.textContent =
+                "Unable to load family members. Please retry.";
+            message.className = "message error";
+        }
+
+        // Do not sign out automatically for a network or
+        // Firestore loading error.
+    } finally {
+        familyAuthCheckInProgress = false;
+    }
+});
 
 /* =========================================================
    LOAD MEMBERS

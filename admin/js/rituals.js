@@ -6,6 +6,7 @@
 
 import {
     onAuthStateChanged,
+    getIdTokenResult,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -99,75 +100,62 @@ let editingId = null;
 
 let currentAdmin = null;
 
-
 /* =========================================================
-   AUTHENTICATION
+   AUTHENTICATION — ADMIN CUSTOM CLAIM VERIFICATION
    ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+let ritualsAuthCheckInProgress = false;
 
-        if (!user) {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.replace("./index.html");
+        return;
+    }
 
-            window.location.replace(
-                "./index.html"
-            );
+    if (ritualsAuthCheckInProgress) return;
+    ritualsAuthCheckInProgress = true;
 
+    try {
+        let tokenResult = await getIdTokenResult(user);
+
+        // Refresh the token if the admin claim is missing.
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
+        }
+
+        // Only admins can access this page.
+        if (tokenResult.claims.admin !== true) {
+            await signOut(auth);
+            window.location.replace("./index.html");
             return;
-
         }
 
+        currentAdmin = user;
 
-        currentAdmin =
-            user;
+        console.log("Rituals admin verified:", user.email);
 
-
+        // Display the admin's email.
         if (adminEmail) {
-
-            adminEmail.textContent =
-                user.email ||
-                "Admin";
-
+            adminEmail.textContent = user.email || "Admin";
         }
 
-
-        try {
-
-            if (user.email) {
-
-                localStorage.setItem(
-                    "adminEmail",
-                    user.email
-                );
-
-            }
-
-
-            if (user.uid) {
-
-                localStorage.setItem(
-                    "adminUid",
-                    user.uid
-                );
-
-            }
-
-        }
-        catch (error) {
-
-            console.warn(
-                "Unable to store admin information.",
-                error
-            );
-
-        }
-
-
+        // Load the Rituals collection.
         await loadRituals();
 
+    } catch (error) {
+        console.error(
+            "Rituals authorization/loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to verify access or load rituals. Please retry.",
+            "error"
+        );
+    } finally {
+        ritualsAuthCheckInProgress = false;
     }
-);
+});
 
 
 /* =========================================================

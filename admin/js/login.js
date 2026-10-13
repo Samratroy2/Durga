@@ -1,13 +1,15 @@
+
 /* =========================================================
    ROY BARI — ADMIN LOGIN
-   FIREBASE AUTHENTICATION
+   FIREBASE AUTHENTICATION + CUSTOM CLAIMS
    ========================================================= */
 
 import {
     signInWithEmailAndPassword,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut,
+    getIdTokenResult
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
 
 import {
     auth
@@ -18,192 +20,149 @@ import {
    ELEMENTS
    ========================================================= */
 
-const loginForm =
-    document.getElementById("loginForm");
-
-
-const emailInput =
-    document.getElementById("email");
-
-
-const passwordInput =
-    document.getElementById("password");
-
-
-const loginButton =
-    document.getElementById("loginButton");
-
-
-const loginButtonText =
-    document.getElementById("loginButtonText");
-
-
-const loginMessage =
-    document.getElementById("loginMessage");
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const loginButton = document.getElementById("loginButton");
+const loginButtonText = document.getElementById("loginButtonText");
+const loginMessage = document.getElementById("loginMessage");
 
 
 /* =========================================================
-   AUTH CHECK
+   UI HELPERS
    ========================================================= */
+
+function showMessage(text, type = "error") {
+    if (!loginMessage) return;
+
+    loginMessage.textContent = text;
+    loginMessage.className = `message ${type}`;
+}
+
+function setLoading(loading) {
+    if (loginButton) {
+        loginButton.disabled = loading;
+    }
+
+    if (loginButtonText) {
+        loginButtonText.textContent = loading
+            ? "Verifying account..."
+            : "Login to Admin Panel";
+    }
+}
+
+
+/* =========================================================
+   ADMIN CLAIM VERIFICATION
+   ========================================================= */
+
+// Force-refresh the ID token so newly assigned custom claims
+// can be detected after login or an admin-role change.
+
+async function isAdmin(user) {
+    if (!user) return false;
+
+    const tokenResult = await getIdTokenResult(user, true);
+
+    return tokenResult.claims.admin === true;
+}
+
+
+/* =========================================================
+   AUTHENTICATION STATE
+   ========================================================= */
+
+let redirectingToDashboard = false;
 
 onAuthStateChanged(
     auth,
-    user => {
-
+    async (user) => {
         if (!user) {
+            redirectingToDashboard = false;
             return;
         }
 
+        try {
+            const authorized = await isAdmin(user);
 
-        console.log(
-            "Already logged in:",
-            user.email
-        );
+            if (!authorized) {
+                await signOut(auth);
 
+                showMessage(
+                    "Access denied. This account is not an authorized administrator."
+                );
 
-        /*
-           Store logged-in admin email.
+                return;
+            }
 
-           Other admin pages can use:
+            if (!redirectingToDashboard) {
+                redirectingToDashboard = true;
+                window.location.replace("./dashboard.html");
+            }
 
-           localStorage.getItem("adminEmail")
-        */
-
-        if (user.email) {
-
-            localStorage.setItem(
-                "adminEmail",
-                user.email
+        } catch (error) {
+            console.error(
+                "Admin authorization check failed:",
+                error.code || error.message
             );
 
+            try {
+                await signOut(auth);
+            } catch (signOutError) {
+                console.error(
+                    "Sign-out failed:",
+                    signOutError.code
+                );
+            }
+
+            showMessage(
+                "Unable to verify administrator permissions. Please try again."
+            );
         }
-
-
-        /*
-           User is already authenticated,
-           so don't show login page again.
-        */
-
-        window.location.replace(
-            "./dashboard.html"
+    },
+    (error) => {
+        console.error(
+            "Authentication state error:",
+            error.code
         );
 
+        showMessage(
+            "Unable to verify your login session. Please reload the page."
+        );
     }
 );
 
 
 /* =========================================================
-   SHOW MESSAGE
-   ========================================================= */
-
-function showMessage(
-    text,
-    type = "error"
-) {
-
-    if (!loginMessage) {
-        return;
-    }
-
-
-    loginMessage.textContent =
-        text;
-
-
-    loginMessage.className =
-        `message ${type}`;
-
-}
-
-
-/* =========================================================
-   LOGIN
+   LOGIN FORM
    ========================================================= */
 
 if (loginForm) {
-
     loginForm.addEventListener(
         "submit",
-        async event => {
-
+        async (event) => {
             event.preventDefault();
 
-
-            /* =================================================
-               GET VALUES
-               ================================================= */
-
-            const email =
-                emailInput.value.trim();
-
-
-            const password =
-                passwordInput.value;
-
-
-            /* =================================================
-               VALIDATION
-               ================================================= */
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
 
             if (!email) {
-
-                showMessage(
-                    "Please enter your email address.",
-                    "error"
-                );
-
+                showMessage("Please enter your email address.");
                 emailInput.focus();
-
                 return;
-
             }
-
 
             if (!password) {
-
-                showMessage(
-                    "Please enter your password.",
-                    "error"
-                );
-
+                showMessage("Please enter your password.");
                 passwordInput.focus();
-
                 return;
-
             }
 
-
-            /* =================================================
-               LOADING STATE
-               ================================================= */
-
-            if (loginButton) {
-
-                loginButton.disabled =
-                    true;
-
-            }
-
-
-            if (loginButtonText) {
-
-                loginButtonText.textContent =
-                    "Signing in...";
-
-            }
-
-
-            showMessage(
-                ""
-            );
-
+            setLoading(true);
+            showMessage("");
 
             try {
-
-                /* =================================================
-                   FIREBASE LOGIN
-                   ================================================= */
-
+                // Authenticate the account with Firebase.
                 const userCredential =
                     await signInWithEmailAndPassword(
                         auth,
@@ -211,203 +170,84 @@ if (loginForm) {
                         password
                     );
 
+                const user = userCredential.user;
 
-                const user =
-                    userCredential.user;
+                // Verify the server-issued admin custom claim.
+                const authorized = await isAdmin(user);
 
+                if (!authorized) {
+                    await signOut(auth);
 
-                console.log(
-                    "Login successful:",
-                    user.email
-                );
-
-
-                /* =================================================
-                   STORE ADMIN INFORMATION
-                   ================================================= */
-
-                if (user.email) {
-
-                    localStorage.setItem(
-                        "adminEmail",
-                        user.email
+                    showMessage(
+                        "Access denied. Your account is not authorized for admin access."
                     );
 
+                    return;
                 }
-
-
-                if (user.uid) {
-
-                    localStorage.setItem(
-                        "adminUid",
-                        user.uid
-                    );
-
-                }
-
-
-                /* =================================================
-                   SUCCESS MESSAGE
-                   ================================================= */
 
                 showMessage(
                     "Login successful. Opening dashboard...",
                     "success"
                 );
 
+                if (!redirectingToDashboard) {
+                    redirectingToDashboard = true;
 
-                /* =================================================
-                   REDIRECT
-                   ================================================= */
-
-                setTimeout(
-                    () => {
-
-                        window.location.replace(
-                            "./dashboard.html"
-                        );
-
-                    },
-                    500
-                );
-
-            }
-            catch (error) {
-
-                console.error(
-                    "Login error:",
-                    error
-                );
-
-
-                /* =================================================
-                   FIREBASE ERROR
-                   ================================================= */
-
-                let message =
-                    "Login failed. Please check your email and password.";
-
-
-                switch (error.code) {
-
-                    case "auth/invalid-credential":
-
-                        message =
-                            "Invalid email or password.";
-
-                        break;
-
-
-                    case "auth/wrong-password":
-
-                        message =
-                            "Incorrect password.";
-
-                        break;
-
-
-                    case "auth/user-not-found":
-
-                        message =
-                            "No account found with this email.";
-
-                        break;
-
-
-                    case "auth/invalid-email":
-
-                        message =
-                            "Please enter a valid email address.";
-
-                        break;
-
-
-                    case "auth/too-many-requests":
-
-                        message =
-                            "Too many login attempts. Please try again later.";
-
-                        break;
-
-
-                    case "auth/network-request-failed":
-
-                        message =
-                            "Network error. Please check your internet connection.";
-
-                        break;
-
-
-                    case "auth/api-key-not-valid":
-
-                        message =
-                            "Firebase API key is invalid. Check firebase.js.";
-
-                        break;
-
-
-                    case "auth/user-disabled":
-
-                        message =
-                            "This admin account has been disabled.";
-
-                        break;
-
-
-                    case "auth/operation-not-allowed":
-
-                        message =
-                            "Email/password login is not enabled in Firebase.";
-
-                        break;
-
-
-                    default:
-
-                        message =
-                            error.message ||
-                            message;
-
+                    window.location.replace("./dashboard.html");
                 }
 
+            } catch (error) {
+                console.error(
+                    "Firebase login error:",
+                    error.code || error.message
+                );
+
+                const errorMessages = {
+                    "auth/invalid-credential":
+                        "Invalid email or password.",
+
+                    "auth/wrong-password":
+                        "Invalid email or password.",
+
+                    "auth/user-not-found":
+                        "Invalid email or password.",
+
+                    "auth/invalid-email":
+                        "Please enter a valid email address.",
+
+                    "auth/too-many-requests":
+                        "Too many login attempts. Please try again later.",
+
+                    "auth/network-request-failed":
+                        "Network error. Check your internet connection.",
+
+                    "auth/user-disabled":
+                        "This account has been disabled.",
+
+                    "auth/operation-not-allowed":
+                        "Email/password sign-in is not enabled in Firebase.",
+
+                    "auth/invalid-api-key":
+                        "Firebase API key is invalid. Check firebase.js."
+                };
 
                 showMessage(
-                    message,
-                    "error"
+                    errorMessages[error.code] ||
+                    "Login or authorization failed. Please try again."
                 );
 
-
-                /* =================================================
-                   RESTORE BUTTON
-                   ================================================= */
-
-                if (loginButton) {
-
-                    loginButton.disabled =
-                        false;
-
-                }
-
-
-                if (loginButtonText) {
-
-                    loginButtonText.textContent =
-                        "Login to Admin Panel";
-
-                }
-
+            } finally {
+                setLoading(false);
             }
-
         }
     );
-
 }
 
 
 /* =========================================================
-   END
+   INITIALIZATION
    ========================================================= */
 
 console.log(
-    "Roy Bari Admin Login JS loaded successfully."
+    "Roy Bari admin login initialized."
 );

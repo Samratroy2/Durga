@@ -28,6 +28,7 @@
 
 import {
     onAuthStateChanged,
+    getIdTokenResult,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -152,33 +153,59 @@ const userAvatar =
 
 let priests = [];
 
-
 /* =========================================================
-   AUTH
+   AUTHENTICATION — ADMIN CUSTOM CLAIM VERIFICATION
    ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+let priestsAuthCheckInProgress = false;
 
-        if (!user) {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.replace("./index.html");
+        return;
+    }
 
-            window.location.replace(
-                "./index.html"
-            );
+    if (priestsAuthCheckInProgress) return;
+    priestsAuthCheckInProgress = true;
 
+    try {
+        let tokenResult = await getIdTokenResult(user);
+
+        // Refresh the token if the admin claim is missing.
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
+        }
+
+        // Allow only administrators.
+        if (tokenResult.claims.admin !== true) {
+            await signOut(auth);
+            window.location.replace("./index.html");
             return;
         }
 
+        console.log("Priests admin verified:", user.email);
 
+        // This function exists in priests.js.
         updateAdminUser(user);
 
-
+        // Load the priests collection, not Events.
         await loadPriests();
 
-    }
-);
+    } catch (error) {
+        console.error(
+            "Priests authorization/loading error:",
+            error
+        );
 
+        if (message) {
+            message.textContent =
+                "Unable to verify access or load priests. Please retry.";
+            message.className = "message error";
+        }
+    } finally {
+        priestsAuthCheckInProgress = false;
+    }
+});
 
 /* =========================================================
    UPDATE ADMIN USER

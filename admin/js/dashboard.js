@@ -1,28 +1,17 @@
 /* =========================================================
    ROY BARI — ADMIN DASHBOARD
-
    FIREBASE AUTH + FIRESTORE
-
-   Updated:
-   - Priests & Purohits
-   - Priest Firestore count
-   - Priest navigation
    ========================================================= */
 
-
-/* =========================================================
-   FIREBASE AUTH
-   ========================================================= */
+/* ==================== FIREBASE AUTH ==================== */
 
 import {
     onAuthStateChanged,
-    signOut
+    signOut,
+    getIdTokenResult
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-
-/* =========================================================
-   FIRESTORE
-   ========================================================= */
+/* ==================== FIRESTORE ==================== */
 
 import {
     collection,
@@ -32,199 +21,103 @@ import {
     limit
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+/* ==================== FIREBASE CONFIG ==================== */
 
-/* =========================================================
-   FIREBASE CONFIG
-   ========================================================= */
+import { auth, db } from "../firebase.js";
 
-import {
-    auth,
-    db
-} from "../firebase.js";
+/* ==================== DOM ELEMENTS ==================== */
 
+const adminEmail = document.getElementById("adminEmail");
+const userAvatar = document.getElementById("userAvatar");
+const logoutButton = document.getElementById("logoutButton");
 
-/* =========================================================
-   DOM — ADMIN
-   ========================================================= */
+const familyCount = document.getElementById("familyCount");
+const eventsCount = document.getElementById("eventsCount");
+const archiveCount = document.getElementById("archiveCount");
+const galleryCount = document.getElementById("galleryCount");
+const timelineCount = document.getElementById("timelineCount");
+const enquiriesCount = document.getElementById("enquiriesCount");
+const activityCount = document.getElementById("activityCount");
 
-const adminEmail =
-    document.getElementById("adminEmail");
-
-const userAvatar =
-    document.getElementById("userAvatar");
-
-const logoutButton =
-    document.getElementById("logoutButton");
-
-
-/* =========================================================
-   DOM — COUNTS
-   ========================================================= */
-
-const familyCount =
-    document.getElementById("familyCount");
-
-const eventsCount =
-    document.getElementById("eventsCount");
-
-const archiveCount =
-    document.getElementById("archiveCount");
-
-const galleryCount =
-    document.getElementById("galleryCount");
-
-const timelineCount =
-    document.getElementById("timelineCount");
-
-const enquiriesCount =
-    document.getElementById("enquiriesCount");
-
-const activityCount =
-    document.getElementById("activityCount");
-
-
-/* =========================================================
-   NEW COUNTS
-   ========================================================= */
-
-const memoriesCount =
-    document.getElementById("memoriesCount");
-
-const ritualsCount =
-    document.getElementById("ritualsCount");
+const memoriesCount = document.getElementById("memoriesCount");
+const ritualsCount = document.getElementById("ritualsCount");
 
 const homepageCountdownCount =
-    document.getElementById(
-        "homepageCountdownCount"
-    );
+    document.getElementById("homepageCountdownCount");
 
 const comparisonsCount =
-    document.getElementById(
-        "comparisonsCount"
-    );
+    document.getElementById("comparisonsCount");
 
 const idolMakersCount =
-    document.getElementById(
-        "idolMakersCount"
-    );
+    document.getElementById("idolMakersCount");
 
 const newspaperArticlesCount =
-    document.getElementById(
-        "newspaperArticlesCount"
-    );
+    document.getElementById("newspaperArticlesCount");
 
 const oldPicturesCount =
-    document.getElementById(
-        "oldPicturesCount"
-    );
+    document.getElementById("oldPicturesCount");
 
-
-/* =========================================================
-   PRIEST COUNT
-   ========================================================= */
-
-const priestCount =
-    document.getElementById(
-        "priestCount"
-    );
-
-
-/* =========================================================
-   DOM — ACTIVITY
-   ========================================================= */
+const priestCount = document.getElementById("priestCount");
 
 const recentActivityList =
-    document.getElementById(
-        "recentActivityList"
-    );
+    document.getElementById("recentActivityList");
 
 const activitySummary =
-    document.getElementById(
-        "activitySummary"
-    );
+    document.getElementById("activitySummary");
+
+const statusDot = document.getElementById("statusDot");
+const statusText = document.getElementById("statusText");
+const statusRight = document.getElementById("statusRight");
 
 
 /* =========================================================
-   DOM — FIREBASE STATUS
+   AUTHENTICATION + ADMIN CLAIM VERIFICATION
    ========================================================= */
 
-const statusDot =
-    document.getElementById(
-        "statusDot"
-    );
+let dashboardAuthorized = false;
+let dashboardAuthCheckInProgress = false;
 
-const statusText =
-    document.getElementById(
-        "statusText"
-    );
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        dashboardAuthorized = false;
+        window.location.replace("./index.html");
+        return;
+    }
 
-const statusRight =
-    document.getElementById(
-        "statusRight"
-    );
+    if (dashboardAuthCheckInProgress) return;
+    dashboardAuthCheckInProgress = true;
 
+    try {
+        let tokenResult = await getIdTokenResult(user);
 
-/* =========================================================
-   AUTHENTICATION
-   ========================================================= */
+        // Refresh the token only when the admin claim is missing.
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
+        }
 
-onAuthStateChanged(
-    auth,
-    async (user) => {
-
-        /* -------------------------------------------------
-           USER NOT LOGGED IN
-           ------------------------------------------------- */
-
-        if (!user) {
-
-            window.location.replace(
-                "./index.html"
-            );
-
+        if (tokenResult.claims.admin !== true) {
+            dashboardAuthorized = false;
+            await signOut(auth);
+            window.location.replace("./index.html");
             return;
         }
 
+        // IMPORTANT: authorize the dashboard before loading data.
+        dashboardAuthorized = true;
 
-        /* -------------------------------------------------
-           ADMIN EMAIL
-           ------------------------------------------------- */
+        console.log("Admin verified:", user.email);
 
-        if (adminEmail) {
-
-            adminEmail.textContent =
-                user.email ||
-                "Administrator";
-
-        }
-
-
-        /* -------------------------------------------------
-           USER AVATAR
-           ------------------------------------------------- */
-
-        if (userAvatar) {
-
-            const email =
-                user.email ||
-                "A";
-
-            userAvatar.textContent =
-                email
-                    .charAt(0)
-                    .toUpperCase();
-
-        }
-
-
-        /* -------------------------------------------------
-           LOAD DASHBOARD
-           ------------------------------------------------- */
-
+        // Restore the dashboard initialization.
         await loadDashboard();
 
+    } catch (error) {
+        console.error("Dashboard authorization/loading error:", error);
+
+        // Do not sign out just because a network request failed.
+    } finally {
+        dashboardAuthCheckInProgress = false;
     }
-);
+});
 
 
 /* =========================================================
@@ -232,1298 +125,630 @@ onAuthStateChanged(
    ========================================================= */
 
 async function loadDashboard() {
+    if (!dashboardAuthorized) {
+        return;
+    }
 
     try {
-
         setFirebaseStatus(
             "online",
             "Connected",
             "Firestore connected"
         );
 
-
         await Promise.all([
+            // Core content
+            loadCollectionCount("familyMembers", familyCount),
+            loadCollectionCount("events", eventsCount),
+            loadCollectionCount("archive", archiveCount),
+            loadCollectionCount("gallery", galleryCount),
+            loadCollectionCount("timeline", timelineCount),
 
-            /* CORE CONTENT */
+            // Priests
+            loadCollectionCount("priests", priestCount),
 
-            loadCollectionCount(
-                "familyMembers",
-                familyCount
-            ),
+            // Additional content
+            loadCollectionCount("memories", memoriesCount),
+            loadCollectionCount("rituals", ritualsCount),
 
-            loadCollectionCount(
-                "events",
-                eventsCount
-            ),
+            // Administration
+            loadCollectionCount("enquiries", enquiriesCount),
+            loadCollectionCount("activityLogs", activityCount),
 
-            loadCollectionCount(
-                "archive",
-                archiveCount
-            ),
-
-            loadCollectionCount(
-                "gallery",
-                galleryCount
-            ),
-
-            loadCollectionCount(
-                "timeline",
-                timelineCount
-            ),
-
-
-            /* PRIESTS */
-
-            loadCollectionCount(
-                "priests",
-                priestCount
-            ),
-
-
-            /* MORE */
-
-            loadCollectionCount(
-                "memories",
-                memoriesCount
-            ),
-
-            loadCollectionCount(
-                "rituals",
-                ritualsCount
-            ),
-
-
-            /* ADMIN */
-
-            loadCollectionCount(
-                "enquiries",
-                enquiriesCount
-            ),
-
-            loadCollectionCount(
-                "activityLogs",
-                activityCount
-            ),
-
-
-            /* MEDIA */
-
-            loadCollectionCount(
-                "comparisons",
-                comparisonsCount
-            ),
-
-            loadCollectionCount(
-                "idolMakers",
-                idolMakersCount
-            ),
-
+            // Media
+            loadCollectionCount("comparisons", comparisonsCount),
+            loadCollectionCount("idolMakers", idolMakersCount),
             loadCollectionCount(
                 "newspaperArticles",
                 newspaperArticlesCount
             ),
+            loadCollectionCount("oldPictures", oldPicturesCount),
 
-            loadCollectionCount(
-                "oldPictures",
-                oldPicturesCount
-            ),
-
-
-            /* HOMEPAGE */
-
+            // Homepage
             loadCollectionCount(
                 "homepageCountdown",
                 homepageCountdownCount
             ),
 
-
-            /* RECENT ACTIVITY */
-
+            // Recent activity
             loadRecentActivity()
-
         ]);
 
-    }
-
-    catch (error) {
-
-        console.error(
-            "Dashboard loading error:",
-            error
-        );
+    } catch (error) {
+        console.error("Dashboard loading error:", error);
 
         setFirebaseStatus(
             "offline",
             "Connection problem",
             "Unable to load Firestore"
         );
-
     }
-
 }
-
 
 /* =========================================================
    LOAD COLLECTION COUNT
    ========================================================= */
 
-async function loadCollectionCount(
-    collectionName,
-    element
-) {
-
-    if (!element) {
+async function loadCollectionCount(collectionName, element) {
+    if (!element || !dashboardAuthorized) {
         return;
     }
 
-
     try {
+        const snapshot = await getDocs(
+            collection(db, collectionName)
+        );
 
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    collectionName
-                )
-            );
+        if (dashboardAuthorized) {
+            element.textContent = snapshot.size;
+        }
 
-
-        element.textContent =
-            snapshot.size;
-
-    }
-
-    catch (error) {
-
+    } catch (error) {
         console.error(
             `Unable to load ${collectionName}:`,
             error
         );
 
-        element.textContent =
-            "—";
-
+        element.textContent = "—";
     }
-
 }
-
 
 /* =========================================================
    LOAD RECENT ACTIVITY
    ========================================================= */
 
 async function loadRecentActivity() {
-
-    if (!recentActivityList) {
+    if (!recentActivityList || !dashboardAuthorized) {
         return;
     }
 
+    recentActivityList.innerHTML = `
+        <div class="activity-loading">
+            Loading recent activity...
+        </div>
+    `;
 
     try {
-
-        recentActivityList.innerHTML = `
-            <div class="activity-loading">
-                Loading recent activity...
-            </div>
-        `;
-
-
         let snapshot;
 
-
-        /* -------------------------------------------------
-           TRY performedAt
-           ------------------------------------------------- */
-
+        // Try ordering by performedAt first.
         try {
+            const activityQuery = query(
+                collection(db, "activityLogs"),
+                orderBy("performedAt", "desc"),
+                limit(4)
+            );
 
-            const activityQuery =
-                query(
-                    collection(
-                        db,
-                        "activityLogs"
-                    ),
-                    orderBy(
-                        "performedAt",
-                        "desc"
-                    ),
-                    limit(4)
-                );
+            snapshot = await getDocs(activityQuery);
 
-
-            snapshot =
-                await getDocs(
-                    activityQuery
-                );
-
-        }
-
-
-        /* -------------------------------------------------
-           FALLBACK TO createdAt
-           ------------------------------------------------- */
-
-        catch (performedAtError) {
-
+        } catch (performedAtError) {
             console.warn(
                 "performedAt query failed. Trying createdAt...",
                 performedAtError
             );
 
+            // Fallback to createdAt.
+            const activityQuery = query(
+                collection(db, "activityLogs"),
+                orderBy("createdAt", "desc"),
+                limit(4)
+            );
 
-            const activityQuery =
-                query(
-                    collection(
-                        db,
-                        "activityLogs"
-                    ),
-                    orderBy(
-                        "createdAt",
-                        "desc"
-                    ),
-                    limit(4)
-                );
-
-
-            snapshot =
-                await getDocs(
-                    activityQuery
-                );
-
+            snapshot = await getDocs(activityQuery);
         }
 
+        if (!dashboardAuthorized) {
+            return;
+        }
 
         const activities = [];
 
+        snapshot.forEach((activityDoc) => {
+            activities.push({
+                id: activityDoc.id,
+                ...activityDoc.data()
+            });
+        });
 
-        snapshot.forEach(
-            activityDoc => {
+        renderRecentActivity(activities.slice(0, 4));
 
-                activities.push({
+    } catch (error) {
+        console.error("Activity loading error:", error);
 
-                    id:
-                        activityDoc.id,
-
-                    ...activityDoc.data()
-
-                });
-
-            }
-        );
-
-
-        renderRecentActivity(
-            activities.slice(
-                0,
-                4
-            )
-        );
-
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "Activity loading error:",
-            error
-        );
-
-
-        /* -------------------------------------------------
-           FINAL FALLBACK
-           ------------------------------------------------- */
-
+        // Final fallback: retrieve documents without ordering.
         try {
+            if (!dashboardAuthorized) {
+                return;
+            }
 
-            const snapshot =
-                await getDocs(
-                    collection(
-                        db,
-                        "activityLogs"
-                    )
-                );
-
+            const snapshot = await getDocs(
+                collection(db, "activityLogs")
+            );
 
             const activities = [];
 
+            snapshot.forEach((activityDoc) => {
+                activities.push({
+                    id: activityDoc.id,
+                    ...activityDoc.data()
+                });
+            });
 
-            snapshot.forEach(
-                activityDoc => {
+            activities.sort((a, b) => {
+                return getActivityTime(b) - getActivityTime(a);
+            });
 
-                    activities.push({
+            if (dashboardAuthorized) {
+                renderRecentActivity(activities.slice(0, 4));
+            }
 
-                        id:
-                            activityDoc.id,
-
-                        ...activityDoc.data()
-
-                    });
-
-                }
-            );
-
-
-            activities.sort(
-                (a, b) => {
-
-                    return (
-                        getActivityTime(b) -
-                        getActivityTime(a)
-                    );
-
-                }
-            );
-
-
-            renderRecentActivity(
-                activities.slice(
-                    0,
-                    4
-                )
-            );
-
-        }
-
-
-        catch (fallbackError) {
-
+        } catch (fallbackError) {
             console.error(
                 "Final activity fallback error:",
                 fallbackError
             );
 
-
-            recentActivityList.innerHTML = `
-                <div class="activity-empty">
-                    Unable to load recent activity.
-                </div>
-            `;
-
-
-            if (activitySummary) {
-
-                activitySummary.textContent =
-                    "Unable to load";
-
+            if (recentActivityList) {
+                recentActivityList.innerHTML = `
+                    <div class="activity-empty">
+                        Unable to load recent activity.
+                    </div>
+                `;
             }
 
+            if (activitySummary) {
+                activitySummary.textContent = "Unable to load";
+            }
         }
-
     }
-
 }
-
 
 /* =========================================================
    GET ACTIVITY TIME
    ========================================================= */
 
-function getActivityTime(
-    activity
-) {
-
+function getActivityTime(activity) {
     const value =
         activity?.performedAt ||
         activity?.createdAt ||
         activity?.timestamp;
 
-
     if (!value) {
         return 0;
     }
 
-
     try {
-
-        if (value?.toDate) {
-
-            return value
-                .toDate()
-                .getTime();
-
+        if (typeof value.toDate === "function") {
+            return value.toDate().getTime();
         }
-
 
         if (
             typeof value === "object" &&
-            value?.seconds !== undefined
+            value.seconds !== undefined
         ) {
-
-            return Number(
-                value.seconds
-            ) * 1000;
-
+            return Number(value.seconds) * 1000;
         }
 
+        const date = new Date(value);
 
-        const date =
-            new Date(value);
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
+        if (Number.isNaN(date.getTime())) {
             return 0;
-
         }
-
 
         return date.getTime();
 
-    }
-
-    catch {
-
+    } catch {
         return 0;
-
     }
-
 }
-
 
 /* =========================================================
    RENDER RECENT ACTIVITY
    ========================================================= */
 
-function renderRecentActivity(
-    activities
-) {
+function renderRecentActivity(activities) {
+    if (!recentActivityList || !dashboardAuthorized) {
+        return;
+    }
 
     if (!activities.length) {
-
         recentActivityList.innerHTML = `
             <div class="activity-empty">
                 No activity history yet.
             </div>
         `;
 
-
         if (activitySummary) {
-
-            activitySummary.textContent =
-                "0 activities";
-
+            activitySummary.textContent = "0 activities";
         }
 
-
         return;
-
     }
 
-
     if (activitySummary) {
-
         activitySummary.textContent =
             activities.length === 1
                 ? "1 recent activity"
                 : `${activities.length} recent activities`;
-
     }
 
+    recentActivityList.innerHTML = "";
 
-    recentActivityList.innerHTML =
-        "";
+    activities.forEach((activity) => {
+        const item = document.createElement("div");
+        item.className = "activity-item";
 
+        const icon = getActivityIcon(activity.action);
 
-    activities.forEach(
-        activity => {
+        const action = String(
+            activity.action || "other"
+        ).toLowerCase();
 
-            const item =
-                document.createElement(
-                    "div"
-                );
+        const actionClass = getActionClass(action);
+        const actionLabel = getActionLabel(action);
 
+        const title =
+            activity.title ||
+            activity.itemName ||
+            activity.documentName ||
+            "Website content";
 
-            item.className =
-                "activity-item";
+        const section =
+            activity.section ||
+            activity.collection ||
+            activity.collectionName ||
+            "Admin";
 
+        const user =
+            activity.userEmail ||
+            activity.email ||
+            "Administrator";
 
-            const icon =
-                getActivityIcon(
-                    activity.action
-                );
+        const date = formatActivityDate(
+            activity.performedAt ||
+            activity.createdAt ||
+            activity.timestamp
+        );
 
+        item.innerHTML = `
+            <div class="activity-icon">${icon}</div>
 
-            const action =
-                String(
-                    activity.action ||
-                    "other"
-                ).toLowerCase();
-
-
-            const actionClass =
-                getActionClass(
-                    action
-                );
-
-
-            const actionLabel =
-                getActionLabel(
-                    action
-                );
-
-
-            const title =
-                activity.title ||
-                activity.itemName ||
-                activity.documentName ||
-                "Website content";
-
-
-            const section =
-                activity.section ||
-                activity.collection ||
-                activity.collectionName ||
-                "Admin";
-
-
-            const user =
-                activity.userEmail ||
-                activity.email ||
-                "Administrator";
-
-
-            const date =
-                formatActivityDate(
-                    activity.performedAt ||
-                    activity.createdAt ||
-                    activity.timestamp
-                );
-
-
-            item.innerHTML = `
-
-                <div class="activity-icon">
-                    ${icon}
+            <div class="activity-main">
+                <div class="activity-title">
+                    ${escapeHTML(title)}
                 </div>
 
+                <div class="activity-meta">
+                    <span class="activity-action ${actionClass}">
+                        ${escapeHTML(actionLabel)}
+                    </span>
 
-                <div class="activity-main">
+                    <span>${escapeHTML(section)}</span>
+                    <span>·</span>
+                    <span>${escapeHTML(user)}</span>
 
-                    <div class="activity-title">
-
-                        ${escapeHTML(
-                            title
-                        )}
-
-                    </div>
-
-
-                    <div class="activity-meta">
-
-                        <span
-                            class="activity-action ${actionClass}"
-                        >
-
-                            ${escapeHTML(
-                                actionLabel
-                            )}
-
-                        </span>
-
-
-                        <span>
-                            ${escapeHTML(
-                                section
-                            )}
-                        </span>
-
-
-                        <span>
-                            ·
-                        </span>
-
-
-                        <span>
-                            ${escapeHTML(
-                                user
-                            )}
-                        </span>
-
-
-                        <span
-                            class="activity-time"
-                        >
-
-                            ${escapeHTML(
-                                date
-                            )}
-
-                        </span>
-
-                    </div>
-
+                    <span class="activity-time">
+                        ${escapeHTML(date)}
+                    </span>
                 </div>
+            </div>
+        `;
 
-            `;
-
-
-            recentActivityList.appendChild(
-                item
-            );
-
-        }
-    );
-
+        recentActivityList.appendChild(item);
+    });
 }
-
 
 /* =========================================================
    ACTIVITY ICON
    ========================================================= */
 
-function getActivityIcon(
-    action
-) {
+function getActivityIcon(action) {
+    const value = String(action || "").toLowerCase();
 
-    const value =
-        String(
-            action || ""
-        ).toLowerCase();
-
-
-    if (
-        value.includes("create") ||
-        value.includes("add")
-    ) {
-
+    if (value.includes("create") || value.includes("add")) {
         return "➕";
-
     }
 
-
-    if (
-        value.includes("update") ||
-        value.includes("edit")
-    ) {
-
+    if (value.includes("update") || value.includes("edit")) {
         return "✏️";
-
     }
 
-
-    if (
-        value.includes("delete") ||
-        value.includes("remove")
-    ) {
-
+    if (value.includes("delete") || value.includes("remove")) {
         return "🗑️";
-
     }
 
-
-    if (
-        value.includes("login")
-    ) {
-
+    if (value.includes("login")) {
         return "🔐";
-
     }
-
 
     if (
         value.includes("logout") ||
         value.includes("signout")
     ) {
-
         return "🚪";
-
     }
 
-
     return "📝";
-
 }
-
 
 /* =========================================================
    ACTIVITY ACTION CLASS
    ========================================================= */
 
-function getActionClass(
-    action
-) {
+function getActionClass(action) {
+    const value = String(action || "").toLowerCase();
 
-    const value =
-        String(
-            action || ""
-        ).toLowerCase();
-
-
-    if (
-        value.includes("create") ||
-        value.includes("add")
-    ) {
-
+    if (value.includes("create") || value.includes("add")) {
         return "created";
-
     }
 
-
-    if (
-        value.includes("update") ||
-        value.includes("edit")
-    ) {
-
+    if (value.includes("update") || value.includes("edit")) {
         return "updated";
-
     }
 
-
-    if (
-        value.includes("delete") ||
-        value.includes("remove")
-    ) {
-
+    if (value.includes("delete") || value.includes("remove")) {
         return "deleted";
-
     }
-
 
     return "other";
-
 }
-
 
 /* =========================================================
    ACTIVITY LABEL
    ========================================================= */
 
-function getActionLabel(
-    action
-) {
+function getActionLabel(action) {
+    const value = String(action || "other").toLowerCase();
 
-    const value =
-        String(
-            action || "other"
-        ).toLowerCase();
-
-
-    if (
-        value.includes("create") ||
-        value.includes("add")
-    ) {
-
+    if (value.includes("create") || value.includes("add")) {
         return "Created";
-
     }
 
-
-    if (
-        value.includes("update") ||
-        value.includes("edit")
-    ) {
-
+    if (value.includes("update") || value.includes("edit")) {
         return "Updated";
-
     }
 
-
-    if (
-        value.includes("delete") ||
-        value.includes("remove")
-    ) {
-
+    if (value.includes("delete") || value.includes("remove")) {
         return "Deleted";
-
     }
 
-
-    if (
-        value.includes("login")
-    ) {
-
+    if (value.includes("login")) {
         return "Login";
-
     }
-
 
     if (
         value.includes("logout") ||
         value.includes("signout")
     ) {
-
         return "Logout";
-
     }
 
-
     return "Activity";
-
 }
-
 
 /* =========================================================
    FORMAT ACTIVITY DATE
    ========================================================= */
 
-function formatActivityDate(
-    value
-) {
-
+function formatActivityDate(value) {
     if (!value) {
-
         return "Date unavailable";
-
     }
-
 
     try {
-
         let date;
 
+        if (typeof value.toDate === "function") {
+            date = value.toDate();
 
-        if (
-            value?.toDate
+        } else if (
+            typeof value === "object" &&
+            value.seconds !== undefined
         ) {
+            date = new Date(Number(value.seconds) * 1000);
 
-            date =
-                value.toDate();
-
+        } else {
+            date = new Date(value);
         }
 
-        else if (
-            value?.seconds !== undefined
-        ) {
-
-            date =
-                new Date(
-                    Number(
-                        value.seconds
-                    ) * 1000
-                );
-
-        }
-
-        else {
-
-            date =
-                new Date(value);
-
-        }
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
+        if (Number.isNaN(date.getTime())) {
             return "Date unavailable";
-
         }
 
+        return date.toLocaleString("en-IN", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
 
-        return date.toLocaleString(
-            "en-IN",
-            {
-                dateStyle: "medium",
-                timeStyle: "short"
-            }
-        );
-
-    }
-
-    catch {
-
+    } catch {
         return "Date unavailable";
-
     }
-
 }
-
 
 /* =========================================================
    FIREBASE STATUS
    ========================================================= */
 
-function setFirebaseStatus(
-    state,
-    text,
-    rightText
-) {
-
+function setFirebaseStatus(state, text, rightText) {
     if (statusDot) {
+        statusDot.classList.remove("online", "offline");
 
-        statusDot.classList.remove(
-            "online",
-            "offline"
+        statusDot.classList.add(
+            state === "online" ? "online" : "offline"
         );
-
-
-        if (
-            state === "online"
-        ) {
-
-            statusDot.classList.add(
-                "online"
-            );
-
-        }
-
-        else {
-
-            statusDot.classList.add(
-                "offline"
-            );
-
-        }
-
     }
-
 
     if (statusText) {
-
-        statusText.textContent =
-            text;
-
+        statusText.textContent = text;
     }
-
 
     if (statusRight) {
-
-        statusRight.textContent =
-            rightText;
-
+        statusRight.textContent = rightText;
     }
-
 }
-
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
 const navigation = {
+    dashboardButton: "./dashboard.html",
 
-    /* MAIN */
+    familyButton: "./family.html",
+    eventsButton: "./events.html",
+    priestsButton: "./priest.html",
+    archiveButton: "./archive.html",
+    galleryButton: "./gallery.html",
+    templesButton: "./temples.html",
+    ownWordsButton: "./own-words.html",
+    ritualsButton: "./rituals.html",
 
-    dashboardButton:
-        "./dashboard.html",
+    homepageCountdownButton: "./homepage-countdown.html",
 
+    comparisonsButton: "./comparisons.html",
+    idolMakersButton: "./idol-makers.html",
+    newspaperArticlesButton: "./newspaper-articles.html",
+    oldPicturesButton: "./old-pictures.html",
 
-    /* CONTENT */
-
-    familyButton:
-        "./family.html",
-
-    eventsButton:
-        "./events.html",
-
-    priestsButton:
-        "./priest.html",
-
-    archiveButton:
-        "./archive.html",
-
-    galleryButton:
-        "./gallery.html",
-
-    templesButton:
-        "./temples.html",
-
-    ownWordsButton:
-        "./own-words.html",
-
-    ritualsButton:
-        "./rituals.html",
-
-
-    /* HOMEPAGE */
-
-    homepageCountdownButton:
-        "./homepage-countdown.html",
-
-
-    /* MEDIA */
-
-    comparisonsButton:
-        "./comparisons.html",
-
-    idolMakersButton:
-        "./idol-makers.html",
-
-    newspaperArticlesButton:
-        "./newspaper-articles.html",
-
-    oldPicturesButton:
-        "./old-pictures.html",
-
-
-    /* ADMIN */
-
-    enquiriesButton:
-        "./enquiries.html",
-
-    activityButton:
-        "./activity.html",
-
-    changePasswordButton:
-        "./change-password.html"
-
+    enquiriesButton: "./enquiries.html",
+    activityButton: "./activity.html",
+    changePasswordButton: "./change-password.html"
 };
 
+Object.entries(navigation).forEach(([buttonId, page]) => {
+    const button = document.getElementById(buttonId);
 
-/* =========================================================
-   NAVIGATION EVENTS
-   ========================================================= */
+    if (!button) {
+        return;
+    }
 
-Object.entries(
-    navigation
-).forEach(
-    ([buttonId, page]) => {
-
-        const button =
-            document.getElementById(
-                buttonId
-            );
-
-
-        if (!button) {
+    button.addEventListener("click", () => {
+        if (!dashboardAuthorized) {
             return;
         }
 
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                window.location.href =
-                    page;
-
-            }
-        );
-
-    }
-);
-
+        window.location.href = page;
+    });
+});
 
 /* =========================================================
    QUICK STAT NAVIGATION
    ========================================================= */
 
 const statNavigation = {
-
-    familyStatCard:
-        "./family.html",
-
-    eventsStatCard:
-        "./events.html",
-
-    priestStatCard:
-        "./priest.html",
-
-    archiveStatCard:
-        "./archive.html",
-
-    galleryStatCard:
-        "./gallery.html",
-
-    timelineStatCard:
-        "./timeline.html",
-
-    enquiriesStatCard:
-        "./enquiries.html",
-
-    activityStatCard:
-        "./activity.html",
-
-    memoriesStatCard:
-        "./memories.html",
-
-    ritualsStatCard:
-        "./rituals.html",
-
-    homepageCountdownStatCard:
-        "./homepage-countdown.html",
-
-    comparisonsStatCard:
-        "./comparisons.html",
-
-    idolMakersStatCard:
-        "./idol-makers.html",
-
-    newspaperArticlesStatCard:
-        "./newspaper-articles.html",
-
-    oldPicturesStatCard:
-        "./old-pictures.html"
-
+    familyStatCard: "./family.html",
+    eventsStatCard: "./events.html",
+    priestStatCard: "./priest.html",
+    archiveStatCard: "./archive.html",
+    galleryStatCard: "./gallery.html",
+    timelineStatCard: "./timeline.html",
+    enquiriesStatCard: "./enquiries.html",
+    activityStatCard: "./activity.html",
+    memoriesStatCard: "./memories.html",
+    ritualsStatCard: "./rituals.html",
+    homepageCountdownStatCard: "./homepage-countdown.html",
+    comparisonsStatCard: "./comparisons.html",
+    idolMakersStatCard: "./idol-makers.html",
+    newspaperArticlesStatCard: "./newspaper-articles.html",
+    oldPicturesStatCard: "./old-pictures.html"
 };
 
+Object.entries(statNavigation).forEach(([cardId, page]) => {
+    const card = document.getElementById(cardId);
 
-/* =========================================================
-   STAT CARD EVENTS
-   ========================================================= */
-
-Object.entries(
-    statNavigation
-).forEach(
-    ([cardId, page]) => {
-
-        const card =
-            document.getElementById(
-                cardId
-            );
-
-
-        if (!card) {
-            return;
-        }
-
-
-        if (
-            card.tagName !== "BUTTON" &&
-            card.tagName !== "A"
-        ) {
-
-            card.setAttribute(
-                "role",
-                "link"
-            );
-
-
-            card.setAttribute(
-                "tabindex",
-                "0"
-            );
-
-
-            card.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key === "Enter" ||
-                        event.key === " "
-                    ) {
-
-                        event.preventDefault();
-
-                        window.location.href =
-                            page;
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        card.addEventListener(
-            "click",
-            () => {
-
-                window.location.href =
-                    page;
-
-            }
-        );
-
+    if (!card) {
+        return;
     }
-);
 
+    if (
+        card.tagName !== "BUTTON" &&
+        card.tagName !== "A"
+    ) {
+        card.setAttribute("role", "link");
+        card.setAttribute("tabindex", "0");
+
+        card.addEventListener("keydown", (event) => {
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
+                event.preventDefault();
+
+                if (dashboardAuthorized) {
+                    window.location.href = page;
+                }
+            }
+        });
+    }
+
+    card.addEventListener("click", () => {
+        if (dashboardAuthorized) {
+            window.location.href = page;
+        }
+    });
+});
 
 /* =========================================================
    LOGOUT
    ========================================================= */
 
 if (logoutButton) {
+    logoutButton.addEventListener("click", async () => {
+        try {
+            logoutButton.disabled = true;
+            logoutButton.textContent = "Logging out...";
 
-    logoutButton.addEventListener(
-        "click",
-        async () => {
+            await signOut(auth);
 
-            try {
+            dashboardAuthorized = false;
 
-                logoutButton.disabled =
-                    true;
+            window.location.replace("./index.html");
 
+        } catch (error) {
+            console.error("Logout error:", error);
 
-                logoutButton.textContent =
-                    "Logging out...";
+            logoutButton.disabled = false;
 
-
-                await signOut(
-                    auth
-                );
-
-
-                window.location.replace(
-                    "./index.html"
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Logout error:",
-                    error
-                );
-
-
-                logoutButton.disabled =
-                    false;
-
-
-                logoutButton.innerHTML = `
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    Logout
-                `;
-
-            }
-
+            logoutButton.innerHTML = `
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            `;
         }
-    );
-
+    });
 }
-
 
 /* =========================================================
    HTML ESCAPE
    ========================================================= */
 
-function escapeHTML(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
-
 
 /* =========================================================
    START

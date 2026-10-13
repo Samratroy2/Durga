@@ -15,6 +15,7 @@
 
 import {
     onAuthStateChanged,
+    getIdTokenResult,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -152,50 +153,60 @@ let currentCollection =
 
 
 /* =========================================================
-   AUTHENTICATION
+   AUTHENTICATION — ADMIN CUSTOM CLAIM VERIFICATION
    ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+let galleryAuthCheckInProgress = false;
 
-        if (!user) {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.replace("./index.html");
+        return;
+    }
 
-            window.location.replace(
-                "./index.html"
-            );
+    if (galleryAuthCheckInProgress) return;
+    galleryAuthCheckInProgress = true;
 
-            return;
+    try {
+        let tokenResult = await getIdTokenResult(user);
 
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
         }
 
+        if (tokenResult.claims.admin !== true) {
+            await signOut(auth);
+            window.location.replace("./index.html");
+            return;
+        }
+
+        console.log("Gallery admin verified:", user.email);
 
         if (adminEmail) {
-
-            adminEmail.textContent =
-                user.email ||
-                "Admin";
-
+            adminEmail.textContent = user.email || "Admin";
         }
-
 
         if (userAvatar) {
-
-            userAvatar.textContent =
-                (
-                    user.email ||
-                    "A"
-                )
-                    .charAt(0)
-                    .toUpperCase();
-
+            userAvatar.textContent = user.email
+                ? user.email.charAt(0).toUpperCase()
+                : "A";
         }
 
-
+        updatePageMode();
         await loadItems();
 
+    } catch (error) {
+        console.error("Gallery authorization/loading error:", error);
+
+        if (message) {
+            message.textContent =
+                "Unable to verify access or load gallery items. Please retry.";
+            message.className = "message error";
+        }
+    } finally {
+        galleryAuthCheckInProgress = false;
     }
-);
+});
 
 
 /* =========================================================

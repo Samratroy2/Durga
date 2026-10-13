@@ -29,6 +29,7 @@
 
 import {
     onAuthStateChanged,
+    getIdTokenResult,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -159,31 +160,53 @@ let events = [];
 
 
 /* =========================================================
-   AUTH
+   AUTHENTICATION — ADMIN CUSTOM CLAIM VERIFICATION
    ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+let eventsAuthCheckInProgress = false;
 
-        if (!user) {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.replace("./index.html");
+        return;
+    }
 
-            window.location.replace(
-                "./index.html"
-            );
+    if (eventsAuthCheckInProgress) return;
+    eventsAuthCheckInProgress = true;
 
-            return;
+    try {
+        let tokenResult = await getIdTokenResult(user);
 
+        // Refresh only when the admin claim is missing.
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
         }
 
+        if (tokenResult.claims.admin !== true) {
+            await signOut(auth);
+            window.location.replace("./index.html");
+            return;
+        }
 
+        console.log("Admin verified:", user.email);
+
+        // Restore the events page initialization.
         updateAdminUser(user);
-
-
         await loadEvents();
 
+    } catch (error) {
+        console.error("Events authorization/loading error:", error);
+
+        // Preserve the session on transient errors.
+        if (message) {
+            message.textContent =
+                "Unable to verify or load events. Please retry.";
+        }
+    } finally {
+        eventsAuthCheckInProgress = false;
     }
-);
+});
+
 
 
 /* =========================================================

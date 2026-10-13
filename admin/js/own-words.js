@@ -31,6 +31,7 @@
 
 import {
     onAuthStateChanged,
+    getIdTokenResult,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -126,112 +127,67 @@ let currentAdmin = null;
 
 
 /* =========================================================
-   AUTHENTICATION
+   AUTHENTICATION — ADMIN CUSTOM CLAIM VERIFICATION
    ========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async user => {
+let memoriesAuthCheckInProgress = false;
 
-        /* -------------------------------------------------
-           USER NOT LOGGED IN
-           ------------------------------------------------- */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.replace("./index.html");
+        return;
+    }
 
-        if (!user) {
+    if (memoriesAuthCheckInProgress) return;
+    memoriesAuthCheckInProgress = true;
 
-            currentAdmin = null;
+    try {
+        let tokenResult = await getIdTokenResult(user);
 
-            window.location.replace(
-                "./index.html"
-            );
-
-            return;
-
+        // Refresh the token if the admin claim is missing.
+        if (tokenResult.claims.admin !== true) {
+            tokenResult = await getIdTokenResult(user, true);
         }
 
+        // Reject users who are not admins.
+        if (tokenResult.claims.admin !== true) {
+            await signOut(auth);
+            window.location.replace("./index.html");
+            return;
+        }
 
-        /* -------------------------------------------------
-           STORE CURRENT ADMIN
-           ------------------------------------------------- */
+        console.log("Memories admin verified:", user.email);
 
+        // Update the authenticated admin information.
         currentAdmin = user;
 
-
-        /* -------------------------------------------------
-           DISPLAY ADMIN EMAIL
-           ------------------------------------------------- */
-
         if (adminEmail) {
-
-            adminEmail.textContent =
-                user.email ||
-                "Admin";
-
+            adminEmail.textContent = user.email || "Admin";
         }
-
-
-        /* -------------------------------------------------
-           DISPLAY AVATAR
-           ------------------------------------------------- */
 
         if (userAvatar) {
-
-            const email =
-                user.email ||
-                "A";
-
-            userAvatar.textContent =
-                email
-                    .charAt(0)
-                    .toUpperCase();
-
+            userAvatar.textContent = user.email
+                ? user.email.charAt(0).toUpperCase()
+                : "A";
         }
 
-
-        /* -------------------------------------------------
-           STORE ADMIN INFORMATION
-           ------------------------------------------------- */
-
-        try {
-
-            if (user.email) {
-
-                localStorage.setItem(
-                    "adminEmail",
-                    user.email
-                );
-
-            }
-
-            if (user.uid) {
-
-                localStorage.setItem(
-                    "adminUid",
-                    user.uid
-                );
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.warn(
-                "Unable to store admin information.",
-                error
-            );
-
-        }
-
-
-        /* -------------------------------------------------
-           LOAD MEMORIES
-           ------------------------------------------------- */
-
+        // Load this page's actual Firestore collection.
         await loadMemories();
 
+    } catch (error) {
+        console.error(
+            "Memories authorization/loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to verify access or load memories. Please retry.",
+            "error"
+        );
+    } finally {
+        memoriesAuthCheckInProgress = false;
     }
-);
+});
 
 
 /* =========================================================
