@@ -1,3252 +1,1094 @@
 /* =========================================================
-   ROY BARI — EVENTS
-   FIREBASE FIRESTORE
-   =========================================================
+   ROY BARI — EVENTS (PUBLIC PAGE)
+   Firestore collection: events
 
-   FIRESTORE COLLECTION:
-   events
+   FIELDS:
+   title, about, category[], time ("7:30 PM"), description,
+   location, url (Google Drive image)
 
-   EXPECTED FIELDS:
+   DATES:
+   dates -> Timestamp[]  (multiple days for one event)
+   date  -> Timestamp    (legacy; used only if dates is missing)
 
-   title
-   about
-   category      -> Array
-   date          -> Firestore Timestamp
-   time          -> String, e.g. "7:30 PM"
-   description
-   location
-   url           -> Google Drive image URL
-   createdAt
-   updatedAt
-
+   STATUS (calculated from all dates of the event):
+   upcoming -> first day + time has not started yet
+   ongoing  -> only from the start time until 1 hour after it,
+               on each event date
+   ended    -> 1 hour after the start time on the LAST date
+   (between the dates of a multi-day event: upcoming)
    ========================================================= */
-
 
 import {
     collection,
     getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
-import {
-    db
-} from "./firebase.js";
+import { db } from "./firebase.js";
 
 
-
-/* =========================================================
-   GLOBAL VARIABLES
-   ========================================================= */
+/* ======================== STATE ======================== */
 
 let events = [];
-
+let activeFilter = "all";
 let countdownInterval = null;
-
 let currentNextEventId = null;
+let statusSignature = "";
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// How long an event stays "Ongoing" after its start time
+// on each date.
+const EVENT_DURATION_MS = 60 * 60 * 1000; // 1 hour
 
 
+/* ======================== START ======================== */
 
-/* =========================================================
-   START
-   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+    initEventImageModal();
+    loadEvents();
+    initEventFilters();
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-
-        /*
-           Initialize the event image modal
-           before loading Firestore events.
-        */
-
-        initEventImageModal();
+    // Re-check statuses every minute (e.g. event ends at midnight).
+    setInterval(refreshIfStatusChanged, 60000);
+});
 
 
-        /*
-           Load events from Firestore.
-        */
-
-        loadEvents();
-
-
-        /*
-           Initialize category filters.
-        */
-
-        initEventFilters();
-
-    }
-);
-
-
-
-/* =========================================================
-   LOAD EVENTS
-   ========================================================= */
+/* ======================== LOAD ======================== */
 
 async function loadEvents() {
-
-    const grid =
-        document.getElementById(
-            "events-grid"
-        );
-
-
-    if (!grid) {
-
-        return;
-
-    }
-
+    const grid = document.getElementById("events-grid");
+    if (!grid) return;
 
     try {
-
-
-        const eventsRef =
-            collection(
-                db,
-                "events"
-            );
-
-
-        const snapshot =
-            await getDocs(
-                eventsRef
-            );
-
+        const snapshot = await getDocs(collection(db, "events"));
 
         events = [];
 
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
 
-        snapshot.forEach(
-            documentSnapshot => {
-
-                const data =
-                    documentSnapshot.data();
-
-
-                /* =================================================
-                   CATEGORY
-                   ================================================= */
-
-                let category = [];
-
-
-                if (
-                    Array.isArray(
-                        data.category
-                    )
-                ) {
-
-                    category =
-                        data.category
-                            .map(
-                                item =>
-                                    String(item)
-                                        .trim()
-                                        .toLowerCase()
-                            )
-                            .filter(
-                                Boolean
-                            );
-
-                }
-
-                else if (
-                    data.category
-                ) {
-
-                    category = [
-
-                        String(
-                            data.category
-                        )
-                            .trim()
-                            .toLowerCase()
-
-                    ];
-
-                }
-
-
-                /* =================================================
-                   EVENT OBJECT
-                   ================================================= */
-
-                events.push({
-
-                    id:
-                        documentSnapshot.id,
-
-                    title:
-                        data.title ||
-                        "Untitled Event",
-
-                    about:
-                        data.about ||
-                        "",
-
-                    category:
-                        category,
-
-                    date:
-                        data.date ||
-                        null,
-
-                    time:
-                        data.time ||
-                        "",
-
-                    description:
-                        data.description ||
-                        "",
-
-                    location:
-                        data.location ||
-                        "",
-
-                    url:
-                        data.url ||
-                        ""
-
-                });
-
+            let category = [];
+            if (Array.isArray(data.category)) {
+                category = data.category
+                    .map(item => String(item).trim().toLowerCase())
+                    .filter(Boolean);
+            } else if (data.category) {
+                category = [String(data.category).trim().toLowerCase()];
             }
-        );
 
+            events.push({
+                id: docSnap.id,
+                title: data.title || "Untitled Event",
+                about: data.about || "",
+                category,
+                days: normalizeEventDays(data),
+                time: data.time || "",
+                description: data.description || "",
+                location: data.location || "",
+                url: data.url || ""
+            });
+        });
 
-        /* =================================================
-           NO EVENTS
-           ================================================= */
-
-        if (
-            events.length === 0
-        ) {
-
-            grid.innerHTML = `
-
-                <div class="event-card">
-
-                    <div class="event-content">
-
-                        <h3>
-                            No events found
-                        </h3>
-
-                        <p>
-                            The Roy Bari Puja calendar
-                            is currently empty.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            `;
-
-
+        if (events.length === 0) {
+            grid.innerHTML = messageCard(
+                "No events found",
+                "The Roy Bari Puja calendar is currently empty."
+            );
             updateNextEventEmpty();
-
-
+            renderOngoingNow();
             return;
-
         }
 
+        // Chronological: first date, then time.
+        events.sort((a, b) => {
+            const aFirst = a.days.length ? a.days[0].getTime() : Infinity;
+            const bFirst = b.days.length ? b.days[0].getTime() : Infinity;
+            if (aFirst !== bFirst) return aFirst - bFirst;
+            return timeToMinutes(a.time) - timeToMinutes(b.time);
+        });
 
-        /* =================================================
-           SORT EVENTS
-           ================================================= */
+        refreshAll();
 
-        events.sort(
-            (a, b) => {
-
-                return (
-                    getEventDate(a) -
-                    getEventDate(b)
-                );
-
-            }
-        );
-
-
-        /* =================================================
-           DISPLAY
-           ================================================= */
-
-        renderEvents(
-            events
-        );
-
-
-        /* =================================================
-           FIND NEXT EVENT
-           ================================================= */
-
-        findNextEvent(
-            events
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "FIREBASE ERROR:",
-            error
-        );
-
+    } catch (error) {
+        console.error("FIREBASE ERROR:", error);
 
         grid.innerHTML = `
-
             <div class="event-card">
-
                 <div class="event-content">
-
-                    <h3>
-                        Unable to load events
-                    </h3>
-
-                    <p>
-                        ${escapeHTML(
-                            error.message
-                        )}
-                    </p>
-
-                    <small>
-                        Please check your Firebase
-                        configuration and Firestore
-                        security rules.
-                    </small>
-
+                    <h3>Unable to load events</h3>
+                    <p>${escapeHTML(error.message)}</p>
+                    <small>Please check your Firebase configuration and Firestore security rules.</small>
                 </div>
-
             </div>
-
         `;
-
 
         updateNextEventError();
-
     }
+}
 
+function messageCard(title, text) {
+    return `
+        <div class="event-card">
+            <div class="event-content">
+                <h3>${escapeHTML(title)}</h3>
+                <p>${escapeHTML(text)}</p>
+            </div>
+        </div>
+    `;
+}
+
+/* Re-render everything from the already loaded data. */
+function refreshAll() {
+    renderEvents(getFilteredEvents());
+    findNextEvent();
+    renderOngoingNow();
+    statusSignature = computeStatusSignature();
+}
+
+function computeStatusSignature() {
+    const now = Date.now();
+    return events.map(e => {
+        const s = getEventStatus(e, now);
+        return `${e.id}:${s.key}:${s.dayNumber}`;
+    }).join("|");
+}
+
+function refreshIfStatusChanged() {
+    if (!events.length) return;
+    if (computeStatusSignature() !== statusSignature) {
+        refreshAll();
+    }
 }
 
 
+/* ======================== DATES ======================== */
 
-/* =========================================================
-   GET EVENT DATE + TIME
-   ========================================================= */
+function convertToDate(value) {
+    if (!value) return null;
 
-function getEventDate(
-    event
-) {
+    if (typeof value.toDate === "function") return value.toDate();
 
-    const date =
-        getDateObject(
-            event
-        );
+    if (value instanceof Date) return new Date(value.getTime());
 
-
-    if (!date) {
-
-        return Infinity;
-
+    if (typeof value === "object" && typeof value.seconds === "number") {
+        return new Date(value.seconds * 1000);
     }
 
+    if (typeof value === "string") {
+        const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
 
-    /*
-       Firestore stores the event date
-       separately from the event time.
-
-       Example:
-
-       date = 17 October 2026
-       time = 7:30 PM
-    */
-
-    if (
-        event.time &&
-        String(
-            event.time
-        ).trim()
-    ) {
-
-        const timeParts =
-            parseEventTime(
-                event.time
-            );
-
-
-        if (timeParts) {
-
-            date.setHours(
-                timeParts.hours,
-                timeParts.minutes,
-                0,
-                0
-            );
-
-        }
-
+        const parsed = new Date(value);
+        if (!Number.isNaN(parsed.getTime())) return parsed;
     }
 
+    if (typeof value === "number") {
+        const d = new Date(value);
+        if (!Number.isNaN(d.getTime())) return d;
+    }
+
+    return null;
+}
+
+function startOfDay(date) {
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+    );
+}
+
+/* Returns a sorted, de-duplicated array of local midnight Dates. */
+function normalizeEventDays(data) {
+    const raw = Array.isArray(data.dates) && data.dates.length
+        ? data.dates
+        : data.date
+            ? [data.date]
+            : [];
+
+    const map = new Map();
+
+    raw.forEach(value => {
+        const d = convertToDate(value);
+        if (!d) return;
+        const day = startOfDay(d);
+        map.set(day.getTime(), day);
+    });
+
+    return [...map.values()].sort((a, b) => a - b);
+}
+
+/* Combine a day with the event's time. */
+function getOccurrence(day, time) {
+    const date = new Date(day.getTime());
+    const parts = parseEventTime(time);
+
+    if (parts) {
+        date.setHours(parts.hours, parts.minutes, 0, 0);
+    }
 
     return date.getTime();
-
 }
 
-
-
 /* =========================================================
-   GET DATE OBJECT
+   EVENT STATUS
    ========================================================= */
 
-function getDateObject(
-    event
-) {
+function getEventStatus(event, now = Date.now()) {
+    const days = event.days;
 
-    if (
-        !event ||
-        !event.date
-    ) {
-
-        return null;
-
-    }
-
-
-    /* =====================================================
-       FIRESTORE TIMESTAMP
-       ===================================================== */
-
-    if (
-        event.date &&
-        typeof event.date.toDate ===
-            "function"
-    ) {
-
-        const date =
-            event.date.toDate();
-
-
-        return new Date(
-            date.getTime()
-        );
-
-    }
-
-
-    /* =====================================================
-       JAVASCRIPT DATE
-       ===================================================== */
-
-    if (
-        event.date instanceof Date
-    ) {
-
-        return new Date(
-            event.date.getTime()
-        );
-
-    }
-
-
-    /* =====================================================
-       FIRESTORE SERIALIZED TIMESTAMP
-       ===================================================== */
-
-    if (
-        typeof event.date ===
-            "object" &&
-        typeof event.date.seconds ===
-            "number"
-    ) {
-
-        return new Date(
-            event.date.seconds * 1000
-        );
-
-    }
-
-
-    /* =====================================================
-       STRING DATE
-       ===================================================== */
-
-    if (
-        typeof event.date ===
-            "string"
-    ) {
-
-        /*
-           YYYY-MM-DD
-
-           Create a local date to avoid
-           timezone shifting.
-        */
-
-        const match =
-            event.date.match(
-                /^(\d{4})-(\d{2})-(\d{2})$/
-            );
-
-
-        if (match) {
-
-            const date =
-                new Date(
-                    Number(
-                        match[1]
-                    ),
-                    Number(
-                        match[2]
-                    ) - 1,
-                    Number(
-                        match[3]
-                    )
-                );
-
-
-            return date;
-
-        }
-
-
-        const parsed =
-            new Date(
-                event.date
-            );
-
-
-        if (
-            !Number.isNaN(
-                parsed.getTime()
-            )
-        ) {
-
-            return parsed;
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-
-/* =========================================================
-   PARSE EVENT TIME
-   =========================================================
-
-   Supports:
-
-   7:00 PM
-   7:30 PM
-   12:00 PM
-   12:00 AM
-   19:30
-   07:30
-
-   ========================================================= */
-
-function parseEventTime(
-    time
-) {
-
-    if (!time) {
-
-        return null;
-
-    }
-
-
-    const value =
-        String(
-            time
-        )
-            .trim()
-            .toUpperCase();
-
-
-    /* =====================================================
-       12-HOUR FORMAT
-       ===================================================== */
-
-    const twelveHour =
-        value.match(
-            /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
-        );
-
-
-    if (twelveHour) {
-
-        let hours =
-            Number(
-                twelveHour[1]
-            );
-
-
-        const minutes =
-            Number(
-                twelveHour[2]
-            );
-
-
-        const period =
-            twelveHour[3];
-
-
-        if (
-            hours < 1 ||
-            hours > 12 ||
-            minutes < 0 ||
-            minutes > 59
-        ) {
-
-            return null;
-
-        }
-
-
-        if (
-            period === "PM" &&
-            hours !== 12
-        ) {
-
-            hours += 12;
-
-        }
-
-
-        if (
-            period === "AM" &&
-            hours === 12
-        ) {
-
-            hours = 0;
-
-        }
-
-
+    if (!days.length) {
         return {
-
-            hours:
-                hours,
-
-            minutes:
-                minutes
-
+            key: "unknown",
+            label: "Date TBA",
+            dayNumber: 0,
+            total: 0,
+            nextTs: null
         };
-
     }
 
+    const total = days.length;
+    const occurrences = days.map(day => getOccurrence(day, event.time));
 
-    /* =====================================================
-       24-HOUR FORMAT
-       ===================================================== */
+    // "Ongoing" is shown only from the start time until
+    // EVENT_DURATION_MS after it, on each event date.
+    // (If the event has no usable time, the window is the whole day.)
+    const hasTime = Boolean(parseEventTime(event.time));
 
-    const twentyFourHour =
-        value.match(
-            /^(\d{1,2}):(\d{2})$/
-        );
-
-
-    if (twentyFourHour) {
-
-        const hours =
-            Number(
-                twentyFourHour[1]
-            );
-
-
-        const minutes =
-            Number(
-                twentyFourHour[2]
-            );
-
-
-        if (
-            hours < 0 ||
-            hours > 23 ||
-            minutes < 0 ||
-            minutes > 59
-        ) {
-
-            return null;
-
+    const windowEnd = (index) => {
+        if (hasTime) {
+            return occurrences[index] + EVENT_DURATION_MS;
         }
 
-
-        return {
-
-            hours:
-                hours,
-
-            minutes:
-                minutes
-
-        };
-
-    }
-
-
-    return null;
-
-}
-
-
-
-/* =========================================================
-   FORMAT EVENT DATE
-   ========================================================= */
-
-function formatEventDate(
-    event
-) {
-
-    const date =
-        getDateObject(
-            event
-        );
-
-
-    if (!date) {
-
-        return "Date not available";
-
-    }
-
-
-    return date.toLocaleDateString(
-        "en-IN",
-        {
-
-            day:
-                "numeric",
-
-            month:
-                "long",
-
-            year:
-                "numeric"
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   FORMAT EVENT TIME
-   ========================================================= */
-
-function formatEventTime(
-    event
-) {
-
-    /*
-       Prefer the separate Firestore time field.
-    */
-
-    if (
-        event.time &&
-        String(
-            event.time
-        ).trim()
-    ) {
-
-        const parsed =
-            parseEventTime(
-                event.time
-            );
-
-
-        if (parsed) {
-
-            const date =
-                new Date();
-
-
-            date.setHours(
-                parsed.hours,
-                parsed.minutes,
-                0,
-                0
-            );
-
-
-            return date.toLocaleTimeString(
-                "en-IN",
-                {
-
-                    hour:
-                        "numeric",
-
-                    minute:
-                        "2-digit",
-
-                    hour12:
-                        true
-
-                }
-            );
-
-        }
-
-
-        /*
-           If the stored value is something
-           like "Evening", display it as-is.
-        */
-
-        return String(
-            event.time
-        );
-
-    }
-
-
-    /*
-       Backwards compatibility.
-
-       If there is no separate time field,
-       use the Firestore timestamp.
-    */
-
-    const date =
-        getDateObject(
-            event
-        );
-
-
-    if (!date) {
-
-        return "";
-
-    }
-
-
-    /*
-       Don't show midnight as 12:00 AM
-       when the timestamp only contains
-       a date.
-    */
-
-    if (
-        date.getHours() === 0 &&
-        date.getMinutes() === 0
-    ) {
-
-        return "";
-
-    }
-
-
-    return date.toLocaleTimeString(
-        "en-IN",
-        {
-
-            hour:
-                "numeric",
-
-            minute:
-                "2-digit",
-
-            hour12:
-                true
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   GET EVENT DAY
-   ========================================================= */
-
-function getEventDay(
-    event
-) {
-
-    const date =
-        getDateObject(
-            event
-        );
-
-
-    if (!date) {
-
-        return "";
-
-    }
-
-
-    return date.toLocaleDateString(
-        "en-IN",
-        {
-
-            weekday:
-                "long"
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   RENDER EVENTS
-   ========================================================= */
-
-function renderEvents(
-    eventList
-) {
-
-    const grid =
-        document.getElementById(
-            "events-grid"
-        );
-
-
-    if (!grid) {
-
-        return;
-
-    }
-
-
-    grid.innerHTML =
-        "";
-
-
-    /* =====================================================
-       NO FILTER RESULTS
-       ===================================================== */
-
-    if (
-        eventList.length === 0
-    ) {
-
-        grid.innerHTML = `
-
-            <div class="event-card">
-
-                <div class="event-content">
-
-                    <h3>
-                        No events found
-                    </h3>
-
-                    <p>
-                        There are no events
-                        in this category.
-                    </p>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        return;
-
-    }
-
-
-    const now =
-        Date.now();
-
-
-    eventList.forEach(
-        (
-            event,
-            index
-        ) => {
-
-            const eventDate =
-                getEventDate(
-                    event
-                );
-
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "event-card";
-
-
-            /* =================================================
-               UPCOMING
-               ================================================= */
-
-            if (
-                eventDate !== Infinity &&
-                eventDate > now
-            ) {
-
-                card.classList.add(
-                    "upcoming"
-                );
-
-            }
-
-
-            /* =================================================
-               TODAY
-               ================================================= */
-
-            if (
-                isSameDay(
-                    eventDate,
-                    now
-                )
-            ) {
-
-                card.classList.add(
-                    "today"
-                );
-
-            }
-
-
-            /* =================================================
-               DATE
-               ================================================= */
-
-            const dateHTML =
-                eventDate !== Infinity
-                    ? `
-
-                        <div class="event-date">
-
-                            <span class="event-day">
-                                ${escapeHTML(
-                                    getEventDay(
-                                        event
-                                    )
-                                )}
-                            </span>
-
-                            <span class="event-full-date">
-                                ${escapeHTML(
-                                    formatEventDate(
-                                        event
-                                    )
-                                )}
-                            </span>
-
-                        </div>
-
-                      `
-                    : `
-
-                        <div class="event-date">
-
-                            <span class="event-day">
-                                Date
-                            </span>
-
-                            <span class="event-full-date">
-                                Not available
-                            </span>
-
-                        </div>
-
-                      `;
-
-
-            /* =================================================
-               LOCATION
-               ================================================= */
-
-            const locationHTML =
-                event.location
-                    ? `
-
-                        <div>
-
-                            <span>
-                                Location
-                            </span>
-
-                            <strong>
-                                ${escapeHTML(
-                                    event.location
-                                )}
-                            </strong>
-
-                        </div>
-
-                      `
-                    : "";
-
-
-            /* =================================================
-               TIME
-               ================================================= */
-
-            const time =
-                formatEventTime(
-                    event
-                );
-
-
-            const timeHTML =
-                time
-                    ? `
-
-                        <div>
-
-                            <span>
-                                Time
-                            </span>
-
-                            <strong>
-                                ${escapeHTML(
-                                    time
-                                )}
-                            </strong>
-
-                        </div>
-
-                      `
-                    : "";
-
-
-            /* =================================================
-               CATEGORY
-               ================================================= */
-
-            const categoryHTML =
-                buildCategoryHTML(
-                    event.category
-                );
-
-
-            /* =================================================
-               VIEW EVENT
-               ================================================= */
-
-            const urlHTML =
-                buildURLHTML(
-                    event.url,
-                    event.id
-                );
-
-
-            /* =================================================
-               ABOUT
-               ================================================= */
-
-            let aboutHTML =
-                "";
-
-
-            if (
-                event.about &&
-                event.about.trim()
-            ) {
-
-                const aboutId =
-                    `event-about-${index}-${safeId(event.id)}`;
-
-
-                aboutHTML = `
-
-                    <div class="event-about">
-
-                        <button
-                            type="button"
-                            class="event-about-toggle"
-                            aria-expanded="false"
-                            aria-controls="${escapeHTML(
-                                aboutId
-                            )}"
-                        >
-
-                            <span>
-                                About this event
-                            </span>
-
-                            <span
-                                class="about-icon"
-                                aria-hidden="true"
-                            >
-                                +
-                            </span>
-
-                        </button>
-
-
-                        <div
-                            id="${escapeHTML(
-                                aboutId
-                            )}"
-                            class="event-about-content"
-                            hidden
-                        >
-
-                            <p>
-                                ${escapeHTML(
-                                    event.about
-                                )}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-
-
-            /* =================================================
-               CARD
-               ================================================= */
-
-            card.innerHTML = `
-
-                ${dateHTML}
-
-
-                <div class="event-content">
-
-                    <h3  style="margin: 13px;">
-                        ${escapeHTML(
-                            event.title
-                        )}
-                    </h3>
-
-
-                    ${categoryHTML}
-
-
-                    ${
-                        event.description
-                            ? `
-
-                                <p>
-                                    ${escapeHTML(
-                                        event.description
-                                    )}
-                                </p>
-
-                              `
-                            : ""
-                    }
-
-
-                    ${
-                        timeHTML ||
-                        locationHTML
-                            ? `
-
-                                <div class="event-details">
-
-                                    ${timeHTML}
-
-                                    ${locationHTML}
-
-                                </div>
-
-                              `
-                            : ""
-                    }
-
-
-                    ${urlHTML}
-
-
-                    ${aboutHTML}
-
-                </div>
-
-            `;
-
-
-            grid.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    initAboutButtons();
-
-}
-
-
-
-/* =========================================================
-   CATEGORY HTML
-   ========================================================= */
-
-function buildCategoryHTML(
-    categories
-) {
-
-    if (
-        !Array.isArray(
-            categories
-        ) ||
-        categories.length === 0
-    ) {
-
-        return "";
-
-    }
-
-
-    const uniqueCategories =
-        [
-            ...new Set(
-                categories
-                    .map(
-                        category =>
-                            String(
-                                category
-                            )
-                                .trim()
-                                .toLowerCase()
-                    )
-                    .filter(
-                        Boolean
-                    )
-            )
-        ];
-
-
-    if (
-        uniqueCategories.length === 0
-    ) {
-
-        return "";
-
-    }
-
-
-    return `
-
-        <div class="event-categories">
-
-            ${uniqueCategories
-                .map(
-                    category => `
-
-                        <span class="event-category">
-
-                            ${escapeHTML(
-                                formatCategoryName(
-                                    category
-                                )
-                            )}
-
-                        </span>
-
-                    `
-                )
-                .join("")}
-
-        </div>
-
-    `;
-
-}
-
-
-
-/* =========================================================
-   FORMAT CATEGORY NAME
-   ========================================================= */
-
-function formatCategoryName(
-    category
-) {
-
-    const names = {
-
-        ritual:
-            "Ritual",
-
-        family:
-            "Family",
-
-        visitors:
-            "Visitors",
-
-        visitor:
-            "Visitors",
-
-        culturals:
-            "Culturals",
-
-        cultural:
-            "Culturals"
-
+        const d = days[index];
+        return new Date(
+            d.getFullYear(),
+            d.getMonth(),
+            d.getDate() + 1
+        ).getTime();
     };
 
+    const nextIndex = occurrences.findIndex(ts => ts > now);
+    const nextTs = nextIndex === -1 ? null : occurrences[nextIndex];
 
-    return (
-        names[category] ||
-        category
-            .charAt(0)
-            .toUpperCase() +
-        category.slice(1)
-    );
+    // ONGOING: now is inside the window of one of the dates
+    for (let i = 0; i < total; i++) {
+        if (now >= occurrences[i] && now < windowEnd(i)) {
+            return {
+                key: "ongoing",
+                label: total > 1
+                    ? `Ongoing · Day ${i + 1} of ${total}`
+                    : "Ongoing",
+                dayNumber: i + 1,
+                total,
+                nextTs
+            };
+        }
+    }
 
+    // ENDED: the last date's window is over
+    if (now >= windowEnd(total - 1)) {
+        return {
+            key: "ended",
+            label: "Ended",
+            dayNumber: total,
+            total,
+            nextTs: null
+        };
+    }
+
+    // UPCOMING: first date not started yet, or waiting for the
+    // next date of a multi-day event
+    const todayStart = startOfDay(new Date(now)).getTime();
+    const nextIsToday =
+        nextTs !== null &&
+        startOfDay(new Date(nextTs)).getTime() === todayStart;
+
+    let label = "Upcoming";
+
+    if (nextIsToday) {
+        label = "Today";
+    } else if (total > 1 && nextIndex > 0) {
+        label = `Upcoming · Day ${nextIndex + 1} of ${total}`;
+    }
+
+    return {
+        key: "upcoming",
+        label,
+        dayNumber: 0,
+        total,
+        nextTs
+    };
 }
 
 
+/* ======================== TIME ======================== */
 
-/* =========================================================
-   BUILD VIEW EVENT BUTTON
-   ========================================================= */
+function parseEventTime(time) {
+    if (!time) return null;
 
-function buildURLHTML(
-    url,
-    eventId
-) {
+    const value = String(time).trim().toUpperCase();
 
-    if (
-        !url ||
-        !String(
-            url
-        ).trim()
-    ) {
-
-        return "";
-
+    const twelve = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+    if (twelve) {
+        let hours = Number(twelve[1]);
+        const minutes = Number(twelve[2]);
+        if (hours < 1 || hours > 12 || minutes > 59) return null;
+        if (twelve[3] === "PM" && hours !== 12) hours += 12;
+        if (twelve[3] === "AM" && hours === 12) hours = 0;
+        return { hours, minutes };
     }
 
-
-    const cleanURL =
-        String(
-            url
-        ).trim();
-
-
-    /*
-       Only allow HTTP and HTTPS URLs.
-    */
-
-    if (
-        !isSafeURL(
-            cleanURL
-        )
-    ) {
-
-        return "";
-
+    const twentyFour = value.match(/^(\d{1,2}):(\d{2})$/);
+    if (twentyFour) {
+        const hours = Number(twentyFour[1]);
+        const minutes = Number(twentyFour[2]);
+        if (hours > 23 || minutes > 59) return null;
+        return { hours, minutes };
     }
 
+    return null;
+}
+
+function timeToMinutes(time) {
+    const p = parseEventTime(time);
+    return p ? p.hours * 60 + p.minutes : 0;
+}
+
+function formatEventTime(event) {
+    if (!event.time || !String(event.time).trim()) return "";
+
+    const parsed = parseEventTime(event.time);
+    if (!parsed) return String(event.time); // e.g. "Evening"
+
+    const period = parsed.hours >= 12 ? "PM" : "AM";
+    const hour = parsed.hours % 12 || 12;
+    return `${hour}:${String(parsed.minutes).padStart(2, "0")} ${period}`;
+}
+
+
+/* ======================== DATE FORMATTING ======================== */
+
+function fmt(date, options) {
+    return date.toLocaleDateString("en-IN", options);
+}
+
+function isContiguous(days) {
+    for (let i = 1; i < days.length; i++) {
+        if (Math.round((days[i] - days[i - 1]) / DAY_MS) !== 1) return false;
+    }
+    return true;
+}
+
+/* "17 October 2026"  |  "11 – 15 October 2026"  |  "30 Sep – 2 October 2026" */
+function formatDateRange(days) {
+    if (!days.length) return "Not available";
+
+    const first = days[0];
+    const last = days[days.length - 1];
+
+    if (days.length === 1) {
+        return fmt(first, { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    const sameYear = first.getFullYear() === last.getFullYear();
+    const sameMonth = sameYear && first.getMonth() === last.getMonth();
+
+    if (sameMonth) {
+        return `${first.getDate()} – ${fmt(last, { day: "numeric", month: "long", year: "numeric" })}`;
+    }
+
+    if (sameYear) {
+        return `${fmt(first, { day: "numeric", month: "long" })} – ${fmt(last, { day: "numeric", month: "long", year: "numeric" })}`;
+    }
+
+    return `${fmt(first, { day: "numeric", month: "long", year: "numeric" })} – ${fmt(last, { day: "numeric", month: "long", year: "numeric" })}`;
+}
+
+function formatDayLabel(days) {
+    if (!days.length) return "Date";
+
+    if (days.length === 1) {
+        return fmt(days[0], { weekday: "long" });
+    }
+
+    if (isContiguous(days)) {
+        return `${fmt(days[0], { weekday: "short" })} – ${fmt(days[days.length - 1], { weekday: "short" })} · ${days.length} days`;
+    }
+
+    return `${days.length} days`;
+}
+
+/* Only for non-consecutive dates: "11 Oct, 13 Oct, 15 Oct" */
+function formatSpecificDates(days) {
+    return days
+        .map(d => fmt(d, { day: "numeric", month: "short" }))
+        .join(", ");
+}
+
+
+/* ======================== RENDER EVENTS ======================== */
+
+function getFilteredEvents() {
+    if (activeFilter === "all") return events;
+
+    return events.filter(event =>
+        event.category.some(category => {
+            if (activeFilter === "visitors") {
+                return category === "visitors" || category === "visitor";
+            }
+            if (activeFilter === "culturals") {
+                return category === "culturals" || category === "cultural";
+            }
+            return category === activeFilter;
+        })
+    );
+}
+
+/* Ended events go to the bottom; everything else keeps date order. */
+function sortEventsForDisplay(eventList, now = Date.now()) {
+    const active = [];
+    const ended = [];
+
+    eventList.forEach(event => {
+        if (getEventStatus(event, now).key === "ended") {
+            ended.push(event);
+        } else {
+            active.push(event);
+        }
+    });
+
+    // eventList is already chronological (first date, then time).
+    return [...active, ...ended];
+}
+
+function renderEvents(eventList) {
+    const grid = document.getElementById("events-grid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    if (eventList.length === 0) {
+        grid.innerHTML = messageCard(
+            "No events found",
+            "There are no events in this category."
+        );
+        return;
+    }
+
+    const now = Date.now();
+
+    // Ongoing + upcoming first (by date), ended events at the bottom.
+    const ordered = sortEventsForDisplay(eventList, now);
+
+    let endedHeadingAdded = false;
+
+    ordered.forEach((event, index) => {
+        const status = getEventStatus(event, now);
+
+        // Small divider before the first ended event.
+        if (status.key === "ended" && !endedHeadingAdded) {
+            endedHeadingAdded = true;
+
+            if (index > 0) {
+                const divider = document.createElement("div");
+                divider.className = "ended-divider";
+                divider.textContent = "Ended events";
+                grid.appendChild(divider);
+            }
+        }
+
+        const card = document.createElement("article");
+        card.className = `event-card status-${status.key}`;
+
+        if (status.key === "upcoming") card.classList.add("upcoming");
+        if (status.key === "ongoing") card.classList.add("ongoing");
+        if (status.key === "ended") card.classList.add("ended");
+
+        const hasDates = event.days.length > 0;
+
+        const dateHTML = `
+            <div class="event-date">
+                <span class="event-day">
+                    ${escapeHTML(hasDates ? formatDayLabel(event.days) : "Date")}
+                </span>
+                <span class="event-full-date">
+                    ${escapeHTML(hasDates ? formatDateRange(event.days) : "Not available")}
+                </span>
+            </div>
+        `;
+
+        const statusHTML = `
+            <div class="event-status-row">
+                <span class="event-status ${status.key}">
+                    ${escapeHTML(status.label)}
+                </span>
+            </div>
+        `;
+
+        const time = formatEventTime(event);
+
+        const timeHTML = time
+            ? `<div><span>${event.days.length > 1 ? "Time (each day)" : "Time"}</span><strong>${escapeHTML(time)}</strong></div>`
+            : "";
+
+        const locationHTML = event.location
+            ? `<div><span>Location</span><strong>${escapeHTML(event.location)}</strong></div>`
+            : "";
+
+        const datesDetailHTML =
+            event.days.length > 1 && !isContiguous(event.days)
+                ? `<div style="grid-column:1 / -1;"><span>Dates</span><strong>${escapeHTML(formatSpecificDates(event.days))}</strong></div>`
+                : "";
+
+        const detailsHTML =
+            timeHTML || locationHTML || datesDetailHTML
+                ? `<div class="event-details">${datesDetailHTML}${timeHTML}${locationHTML}</div>`
+                : "";
+
+        let aboutHTML = "";
+
+        if (event.about && event.about.trim()) {
+            const aboutId = `event-about-${index}-${safeId(event.id)}`;
+
+            aboutHTML = `
+                <div class="event-about">
+                    <button
+                        type="button"
+                        class="event-about-toggle"
+                        aria-expanded="false"
+                        aria-controls="${escapeHTML(aboutId)}"
+                    >
+                        <span>About this event</span>
+                        <span class="about-icon" aria-hidden="true">+</span>
+                    </button>
+
+                    <div id="${escapeHTML(aboutId)}" class="event-about-content" hidden>
+                        <p>${escapeHTML(event.about)}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            ${dateHTML}
+
+            <div class="event-content">
+                ${statusHTML}
+
+                <h3 style="margin: 13px;">${escapeHTML(event.title)}</h3>
+
+                ${buildCategoryHTML(event.category)}
+
+                ${event.description ? `<p>${escapeHTML(event.description)}</p>` : ""}
+
+                ${detailsHTML}
+
+                ${buildURLHTML(event.url, event.id)}
+
+                ${aboutHTML}
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+
+    initAboutButtons();
+}
+
+
+/* ======================== CATEGORY ======================== */
+
+function buildCategoryHTML(categories) {
+    if (!Array.isArray(categories) || categories.length === 0) return "";
+
+    const unique = [...new Set(
+        categories.map(c => String(c).trim().toLowerCase()).filter(Boolean)
+    )];
+
+    if (!unique.length) return "";
 
     return `
+        <div class="event-categories">
+            ${unique.map(category => `
+                <span class="event-category">
+                    ${escapeHTML(formatCategoryName(category))}
+                </span>
+            `).join("")}
+        </div>
+    `;
+}
 
+function formatCategoryName(category) {
+    const names = {
+        ritual: "Ritual",
+        family: "Family",
+        visitors: "Visitors",
+        visitor: "Visitors",
+        culturals: "Culturals",
+        cultural: "Culturals"
+    };
+
+    return names[category] ||
+        category.charAt(0).toUpperCase() + category.slice(1);
+}
+
+
+/* ======================== URL / IMAGE ======================== */
+
+function buildURLHTML(url, eventId) {
+    if (!url || !String(url).trim()) return "";
+    if (!isSafeURL(String(url).trim())) return "";
+
+    return `
         <div class="event-link">
-
             <button
                 type="button"
                 class="event-url event-view-button"
-                data-event-id="${escapeHTML(
-                    eventId
-                )}"
+                data-event-id="${escapeHTML(eventId)}"
             >
-
-                <span>
-                    View Event Image
-                </span>
-
+                <span>View Event Image</span>
             </button>
-
         </div>
-
     `;
-
 }
 
-
-
-/* =========================================================
-   SAFE URL
-   ========================================================= */
-
-function isSafeURL(
-    value
-) {
-
+function isSafeURL(value) {
     try {
-
-        const url =
-            new URL(
-                value
-            );
-
-
-        return (
-            url.protocol ===
-                "http:" ||
-            url.protocol ===
-                "https:"
-        );
-
-    }
-
-    catch {
-
+        const url = new URL(value);
+        return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
         return false;
-
     }
-
 }
 
+function convertGoogleDriveURL(url) {
+    if (!url) return "";
 
+    const cleanURL = String(url).trim();
 
-/* =========================================================
-   CONVERT GOOGLE DRIVE URL
-   =========================================================
-
-   Supports:
-
-   https://drive.google.com/file/d/FILE_ID/view
-
-   and:
-
-   https://drive.google.com/open?id=FILE_ID
-
-   The resulting URL is used by the <img> element.
-
-   ========================================================= */
-
-function convertGoogleDriveURL(
-    url
-) {
-
-    if (!url) {
-
-        return "";
-
-    }
-
-
-    const cleanURL =
-        String(
-            url
-        ).trim();
-
-
-    /* =====================================================
-       GOOGLE DRIVE FILE URL
-       ===================================================== */
-
-    const fileMatch =
-        cleanURL.match(
-            /drive\.google\.com\/file\/d\/([^/?#]+)/
-        );
-
-
+    const fileMatch = cleanURL.match(/drive\.google\.com\/file\/d\/([^/?#]+)/);
     if (fileMatch) {
-
-        const fileId =
-            fileMatch[1];
-
-
-        return (
-            "https://drive.google.com/thumbnail" +
-            "?id=" +
-            encodeURIComponent(
-                fileId
-            ) +
-            "&sz=w2000"
-        );
-
+        return "https://drive.google.com/thumbnail?id=" +
+            encodeURIComponent(fileMatch[1]) + "&sz=w2000";
     }
-
-
-    /* =====================================================
-       GOOGLE DRIVE OPEN URL
-       ===================================================== */
 
     try {
-
-        const parsedURL =
-            new URL(
-                cleanURL
-            );
-
+        const parsed = new URL(cleanURL);
 
         if (
-            parsedURL.hostname ===
-                "drive.google.com" ||
-            parsedURL.hostname.endsWith(
-                ".drive.google.com"
-            )
+            parsed.hostname === "drive.google.com" ||
+            parsed.hostname.endsWith(".drive.google.com")
         ) {
-
-            const fileId =
-                parsedURL.searchParams.get(
-                    "id"
-                );
-
-
+            const fileId = parsed.searchParams.get("id");
             if (fileId) {
-
-                return (
-                    "https://drive.google.com/thumbnail" +
-                    "?id=" +
-                    encodeURIComponent(
-                        fileId
-                    ) +
-                    "&sz=w2000"
-                );
-
+                return "https://drive.google.com/thumbnail?id=" +
+                    encodeURIComponent(fileId) + "&sz=w2000";
             }
-
         }
-
-    }
-
-    catch {
-
-        /*
-           If parsing fails, use the
-           original URL.
-        */
-
+    } catch {
         return cleanURL;
-
     }
-
-
-    /* =====================================================
-       NORMAL IMAGE URL
-       ===================================================== */
 
     return cleanURL;
-
 }
 
 
-
-/* =========================================================
-   EVENT IMAGE MODAL
-   ========================================================= */
+/* ======================== IMAGE MODAL ======================== */
 
 function initEventImageModal() {
+    const modal = document.getElementById("event-image-modal");
+    const image = document.getElementById("event-image");
+    const loading = document.getElementById("event-image-loading");
+    const errorBox = document.getElementById("event-image-error");
+    const title = document.getElementById("event-image-title");
+    const closeButton = document.getElementById("event-image-close");
+    const nextEventButton = document.getElementById("next-event-link");
 
-    const modal =
-        document.getElementById(
-            "event-image-modal"
-        );
-
-
-    const image =
-        document.getElementById(
-            "event-image"
-        );
-
-
-    const loading =
-        document.getElementById(
-            "event-image-loading"
-        );
-
-
-    const errorBox =
-        document.getElementById(
-            "event-image-error"
-        );
-
-
-    const title =
-        document.getElementById(
-            "event-image-title"
-        );
-
-
-    const closeButton =
-        document.getElementById(
-            "event-image-close"
-        );
-
-
-    const nextEventButton =
-        document.getElementById(
-            "next-event-link"
-        );
-
-
-    if (
-        !modal ||
-        !image ||
-        !loading ||
-        !errorBox ||
-        !title ||
-        !closeButton
-    ) {
-
-        console.error(
-            "Event image modal elements not found."
-        );
-
+    if (!modal || !image || !loading || !errorBox || !title || !closeButton) {
+        console.error("Event image modal elements not found.");
         return;
-
     }
 
+    let lastFocusedElement = null;
 
-    /*
-       Store the button that opened
-       the modal.
+    function openModal(event) {
+        if (!event || !event.url) return;
 
-       This is used to restore focus
-       when the modal closes.
-    */
+        lastFocusedElement = document.activeElement;
 
-    let lastFocusedElement =
-        null;
+        title.textContent = event.title || "Event";
 
+        image.removeAttribute("src");
+        image.alt = event.title || "Roy Bari event";
+        image.hidden = true;
+        errorBox.hidden = true;
+        loading.hidden = false;
 
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("event-modal-open");
 
-    /* =====================================================
-       OPEN MODAL
-       ===================================================== */
+        const imageURL = convertGoogleDriveURL(event.url);
 
-    function openModal(
-        event
-    ) {
-
-        if (
-            !event ||
-            !event.url
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-           Remember the currently focused
-           element.
-        */
-
-        lastFocusedElement =
-            document.activeElement;
-
-
-        /*
-           Set modal title.
-        */
-
-        title.textContent =
-            event.title ||
-            "Event";
-
-
-        /*
-           IMPORTANT:
-
-           Do not use image.src = "".
-
-           Removing src prevents the browser
-           from trying to load the current
-           events.html page as an image.
-        */
-
-        image.removeAttribute(
-            "src"
-        );
-
-
-        image.alt =
-            event.title ||
-            "Roy Bari event";
-
-
-        image.hidden =
-            true;
-
-
-        errorBox.hidden =
-            true;
-
-
-        loading.hidden =
-            false;
-
-
-        /*
-           Show modal.
-        */
-
-        modal.hidden =
-            false;
-
-
-        modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-
-        document.body.classList.add(
-            "event-modal-open"
-        );
-
-
-        /*
-           Convert the Firestore URL
-           into an image URL.
-        */
-
-        const imageURL =
-            convertGoogleDriveURL(
-                event.url
-            );
-
-
-
-        /*
-           Start loading the image.
-        */
-
-        requestAnimationFrame(
-            () => {
-
-                image.src =
-                    imageURL;
-
-            }
-        );
-
-
-        /*
-           Put keyboard focus on the
-           close button.
-        */
-
-        requestAnimationFrame(
-            () => {
-
-                closeButton.focus();
-
-            }
-        );
-
+        requestAnimationFrame(() => { image.src = imageURL; });
+        requestAnimationFrame(() => { closeButton.focus(); });
     }
-
-
-
-    /* =====================================================
-       CLOSE MODAL
-       ===================================================== */
 
     function closeModal() {
-
-        /*
-           Remove focus from anything inside
-           the modal before applying aria-hidden.
-        */
-
-        if (
-            document.activeElement &&
-            modal.contains(
-                document.activeElement
-            )
-        ) {
-
+        if (document.activeElement && modal.contains(document.activeElement)) {
             document.activeElement.blur();
-
         }
 
+        modal.setAttribute("aria-hidden", "true");
+        modal.hidden = true;
+        document.body.classList.remove("event-modal-open");
 
-        /*
-           Mark modal as hidden.
-        */
+        image.removeAttribute("src");
+        image.hidden = true;
+        loading.hidden = true;
+        errorBox.hidden = true;
 
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-
-        modal.hidden =
-            true;
-
-
-        document.body.classList.remove(
-            "event-modal-open"
-        );
-
-
-        /*
-           IMPORTANT:
-
-           Never do:
-
-               image.src = "";
-
-           because an empty src causes the browser
-           to request the current page as an image.
-
-           Instead remove the src attribute.
-        */
-
-        image.removeAttribute(
-            "src"
-        );
-
-
-        image.hidden =
-            true;
-
-
-        loading.hidden =
-            true;
-
-
-        errorBox.hidden =
-            true;
-
-
-        /*
-           Return focus to the button that
-           opened the modal.
-        */
-
-        if (
-            lastFocusedElement &&
-            typeof lastFocusedElement.focus ===
-                "function"
-        ) {
-
-            requestAnimationFrame(
-                () => {
-
-                    try {
-
-                        /*
-                           Only focus it if it still
-                           exists in the document.
-                        */
-
-                        if (
-                            document.contains(
-                                lastFocusedElement
-                            )
-                        ) {
-
-                            lastFocusedElement.focus();
-
-                        }
-
+        if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+            requestAnimationFrame(() => {
+                try {
+                    if (document.contains(lastFocusedElement)) {
+                        lastFocusedElement.focus();
                     }
-
-                    catch {
-
-                        /*
-                           Ignore focus restoration
-                           errors.
-                        */
-
-                    }
-
-                }
-            );
-
+                } catch { /* ignore */ }
+            });
         }
 
-
-        lastFocusedElement =
-            null;
-
+        lastFocusedElement = null;
     }
 
+    image.addEventListener("load", () => {
+        loading.hidden = true;
+        errorBox.hidden = true;
+        image.hidden = false;
+    });
 
+    image.addEventListener("error", () => {
+        if (modal.hidden || !image.getAttribute("src")) return;
 
-    /* =====================================================
-       IMAGE LOADED
-       ===================================================== */
+        console.error("Event image could not be loaded:", image.src);
 
-    image.addEventListener(
-        "load",
-        () => {
+        loading.hidden = true;
+        image.hidden = true;
+        errorBox.hidden = false;
+    });
 
-            /*
-               Image loaded successfully.
-            */
+    closeButton.addEventListener("click", closeModal);
 
+    modal.addEventListener("click", event => {
+        if (event.target.matches("[data-close-event-modal]")) closeModal();
+    });
 
-            loading.hidden =
-                true;
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !modal.hidden) closeModal();
+    });
 
+    document.addEventListener("click", event => {
+        const button = event.target.closest(".event-view-button");
+        if (!button) return;
 
-            errorBox.hidden =
-                true;
+        const selected = events.find(item => item.id === button.dataset.eventId);
 
-
-            image.hidden =
-                false;
-
+        if (!selected) {
+            console.error("Event not found:", button.dataset.eventId);
+            return;
         }
-    );
 
-
-
-    /* =====================================================
-       IMAGE ERROR
-       ===================================================== */
-
-    image.addEventListener(
-        "error",
-        () => {
-
-            /*
-               Ignore errors if the modal has
-               already been closed.
-
-               This prevents the false error
-               that happened with:
-
-                   image.src = "";
-            */
-
-            if (
-                modal.hidden ||
-                !image.getAttribute(
-                    "src"
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            console.error(
-                "Event image could not be loaded:",
-                image.src
-            );
-
-
-            loading.hidden =
-                true;
-
-
-            image.hidden =
-                true;
-
-
-            errorBox.hidden =
-                false;
-
-        }
-    );
-
-
-
-    /* =====================================================
-       CLOSE BUTTON
-       ===================================================== */
-
-    closeButton.addEventListener(
-        "click",
-        () => {
-
-            closeModal();
-
-        }
-    );
-
-
-
-    /* =====================================================
-       CLICK DARK BACKGROUND
-       ===================================================== */
-
-    modal.addEventListener(
-        "click",
-        event => {
-
-            if (
-                event.target.matches(
-                    "[data-close-event-modal]"
-                )
-            ) {
-
-                closeModal();
-
-            }
-
-        }
-    );
-
-
-
-    /* =====================================================
-       ESC KEY
-       ===================================================== */
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Escape" &&
-                !modal.hidden
-            ) {
-
-                closeModal();
-
-            }
-
-        }
-    );
-
-
-
-    /* =====================================================
-       EVENT CARD VIEW EVENT BUTTON
-       ===================================================== */
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            const button =
-                event.target.closest(
-                    ".event-view-button"
-                );
-
-
-            if (!button) {
-
-                return;
-
-            }
-
-
-            const eventId =
-                button.dataset.eventId;
-
-
-            const selectedEvent =
-                events.find(
-                    item =>
-                        item.id ===
-                        eventId
-                );
-
-
-            if (!selectedEvent) {
-
-                console.error(
-                    "Event not found:",
-                    eventId
-                );
-
-                return;
-
-            }
-
-
-            openModal(
-                selectedEvent
-            );
-
-        }
-    );
-
-
-
-    /* =====================================================
-       NEXT EVENT VIEW EVENT BUTTON
-       ===================================================== */
+        openModal(selected);
+    });
 
     if (nextEventButton) {
+        nextEventButton.addEventListener("click", () => {
+            const selected = events.find(item => item.id === currentNextEventId);
 
-        nextEventButton.addEventListener(
-            "click",
-            () => {
-
-                const selectedEvent =
-                    events.find(
-                        event =>
-                            event.id ===
-                            currentNextEventId
-                    );
-
-
-                if (!selectedEvent) {
-
-                    console.error(
-                        "Next event not found."
-                    );
-
-                    return;
-
-                }
-
-
-                openModal(
-                    selectedEvent
-                );
-
+            if (!selected) {
+                console.error("Next event not found.");
+                return;
             }
-        );
 
+            openModal(selected);
+        });
     }
-
 }
 
 
-
-/* =========================================================
-   ABOUT BUTTONS
-   ========================================================= */
+/* ======================== ABOUT TOGGLES ======================== */
 
 function initAboutButtons() {
-
-    const buttons =
-        document.querySelectorAll(
-            ".event-about-toggle"
-        );
-
-
-    buttons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const contentId =
-                        button.getAttribute(
-                            "aria-controls"
-                        );
-
-
-                    const content =
-                        document.getElementById(
-                            contentId
-                        );
-
-
-                    if (!content) {
-
-                        return;
-
-                    }
-
-
-                    const isOpen =
-                        button.getAttribute(
-                            "aria-expanded"
-                        ) === "true";
-
-
-                    const icon =
-                        button.querySelector(
-                            ".about-icon"
-                        );
-
-
-                    if (isOpen) {
-
-                        button.setAttribute(
-                            "aria-expanded",
-                            "false"
-                        );
-
-
-                        content.hidden =
-                            true;
-
-
-                        if (icon) {
-
-                            icon.textContent =
-                                "+";
-
-                        }
-
-                    }
-
-                    else {
-
-                        button.setAttribute(
-                            "aria-expanded",
-                            "true"
-                        );
-
-
-                        content.hidden =
-                            false;
-
-
-                        if (icon) {
-
-                            icon.textContent =
-                                "−";
-
-                        }
-
-                    }
-
-                }
+    document.querySelectorAll(".event-about-toggle").forEach(button => {
+        button.addEventListener("click", () => {
+            const content = document.getElementById(
+                button.getAttribute("aria-controls")
             );
+            if (!content) return;
 
-        }
-    );
+            const isOpen = button.getAttribute("aria-expanded") === "true";
+            const icon = button.querySelector(".about-icon");
 
+            button.setAttribute("aria-expanded", String(!isOpen));
+            content.hidden = isOpen;
+            if (icon) icon.textContent = isOpen ? "+" : "−";
+        });
+    });
 }
 
 
-
 /* =========================================================
-   FIND NEXT EVENT
+   ONGOING NOW  (needs <div id="ongoing-now"> in events.html)
    ========================================================= */
 
-function findNextEvent(
-    eventList
-) {
+function renderOngoingNow() {
+    const box = document.getElementById("ongoing-now");
+    if (!box) return;
 
-    const now =
-        Date.now();
+    const now = Date.now();
 
+    const ongoing = events
+        .map(event => ({ event, status: getEventStatus(event, now) }))
+        .filter(item => item.status.key === "ongoing");
 
-    const upcoming =
-        eventList
-            .filter(
-                event => {
-
-                    const date =
-                        getEventDate(
-                            event
-                        );
-
-
-                    return (
-                        date !== Infinity &&
-                        date > now
-                    );
-
-                }
-            )
-            .sort(
-                (a, b) => {
-
-                    return (
-                        getEventDate(a) -
-                        getEventDate(b)
-                    );
-
-                }
-            );
-
-
-    const nameElement =
-        document.getElementById(
-            "next-event-name"
-        );
-
-
-    const descriptionElement =
-        document.getElementById(
-            "next-event-description"
-        );
-
-
-    const dateElement =
-        document.getElementById(
-            "next-event-date"
-        );
-
-
-    const timeElement =
-        document.getElementById(
-            "next-event-time"
-        );
-
-
-    const linkElement =
-        document.getElementById(
-            "next-event-link"
-        );
-
-
-    if (
-        !nameElement ||
-        !descriptionElement
-    ) {
-
+    if (!ongoing.length) {
+        box.hidden = true;
+        box.innerHTML = "";
         return;
-
     }
 
+    box.hidden = false;
 
-    /* =====================================================
-       NO UPCOMING EVENTS
-       ===================================================== */
-
-    if (
-        upcoming.length === 0
-    ) {
-
-        nameElement.textContent =
-            "No upcoming events";
-
-
-        descriptionElement.textContent =
-            "The Puja calendar will appear here.";
-
-
-        if (dateElement) {
-
-            dateElement.textContent =
-                "";
-
-        }
+    box.innerHTML = `
+        <span class="ongoing-now-label">
+            <span class="ongoing-dot" aria-hidden="true"></span>
+            Happening now
+        </span>
+        ${ongoing.map(({ event, status }) => `
+            <span class="ongoing-now-item">
+                <strong>${escapeHTML(event.title)}</strong>
+                ${status.total > 1
+                    ? `<small>Day ${status.dayNumber} of ${status.total}</small>`
+                    : ""}
+            </span>
+        `).join("")}
+    `;
+}
 
 
-        if (timeElement) {
+/* =========================================================
+   NEXT EVENT  (soonest upcoming occurrence of ANY event)
+   ========================================================= */
 
-            timeElement.textContent =
-                "";
+function getNextOccurrence() {
+    const now = Date.now();
+    let best = null;
 
-        }
+    events.forEach(event => {
+        const status = getEventStatus(event, now);
+        if (status.nextTs === null) return;
 
-
-        if (linkElement) {
-
-            linkElement.hidden =
-                true;
-
-        }
-
-
-        setCountdown(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        if (
-            countdownInterval
-        ) {
-
-            clearInterval(
-                countdownInterval
+        if (!best || status.nextTs < best.ts) {
+            const index = event.days.findIndex(
+                day => getOccurrence(day, event.time) === status.nextTs
             );
 
-
-            countdownInterval =
-                null;
-
+            best = {
+                event,
+                ts: status.nextTs,
+                dayIndex: index,
+                total: event.days.length
+            };
         }
+    });
 
+    return best;
+}
 
-        currentNextEventId =
-            null;
+function findNextEvent() {
+    const nameElement = document.getElementById("next-event-name");
+    const descriptionElement = document.getElementById("next-event-description");
+    const dateElement = document.getElementById("next-event-date");
+    const timeElement = document.getElementById("next-event-time");
+    const linkElement = document.getElementById("next-event-link");
 
+    if (!nameElement || !descriptionElement) return;
 
+    const next = getNextOccurrence();
+
+    if (!next) {
+        nameElement.textContent = "No upcoming events";
+        descriptionElement.textContent = "The Puja calendar will appear here.";
+        if (dateElement) dateElement.textContent = "";
+        if (timeElement) timeElement.textContent = "";
+        if (linkElement) linkElement.hidden = true;
+
+        stopCountdown();
+        setCountdown(0, 0, 0, 0);
+        currentNextEventId = null;
         return;
-
     }
 
+    const { event, ts, dayIndex, total } = next;
 
-    /* =====================================================
-       NEXT EVENT
-       ===================================================== */
+    currentNextEventId = event.id;
 
-    const nextEvent =
-        upcoming[0];
-
-
-    currentNextEventId =
-        nextEvent.id;
-
-    nameElement.textContent =
-        nextEvent.title;
-
-
-    descriptionElement.textContent =
-        nextEvent.description ||
-        nextEvent.about ||
-        "";
-
+    nameElement.textContent = event.title;
+    descriptionElement.textContent = event.description || event.about || "";
 
     if (dateElement) {
-
-        dateElement.textContent =
-            formatEventDate(
-                nextEvent
-            );
-
+        dateElement.textContent = fmt(new Date(ts), {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
     }
-
 
     if (timeElement) {
+        const parts = [];
+        const time = formatEventTime(event);
 
-        const time =
-            formatEventTime(
-                nextEvent
-            );
+        if (time) parts.push(time);
+        if (total > 1 && dayIndex >= 0) {
+            parts.push(`Day ${dayIndex + 1} of ${total}`);
+        }
 
-
-        timeElement.textContent =
-            time
-                ? ` · ${time}`
-                : "";
-
+        timeElement.textContent = parts.length ? ` · ${parts.join(" · ")}` : "";
     }
-
-
-    /*
-       Show the next-event View Event
-       button only when a valid URL exists.
-    */
 
     if (linkElement) {
-
-        if (
-            nextEvent.url &&
-            isSafeURL(
-                nextEvent.url
-            )
-        ) {
-
-            linkElement.hidden =
-                false;
-
-        }
-
-        else {
-
-            linkElement.hidden =
-                true;
-
-        }
-
+        linkElement.hidden = !(event.url && isSafeURL(event.url));
     }
 
-
-    startCountdown(
-        nextEvent
-    );
-
+    startCountdown(ts);
 }
-
-
-
-/* =========================================================
-   EMPTY NEXT EVENT
-   ========================================================= */
 
 function updateNextEventEmpty() {
+    const set = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
 
-    const nameElement =
-        document.getElementById(
-            "next-event-name"
-        );
+    set("next-event-name", "No events found");
+    set("next-event-description", "The Puja calendar is currently empty.");
+    set("next-event-date", "");
+    set("next-event-time", "");
 
+    const link = document.getElementById("next-event-link");
+    if (link) link.hidden = true;
 
-    const descriptionElement =
-        document.getElementById(
-            "next-event-description"
-        );
-
-
-    const dateElement =
-        document.getElementById(
-            "next-event-date"
-        );
-
-
-    const timeElement =
-        document.getElementById(
-            "next-event-time"
-        );
-
-
-    const linkElement =
-        document.getElementById(
-            "next-event-link"
-        );
-
-
-    if (nameElement) {
-
-        nameElement.textContent =
-            "No events found";
-
-    }
-
-
-    if (descriptionElement) {
-
-        descriptionElement.textContent =
-            "The Puja calendar is currently empty.";
-
-    }
-
-
-    if (dateElement) {
-
-        dateElement.textContent =
-            "";
-
-    }
-
-
-    if (timeElement) {
-
-        timeElement.textContent =
-            "";
-
-    }
-
-
-    if (linkElement) {
-
-        linkElement.hidden =
-            true;
-
-    }
-
-
-    setCountdown(
-        0,
-        0,
-        0,
-        0
-    );
-
+    stopCountdown();
+    setCountdown(0, 0, 0, 0);
 }
-
-
-
-/* =========================================================
-   FIREBASE ERROR NEXT EVENT
-   ========================================================= */
 
 function updateNextEventError() {
+    const set = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
 
-    const nameElement =
-        document.getElementById(
-            "next-event-name"
-        );
+    set("next-event-name", "Unable to load events");
+    set("next-event-description", "Please try again later.");
 
+    const link = document.getElementById("next-event-link");
+    if (link) link.hidden = true;
 
-    const descriptionElement =
-        document.getElementById(
-            "next-event-description"
-        );
-
-
-    const linkElement =
-        document.getElementById(
-            "next-event-link"
-        );
-
-
-    if (nameElement) {
-
-        nameElement.textContent =
-            "Unable to load events";
-
-    }
-
-
-    if (descriptionElement) {
-
-        descriptionElement.textContent =
-            "Please try again later.";
-
-    }
-
-
-    if (linkElement) {
-
-        linkElement.hidden =
-            true;
-
-    }
-
-
-    setCountdown(
-        0,
-        0,
-        0,
-        0
-    );
-
+    stopCountdown();
+    setCountdown(0, 0, 0, 0);
 }
 
 
+/* ======================== COUNTDOWN ======================== */
 
-/* =========================================================
-   COUNTDOWN
-   ========================================================= */
+function stopCountdown() {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+}
 
-function startCountdown(
-    event
-) {
+function startCountdown(target) {
+    stopCountdown();
 
-    const target =
-        getEventDate(
-            event
-        );
-
-
-    if (
-        target === Infinity ||
-        Number.isNaN(
-            target
-        )
-    ) {
-
-        setCountdown(
-            0,
-            0,
-            0,
-            0
-        );
-
-
+    if (!Number.isFinite(target)) {
+        setCountdown(0, 0, 0, 0);
         return;
-
     }
 
+    function tick() {
+        const difference = target - Date.now();
 
-    if (
-        countdownInterval
-    ) {
+        if (difference <= 0) {
+            stopCountdown();
+            setCountdown(0, 0, 0, 0);
 
-        clearInterval(
-            countdownInterval
-        );
-
-    }
-
-
-    function updateCountdown() {
-
-        const difference =
-            target -
-            Date.now();
-
-
-        /* =================================================
-           EVENT HAS STARTED
-           ================================================= */
-
-        if (
-            difference <= 0
-        ) {
-
-            setCountdown(
-                0,
-                0,
-                0,
-                0
-            );
-
-
-            clearInterval(
-                countdownInterval
-            );
-
-
-            countdownInterval =
-                null;
-
-
-            /*
-               Find the next event using
-               the already-loaded Firestore data.
-            */
-
-            findNextEvent(
-                events
-            );
-
-
+            // The event just started: refresh statuses, badges
+            // ("Upcoming" -> "Ongoing") and pick the next occurrence.
+            refreshAll();
             return;
-
         }
 
+        const days = Math.floor(difference / DAY_MS);
+        const hours = Math.floor((difference % DAY_MS) / 3600000);
+        const minutes = Math.floor((difference % 3600000) / 60000);
+        const seconds = Math.floor((difference % 60000) / 1000);
 
-        let remaining =
-            difference;
-
-
-        /* =================================================
-           DAYS
-           ================================================= */
-
-        const days =
-            Math.floor(
-                remaining /
-                (
-                    1000 *
-                    60 *
-                    60 *
-                    24
-                )
-            );
-
-
-        remaining -=
-            days *
-            1000 *
-            60 *
-            60 *
-            24;
-
-
-        /* =================================================
-           HOURS
-           ================================================= */
-
-        const hours =
-            Math.floor(
-                remaining /
-                (
-                    1000 *
-                    60 *
-                    60
-                )
-            );
-
-
-        remaining -=
-            hours *
-            1000 *
-            60 *
-            60;
-
-
-        /* =================================================
-           MINUTES
-           ================================================= */
-
-        const minutes =
-            Math.floor(
-                remaining /
-                (
-                    1000 *
-                    60
-                )
-            );
-
-
-        remaining -=
-            minutes *
-            1000 *
-            60;
-
-
-        /* =================================================
-           SECONDS
-           ================================================= */
-
-        const seconds =
-            Math.floor(
-                remaining /
-                1000
-            );
-
-
-        setCountdown(
-            days,
-            hours,
-            minutes,
-            seconds
-        );
-
+        setCountdown(days, hours, minutes, seconds);
     }
 
+    tick();
 
-    updateCountdown();
+    // tick() may already have stopped/replaced the countdown.
+    if (!countdownInterval && target - Date.now() > 0) {
+        countdownInterval = setInterval(tick, 1000);
+    }
+}
 
+function setCountdown(days, hours, minutes, seconds) {
+    const values = { days, hours, minutes, seconds };
 
-    countdownInterval =
-        setInterval(
-            updateCountdown,
-            1000
-        );
-
+    Object.entries(values).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = String(value).padStart(2, "0");
+    });
 }
 
 
-
-/* =========================================================
-   SET COUNTDOWN
-   ========================================================= */
-
-function setCountdown(
-    days,
-    hours,
-    minutes,
-    seconds
-) {
-
-    const dayElement =
-        document.getElementById(
-            "days"
-        );
-
-
-    const hourElement =
-        document.getElementById(
-            "hours"
-        );
-
-
-    const minuteElement =
-        document.getElementById(
-            "minutes"
-        );
-
-
-    const secondElement =
-        document.getElementById(
-            "seconds"
-        );
-
-
-    if (dayElement) {
-
-        dayElement.textContent =
-            String(
-                days
-            ).padStart(
-                2,
-                "0"
-            );
-
-    }
-
-
-    if (hourElement) {
-
-        hourElement.textContent =
-            String(
-                hours
-            ).padStart(
-                2,
-                "0"
-            );
-
-    }
-
-
-    if (minuteElement) {
-
-        minuteElement.textContent =
-            String(
-                minutes
-            ).padStart(
-                2,
-                "0"
-            );
-
-    }
-
-
-    if (secondElement) {
-
-        secondElement.textContent =
-            String(
-                seconds
-            ).padStart(
-                2,
-                "0"
-            );
-
-    }
-
-}
-
-
-
-/* =========================================================
-   FILTERS
-   ========================================================= */
+/* ======================== FILTERS ======================== */
 
 function initEventFilters() {
+    const buttons = document.querySelectorAll(".event-filter");
 
-    const buttons =
-        document.querySelectorAll(
-            ".event-filter"
-        );
+    buttons.forEach(button => {
+        button.addEventListener("click", () => {
+            buttons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
 
+            activeFilter = String(button.dataset.filter || "all")
+                .trim()
+                .toLowerCase();
 
-    buttons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    /* =========================================
-                       REMOVE ACTIVE
-                       ========================================= */
-
-                    buttons.forEach(
-                        btn => {
-
-                            btn.classList.remove(
-                                "active"
-                            );
-
-                        }
-                    );
-
-
-                    /* =========================================
-                       ADD ACTIVE
-                       ========================================= */
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    const filter =
-                        String(
-                            button.dataset.filter ||
-                            "all"
-                        )
-                            .trim()
-                            .toLowerCase();
-
-
-                    /* =========================================
-                       ALL
-                       ========================================= */
-
-                    if (
-                        filter === "all"
-                    ) {
-
-                        renderEvents(
-                            events
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    /* =========================================
-                       FILTER
-                       ========================================= */
-
-                    const filteredEvents =
-                        events.filter(
-                            event => {
-
-                                return (
-                                    Array.isArray(
-                                        event.category
-                                    ) &&
-                                    event.category.some(
-                                        category => {
-
-                                            const normalized =
-                                                String(
-                                                    category
-                                                )
-                                                    .trim()
-                                                    .toLowerCase();
-
-
-                                            /*
-                                               Accept both:
-
-                                               visitor
-
-                                               visitors
-                                            */
-
-                                            if (
-                                                filter ===
-                                                    "visitors"
-                                            ) {
-
-                                                return (
-                                                    normalized ===
-                                                        "visitors" ||
-                                                    normalized ===
-                                                        "visitor"
-                                                );
-
-                                            }
-
-
-                                            return (
-                                                normalized ===
-                                                filter
-                                            );
-
-                                        }
-                                    )
-                                );
-
-                            }
-                        );
-
-
-                    renderEvents(
-                        filteredEvents
-                    );
-
-                }
-            );
-
-        }
-    );
-
+            renderEvents(getFilteredEvents());
+        });
+    });
 }
 
 
+/* ======================== UTILITIES ======================== */
 
-/* =========================================================
-   SAME DAY CHECK
-   ========================================================= */
-
-function isSameDay(
-    timestamp1,
-    timestamp2
-) {
-
-    if (
-        timestamp1 === Infinity ||
-        timestamp2 === Infinity
-    ) {
-
-        return false;
-
-    }
-
-
-    const d1 =
-        new Date(
-            timestamp1
-        );
-
-
-    const d2 =
-        new Date(
-            timestamp2
-        );
-
-
-    return (
-
-        d1.getFullYear() ===
-            d2.getFullYear()
-
-        &&
-
-        d1.getMonth() ===
-            d2.getMonth()
-
-        &&
-
-        d1.getDate() ===
-            d2.getDate()
-
-    );
-
+function safeId(value) {
+    return String(value || "").replace(/[^a-zA-Z0-9_-]/g, "-");
 }
 
+function escapeHTML(value) {
+    if (value === null || value === undefined) return "";
 
-
-/* =========================================================
-   SAFE ID
-   ========================================================= */
-
-function safeId(
-    value
-) {
-
-    return String(
-        value || ""
-    )
-        .replace(
-            /[^a-zA-Z0-9_-]/g,
-            "-"
-        );
-
-}
-
-
-
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
-
-function escapeHTML(
-    value
-) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-
-    }
-
-
-    return String(
-        value
-    )
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }

@@ -1,9 +1,9 @@
-
 /* =========================================================
    ROY BARI — EVENTS ADMIN
    Firestore collection: events
    Multiple dates stored in dates: Timestamp[]
    Legacy date field retained for compatibility.
+   URL can be removed (field is deleted from the document).
    ========================================================= */
 
 import {
@@ -55,6 +55,56 @@ const userAvatar = document.getElementById("userAvatar");
 
 let events = [];
 
+/* ================= REMOVE URL (FORM BUTTON) ================= */
+
+const REMOVE_URL_STYLE = `
+    display: inline-flex;
+    width: fit-content;
+    padding: 6px 12px;
+    border: 1px solid #edc8c3;
+    border-radius: 8px;
+    background: #fff;
+    color: #a33b3b;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+`;
+
+const removeUrlButton = (() => {
+    if (!urlInput) return null;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.id = "removeUrlButton";
+    button.textContent = "Remove URL";
+    button.style.cssText = REMOVE_URL_STYLE;
+    button.hidden = true;
+
+    urlInput.insertAdjacentElement("afterend", button);
+
+    urlInput.addEventListener("input", syncRemoveUrlButton);
+
+    button.addEventListener("click", () => {
+        urlInput.value = "";
+        syncRemoveUrlButton();
+        urlInput.focus();
+
+        showMessage(
+            "URL cleared. Click Update Event to remove it from the event.",
+            "success"
+        );
+    });
+
+    return button;
+})();
+
+function syncRemoveUrlButton() {
+    if (removeUrlButton && urlInput) {
+        removeUrlButton.hidden = !urlInput.value.trim();
+    }
+}
+
 /* ================= MULTIPLE DATE INPUTS ================= */
 
 // Reuse the existing #date input as the first date.
@@ -83,30 +133,28 @@ const eventDatesContainer = (() => {
     addButton.className = "cancel-button";
     addButton.textContent = "+ Add another date";
 
-addButton.style.cssText = `
-    display: inline-block;
-    width: fit-content;
-    margin-top: 8px;
-    padding: 8px 14px;
-    background: #6f4b35;
-    color: #ffffff;
-    border: 1px solid #6f4b35;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
-`;
+    addButton.style.cssText = `
+        display: inline-block;
+        width: fit-content;
+        margin-top: 8px;
+        padding: 8px 14px;
+        background: #6f4b35;
+        color: #ffffff;
+        border: 1px solid #6f4b35;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    `;
 
-addButton.addEventListener("mouseenter", () => {
-    addButton.style.background = "#5c3d2b";
-});
+    addButton.addEventListener("mouseenter", () => {
+        addButton.style.background = "#5c3d2b";
+    });
 
-addButton.addEventListener("mouseleave", () => {
-    addButton.style.background = "#6f4b35";
-});
-    addButton.style.marginTop = "8px";
-    addButton.style.width = "fit-content";
+    addButton.addEventListener("mouseleave", () => {
+        addButton.style.background = "#6f4b35";
+    });
 
     container.insertAdjacentElement("afterend", addButton);
 
@@ -134,10 +182,23 @@ function addEventDateInput(value = "") {
     input.style.minWidth = "0";
     input.setAttribute("aria-label", "Additional event date");
 
+    // NOTE: intentionally NOT using the .delete-button class,
+    // so the event-delete handlers never attach to this button.
     const removeButton = document.createElement("button");
     removeButton.type = "button";
-    removeButton.className = "delete-button";
+    removeButton.className = "remove-date-button";
     removeButton.textContent = "Remove";
+    removeButton.style.cssText = `
+        padding: 9px 13px;
+        border: 1px solid #edc8c3;
+        border-radius: 8px;
+        background: #fff;
+        color: #a33b3b;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    `;
     removeButton.setAttribute(
         "aria-label",
         "Remove this event date"
@@ -177,12 +238,6 @@ function getSelectedEventDates() {
     }
 
     const uniqueDates = [...new Set(values)].sort();
-
-    if (uniqueDates.length !== values.length) {
-        throw new Error(
-            "Duplicate event dates are not allowed."
-        );
-    }
 
     return uniqueDates;
 }
@@ -428,15 +483,24 @@ function renderEvents() {
 
         const urlHTML = event.url
             ? `
-                <a
-                    class="event-url"
-                    href="${escapeHtml(event.url)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    Open URL
-                </a>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <a
+                        class="event-url"
+                        href="${escapeHtml(event.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        Open URL
+                    </a>
+
+                    <button
+                        type="button"
+                        class="remove-url-button"
+                        data-id="${escapeHtml(event.id)}"
+                        style="${REMOVE_URL_STYLE} margin-top: 8px;"
+                    >Remove URL</button>
+                </div>
             `
             : `
                 <span class="event-url-missing">
@@ -525,6 +589,12 @@ function attachEventButtons() {
     document.querySelectorAll(".delete-button").forEach(button => {
         button.addEventListener("click", () => {
             deleteEvent(button.dataset.id);
+        });
+    });
+
+    document.querySelectorAll(".remove-url-button").forEach(button => {
+        button.addEventListener("click", () => {
+            removeEventUrl(button.dataset.id);
         });
     });
 }
@@ -631,12 +701,7 @@ if (form) {
                 return;
             }
 
-            if (!url) {
-                showMessage("URL is required.", "error");
-                return;
-            }
-
-            if (!isValidUrl(url)) {
+            if (url && !isValidUrl(url)) {
                 showMessage(
                     "Please enter a valid URL beginning with https:// or http://.",
                     "error"
@@ -679,10 +744,14 @@ if (form) {
                     time: storedTime,
                     description,
                     location,
-                    url,
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
                 };
+
+                // Only store url when one was entered.
+                if (url) {
+                    data.url = url;
+                }
 
                 const newEvent = await addDoc(
                     collection(db, "events"),
@@ -754,7 +823,6 @@ if (form) {
                     date: firestoreDate,
 
                     time: storedTime,
-                    url,
                     updatedAt: serverTimestamp()
                 };
 
@@ -774,6 +842,13 @@ if (form) {
                     updateData.location = location;
                 } else {
                     updateData.location = deleteField();
+                }
+
+                // URL: save it, or delete the field completely.
+                if (url) {
+                    updateData.url = url;
+                } else {
+                    updateData.url = deleteField();
                 }
 
                 await updateDoc(
@@ -809,7 +884,10 @@ if (form) {
         } finally {
             if (saveButton) {
                 saveButton.disabled = false;
-                saveButton.textContent = "Save Event";
+                saveButton.textContent =
+                    eventId && eventId.value
+                        ? "Update Event"
+                        : "Save Event";
             }
         }
     });
@@ -978,6 +1056,8 @@ function editEvent(id) {
         urlInput.value = event.url || "";
     }
 
+    syncRemoveUrlButton();
+
     setSelectedCategories(event.category);
 
     if (formTitle) {
@@ -1073,6 +1153,69 @@ async function deleteEvent(id) {
     }
 }
 
+/* ================= REMOVE URL (LIST BUTTON) ================= */
+
+async function removeEventUrl(id) {
+    const event = events.find(item => item.id === id);
+
+    if (!event || !event.url) return;
+
+    const title = event.title || "this event";
+
+    const confirmed = window.confirm(
+        `Remove the URL from "${title}"?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+        await updateDoc(doc(db, "events", id), {
+            url: deleteField(),
+            updatedAt: serverTimestamp()
+        });
+
+        await safeLogActivity({
+            action: "updated",
+            collectionName: "events",
+            documentId: id,
+            title,
+            details: formatChanges([
+                {
+                    field: "url",
+                    oldValue: event.url,
+                    newValue: ""
+                }
+            ])
+        });
+
+        // If this event is currently open in the form,
+        // clear the URL there as well.
+        if (
+            eventId &&
+            eventId.value === id &&
+            urlInput
+        ) {
+            urlInput.value = "";
+            syncRemoveUrlButton();
+        }
+
+        showMessage(
+            "URL removed successfully.",
+            "success"
+        );
+
+        await loadEvents();
+
+    } catch (error) {
+        console.error("Remove URL error:", error);
+
+        showMessage(
+            getFirestoreErrorMessage(error),
+            "error"
+        );
+    }
+}
+
 /* ================= RESET FORM ================= */
 
 if (cancelButton) {
@@ -1105,6 +1248,8 @@ function resetForm() {
         message.textContent = "";
         message.className = "message";
     }
+
+    syncRemoveUrlButton();
 }
 
 /* ================= ACTIVITY LOGGING ================= */

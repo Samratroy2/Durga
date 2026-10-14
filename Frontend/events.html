@@ -499,44 +499,46 @@
 
         }
 
+        .event-status-row { margin-bottom: 4px; }
 
-        .event-card.today::before {
-
-            content:
-                "TODAY";
-
-            position:
-                absolute;
-
-            top:
-                14px;
-
-            right:
-                14px;
-
-            padding:
-                4px 8px;
-
-            border-radius:
-                999px;
-
-            background:
-                rgba(120, 82, 52, .10);
-
-            color:
-                #765236;
-
-            font-size:
-                8px;
-
-            font-weight:
-                800;
-
-            letter-spacing:
-                1px;
-
+        .event-status {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px; border-radius: 999px;
+            font-size: 9px; font-weight: 800; letter-spacing: .8px;
+            text-transform: uppercase;
         }
+        .event-status.upcoming { background: rgba(120,82,52,.10); color: #765236; }
+        .event-status.ongoing  { background: rgba(50,116,66,.12);  color: #327442; }
+        .event-status.ended    { background: rgba(120,110,104,.14); color: #7b6b60; }
+        .event-status.unknown  { background: rgba(120,110,104,.10); color: #95877c; }
 
+        .event-status.ongoing::before {
+            content: ""; width: 6px; height: 6px; border-radius: 50%;
+            background: #327442; animation: statusPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes statusPulse { 50% { opacity: .3; } }
+
+        .event-card.ongoing { border-color: rgba(50,116,66,.35); }
+        .event-card.ended   { opacity: .72; }
+
+        .ongoing-now {
+            display: flex; flex-wrap: wrap; align-items: center;
+            justify-content: center; gap: 8px 14px;
+            margin: 0 auto 24px; padding: 10px 16px; max-width: 720px;
+            border: 1px solid rgba(50,116,66,.25); border-radius: 10px;
+            background: rgba(50,116,66,.07); font-size: 13px; color: #4c4037;
+        }
+        .ongoing-now[hidden] { display: none; }
+        .ongoing-now-label {
+            display: inline-flex; align-items: center; gap: 7px;
+            color: #327442; font-size: 10px; font-weight: 800;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .ongoing-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #327442; animation: statusPulse 1.6s ease-in-out infinite;
+        }
+        .ongoing-now-item small { margin-left: 6px; color: #7b6b60; }
 
 
         /* =====================================================
@@ -1309,7 +1311,7 @@
 
         </div>
 
-
+        <div id="ongoing-now" class="ongoing-now" hidden></div>
 
         <!-- =================================================
              COUNTDOWN
