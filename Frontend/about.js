@@ -443,61 +443,99 @@ function renderCurrentPerson(record, config) {
 
 }
 
-function renderPersonGallery(allRecords, galleryId, defaultName, emptyText) {
 
+function renderPersonGallery(
+    allRecords,
+    galleryId,
+    defaultName,
+    emptyText,
+    options = {}
+) {
     const gallery = document.getElementById(galleryId);
 
     if (!gallery) {
         return;
     }
 
-    const records = allRecords.filter(
+    let records = allRecords.filter(
         record => firstValue(record, IMAGE_FIELDS)
     );
 
-    if (records.length === 0) {
+    // Sort by year only when requested by the gallery.
+    if (options.sortByYear) {
+        records.sort((a, b) => {
+            const yearA = getGalleryYear(a);
+            const yearB = getGalleryYear(b);
 
+            // Records with no year appear last.
+            if (yearA === null && yearB !== null) return 1;
+            if (yearA !== null && yearB === null) return -1;
+
+            // Chronological order: oldest to newest.
+            if (yearA !== null && yearB !== null) {
+                if (yearA !== yearB) {
+                    return yearA - yearB;
+                }
+            }
+
+            // Preserve the existing order as a tie-breaker.
+            return sortByOrder(a, b);
+        });
+    }
+
+    if (records.length === 0) {
         gallery.innerHTML = `
             <div class="card">
                 <p>${escapeHTML(emptyText)}</p>
             </div>
         `;
-
         return;
-
     }
 
     gallery.innerHTML = "";
 
     records.forEach(record => {
-
         const image = firstValue(record, IMAGE_FIELDS);
 
         const name =
             firstValue(record, ["name", "title"]) ||
             defaultName;
 
-        const description =
-            firstValue(record, ["caption", "description", "role"]);
+        const description = firstValue(
+            record,
+            ["caption", "description", "role"]
+        );
 
-        const location =
-            firstValue(record, ["location", "place"]);
+        const location = firstValue(
+            record,
+            ["location", "place"]
+        );
+
+        const year = options.showYear
+            ? getGalleryYear(record)
+            : null;
 
         const card = document.createElement("article");
-
         card.className = "card maker-gallery-card";
 
         card.innerHTML = `
-
             ${createImageButtonHTML(image, name, "archive-image")}
 
-            <h4>
-                ${escapeHTML(name)}
-            </h4>
+            <h4>${escapeHTML(name)}</h4>
+
+            ${
+                year !== null
+                    ? `<div class="old-album-year">
+                           ${escapeHTML(year)}
+                       </div>`
+                    : ""
+            }
 
             ${
                 location
-                    ? `<div class="small-caps">${escapeHTML(location)}</div>`
+                    ? `<div class="small-caps">
+                           ${escapeHTML(location)}
+                       </div>`
                     : ""
             }
 
@@ -506,15 +544,58 @@ function renderPersonGallery(allRecords, galleryId, defaultName, emptyText) {
                     ? `<p>${escapeHTML(description)}</p>`
                     : ""
             }
-
         `;
 
         gallery.appendChild(card);
-
     });
 
     initializeImageButtons(gallery);
+}
 
+// Get a record's year from its year field or date.
+
+function getGalleryYear(record) {
+    // First, try a dedicated year field.
+    const rawYear = firstValue(record, ["year"]);
+
+    if (rawYear !== "") {
+        const match = String(rawYear).match(/\b\d{4}\b/);
+
+        if (match) {
+            return Number(match[0]);
+        }
+    }
+
+    // Next, check common fields that may contain
+    // ranges such as "1980-2015" or "2019–Current".
+    const yearRange = firstValue(record, [
+        "period",
+        "years",
+        "duration",
+        "tenure",
+        "activeYears",
+        "yearRange",
+        "dateRange",
+        "servicePeriod",
+        "description"
+    ]);
+
+    if (yearRange !== "") {
+        const match = String(yearRange).match(/\b\d{4}\b/);
+
+        if (match) {
+            return Number(match[0]);
+        }
+    }
+
+    // Finally, derive the year from a date field.
+    const date = getDateValue(record);
+
+    if (date) {
+        return date.getFullYear();
+    }
+
+    return null;
 }
 
 
@@ -727,15 +808,291 @@ function renderCurrentPriests() {
 }
 
 
-function renderPriestGallery() {
+/* =========================================================
+   PRIESTS & CEREMONIAL MOMENTS — SLIDESHOW
+   Chronological order: oldest year to newest
+   ========================================================= */
 
-    renderPersonGallery(
-        priests,
-        "priest-gallery",
-        "Priest",
-        "Priest photographs have not been added yet."
+let priestSlideshowTimer = null;
+let priestSlideshowIndex = 0;
+let priestSlideshowPaused = false;
+
+function renderPriestGallery() {
+    const gallery = document.getElementById("priest-gallery");
+
+    if (!gallery) return;
+
+    // Sort by starting year, preserving original order for ties.
+    const records = priests
+        .filter(record => firstValue(record, IMAGE_FIELDS))
+        .map((record, originalIndex) => ({
+            record,
+            originalIndex,
+            year: getGalleryYear(record)
+        }))
+        .sort((a, b) => {
+            if (a.year === null && b.year !== null) return 1;
+            if (a.year !== null && b.year === null) return -1;
+
+            if (a.year !== null && b.year !== null &&
+                a.year !== b.year) {
+                return a.year - b.year;
+            }
+
+            return a.originalIndex - b.originalIndex;
+        })
+        .map(item => item.record);
+
+    if (priestSlideshowTimer) {
+        clearInterval(priestSlideshowTimer);
+        priestSlideshowTimer = null;
+    }
+
+    priestSlideshowIndex = 0;
+    priestSlideshowPaused = false;
+
+    if (!records.length) {
+        gallery.innerHTML = `
+            <div class="card">
+                <p>Priest photographs have not been added yet.</p>
+            </div>
+        `;
+        return;
+    }
+
+    gallery.className = "priest-slideshow";
+
+    gallery.innerHTML = `
+        <div class="priest-slideshow-stage"
+             aria-roledescription="carousel"
+             aria-label="Priests and ceremonial moments">
+
+            <div class="priest-slideshow-counter"
+                 id="priest-slide-counter"></div>
+
+            <div class="priest-slideshow-slide"
+                 id="priest-slide"></div>
+
+            <button type="button"
+                    class="priest-slide-control priest-slide-prev"
+                    id="priest-slide-prev"
+                    aria-label="Previous photograph">
+                ‹
+            </button>
+
+            <button type="button"
+                    class="priest-slide-control priest-slide-next"
+                    id="priest-slide-next"
+                    aria-label="Next photograph">
+                ›
+            </button>
+        </div>
+
+        <div class="priest-slideshow-footer">
+            <div class="priest-slide-caption"
+                 id="priest-slide-caption"></div>
+
+            <div class="priest-slideshow-actions">
+                <button type="button"
+                        id="priest-slide-play"
+                        aria-pressed="false">
+                    Pause slideshow
+                </button>
+            </div>
+        </div>
+
+        <div class="priest-slideshow-dots"
+             id="priest-slide-dots"
+             aria-label="Choose a photograph"></div>
+    `;
+
+    const previousButton =
+        document.getElementById("priest-slide-prev");
+
+    const nextButton =
+        document.getElementById("priest-slide-next");
+
+    const playButton =
+        document.getElementById("priest-slide-play");
+
+    previousButton.addEventListener("click", () => {
+        showPriestSlide(
+            (priestSlideshowIndex - 1 + records.length) %
+                records.length,
+            records
+        );
+    });
+
+    nextButton.addEventListener("click", () => {
+        showPriestSlide(
+            (priestSlideshowIndex + 1) % records.length,
+            records
+        );
+    });
+
+    playButton.addEventListener("click", () => {
+        priestSlideshowPaused = !priestSlideshowPaused;
+
+        playButton.textContent = priestSlideshowPaused
+            ? "Play slideshow"
+            : "Pause slideshow";
+
+        playButton.setAttribute(
+            "aria-pressed",
+            String(priestSlideshowPaused)
+        );
+    });
+
+    gallery.addEventListener("mouseenter", () => {
+        priestSlideshowPaused = true;
+    });
+
+    gallery.addEventListener("mouseleave", () => {
+        priestSlideshowPaused = false;
+    });
+
+    gallery.addEventListener("focusin", () => {
+        priestSlideshowPaused = true;
+    });
+
+    gallery.addEventListener("focusout", event => {
+        if (!gallery.contains(event.relatedTarget)) {
+            priestSlideshowPaused = false;
+        }
+    });
+
+    const dotsContainer =
+        document.getElementById("priest-slide-dots");
+
+    records.forEach((record, index) => {
+        const dot = document.createElement("button");
+
+        dot.type = "button";
+        dot.className = "priest-slide-dot";
+        dot.setAttribute(
+            "aria-label",
+            `Show photograph ${index + 1}`
+        );
+
+        dot.addEventListener("click", () => {
+            showPriestSlide(index, records);
+        });
+
+        dotsContainer.appendChild(dot);
+    });
+
+    showPriestSlide(0, records);
+
+    if (records.length > 1) {
+        priestSlideshowTimer = setInterval(() => {
+            if (!priestSlideshowPaused) {
+                showPriestSlide(
+                    (priestSlideshowIndex + 1) % records.length,
+                    records
+                );
+            }
+        }, 5000);
+    }
+}
+
+
+function showPriestSlide(index, records) {
+    if (!records.length) return;
+
+    priestSlideshowIndex = index;
+
+    const record = records[index];
+
+    const slide = document.getElementById("priest-slide");
+    const counter =
+        document.getElementById("priest-slide-counter");
+    const caption =
+        document.getElementById("priest-slide-caption");
+    const dots =
+        document.querySelectorAll(".priest-slide-dot");
+
+    if (!slide || !counter || !caption) return;
+
+    const name =
+        firstValue(record, ["name", "title"]) ||
+        "Priest & Ceremonial Moment";
+
+    const image = firstValue(record, IMAGE_FIELDS);
+
+    const description = firstValue(
+        record,
+        ["caption", "description", "bio", "story", "role"]
     );
 
+    const location = firstValue(
+        record,
+        ["location", "place"]
+    );
+
+    const year = getGalleryYear(record);
+
+    const period = firstValue(record, [
+        "period",
+        "years",
+        "duration",
+        "tenure",
+        "activeYears",
+        "yearRange",
+        "dateRange",
+        "servicePeriod"
+    ]);
+
+    slide.innerHTML = `
+        ${createImageButtonHTML(image, name, "archive-image")}
+    `;
+
+    caption.innerHTML = `
+        <h3>${escapeHTML(name)}</h3>
+
+        ${
+            period
+                ? `<p class="priest-slide-period">
+                       ${escapeHTML(period)}
+                   </p>`
+                : year !== null
+                    ? `<p class="priest-slide-period">
+                           ${escapeHTML(year)}
+                       </p>`
+                    : ""
+        }
+
+        ${
+            location
+                ? `<p class="small-caps">
+                       ${escapeHTML(location)}
+                   </p>`
+                : ""
+        }
+
+        ${
+            description
+                ? `<p>${escapeHTML(description)}</p>`
+                : ""
+        }
+    `;
+
+    counter.textContent =
+        `${index + 1} / ${records.length}`;
+
+    dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle(
+            "active",
+            dotIndex === index
+        );
+
+        if (dotIndex === index) {
+            dot.setAttribute("aria-current", "true");
+        } else {
+            dot.removeAttribute("aria-current");
+        }
+    });
+
+    initializeImageButtons(slide);
 }
 
 
