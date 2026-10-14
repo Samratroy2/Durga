@@ -7,9 +7,7 @@ import {
     getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-import {
-    db
-} from "./firebase.js";
+import { db } from "./firebase.js";
 
 
 /* =========================================================
@@ -17,15 +15,10 @@ import {
    ========================================================= */
 
 let idolMakers = [];
-
 let priests = [];
-
 let rituals = [];
-
 let oldPictures = [];
-
 let newspaperArticles = [];
-
 let memories = [];
 
 
@@ -34,9 +27,7 @@ let memories = [];
    ========================================================= */
 
 let lightboxItems = [];
-
 let currentLightboxIndex = 0;
-
 let lastFocusedElement = null;
 
 
@@ -44,30 +35,19 @@ let lastFocusedElement = null;
    PAGE START
    ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeAboutPage
-);
-
+document.addEventListener("DOMContentLoaded", initializeAboutPage);
 
 async function initializeAboutPage() {
 
     setupLightbox();
 
     await Promise.allSettled([
-
         loadIdolMakers(),
-
         loadPriests(),
-
         loadRituals(),
-
         loadOldPictures(),
-
         loadNewspaperArticles(),
-
         loadMemories()
-
     ]);
 
 }
@@ -79,15 +59,9 @@ async function initializeAboutPage() {
 
 function escapeHTML(value) {
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
+    if (value === null || value === undefined) {
         return "";
-
     }
-
 
     return String(value)
         .replace(/&/g, "&amp;")
@@ -98,182 +72,91 @@ function escapeHTML(value) {
 
 }
 
-
 function escapeAttribute(value) {
-
     return escapeHTML(value);
-
 }
 
 
 /* =========================================================
    GOOGLE DRIVE
-   ========================================================= */
 
-/*
    Supported:
-
    https://drive.google.com/file/d/FILE_ID/view
-
    https://drive.google.com/open?id=FILE_ID
-
    https://drive.google.com/uc?id=FILE_ID
-
    https://drive.google.com/thumbnail?id=FILE_ID
-*/
-
+   ========================================================= */
 
 function getDriveFileId(url) {
 
     if (!url) {
-
         return "";
-
     }
 
+    const value = String(url).trim();
 
-    const value =
-        String(url).trim();
-
-
-    /*
-     * /file/d/FILE_ID
-     */
-
-    let match =
-        value.match(
-            /drive\.google\.com\/file\/d\/([^/?#]+)/i
-        );
-
+    // /file/d/FILE_ID
+    let match = value.match(/drive\.google\.com\/file\/d\/([^/?#]+)/i);
 
     if (match) {
-
         return match[1];
-
     }
 
-
-    /*
-     * ?id=FILE_ID
-     */
-
-    match =
-        value.match(
-            /[?&]id=([^&#]+)/i
-        );
-
+    // ?id=FILE_ID
+    match = value.match(/[?&]id=([^&#]+)/i);
 
     if (match) {
-
         return match[1];
-
     }
 
-
-    /*
-     * /uc/FILE_ID
-     */
-
-    match =
-        value.match(
-            /drive\.google\.com\/uc\/([^/?#]+)/i
-        );
-
+    // /uc/FILE_ID
+    match = value.match(/drive\.google\.com\/uc\/([^/?#]+)/i);
 
     if (match) {
-
         return match[1];
-
     }
-
 
     return "";
 
 }
 
-
-/* =========================================================
-   IMAGE URL
-   ========================================================= */
-
 function getImageUrl(value) {
 
     if (!value) {
-
         return "";
-
     }
 
-
-    const url =
-        String(value).trim();
-
-
-    const fileId =
-        getDriveFileId(url);
-
-
-    /*
-     * Google Drive
-     */
+    const url = String(value).trim();
+    const fileId = getDriveFileId(url);
 
     if (fileId) {
-
         return (
             "https://drive.google.com/thumbnail" +
-            "?id=" +
-            encodeURIComponent(fileId) +
+            "?id=" + encodeURIComponent(fileId) +
             "&sz=w2000"
         );
-
     }
-
-
-    /*
-     * Normal image URL
-     */
 
     return url;
 
 }
-
-
-/* =========================================================
-   LARGE IMAGE URL
-   ========================================================= */
 
 function getLargeImageUrl(value) {
 
     if (!value) {
-
         return "";
-
     }
 
-
-    const url =
-        String(value).trim();
-
-
-    const fileId =
-        getDriveFileId(url);
-
-
-    /*
-     * Google Drive large image.
-     */
+    const url = String(value).trim();
+    const fileId = getDriveFileId(url);
 
     if (fileId) {
-
         return (
             "https://drive.google.com/thumbnail" +
-            "?id=" +
-            encodeURIComponent(fileId) +
+            "?id=" + encodeURIComponent(fileId) +
             "&sz=w4000"
         );
-
     }
-
 
     return url;
 
@@ -281,163 +164,81 @@ function getLargeImageUrl(value) {
 
 
 /* =========================================================
-   GET FIRST AVAILABLE VALUE
+   VALUE HELPERS
    ========================================================= */
 
-function firstValue(
-    object,
-    fields
-) {
+function firstValue(object, fields) {
 
-    for (
-        const field of fields
-    ) {
+    for (const field of fields) {
 
         if (
             object[field] !== undefined &&
             object[field] !== null &&
             String(object[field]).trim() !== ""
         ) {
-
             return object[field];
-
         }
 
     }
-
 
     return "";
 
 }
 
-
-/* =========================================================
-   NUMBER
-   ========================================================= */
-
 function getNumber(value) {
 
-    const number =
-        Number(value);
+    const number = Number(value);
 
-
-    if (
-        Number.isFinite(number)
-    ) {
-
+    if (Number.isFinite(number)) {
         return number;
-
     }
-
 
     return null;
 
 }
 
-
-/* =========================================================
-   DATE
-   ========================================================= */
-
 function getDateValue(data) {
 
-    const value =
-        firstValue(
-            data,
-            [
-                "date",
-                "eventDate",
-                "datetime",
-                "timestamp"
-            ]
-        );
-
+    const value = firstValue(
+        data,
+        ["date", "eventDate", "datetime", "timestamp"]
+    );
 
     if (!value) {
-
         return null;
-
     }
 
-
-    /*
-     * Firebase Firestore Timestamp
-     */
-
-    if (
-        typeof value.toDate === "function"
-    ) {
-
+    // Firebase Firestore Timestamp
+    if (typeof value.toDate === "function") {
         return value.toDate();
-
     }
 
-
-    /*
-     * JavaScript Date
-     */
-
-    if (
-        value instanceof Date
-    ) {
-
+    // JavaScript Date
+    if (value instanceof Date) {
         return value;
-
     }
 
-
-    /*
-     * Firestore-like object
-     */
-
-    if (
-        typeof value === "object" &&
-        value.seconds !== undefined
-    ) {
-
-        return new Date(
-            Number(value.seconds) * 1000
-        );
-
+    // Firestore-like object
+    if (typeof value === "object" && value.seconds !== undefined) {
+        return new Date(Number(value.seconds) * 1000);
     }
 
+    // String / number date
+    const date = new Date(value);
 
-    /*
-     * String / number date
-     */
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
+    if (Number.isNaN(date.getTime())) {
         return null;
-
     }
-
 
     return date;
 
 }
 
-
-/* =========================================================
-   FORMAT DATE
-   ========================================================= */
-
 function formatDate(date) {
 
     if (!date) {
-
         return "";
-
     }
-
 
     return new Intl.DateTimeFormat(
         "en-IN",
@@ -455,1099 +256,417 @@ function formatDate(date) {
    FIRESTORE LOADER
    ========================================================= */
 
-async function getCollectionData(
-    collectionName
-) {
+async function getCollectionData(collectionName) {
 
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                collectionName
-            )
-        );
-
+    const snapshot = await getDocs(
+        collection(db, collectionName)
+    );
 
     const result = [];
 
-
-    snapshot.forEach(
-        item => {
-
-            result.push({
-
-                id: item.id,
-
-                ...item.data()
-
-            });
-
-        }
-    );
-
+    snapshot.forEach(item => {
+        result.push({
+            id: item.id,
+            ...item.data()
+        });
+    });
 
     return result;
 
 }
 
+function sortByOrder(a, b) {
+
+    const orderA = getNumber(a.order);
+    const orderB = getNumber(b.order);
+
+    if (orderA !== null && orderB !== null) {
+        return orderA - orderB;
+    }
+
+    if (orderA !== null) {
+        return -1;
+    }
+
+    if (orderB !== null) {
+        return 1;
+    }
+
+    return 0;
+
+}
+
+const IMAGE_FIELDS = ["image", "photo", "imageUrl", "url"];
+
 
 /* =========================================================
    =========================================================
-   IDOL MAKERS
+   CURRENT PERSON + GALLERY
+   (shared by Idol Makers and Priests)
    =========================================================
+   ========================================================= */
+
+function getCurrentRecord(records) {
+
+    if (records.length === 0) {
+        return null;
+    }
+
+    const current = records.find(
+        record =>
+            record.current === true ||
+            record.isCurrent === true ||
+            record.status === "current"
+    );
+
+    return current || records[0];
+
+}
+
+/*
+   config:
+   featureId, nameId, descriptionId, locationId,
+   defaultName, label, emptyDescription, filledFallback,
+   emptyFeatureText
+*/
+
+function renderCurrentPerson(record, config) {
+
+    const feature = document.getElementById(config.featureId);
+    const nameElement = document.getElementById(config.nameId);
+    const descriptionElement = document.getElementById(config.descriptionId);
+    const locationElement = document.getElementById(config.locationId);
+
+    if (!record) {
+
+        if (nameElement) {
+            nameElement.textContent = "Information coming soon";
+        }
+
+        if (descriptionElement) {
+            descriptionElement.textContent = config.emptyDescription;
+        }
+
+        if (feature) {
+            feature.innerHTML = `
+                <div class="card">
+                    <p class="lead">
+                        ${escapeHTML(config.emptyFeatureText)}
+                    </p>
+                </div>
+            `;
+        }
+
+        return;
+
+    }
+
+    const name =
+        firstValue(record, ["name", "title"]) ||
+        config.defaultName;
+
+    const description =
+        firstValue(record, ["description", "bio", "story"]);
+
+    const location =
+        firstValue(record, ["location", "place"]);
+
+    const role =
+        firstValue(record, ["role"]);
+
+    const image =
+        firstValue(record, IMAGE_FIELDS);
+
+    if (nameElement) {
+        nameElement.textContent = name;
+    }
+
+    if (descriptionElement) {
+        descriptionElement.textContent =
+            description || config.filledFallback;
+    }
+
+    if (locationElement) {
+        locationElement.textContent =
+            location ? `Based in ${location}` : "";
+    }
+
+    if (!feature) {
+        return;
+    }
+
+    const imageHTML = image
+        ? createImageButtonHTML(image, name, "archive-image")
+        : "";
+
+    feature.innerHTML = `
+
+        <article class="card maker-feature-card">
+
+            ${imageHTML}
+
+            <div class="maker-feature-content">
+
+                <div class="small-caps">
+                    ${escapeHTML(config.label)}
+                </div>
+
+                <h3>
+                    ${escapeHTML(name)}
+                </h3>
+
+                ${
+                    role
+                        ? `<div class="small-caps">${escapeHTML(role)}</div>`
+                        : ""
+                }
+
+                ${
+                    description
+                        ? `<p>${escapeHTML(description)}</p>`
+                        : ""
+                }
+
+                ${
+                    location
+                        ? `<p class="small-caps">${escapeHTML(location)}</p>`
+                        : ""
+                }
+
+            </div>
+
+        </article>
+
+    `;
+
+    initializeImageButtons(feature);
+
+}
+
+function renderPersonGallery(allRecords, galleryId, defaultName, emptyText) {
+
+    const gallery = document.getElementById(galleryId);
+
+    if (!gallery) {
+        return;
+    }
+
+    const records = allRecords.filter(
+        record => firstValue(record, IMAGE_FIELDS)
+    );
+
+    if (records.length === 0) {
+
+        gallery.innerHTML = `
+            <div class="card">
+                <p>${escapeHTML(emptyText)}</p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+    gallery.innerHTML = "";
+
+    records.forEach(record => {
+
+        const image = firstValue(record, IMAGE_FIELDS);
+
+        const name =
+            firstValue(record, ["name", "title"]) ||
+            defaultName;
+
+        const description =
+            firstValue(record, ["caption", "description", "role"]);
+
+        const location =
+            firstValue(record, ["location", "place"]);
+
+        const card = document.createElement("article");
+
+        card.className = "card maker-gallery-card";
+
+        card.innerHTML = `
+
+            ${createImageButtonHTML(image, name, "archive-image")}
+
+            <h4>
+                ${escapeHTML(name)}
+            </h4>
+
+            ${
+                location
+                    ? `<div class="small-caps">${escapeHTML(location)}</div>`
+                    : ""
+            }
+
+            ${
+                description
+                    ? `<p>${escapeHTML(description)}</p>`
+                    : ""
+            }
+
+        `;
+
+        gallery.appendChild(card);
+
+    });
+
+    initializeImageButtons(gallery);
+
+}
+
+
+/* =========================================================
+   IDOL MAKERS
    ========================================================= */
 
 async function loadIdolMakers() {
 
-    const feature =
-        document.getElementById(
-            "idol-maker-feature"
-        );
-
-
-    const gallery =
-        document.getElementById(
-            "idol-maker-gallery"
-        );
-
+    const feature = document.getElementById("idol-maker-feature");
+    const gallery = document.getElementById("idol-maker-gallery");
 
     try {
 
-        idolMakers =
-            await getCollectionData(
-                "idolMakers"
-            );
+        idolMakers = await getCollectionData("idolMakers");
 
-
-        idolMakers.sort(
-            sortByOrder
-        );
-
+        idolMakers.sort(sortByOrder);
 
         renderCurrentIdolMaker();
-
         renderIdolMakerGallery();
 
     }
 
     catch (error) {
 
-        console.error(
-            "ROY BARI: Idol maker error:",
-            error
-        );
-
+        console.error("ROY BARI: Idol maker error:", error);
 
         if (feature) {
-
-            feature.innerHTML =
-                errorBox(
-                    "Unable to load idol maker information.",
-                    error
-                );
-
+            feature.innerHTML = errorBox(
+                "Unable to load idol maker information.",
+                error
+            );
         }
-
 
         if (gallery) {
-
             gallery.innerHTML = "";
-
         }
 
     }
 
 }
 
-
-/* =========================================================
-   SORT BY ORDER
-   ========================================================= */
-
-function sortByOrder(
-    a,
-    b
-) {
-
-    const orderA =
-        getNumber(a.order);
-
-
-    const orderB =
-        getNumber(b.order);
-
-
-    if (
-        orderA !== null &&
-        orderB !== null
-    ) {
-
-        return orderA - orderB;
-
-    }
-
-
-    if (
-        orderA !== null
-    ) {
-
-        return -1;
-
-    }
-
-
-    if (
-        orderB !== null
-    ) {
-
-        return 1;
-
-    }
-
-
-    return 0;
-
-}
-
-
-/* =========================================================
-   CURRENT MAKER
-   ========================================================= */
-
 function getCurrentMaker() {
-
-    if (
-        idolMakers.length === 0
-    ) {
-
-        return null;
-
-    }
-
-
-    const current =
-        idolMakers.find(
-            maker =>
-                maker.current === true ||
-                maker.isCurrent === true ||
-                maker.status === "current"
-        );
-
-
-    return current ||
-        idolMakers[0];
-
+    return getCurrentRecord(idolMakers);
 }
-
-
-/* =========================================================
-   RENDER CURRENT MAKER
-   ========================================================= */
 
 function renderCurrentIdolMaker() {
 
-    const maker =
-        getCurrentMaker();
-
-
-    const feature =
-        document.getElementById(
-            "idol-maker-feature"
-        );
-
-
-    const nameElement =
-        document.getElementById(
-            "current-maker-name"
-        );
-
-
-    const descriptionElement =
-        document.getElementById(
-            "current-maker-description"
-        );
-
-
-    const locationElement =
-        document.getElementById(
-            "current-maker-location"
-        );
-
-
-    if (!maker) {
-
-        if (nameElement) {
-
-            nameElement.textContent =
-                "Information coming soon";
-
+    renderCurrentPerson(
+        getCurrentMaker(),
+        {
+            featureId: "idol-maker-feature",
+            nameId: "current-maker-name",
+            descriptionId: "current-maker-description",
+            locationId: "current-maker-location",
+            defaultName: "Current Idol Maker",
+            label: "Current Idol Maker",
+            emptyDescription:
+                "Current idol maker information has not been added yet.",
+            filledFallback:
+                "Information about the current idol maker has not been added yet.",
+            emptyFeatureText:
+                "Current idol maker information will appear here."
         }
-
-
-        if (descriptionElement) {
-
-            descriptionElement.textContent =
-                "Current idol maker information has not been added yet.";
-
-        }
-
-
-        if (feature) {
-
-            feature.innerHTML = `
-
-                <div class="card">
-
-                    <p class="lead">
-
-                        Current idol maker
-                        information will appear here.
-
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-
-        return;
-
-    }
-
-
-    const name =
-        firstValue(
-            maker,
-            [
-                "name",
-                "title"
-            ]
-        ) ||
-        "Current Idol Maker";
-
-
-    const description =
-        firstValue(
-            maker,
-            [
-                "description",
-                "bio",
-                "story"
-            ]
-        );
-
-
-    const location =
-        firstValue(
-            maker,
-            [
-                "location",
-                "place"
-            ]
-        );
-
-
-    const role =
-        firstValue(
-            maker,
-            [
-                "role"
-            ]
-        );
-
-
-    const image =
-        firstValue(
-            maker,
-            [
-                "image",
-                "photo",
-                "imageUrl",
-                "url"
-            ]
-        );
-
-
-    if (nameElement) {
-
-        nameElement.textContent =
-            name;
-
-    }
-
-
-    if (descriptionElement) {
-
-        descriptionElement.textContent =
-            description ||
-            "Information about the current idol maker has not been added yet.";
-
-    }
-
-
-    if (locationElement) {
-
-        locationElement.textContent =
-            location
-                ? `Based in ${location}`
-                : "";
-
-    }
-
-
-    if (!feature) {
-
-        return;
-
-    }
-
-
-    const imageHTML =
-        image
-            ? createImageButtonHTML(
-                image,
-                name,
-                "archive-image"
-            )
-            : "";
-
-
-    feature.innerHTML = `
-
-        <article class="card maker-feature-card">
-
-            ${imageHTML}
-
-            <div class="maker-feature-content">
-
-                <div class="small-caps">
-                    Current Idol Maker
-                </div>
-
-
-                <h3>
-                    ${escapeHTML(name)}
-                </h3>
-
-
-                ${
-                    role
-                        ? `
-                            <div class="small-caps">
-                                ${escapeHTML(role)}
-                            </div>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    description
-                        ? `
-                            <p>
-                                ${escapeHTML(description)}
-                            </p>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    location
-                        ? `
-                            <p class="small-caps">
-                                ${escapeHTML(location)}
-                            </p>
-                          `
-                        : ""
-                }
-
-            </div>
-
-        </article>
-
-    `;
-
-
-    initializeImageButtons(
-        feature
     );
 
 }
-
-
-/* =========================================================
-   IDOL MAKER GALLERY
-   ========================================================= */
 
 function renderIdolMakerGallery() {
 
-    const gallery =
-        document.getElementById(
-            "idol-maker-gallery"
-        );
-
-
-    if (!gallery) {
-
-        return;
-
-    }
-
-
-    const records =
-        idolMakers.filter(
-            maker =>
-                firstValue(
-                    maker,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                )
-        );
-
-
-    if (
-        records.length === 0
-    ) {
-
-        gallery.innerHTML = `
-
-            <div class="card">
-
-                <p>
-                    Idol maker photographs
-                    have not been added yet.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    gallery.innerHTML = "";
-
-
-    records.forEach(
-        maker => {
-
-            const image =
-                firstValue(
-                    maker,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                );
-
-
-            const name =
-                firstValue(
-                    maker,
-                    [
-                        "name",
-                        "title"
-                    ]
-                ) ||
-                "Idol Maker";
-
-
-            const description =
-                firstValue(
-                    maker,
-                    [
-                        "caption",
-                        "description",
-                        "role"
-                    ]
-                );
-
-
-            const location =
-                firstValue(
-                    maker,
-                    [
-                        "location",
-                        "place"
-                    ]
-                );
-
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "card maker-gallery-card";
-
-
-            card.innerHTML = `
-
-                ${createImageButtonHTML(
-                    image,
-                    name,
-                    "archive-image"
-                )}
-
-
-                <h4>
-                    ${escapeHTML(name)}
-                </h4>
-
-
-                ${
-                    location
-                        ? `
-                            <div class="small-caps">
-                                ${escapeHTML(location)}
-                            </div>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    description
-                        ? `
-                            <p>
-                                ${escapeHTML(description)}
-                            </p>
-                          `
-                        : ""
-                }
-
-            `;
-
-
-            gallery.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    initializeImageButtons(
-        gallery
+    renderPersonGallery(
+        idolMakers,
+        "idol-maker-gallery",
+        "Idol Maker",
+        "Idol maker photographs have not been added yet."
     );
 
 }
 
 
 /* =========================================================
-   =========================================================
    PRIESTS & PUROHITS
-   =========================================================
    ========================================================= */
 
 async function loadPriests() {
 
-    const feature =
-        document.getElementById(
-            "priest-feature"
-        );
-
-
-    const gallery =
-        document.getElementById(
-            "priest-gallery"
-        );
-
+    const feature = document.getElementById("priest-feature");
+    const gallery = document.getElementById("priest-gallery");
 
     try {
 
-        priests =
-            await getCollectionData(
-                "priests"
-            );
+        priests = await getCollectionData("priests");
 
-
-        priests.sort(
-            sortByOrder
-        );
-
+        priests.sort(sortByOrder);
 
         renderCurrentPriest();
-
         renderPriestGallery();
 
     }
 
     catch (error) {
 
-        console.error(
-            "ROY BARI: Priest error:",
-            error
-        );
-
+        console.error("ROY BARI: Priest error:", error);
 
         if (feature) {
-
-            feature.innerHTML =
-                errorBox(
-                    "Unable to load priest information.",
-                    error
-                );
-
+            feature.innerHTML = errorBox(
+                "Unable to load priest information.",
+                error
+            );
         }
-
 
         if (gallery) {
-
             gallery.innerHTML = "";
-
         }
 
     }
 
 }
 
-
-/* =========================================================
-   CURRENT PRIEST
-   ========================================================= */
-
 function getCurrentPriest() {
-
-    if (
-        priests.length === 0
-    ) {
-
-        return null;
-
-    }
-
-
-    const current =
-        priests.find(
-            priest =>
-                priest.current === true ||
-                priest.isCurrent === true ||
-                priest.status === "current"
-        );
-
-
-    return current ||
-        priests[0];
-
+    return getCurrentRecord(priests);
 }
-
-
-/* =========================================================
-   RENDER CURRENT PRIEST
-   ========================================================= */
 
 function renderCurrentPriest() {
 
-    const priest =
-        getCurrentPriest();
-
-
-    const feature =
-        document.getElementById(
-            "priest-feature"
-        );
-
-
-    const nameElement =
-        document.getElementById(
-            "current-priest-name"
-        );
-
-
-    const descriptionElement =
-        document.getElementById(
-            "current-priest-description"
-        );
-
-
-    const locationElement =
-        document.getElementById(
-            "current-priest-location"
-        );
-
-
-    if (!priest) {
-
-        if (nameElement) {
-
-            nameElement.textContent =
-                "Information coming soon";
-
+    renderCurrentPerson(
+        getCurrentPriest(),
+        {
+            featureId: "priest-feature",
+            nameId: "current-priest-name",
+            descriptionId: "current-priest-description",
+            locationId: "current-priest-location",
+            defaultName: "Current Priest",
+            label: "Current Priest",
+            emptyDescription:
+                "Current priest information has not been added yet.",
+            filledFallback:
+                "Information about the current priest has not been added yet.",
+            emptyFeatureText:
+                "Current priest information will appear here."
         }
-
-
-        if (descriptionElement) {
-
-            descriptionElement.textContent =
-                "Current priest information has not been added yet.";
-
-        }
-
-
-        if (feature) {
-
-            feature.innerHTML = `
-
-                <div class="card">
-
-                    <p class="lead">
-
-                        Current priest
-                        information will appear here.
-
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-
-        return;
-
-    }
-
-
-    const name =
-        firstValue(
-            priest,
-            [
-                "name",
-                "title"
-            ]
-        ) ||
-        "Current Priest";
-
-
-    const description =
-        firstValue(
-            priest,
-            [
-                "description",
-                "bio",
-                "story"
-            ]
-        );
-
-
-    const location =
-        firstValue(
-            priest,
-            [
-                "location",
-                "place"
-            ]
-        );
-
-
-    const role =
-        firstValue(
-            priest,
-            [
-                "role"
-            ]
-        );
-
-
-    const image =
-        firstValue(
-            priest,
-            [
-                "image",
-                "photo",
-                "imageUrl",
-                "url"
-            ]
-        );
-
-
-    if (nameElement) {
-
-        nameElement.textContent =
-            name;
-
-    }
-
-
-    if (descriptionElement) {
-
-        descriptionElement.textContent =
-            description ||
-            "Information about the current priest has not been added yet.";
-
-    }
-
-
-    if (locationElement) {
-
-        locationElement.textContent =
-            location
-                ? `Based in ${location}`
-                : "";
-
-    }
-
-
-    if (!feature) {
-
-        return;
-
-    }
-
-
-    const imageHTML =
-        image
-            ? createImageButtonHTML(
-                image,
-                name,
-                "archive-image"
-            )
-            : "";
-
-
-    feature.innerHTML = `
-
-        <article class="card maker-feature-card">
-
-            ${imageHTML}
-
-            <div class="maker-feature-content">
-
-                <div class="small-caps">
-                    Current Priest
-                </div>
-
-
-                <h3>
-                    ${escapeHTML(name)}
-                </h3>
-
-
-                ${
-                    role
-                        ? `
-                            <div class="small-caps">
-                                ${escapeHTML(role)}
-                            </div>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    description
-                        ? `
-                            <p>
-                                ${escapeHTML(description)}
-                            </p>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    location
-                        ? `
-                            <p class="small-caps">
-                                ${escapeHTML(location)}
-                            </p>
-                          `
-                        : ""
-                }
-
-            </div>
-
-        </article>
-
-    `;
-
-
-    initializeImageButtons(
-        feature
     );
 
 }
-
-
-/* =========================================================
-   PRIEST GALLERY
-   ========================================================= */
 
 function renderPriestGallery() {
 
-    const gallery =
-        document.getElementById(
-            "priest-gallery"
-        );
-
-
-    if (!gallery) {
-
-        return;
-
-    }
-
-
-    const records =
-        priests.filter(
-            priest =>
-                firstValue(
-                    priest,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                )
-        );
-
-
-    if (
-        records.length === 0
-    ) {
-
-        gallery.innerHTML = `
-
-            <div class="card">
-
-                <p>
-                    Priest photographs
-                    have not been added yet.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    gallery.innerHTML = "";
-
-
-    records.forEach(
-        priest => {
-
-            const image =
-                firstValue(
-                    priest,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                );
-
-
-            const name =
-                firstValue(
-                    priest,
-                    [
-                        "name",
-                        "title"
-                    ]
-                ) ||
-                "Priest";
-
-
-            const description =
-                firstValue(
-                    priest,
-                    [
-                        "caption",
-                        "description",
-                        "role"
-                    ]
-                );
-
-
-            const location =
-                firstValue(
-                    priest,
-                    [
-                        "location",
-                        "place"
-                    ]
-                );
-
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "card maker-gallery-card";
-
-
-            card.innerHTML = `
-
-                ${createImageButtonHTML(
-                    image,
-                    name,
-                    "archive-image"
-                )}
-
-
-                <h4>
-                    ${escapeHTML(name)}
-                </h4>
-
-
-                ${
-                    location
-                        ? `
-                            <div class="small-caps">
-                                ${escapeHTML(location)}
-                            </div>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    description
-                        ? `
-                            <p>
-                                ${escapeHTML(description)}
-                            </p>
-                          `
-                        : ""
-                }
-
-            `;
-
-
-            gallery.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    initializeImageButtons(
-        gallery
+    renderPersonGallery(
+        priests,
+        "priest-gallery",
+        "Priest",
+        "Priest photographs have not been added yet."
     );
 
 }
@@ -1555,8 +674,18 @@ function renderPriestGallery() {
 
 /* =========================================================
    =========================================================
-   RITUALS
+   RITUALS & TRADITIONS  (section 06)
    =========================================================
+
+   Data comes only from Firestore:
+
+   1. "rituals" collection  -> the ritual explanations
+   2. "events"  collection  -> ONLY events tagged "ritual"
+
+   Event rituals show their date(s), time, location,
+   description and about text. If an event has the same
+   title as an item in the "rituals" collection, the
+   "rituals" item is kept and the event is not repeated.
    ========================================================= */
 
 async function loadRituals() {
@@ -1576,15 +705,168 @@ async function loadRituals() {
 
     try {
 
-        rituals =
-            await getCollectionData(
+        const [
+            ritualResult,
+            eventResult
+        ] = await Promise.allSettled([
+
+            getCollectionData(
                 "rituals"
+            ),
+
+            getCollectionData(
+                "events"
+            )
+
+        ]);
+
+
+        /*
+         * If BOTH requests fail, show the error.
+         */
+
+        if (
+            ritualResult.status === "rejected" &&
+            eventResult.status === "rejected"
+        ) {
+
+            throw ritualResult.reason;
+
+        }
+
+
+        if (
+            ritualResult.status === "rejected"
+        ) {
+
+            console.error(
+                "ROY BARI: Rituals collection error:",
+                ritualResult.reason
+            );
+
+        }
+
+
+        if (
+            eventResult.status === "rejected"
+        ) {
+
+            console.error(
+                "ROY BARI: Ritual events error:",
+                eventResult.reason
+            );
+
+        }
+
+
+        /*
+         * 1. Rituals collection
+         */
+
+        const ritualRecords =
+            ritualResult.status === "fulfilled"
+                ? ritualResult.value
+                : [];
+
+
+        ritualRecords.sort(
+            sortByOrder
+        );
+
+
+        /*
+         * 2. Events tagged "ritual"
+         */
+
+        const eventRecords =
+            eventResult.status === "fulfilled"
+                ? eventResult.value
+                : [];
+
+
+        const usedTitles =
+            new Set(
+                ritualRecords.map(
+                    ritual =>
+                        String(
+                            firstValue(
+                                ritual,
+                                [
+                                    "title",
+                                    "name",
+                                    "ritualName"
+                                ]
+                            )
+                        )
+                            .trim()
+                            .toLowerCase()
+                )
             );
 
 
-        rituals.sort(
-            sortByOrder
-        );
+        const eventRituals =
+            eventRecords
+                .filter(
+                    isRitualEvent
+                )
+                .map(
+                    eventToRitual
+                )
+                .filter(
+                    ritual => {
+
+                        const key =
+                            ritual.title
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            usedTitles.has(key)
+                        ) {
+
+                            return false;
+
+                        }
+
+
+                        usedTitles.add(key);
+
+                        return true;
+
+                    }
+                )
+                .sort(
+                    (a, b) => {
+
+                        if (
+                            a._firstDay !== b._firstDay
+                        ) {
+
+                            return (
+                                a._firstDay -
+                                b._firstDay
+                            );
+
+                        }
+
+
+                        return (
+                            a._timeMinutes -
+                            b._timeMinutes
+                        );
+
+                    }
+                );
+
+
+        rituals = [
+
+            ...ritualRecords,
+
+            ...eventRituals
+
+        ];
 
 
         renderRituals();
@@ -1606,6 +888,328 @@ async function loadRituals() {
             );
 
     }
+
+}
+
+
+/* =========================================================
+   EVENT HELPERS
+   ========================================================= */
+
+function isRitualEvent(event) {
+
+    const category =
+        event.category;
+
+
+    const list =
+        Array.isArray(category)
+            ? category
+            : category
+                ? [category]
+                : [];
+
+
+    return list.some(
+        item =>
+            String(item)
+                .trim()
+                .toLowerCase() === "ritual"
+    );
+
+}
+
+
+/*
+ * Sorted, de-duplicated local dates.
+ * Supports dates[] and the legacy date field.
+ */
+
+function getEventDays(event) {
+
+    const raw =
+        Array.isArray(event.dates) &&
+        event.dates.length
+            ? event.dates
+            : event.date
+                ? [event.date]
+                : [];
+
+
+    const unique =
+        new Map();
+
+
+    raw.forEach(
+        value => {
+
+            const date =
+                getDateValue({
+                    date: value
+                });
+
+
+            if (!date) {
+
+                return;
+
+            }
+
+
+            const day =
+                new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate()
+                );
+
+
+            unique.set(
+                day.getTime(),
+                day
+            );
+
+        }
+    );
+
+
+    return [
+        ...unique.values()
+    ].sort(
+        (a, b) => a - b
+    );
+
+}
+
+
+/*
+ * "17 Oct 2026"
+ * "11 – 15 Oct 2026"
+ * "11 Oct, 13 Oct, 15 Oct 2026"
+ */
+
+function formatEventDays(days) {
+
+    if (days.length === 0) {
+
+        return "";
+
+    }
+
+
+    if (days.length === 1) {
+
+        return formatDate(
+            days[0]
+        );
+
+    }
+
+
+    const first =
+        days[0];
+
+    const last =
+        days[days.length - 1];
+
+
+    const short =
+        date =>
+            new Intl.DateTimeFormat(
+                "en-IN",
+                {
+                    day: "numeric",
+                    month: "short"
+                }
+            ).format(date);
+
+
+    const sameYear =
+        first.getFullYear() ===
+        last.getFullYear();
+
+
+    const sameMonth =
+        sameYear &&
+        first.getMonth() ===
+        last.getMonth();
+
+
+    const contiguous =
+        days.every(
+            (day, index) =>
+                index === 0 ||
+                Math.round(
+                    (
+                        day -
+                        days[index - 1]
+                    ) /
+                    86400000
+                ) === 1
+        );
+
+
+    if (contiguous) {
+
+        if (sameMonth) {
+
+            return `${first.getDate()} – ${formatDate(last)}`;
+
+        }
+
+
+        if (sameYear) {
+
+            return `${short(first)} – ${formatDate(last)}`;
+
+        }
+
+
+        return `${formatDate(first)} – ${formatDate(last)}`;
+
+    }
+
+
+    if (sameYear) {
+
+        return (
+            days
+                .map(short)
+                .join(", ") +
+            ` ${last.getFullYear()}`
+        );
+
+    }
+
+
+    return days
+        .map(formatDate)
+        .join(", ");
+
+}
+
+
+function timeToMinutes(time) {
+
+    const match =
+        String(time || "")
+            .trim()
+            .toUpperCase()
+            .match(
+                /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/
+            );
+
+
+    if (!match) {
+
+        return 0;
+
+    }
+
+
+    let hour =
+        Number(match[1]);
+
+    const minute =
+        Number(match[2]);
+
+
+    if (
+        match[3] === "PM" &&
+        hour !== 12
+    ) {
+
+        hour += 12;
+
+    }
+
+
+    if (
+        match[3] === "AM" &&
+        hour === 12
+    ) {
+
+        hour = 0;
+
+    }
+
+
+    return hour * 60 + minute;
+
+}
+
+
+/*
+ * Convert an event document into the same
+ * shape used by the ritual accordion.
+ */
+
+function eventToRitual(event) {
+
+    const days =
+        getEventDays(event);
+
+
+    const paragraphs =
+        [
+            event.description,
+            event.about
+        ]
+            .map(
+                value =>
+                    String(value || "").trim()
+            )
+            .filter(Boolean);
+
+
+    return {
+
+        id:
+            `event-${event.id}`,
+
+        title:
+            event.title ||
+            "Ritual",
+
+        category:
+            "Ritual",
+
+        time:
+            event.time || "",
+
+        location:
+            event.location || "",
+
+        _fromEvent:
+            true,
+
+        _dateText:
+            formatEventDays(days),
+
+        _dateLabel:
+            days.length > 1
+                ? "Dates"
+                : "Date",
+
+        _timeLabel:
+            days.length > 1
+                ? "Time (each day)"
+                : "Time",
+
+        _paragraphs:
+            paragraphs,
+
+        _firstDay:
+            days.length
+                ? days[0].getTime()
+                : Infinity,
+
+        _timeMinutes:
+            timeToMinutes(
+                event.time
+            )
+
+    };
 
 }
 
@@ -1725,10 +1329,45 @@ function renderRituals() {
                 "Ritual";
 
 
+            /*
+             * Event rituals already have a
+             * ready-made date text (supports
+             * multiple dates).
+             */
+
             const date =
                 getDateValue(
                     ritual
                 );
+
+
+            const dateText =
+                ritual._dateText ||
+                (
+                    date
+                        ? formatDate(date)
+                        : ""
+                );
+
+
+            const dateLabel =
+                ritual._dateLabel ||
+                "Date";
+
+
+            const timeLabel =
+                ritual._timeLabel ||
+                "Time";
+
+
+            const paragraphs =
+                Array.isArray(
+                    ritual._paragraphs
+                )
+                    ? ritual._paragraphs
+                    : description
+                        ? [description]
+                        : [];
 
 
             const id =
@@ -1800,7 +1439,7 @@ function renderRituals() {
                     ${
                         (
                             day ||
-                            date ||
+                            dateText ||
                             time ||
                             location
                         )
@@ -1822,14 +1461,12 @@ function renderRituals() {
 
 
                                     ${
-                                        date
+                                        dateText
                                             ? `
                                                 <div>
-                                                    <span>Date</span>
+                                                    <span>${escapeHTML(dateLabel)}</span>
                                                     <strong>
-                                                        ${escapeHTML(
-                                                            formatDate(date)
-                                                        )}
+                                                        ${escapeHTML(dateText)}
                                                     </strong>
                                                 </div>
                                               `
@@ -1841,7 +1478,7 @@ function renderRituals() {
                                         time
                                             ? `
                                                 <div>
-                                                    <span>Time</span>
+                                                    <span>${escapeHTML(timeLabel)}</span>
                                                     <strong>
                                                         ${escapeHTML(time)}
                                                     </strong>
@@ -1871,13 +1508,19 @@ function renderRituals() {
 
 
                     ${
-                        description
+                        paragraphs.length
                             ? `
                                 <div class="ritual-description">
 
-                                    <p>
-                                        ${escapeHTML(description)}
-                                    </p>
+                                    ${paragraphs
+                                        .map(
+                                            paragraph => `
+                                                <p>
+                                                    ${escapeHTML(paragraph)}
+                                                </p>
+                                            `
+                                        )
+                                        .join("")}
 
                                 </div>
                               `
@@ -1913,141 +1556,68 @@ function renderRituals() {
 
 function setupRitualAccordion() {
 
-    const container =
-        document.getElementById(
-            "ritual-accordion"
-        );
-
+    const container = document.getElementById("ritual-accordion");
 
     if (!container) {
-
         return;
-
     }
 
+    const buttons = container.querySelectorAll(".ritual-toggle");
 
-    const buttons =
-        container.querySelectorAll(
-            ".ritual-toggle"
-        );
+    buttons.forEach(button => {
 
+        button.addEventListener("click", () => {
 
-    buttons.forEach(
-        button => {
+            const isOpen =
+                button.getAttribute("aria-expanded") === "true";
 
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const isOpen =
-                        button.getAttribute(
-                            "aria-expanded"
-                        ) === "true";
-
-
-                    const contentId =
-                        button.getAttribute(
-                            "aria-controls"
-                        );
-
-
-                    const content =
-                        document.getElementById(
-                            contentId
-                        );
-
-
-                    if (!content) {
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * Close every item.
-                     */
-
-                    buttons.forEach(
-                        other => {
-
-                            other.setAttribute(
-                                "aria-expanded",
-                                "false"
-                            );
-
-
-                            const otherContent =
-                                document.getElementById(
-                                    other.getAttribute(
-                                        "aria-controls"
-                                    )
-                                );
-
-
-                            if (
-                                otherContent
-                            ) {
-
-                                otherContent.hidden =
-                                    true;
-
-                            }
-
-
-                            const icon =
-                                other.querySelector(
-                                    ".ritual-icon"
-                                );
-
-
-                            if (icon) {
-
-                                icon.textContent =
-                                    "+";
-
-                            }
-
-                        }
-                    );
-
-
-                    /*
-                     * Open clicked item.
-                     */
-
-                    if (!isOpen) {
-
-                        button.setAttribute(
-                            "aria-expanded",
-                            "true"
-                        );
-
-
-                        content.hidden =
-                            false;
-
-
-                        const icon =
-                            button.querySelector(
-                                ".ritual-icon"
-                            );
-
-
-                        if (icon) {
-
-                            icon.textContent =
-                                "−";
-
-                        }
-
-                    }
-
-                }
+            const content = document.getElementById(
+                button.getAttribute("aria-controls")
             );
 
-        }
-    );
+            if (!content) {
+                return;
+            }
+
+            // Close every item.
+            buttons.forEach(other => {
+
+                other.setAttribute("aria-expanded", "false");
+
+                const otherContent = document.getElementById(
+                    other.getAttribute("aria-controls")
+                );
+
+                if (otherContent) {
+                    otherContent.hidden = true;
+                }
+
+                const icon = other.querySelector(".ritual-icon");
+
+                if (icon) {
+                    icon.textContent = "+";
+                }
+
+            });
+
+            // Open clicked item.
+            if (!isOpen) {
+
+                button.setAttribute("aria-expanded", "true");
+
+                content.hidden = false;
+
+                const icon = button.querySelector(".ritual-icon");
+
+                if (icon) {
+                    icon.textContent = "−";
+                }
+
+            }
+
+        });
+
+    });
 
 }
 
@@ -2060,46 +1630,24 @@ function setupRitualAccordion() {
 
 async function loadOldPictures() {
 
-    const grid =
-        document.getElementById(
-            "old-photo-grid"
-        );
-
+    const grid = document.getElementById("old-photo-grid");
 
     if (!grid) {
-
         return;
-
     }
-
 
     try {
 
-        oldPictures =
-            await getCollectionData(
-                "oldPictures"
-            );
+        oldPictures = await getCollectionData("oldPictures");
 
+        oldPictures.sort((a, b) => {
 
-        oldPictures.sort(
-            (
-                a,
-                b
-            ) => {
+            const yearA = getNumber(a.year) ?? 999999;
+            const yearB = getNumber(b.year) ?? 999999;
 
-                const yearA =
-                    getNumber(a.year) ?? 999999;
+            return yearA - yearB;
 
-
-                const yearB =
-                    getNumber(b.year) ?? 999999;
-
-
-                return yearA - yearB;
-
-            }
-        );
-
+        });
 
         renderOldPictures();
 
@@ -2107,17 +1655,12 @@ async function loadOldPictures() {
 
     catch (error) {
 
-        console.error(
-            "ROY BARI: Old picture error:",
+        console.error("ROY BARI: Old picture error:", error);
+
+        grid.innerHTML = errorBox(
+            "Unable to load old photographs.",
             error
         );
-
-
-        grid.innerHTML =
-            errorBox(
-                "Unable to load old photographs.",
-                error
-            );
 
     }
 
@@ -2125,119 +1668,71 @@ async function loadOldPictures() {
 
 
 /* =========================================================
-   RENDER OLD PICTURES
-   ========================================================= */
-/* =========================================================
    RENDER OLD PICTURES — SLIDESHOW
    ========================================================= */
 
 function renderOldPictures() {
 
-    const container =
-        document.getElementById(
-            "old-photo-grid"
-        );
-
+    const container = document.getElementById("old-photo-grid");
 
     if (!container) {
-
         return;
-
     }
 
-
-    const records =
-        oldPictures.filter(
-            picture =>
-                firstValue(
-                    picture,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                )
-        );
-
+    const records = oldPictures.filter(
+        picture => firstValue(picture, IMAGE_FIELDS)
+    );
 
     if (records.length === 0) {
 
         container.innerHTML = `
-
             <div class="card">
-
                 <p>
                     No old photographs
                     have been added yet.
                 </p>
-
             </div>
-
         `;
 
         return;
 
     }
 
-
-    /*
-     * IMPORTANT
-     *
-     * Prevent the browser from trying to
-     * automatically adjust the page position
-     * when the active slide changes.
-     */
-
+    // Stop the browser adjusting the page position
+    // when the active slide changes.
     container.style.overflowAnchor = "none";
-
 
     container.innerHTML = `
 
         <div class="old-album-stage">
 
-            <div
-                class="old-album-counter"
-                id="old-album-counter"
-            >
+            <div class="old-album-counter" id="old-album-counter">
                 1 / ${records.length}
             </div>
 
-
-            <div
-                id="old-album-slides"
-                class="old-album-slides"
-            ></div>
-
+            <div id="old-album-slides" class="old-album-slides"></div>
 
             <button
                 type="button"
                 class="old-album-prev"
                 id="old-album-prev"
                 aria-label="Previous photograph"
-            >
-                ‹
-            </button>
-
+            >‹</button>
 
             <button
                 type="button"
                 class="old-album-next"
                 id="old-album-next"
                 aria-label="Next photograph"
-            >
-                ›
-            </button>
+            >›</button>
 
         </div>
-
 
         <div
             class="old-album-dots"
             id="old-album-dots"
             aria-label="Photograph navigation"
         ></div>
-
 
         <div
             class="old-album-thumbnails"
@@ -2247,796 +1742,299 @@ function renderOldPictures() {
 
     `;
 
+    const slides = document.getElementById("old-album-slides");
+    const dots = document.getElementById("old-album-dots");
+    const thumbnails = document.getElementById("old-album-thumbnails");
 
-    const slides =
-        document.getElementById(
-            "old-album-slides"
-        );
-
-
-    const dots =
-        document.getElementById(
-            "old-album-dots"
-        );
-
-
-    const thumbnails =
-        document.getElementById(
-            "old-album-thumbnails"
-        );
-
-
-    if (
-        !slides ||
-        !dots ||
-        !thumbnails
-    ) {
-
+    if (!slides || !dots || !thumbnails) {
         return;
-
     }
 
+    /* ---------- CREATE SLIDES, DOTS, THUMBNAILS ---------- */
 
-    /*
-     * =====================================================
-     * CREATE SLIDES
-     * =====================================================
-     */
+    records.forEach((picture, index) => {
 
-    records.forEach(
-        (picture, index) => {
+        const image = firstValue(picture, IMAGE_FIELDS);
 
-            const image =
-                firstValue(
-                    picture,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                );
+        const title =
+            firstValue(picture, ["title", "caption"]) ||
+            "Roy Bari Archive Photograph";
 
+        const description = firstValue(picture, ["description", "story"]);
+        const category = firstValue(picture, ["category"]);
+        const year = firstValue(picture, ["year"]);
 
-            const title =
-                firstValue(
-                    picture,
-                    [
-                        "title",
-                        "caption"
-                    ]
-                ) ||
-                "Roy Bari Archive Photograph";
+        const thumbnail = getImageUrl(image);
+        const largeImage = getLargeImageUrl(image);
 
+        // SLIDE
+        const slide = document.createElement("article");
 
-            const description =
-                firstValue(
-                    picture,
-                    [
-                        "description",
-                        "story"
-                    ]
-                );
+        slide.className = "old-album-slide";
 
+        if (index === 0) {
+            slide.classList.add("active");
+        }
 
-            const category =
-                firstValue(
-                    picture,
-                    [
-                        "category"
-                    ]
-                );
+        slide.dataset.index = String(index);
 
+        slide.innerHTML = `
 
-            const year =
-                firstValue(
-                    picture,
-                    [
-                        "year"
-                    ]
-                );
+            <button
+                type="button"
+                class="old-album-image-button"
+                data-lightbox-image="${escapeAttribute(largeImage)}"
+                data-lightbox-alt="${escapeAttribute(title)}"
+                aria-label="Open photograph in full screen"
+            >
 
+                <div class="old-album-image-wrap">
 
-            const thumbnail =
-                getImageUrl(image);
-
-
-            const largeImage =
-                getLargeImageUrl(image);
-
-
-            /*
-             * =================================================
-             * SLIDE
-             * =================================================
-             */
-
-            const slide =
-                document.createElement(
-                    "article"
-                );
-
-
-            slide.className =
-                "old-album-slide";
-
-
-            if (index === 0) {
-
-                slide.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            slide.dataset.index =
-                String(index);
-
-
-            slide.innerHTML = `
-
-                <button
-                    type="button"
-                    class="old-album-image-button"
-                    data-lightbox-image="${escapeAttribute(
-                        largeImage
-                    )}"
-                    data-lightbox-alt="${escapeAttribute(
-                        title
-                    )}"
-                    aria-label="Open photograph in full screen"
-                >
-
-                    <div class="old-album-image-wrap">
-
-                        <img
-                            src="${escapeAttribute(
-                                thumbnail
-                            )}"
-                            alt="${escapeAttribute(
-                                title
-                            )}"
-                            class="old-album-image"
-                            loading="${
-                                index === 0
-                                    ? "eager"
-                                    : "lazy"
-                            }"
-                            decoding="async"
-                        >
-
-                    </div>
-
-                </button>
-
-
-                <div class="old-album-caption">
-
-                    ${
-                        year
-                            ? `
-                                <div class="old-album-year">
-                                    ${escapeHTML(year)}
-                                </div>
-                              `
-                            : ""
-                    }
-
-
-                    <h3>
-                        ${escapeHTML(title)}
-                    </h3>
-
-
-                    ${
-                        description
-                            ? `
-                                <p>
-                                    ${escapeHTML(
-                                        description
-                                    )}
-                                </p>
-                              `
-                            : ""
-                    }
-
-
-                    ${
-                        category
-                            ? `
-                                <div class="small-caps old-album-category">
-                                    ${escapeHTML(
-                                        category
-                                    )}
-                                </div>
-                              `
-                            : ""
-                    }
+                    <img
+                        src="${escapeAttribute(thumbnail)}"
+                        alt="${escapeAttribute(title)}"
+                        class="old-album-image"
+                        loading="${index === 0 ? "eager" : "lazy"}"
+                        decoding="async"
+                    >
 
                 </div>
 
-            `;
+            </button>
 
+            <div class="old-album-caption">
 
-            slides.appendChild(
-                slide
-            );
+                ${
+                    year
+                        ? `<div class="old-album-year">${escapeHTML(year)}</div>`
+                        : ""
+                }
 
+                <h3>
+                    ${escapeHTML(title)}
+                </h3>
 
-            /*
-             * =================================================
-             * DOT
-             * =================================================
-             */
+                ${
+                    description
+                        ? `<p>${escapeHTML(description)}</p>`
+                        : ""
+                }
 
-            const dot =
-                document.createElement(
-                    "button"
-                );
+                ${
+                    category
+                        ? `
+                            <div class="small-caps old-album-category">
+                                ${escapeHTML(category)}
+                            </div>
+                          `
+                        : ""
+                }
 
+            </div>
 
-            dot.type =
-                "button";
+        `;
 
+        slides.appendChild(slide);
 
-            dot.className =
-                "old-album-dot";
+        // DOT
+        const dot = document.createElement("button");
 
+        dot.type = "button";
+        dot.className = "old-album-dot";
 
-            if (index === 0) {
-
-                dot.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            dot.dataset.index =
-                String(index);
-
-
-            dot.setAttribute(
-                "aria-label",
-                `Go to photograph ${index + 1}`
-            );
-
-
-            dots.appendChild(
-                dot
-            );
-
-
-            /*
-             * =================================================
-             * THUMBNAIL
-             * =================================================
-             */
-
-            const thumbnailButton =
-                document.createElement(
-                    "button"
-                );
-
-
-            thumbnailButton.type =
-                "button";
-
-
-            thumbnailButton.className =
-                "old-album-thumbnail";
-
-
-            if (index === 0) {
-
-                thumbnailButton.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            thumbnailButton.dataset.index =
-                String(index);
-
-
-            thumbnailButton.setAttribute(
-                "aria-label",
-                `Show ${title}`
-            );
-
-
-            thumbnailButton.innerHTML = `
-
-                <img
-                    src="${escapeAttribute(
-                        thumbnail
-                    )}"
-                    alt="${escapeAttribute(
-                        title
-                    )}"
-                    loading="lazy"
-                    decoding="async"
-                >
-
-            `;
-
-
-            thumbnails.appendChild(
-                thumbnailButton
-            );
-
+        if (index === 0) {
+            dot.classList.add("active");
         }
-    );
 
+        dot.dataset.index = String(index);
 
-    /*
-     * =====================================================
-     * SLIDESHOW STATE
-     * =====================================================
-     */
+        dot.setAttribute(
+            "aria-label",
+            `Go to photograph ${index + 1}`
+        );
+
+        dots.appendChild(dot);
+
+        // THUMBNAIL
+        const thumbnailButton = document.createElement("button");
+
+        thumbnailButton.type = "button";
+        thumbnailButton.className = "old-album-thumbnail";
+
+        if (index === 0) {
+            thumbnailButton.classList.add("active");
+        }
+
+        thumbnailButton.dataset.index = String(index);
+
+        thumbnailButton.setAttribute("aria-label", `Show ${title}`);
+
+        thumbnailButton.innerHTML = `
+            <img
+                src="${escapeAttribute(thumbnail)}"
+                alt="${escapeAttribute(title)}"
+                loading="lazy"
+                decoding="async"
+            >
+        `;
+
+        thumbnails.appendChild(thumbnailButton);
+
+    });
+
+    /* ---------- SLIDESHOW STATE ---------- */
 
     let currentIndex = 0;
-
     let autoSlideTimer = null;
-
     let userInteracting = false;
 
-
     /*
-     * =====================================================
-     * SHOW SLIDE
-     * =====================================================
-     *
-     * IMPORTANT:
-     *
-     * There is NO scrollIntoView() here.
-     *
-     * Therefore changing the image will NEVER
-     * intentionally move the webpage to the slideshow.
-     * =====================================================
-     */
+       SHOW SLIDE
 
-    function showSlide(
-        index,
-        resetTimer = true
-    ) {
+       There is NO scrollIntoView() here, so changing the
+       image never moves the webpage to the slideshow.
+    */
 
-        if (
-            records.length === 0
-        ) {
+    function showSlide(index, resetTimer = true) {
 
+        if (records.length === 0) {
             return;
-
         }
 
-
-        /*
-         * Keep index inside the valid range.
-         */
-
-        if (
-            index < 0
-        ) {
-
-            index =
-                records.length - 1;
-
+        if (index < 0) {
+            index = records.length - 1;
         }
 
-
-        if (
-            index >= records.length
-        ) {
-
+        if (index >= records.length) {
             index = 0;
-
         }
 
+        currentIndex = index;
 
-        currentIndex =
-            index;
+        // Remember the page position.
+        const currentScrollPosition = window.scrollY;
 
-
-        /*
-         * Remember current page position.
-         *
-         * This protects the visitor's viewport
-         * if the browser tries to adjust the page
-         * while the slide changes.
-         */
-
-        const currentScrollPosition =
-            window.scrollY;
-
-
-        /*
-         * =================================================
-         * SLIDES
-         * =================================================
-         */
-
-        const allSlides =
-            slides.querySelectorAll(
-                ".old-album-slide"
-            );
-
-
-        allSlides.forEach(
-            (
-                slide,
-                slideIndex
-            ) => {
-
-                slide.classList.toggle(
-                    "active",
-                    slideIndex === currentIndex
-                );
-
+        slides.querySelectorAll(".old-album-slide").forEach(
+            (slide, slideIndex) => {
+                slide.classList.toggle("active", slideIndex === currentIndex);
             }
         );
 
-
-        /*
-         * =================================================
-         * DOTS
-         * =================================================
-         */
-
-        const allDots =
-            dots.querySelectorAll(
-                ".old-album-dot"
-            );
-
-
-        allDots.forEach(
-            (
-                dot,
-                dotIndex
-            ) => {
-
-                dot.classList.toggle(
-                    "active",
-                    dotIndex === currentIndex
-                );
-
+        dots.querySelectorAll(".old-album-dot").forEach(
+            (dot, dotIndex) => {
+                dot.classList.toggle("active", dotIndex === currentIndex);
             }
         );
 
-
-        /*
-         * =================================================
-         * THUMBNAILS
-         * =================================================
-         */
-
-        const allThumbnails =
-            thumbnails.querySelectorAll(
-                ".old-album-thumbnail"
-            );
-
-
-        allThumbnails.forEach(
-            (
-                thumbnail,
-                thumbnailIndex
-            ) => {
-
-                thumbnail.classList.toggle(
-                    "active",
-                    thumbnailIndex === currentIndex
-                );
-
+        thumbnails.querySelectorAll(".old-album-thumbnail").forEach(
+            (thumb, thumbIndex) => {
+                thumb.classList.toggle("active", thumbIndex === currentIndex);
             }
         );
 
-
-        /*
-         * =================================================
-         * COUNTER
-         * =================================================
-         */
-
-        const counter =
-            document.getElementById(
-                "old-album-counter"
-            );
-
+        const counter = document.getElementById("old-album-counter");
 
         if (counter) {
-
             counter.textContent =
                 `${currentIndex + 1} / ${records.length}`;
-
         }
 
-
-        /*
-         * =================================================
-         * RESTORE EXACT PAGE POSITION
-         * =================================================
-         *
-         * Do NOT use scrollIntoView().
-         */
-
-        if (
-            window.scrollY !== currentScrollPosition
-        ) {
-
-            window.scrollTo(
-                0,
-                currentScrollPosition
-            );
-
+        // Restore the exact page position.
+        if (window.scrollY !== currentScrollPosition) {
+            window.scrollTo(0, currentScrollPosition);
         }
-
-
-        /*
-         * Restart the timer only when required.
-         */
 
         if (resetTimer) {
-
             startAutoSlide();
-
         }
 
     }
-
-
-    /*
-     * =====================================================
-     * START AUTO SLIDE
-     * =====================================================
-     */
 
     function startAutoSlide() {
 
-        clearInterval(
-            autoSlideTimer
-        );
+        clearInterval(autoSlideTimer);
 
-
-        if (
-            records.length <= 1
-        ) {
-
+        if (records.length <= 1) {
             return;
-
         }
-
 
         if (userInteracting) {
-
             return;
-
         }
 
-
-        autoSlideTimer =
-            setInterval(
-                () => {
-
-                    /*
-                     * Do not move the page.
-                     * Only change the active image.
-                     */
-
-                    showSlide(
-                        currentIndex + 1,
-                        false
-                    );
-
-                },
-                5000
-            );
+        autoSlideTimer = setInterval(() => {
+            showSlide(currentIndex + 1, false);
+        }, 5000);
 
     }
 
-
-    /*
-     * =====================================================
-     * STOP AUTO SLIDE
-     * =====================================================
-     */
-
     function stopAutoSlide() {
 
-        clearInterval(
-            autoSlideTimer
-        );
+        clearInterval(autoSlideTimer);
 
         autoSlideTimer = null;
 
     }
 
+    function manualShow(index) {
 
-    /*
-     * =====================================================
-     * PREVIOUS BUTTON
-     * =====================================================
-     */
+        userInteracting = true;
 
-    const previous =
-        document.getElementById(
-            "old-album-prev"
-        );
+        stopAutoSlide();
 
+        showSlide(index, false);
+
+    }
+
+    /* ---------- CONTROLS ---------- */
+
+    const previous = document.getElementById("old-album-prev");
 
     if (previous) {
-
-        previous.addEventListener(
-            "click",
-            () => {
-
-                userInteracting = true;
-
-                stopAutoSlide();
-
-
-                showSlide(
-                    currentIndex - 1,
-                    false
-                );
-
-            }
-        );
-
+        previous.addEventListener("click", () => {
+            manualShow(currentIndex - 1);
+        });
     }
 
-
-    /*
-     * =====================================================
-     * NEXT BUTTON
-     * =====================================================
-     */
-
-    const next =
-        document.getElementById(
-            "old-album-next"
-        );
-
+    const next = document.getElementById("old-album-next");
 
     if (next) {
-
-        next.addEventListener(
-            "click",
-            () => {
-
-                userInteracting = true;
-
-                stopAutoSlide();
-
-
-                showSlide(
-                    currentIndex + 1,
-                    false
-                );
-
-            }
-        );
-
+        next.addEventListener("click", () => {
+            manualShow(currentIndex + 1);
+        });
     }
 
+    dots.querySelectorAll(".old-album-dot").forEach(dot => {
+        dot.addEventListener("click", () => {
+            manualShow(Number(dot.dataset.index));
+        });
+    });
 
-    /*
-     * =====================================================
-     * DOT NAVIGATION
-     * =====================================================
-     */
+    thumbnails.querySelectorAll(".old-album-thumbnail").forEach(thumb => {
+        thumb.addEventListener("click", () => {
+            manualShow(Number(thumb.dataset.index));
+        });
+    });
 
-    dots.querySelectorAll(
-        ".old-album-dot"
-    ).forEach(
-        dot => {
+    // Pause while hovering.
+    container.addEventListener("mouseenter", () => {
+        stopAutoSlide();
+    });
 
-            dot.addEventListener(
-                "click",
-                () => {
+    container.addEventListener("mouseleave", () => {
 
-                    userInteracting = true;
-
-                    stopAutoSlide();
-
-
-                    showSlide(
-                        Number(
-                            dot.dataset.index
-                        ),
-                        false
-                    );
-
-                }
-            );
-
+        // If the visitor chose an image manually,
+        // don't start changing images again.
+        if (!userInteracting) {
+            startAutoSlide();
         }
-    );
 
+    });
 
-    /*
-     * =====================================================
-     * THUMBNAIL NAVIGATION
-     * =====================================================
-     */
-
-    thumbnails.querySelectorAll(
-        ".old-album-thumbnail"
-    ).forEach(
-        thumbnail => {
-
-            thumbnail.addEventListener(
-                "click",
-                () => {
-
-                    userInteracting = true;
-
-                    stopAutoSlide();
-
-
-                    showSlide(
-                        Number(
-                            thumbnail.dataset.index
-                        ),
-                        false
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-    /*
-     * =====================================================
-     * PAUSE WHILE HOVERING
-     * =====================================================
-     *
-     * Hovering does NOT change the page position.
-     * =====================================================
-     */
-
-    container.addEventListener(
-        "mouseenter",
-        () => {
-
-            stopAutoSlide();
-
-        }
-    );
-
-
-    container.addEventListener(
-        "mouseleave",
-        () => {
-
-            /*
-             * If the visitor has manually selected
-             * an image, don't immediately start
-             * changing images again.
-             */
-
-            if (!userInteracting) {
-
-                startAutoSlide();
-
-            }
-
-        }
-    );
-
-
-    /*
-     * =====================================================
-     * TOUCH / SWIPE
-     * =====================================================
-     */
+    /* ---------- TOUCH / SWIPE ---------- */
 
     let touchStartX = 0;
-
     let touchEndX = 0;
-
 
     slides.addEventListener(
         "touchstart",
@@ -3046,93 +2044,41 @@ function renderOldPictures() {
 
             stopAutoSlide();
 
-
-            touchStartX =
-                event.changedTouches[0].screenX;
+            touchStartX = event.changedTouches[0].screenX;
 
         },
-        {
-            passive: true
-        }
+        { passive: true }
     );
-
 
     slides.addEventListener(
         "touchend",
         event => {
 
-            touchEndX =
-                event.changedTouches[0].screenX;
+            touchEndX = event.changedTouches[0].screenX;
 
+            const difference = touchStartX - touchEndX;
 
-            const difference =
-                touchStartX -
-                touchEndX;
-
-
-            if (
-                Math.abs(difference) < 50
-            ) {
-
+            if (Math.abs(difference) < 50) {
                 return;
-
             }
 
-
-            if (
-                difference > 0
-            ) {
-
-                showSlide(
-                    currentIndex + 1,
-                    false
-                );
-
-            }
-            else {
-
-                showSlide(
-                    currentIndex - 1,
-                    false
-                );
-
+            if (difference > 0) {
+                showSlide(currentIndex + 1, false);
+            } else {
+                showSlide(currentIndex - 1, false);
             }
 
         },
-        {
-            passive: true
-        }
+        { passive: true }
     );
 
+    /* ---------- LIGHTBOX ---------- */
 
-    /*
-     * =====================================================
-     * LIGHTBOX
-     * =====================================================
-     */
+    initializeImageButtons(slides);
 
-    initializeImageButtons(
-        slides
-    );
+    /* ---------- START ---------- */
 
-
-    /*
-     * =====================================================
-     * INITIAL SLIDE
-     * =====================================================
-     */
-
-    showSlide(
-        0,
-        false
-    );
-
-
-    /*
-     * =====================================================
-     * START AUTO SLIDESHOW
-     * =====================================================
-     */
+    showSlide(0, false);
 
     startAutoSlide();
 
@@ -3147,101 +2093,49 @@ function renderOldPictures() {
 
 async function loadNewspaperArticles() {
 
-    const grid =
-        document.getElementById(
-            "newspaper-grid"
-        );
-
+    const grid = document.getElementById("newspaper-grid");
 
     if (!grid) {
 
-        console.error(
-            "ROY BARI: #newspaper-grid not found."
-        );
+        console.error("ROY BARI: #newspaper-grid not found.");
 
         return;
 
     }
 
-
     try {
 
-        newspaperArticles =
-            await getCollectionData(
-                "newspaperArticles"
-            );
+        newspaperArticles = await getCollectionData("newspaperArticles");
 
+        // Newest first (Firestore Timestamp supported).
+        newspaperArticles.sort((a, b) => {
 
-        /*
-         * Sort newest first.
-         *
-         * Firestore Timestamp is supported.
-         */
+            const dateA = getDateValue(a);
+            const dateB = getDateValue(b);
 
-        newspaperArticles.sort(
-            (a, b) => {
-
-                const dateA =
-                    getDateValue(a);
-
-                const dateB =
-                    getDateValue(b);
-
-
-                if (
-                    dateA &&
-                    dateB
-                ) {
-
-                    return (
-                        dateB.getTime() -
-                        dateA.getTime()
-                    );
-
-                }
-
-
-                if (dateA) {
-
-                    return -1;
-
-                }
-
-
-                if (dateB) {
-
-                    return 1;
-
-                }
-
-
-                /*
-                 * Fallback for records
-                 * containing only year.
-                 */
-
-                const yearA =
-                    getNumber(a.year);
-
-                const yearB =
-                    getNumber(b.year);
-
-
-                if (
-                    yearA !== null &&
-                    yearB !== null
-                ) {
-
-                    return yearB - yearA;
-
-                }
-
-
-                return 0;
-
+            if (dateA && dateB) {
+                return dateB.getTime() - dateA.getTime();
             }
-        );
 
+            if (dateA) {
+                return -1;
+            }
+
+            if (dateB) {
+                return 1;
+            }
+
+            // Fallback for records containing only year.
+            const yearA = getNumber(a.year);
+            const yearB = getNumber(b.year);
+
+            if (yearA !== null && yearB !== null) {
+                return yearB - yearA;
+            }
+
+            return 0;
+
+        });
 
         renderNewspaperArticles();
 
@@ -3249,355 +2143,142 @@ async function loadNewspaperArticles() {
 
     catch (error) {
 
-        console.error(
-            "ROY BARI: Newspaper error:",
+        console.error("ROY BARI: Newspaper error:", error);
+
+        grid.innerHTML = errorBox(
+            "Unable to load newspaper articles.",
             error
         );
-
-
-        grid.innerHTML =
-            errorBox(
-                "Unable to load newspaper articles.",
-                error
-            );
 
     }
 
 }
 
-
-/* =========================================================
-   RENDER NEWSPAPER ARTICLES
-   ========================================================= */
-
 function renderNewspaperArticles() {
 
-    const grid =
-        document.getElementById(
-            "newspaper-grid"
-        );
-
+    const grid = document.getElementById("newspaper-grid");
 
     if (!grid) {
-
         return;
-
     }
 
-
-    if (
-        newspaperArticles.length === 0
-    ) {
+    if (newspaperArticles.length === 0) {
 
         grid.innerHTML = `
-
             <div class="card">
-
                 <p>
                     No newspaper articles
                     have been added yet.
                 </p>
-
             </div>
-
         `;
 
         return;
 
     }
 
-
     grid.innerHTML = "";
 
+    newspaperArticles.forEach(article => {
 
-    newspaperArticles.forEach(
-        article => {
-
-            const image =
-                firstValue(
-                    article,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl",
-                        "url"
-                    ]
-                );
-
-
-            const title =
-                firstValue(
-                    article,
-                    [
-                        "title"
-                    ]
-                ) ||
-                "Roy Bari Durga Puja";
-
-
-            const headline =
-                firstValue(
-                    article,
-                    [
-                        "headline",
-                        "description"
-                    ]
-                );
-
-
-            const newspaper =
-                firstValue(
-                    article,
-                    [
-                        "newspaper",
-                        "publication"
-                    ]
-                );
-
-
-            const page =
-                firstValue(
-                    article,
-                    [
-                        "page"
-                    ]
-                );
-
-
-            const articleDate =
-                getDateValue(
-                    article
-                );
-
-
-            const displayDate =
-                articleDate
-                    ? formatDate(
-                        articleDate
-                    )
-                    : firstValue(
-                        article,
-                        [
-                            "dateText",
-                            "displayDate"
-                        ]
-                    );
+        const image = firstValue(article, IMAGE_FIELDS);
 
+        const title =
+            firstValue(article, ["title"]) ||
+            "Roy Bari Durga Puja";
 
-            let year =
-                firstValue(
-                    article,
-                    [
-                        "year"
-                    ]
-                );
+        const headline = firstValue(article, ["headline", "description"]);
+        const newspaper = firstValue(article, ["newspaper", "publication"]);
+        const page = firstValue(article, ["page"]);
+        const articleDate = getDateValue(article);
 
+        const displayDate = articleDate
+            ? formatDate(articleDate)
+            : firstValue(article, ["dateText", "displayDate"]);
 
-            if (
-                !year &&
-                articleDate
-            ) {
+        let year = firstValue(article, ["year"]);
 
-                year =
-                    articleDate.getFullYear();
+        if (!year && articleDate) {
+            year = articleDate.getFullYear();
+        }
 
-            }
+        const source = firstValue(article, ["source"]);
 
+        const sourceUrl = firstValue(
+            article,
+            ["sourceUrl", "articleUrl", "link"]
+        );
 
-            const source =
-                firstValue(
-                    article,
-                    [
-                        "source"
-                    ]
-                );
+        const card = document.createElement("article");
 
+        card.className = "newspaper-card";
 
-            const sourceUrl =
-                firstValue(
-                    article,
-                    [
-                        "sourceUrl",
-                        "articleUrl",
-                        "link"
-                    ]
-                );
+        const imageHTML = image
+            ? createImageButtonHTML(image, title, "newspaper-image")
+            : `
+                <div class="newspaper-no-image">
+                    Newspaper Archive
+                </div>
+              `;
 
+        card.innerHTML = `
 
-            const card =
-                document.createElement(
-                    "article"
-                );
+            ${imageHTML}
 
+            <div class="newspaper-content">
 
-            card.className =
-                "newspaper-card";
+                ${
+                    newspaper
+                        ? `<div class="small-caps">${escapeHTML(newspaper)}</div>`
+                        : ""
+                }
 
+                <h3>
+                    ${escapeHTML(title)}
+                </h3>
 
-            const imageHTML =
-                image
-                    ? createImageButtonHTML(
-                        image,
-                        title,
-                        "newspaper-image"
-                    )
-                    : `
-                        <div class="newspaper-no-image">
-                            Newspaper Archive
-                        </div>
-                    `;
+                ${
+                    headline
+                        ? `<p>${escapeHTML(headline)}</p>`
+                        : ""
+                }
 
+                <div class="newspaper-meta">
 
-            card.innerHTML = `
+                    ${year ? `<span>${escapeHTML(year)}</span>` : ""}
 
-                ${imageHTML}
+                    ${displayDate ? `<span>${escapeHTML(displayDate)}</span>` : ""}
 
+                    ${page ? `<span>Page ${escapeHTML(page)}</span>` : ""}
 
-                <div class="newspaper-content">
-
-
-                    ${
-                        newspaper
-                            ? `
-                                <div class="small-caps">
-
-                                    ${escapeHTML(
-                                        newspaper
-                                    )}
-
-                                </div>
-                              `
-                            : ""
-                    }
-
-
-                    <h3>
-
-                        ${escapeHTML(
-                            title
-                        )}
-
-                    </h3>
-
-
-                    ${
-                        headline
-                            ? `
-                                <p>
-
-                                    ${escapeHTML(
-                                        headline
-                                    )}
-
-                                </p>
-                              `
-                            : ""
-                    }
-
-
-                    <div class="newspaper-meta">
-
-
-                        ${
-                            year
-                                ? `
-                                    <span>
-
-                                        ${escapeHTML(
-                                            year
-                                        )}
-
-                                    </span>
-                                  `
-                                : ""
-                        }
-
-
-                        ${
-                            displayDate
-                                ? `
-                                    <span>
-
-                                        ${escapeHTML(
-                                            displayDate
-                                        )}
-
-                                    </span>
-                                  `
-                                : ""
-                        }
-
-
-                        ${
-                            page
-                                ? `
-                                    <span>
-
-                                        Page
-                                        ${escapeHTML(
-                                            page
-                                        )}
-
-                                    </span>
-                                  `
-                                : ""
-                        }
-
-
-                        ${
-                            source
-                                ? `
-                                    <span>
-
-                                        ${escapeHTML(
-                                            source
-                                        )}
-
-                                    </span>
-                                  `
-                                : ""
-                        }
-
-
-                    </div>
-
-
-                    ${
-                        sourceUrl
-                            ? `
-                                <a
-                                    href="${escapeAttribute(
-                                        sourceUrl
-                                    )}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="newspaper-source-link"
-                                >
-
-                                    View Source
-
-                                </a>
-                              `
-                            : ""
-                    }
-
+                    ${source ? `<span>${escapeHTML(source)}</span>` : ""}
 
                 </div>
 
-            `;
+                ${
+                    sourceUrl
+                        ? `
+                            <a
+                                href="${escapeAttribute(sourceUrl)}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="newspaper-source-link"
+                            >
+                                View Source
+                            </a>
+                          `
+                        : ""
+                }
 
+            </div>
 
-            grid.appendChild(
-                card
-            );
+        `;
 
-        }
-    );
+        grid.appendChild(card);
 
+    });
 
-    initializeImageButtons(
-        grid
-    );
+    initializeImageButtons(grid);
 
 }
 
@@ -3610,46 +2291,24 @@ function renderNewspaperArticles() {
 
 async function loadMemories() {
 
-    const grid =
-        document.getElementById(
-            "memory-grid"
-        );
-
+    const grid = document.getElementById("memory-grid");
 
     if (!grid) {
-
         return;
-
     }
-
 
     try {
 
-        memories =
-            await getCollectionData(
-                "memories"
-            );
+        memories = await getCollectionData("memories");
 
+        memories.sort((a, b) => {
 
-        memories.sort(
-            (
-                a,
-                b
-            ) => {
+            const yearA = getNumber(a.year) ?? 999999;
+            const yearB = getNumber(b.year) ?? 999999;
 
-                const yearA =
-                    getNumber(a.year) ?? 999999;
+            return yearA - yearB;
 
-
-                const yearB =
-                    getNumber(b.year) ?? 999999;
-
-
-                return yearA - yearB;
-
-            }
-        );
-
+        });
 
         renderMemories();
 
@@ -3657,217 +2316,105 @@ async function loadMemories() {
 
     catch (error) {
 
-        console.error(
-            "ROY BARI: Memory error:",
+        console.error("ROY BARI: Memory error:", error);
+
+        grid.innerHTML = errorBox(
+            "Unable to load family memories.",
             error
         );
-
-
-        grid.innerHTML =
-            errorBox(
-                "Unable to load family memories.",
-                error
-            );
 
     }
 
 }
 
-
-/* =========================================================
-   RENDER MEMORIES
-   ========================================================= */
-
 function renderMemories() {
 
-    const grid =
-        document.getElementById(
-            "memory-grid"
-        );
-
+    const grid = document.getElementById("memory-grid");
 
     if (!grid) {
-
         return;
-
     }
 
-
-    if (
-        memories.length === 0
-    ) {
+    if (memories.length === 0) {
 
         grid.innerHTML = `
-
             <div class="card">
-
                 <p>
                     No family memories
                     have been added yet.
                 </p>
-
             </div>
-
         `;
 
         return;
 
     }
 
-
     grid.innerHTML = "";
 
+    memories.forEach(memory => {
 
-    memories.forEach(
-        memory => {
+        const title =
+            firstValue(memory, ["title", "name"]) ||
+            "Family Memory";
 
-            const title =
-                firstValue(
-                    memory,
-                    [
-                        "title",
-                        "name"
-                    ]
-                ) ||
-                "Family Memory";
+        const text = firstValue(
+            memory,
+            ["quote", "description", "story", "content"]
+        );
 
+        const person = firstValue(memory, ["person", "author"]);
+        const category = firstValue(memory, ["category"]);
+        const year = firstValue(memory, ["year"]);
+        const image = firstValue(memory, ["image", "photo", "imageUrl"]);
 
-            const text =
-                firstValue(
-                    memory,
-                    [
-                        "quote",
-                        "description",
-                        "story",
-                        "content"
-                    ]
-                );
+        const card = document.createElement("article");
 
+        card.className = "card memory-card";
 
-            const person =
-                firstValue(
-                    memory,
-                    [
-                        "person",
-                        "author"
-                    ]
-                );
+        card.innerHTML = `
 
+            ${
+                image
+                    ? createImageButtonHTML(image, title, "archive-image")
+                    : ""
+            }
 
-            const category =
-                firstValue(
-                    memory,
-                    [
-                        "category"
-                    ]
-                );
+            ${
+                year
+                    ? `<div class="num">${escapeHTML(year)}</div>`
+                    : ""
+            }
 
+            ${
+                category
+                    ? `<div class="small-caps">${escapeHTML(category)}</div>`
+                    : ""
+            }
 
-            const year =
-                firstValue(
-                    memory,
-                    [
-                        "year"
-                    ]
-                );
+            <h4>
+                ${escapeHTML(title)}
+            </h4>
 
+            ${
+                text
+                    ? `<p>“${escapeHTML(text)}”</p>`
+                    : ""
+            }
 
-            const image =
-                firstValue(
-                    memory,
-                    [
-                        "image",
-                        "photo",
-                        "imageUrl"
-                    ]
-                );
+            ${
+                person
+                    ? `<div class="small-caps">— ${escapeHTML(person)}</div>`
+                    : ""
+            }
 
+        `;
 
-            const card =
-                document.createElement(
-                    "article"
-                );
+        grid.appendChild(card);
 
+    });
 
-            card.className =
-                "card memory-card";
-
-
-            card.innerHTML = `
-
-                ${
-                    image
-                        ? createImageButtonHTML(
-                            image,
-                            title,
-                            "archive-image"
-                        )
-                        : ""
-                }
-
-
-                ${
-                    year
-                        ? `
-                            <div class="num">
-                                ${escapeHTML(year)}
-                            </div>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    category
-                        ? `
-                            <div class="small-caps">
-                                ${escapeHTML(category)}
-                            </div>
-                          `
-                        : ""
-                }
-
-
-                <h4>
-                    ${escapeHTML(title)}
-                </h4>
-
-
-                ${
-                    text
-                        ? `
-                            <p>
-                                “${escapeHTML(text)}”
-                            </p>
-                          `
-                        : ""
-                }
-
-
-                ${
-                    person
-                        ? `
-                            <div class="small-caps">
-                                — ${escapeHTML(person)}
-                            </div>
-                          `
-                        : ""
-                }
-
-            `;
-
-
-            grid.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    initializeImageButtons(
-        grid
-    );
+    initializeImageButtons(grid);
 
 }
 
@@ -3876,26 +2423,14 @@ function renderMemories() {
    IMAGE BUTTON HTML
    ========================================================= */
 
-function createImageButtonHTML(
-    image,
-    alt,
-    imageClass
-) {
+function createImageButtonHTML(image, alt, imageClass) {
 
-    const thumbnail =
-        getImageUrl(image);
-
-
-    const large =
-        getLargeImageUrl(image);
-
+    const thumbnail = getImageUrl(image);
+    const large = getLargeImageUrl(image);
 
     if (!thumbnail) {
-
         return "";
-
     }
-
 
     return `
 
@@ -3930,76 +2465,40 @@ function createImageButtonHTML(
    IMAGE BUTTON EVENTS
    ========================================================= */
 
-function initializeImageButtons(
-    container
-) {
+function initializeImageButtons(container) {
 
     if (!container) {
-
         return;
-
     }
 
+    const buttons = container.querySelectorAll(".about-image-button");
 
-    const buttons =
-        container.querySelectorAll(
-            ".about-image-button"
-        );
+    buttons.forEach(button => {
 
+        if (button.dataset.ready === "true") {
+            return;
+        }
 
-    buttons.forEach(
-        button => {
+        button.dataset.ready = "true";
 
-            if (
-                button.dataset.ready === "true"
-            ) {
+        button.addEventListener("click", event => {
 
+            event.preventDefault();
+
+            const image = button.getAttribute("data-lightbox-image");
+
+            const alt =
+                button.getAttribute("data-lightbox-alt") || "";
+
+            if (!image) {
                 return;
-
             }
 
+            openLightbox(image, alt);
 
-            button.dataset.ready =
-                "true";
+        });
 
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-
-                    const image =
-                        button.getAttribute(
-                            "data-lightbox-image"
-                        );
-
-
-                    const alt =
-                        button.getAttribute(
-                            "data-lightbox-alt"
-                        ) ||
-                        "";
-
-
-                    if (!image) {
-
-                        return;
-
-                    }
-
-
-                    openLightbox(
-                        image,
-                        alt
-                    );
-
-                }
-            );
-
-        }
-    );
+    });
 
 }
 
@@ -4012,535 +2511,227 @@ function initializeImageButtons(
 
 function setupLightbox() {
 
-    const lightbox =
-        document.getElementById(
-            "about-lightbox"
-        );
-
-
-    const close =
-        document.getElementById(
-            "about-lightbox-close"
-        );
-
-
-    const backdrop =
-        document.getElementById(
-            "about-lightbox-backdrop"
-        );
-
-
-    const previous =
-        document.getElementById(
-            "about-lightbox-prev"
-        );
-
-
-    const next =
-        document.getElementById(
-            "about-lightbox-next"
-        );
-
+    const lightbox = document.getElementById("about-lightbox");
+    const close = document.getElementById("about-lightbox-close");
+    const backdrop = document.getElementById("about-lightbox-backdrop");
+    const previous = document.getElementById("about-lightbox-prev");
+    const next = document.getElementById("about-lightbox-next");
 
     if (!lightbox) {
 
-        console.error(
-            "ROY BARI: Lightbox element missing."
-        );
+        console.error("ROY BARI: Lightbox element missing.");
 
         return;
 
     }
 
-
     if (close) {
-
-        close.addEventListener(
-            "click",
-            closeLightbox
-        );
-
+        close.addEventListener("click", closeLightbox);
     }
-
 
     if (backdrop) {
-
-        backdrop.addEventListener(
-            "click",
-            closeLightbox
-        );
-
+        backdrop.addEventListener("click", closeLightbox);
     }
-
 
     if (previous) {
-
-        previous.addEventListener(
-            "click",
-            () => {
-
-                showLightboxImage(
-                    currentLightboxIndex - 1
-                );
-
-            }
-        );
-
+        previous.addEventListener("click", () => {
+            showLightboxImage(currentLightboxIndex - 1);
+        });
     }
-
 
     if (next) {
-
-        next.addEventListener(
-            "click",
-            () => {
-
-                showLightboxImage(
-                    currentLightboxIndex + 1
-                );
-
-            }
-        );
-
+        next.addEventListener("click", () => {
+            showLightboxImage(currentLightboxIndex + 1);
+        });
     }
 
+    document.addEventListener("keydown", event => {
 
-    document.addEventListener(
-        "keydown",
-        event => {
+        if (!lightbox.classList.contains("is-open")) {
+            return;
+        }
 
-            if (
-                !lightbox.classList.contains(
-                    "is-open"
-                )
-            ) {
+        if (event.key === "Escape") {
 
-                return;
+            event.preventDefault();
 
-            }
-
-
-            if (
-                event.key === "Escape"
-            ) {
-
-                event.preventDefault();
-
-                closeLightbox();
-
-            }
-
-
-            if (
-                event.key === "ArrowLeft"
-            ) {
-
-                event.preventDefault();
-
-                showLightboxImage(
-                    currentLightboxIndex - 1
-                );
-
-            }
-
-
-            if (
-                event.key === "ArrowRight"
-            ) {
-
-                event.preventDefault();
-
-                showLightboxImage(
-                    currentLightboxIndex + 1
-                );
-
-            }
+            closeLightbox();
 
         }
-    );
+
+        if (event.key === "ArrowLeft") {
+
+            event.preventDefault();
+
+            showLightboxImage(currentLightboxIndex - 1);
+
+        }
+
+        if (event.key === "ArrowRight") {
+
+            event.preventDefault();
+
+            showLightboxImage(currentLightboxIndex + 1);
+
+        }
+
+    });
 
 }
 
+function openLightbox(image, alt) {
 
-/* =========================================================
-   OPEN LIGHTBOX
-   ========================================================= */
-
-function openLightbox(
-    image,
-    alt
-) {
-
-    const lightbox =
-        document.getElementById(
-            "about-lightbox"
-        );
-
+    const lightbox = document.getElementById("about-lightbox");
 
     if (!lightbox) {
-
         return;
-
     }
 
+    // Remember the clicked element.
+    lastFocusedElement = document.activeElement;
 
-    /*
-     * Remember clicked element.
-     */
+    // Collect every image currently on the page.
+    const buttons = Array.from(
+        document.querySelectorAll(
+            ".about-image-button[data-lightbox-image]"
+        )
+    );
 
-    lastFocusedElement =
-        document.activeElement;
+    lightboxItems = buttons.map(button => ({
+        src: button.getAttribute("data-lightbox-image"),
+        alt: button.getAttribute("data-lightbox-alt") || ""
+    }));
 
+    // Find the clicked image.
+    currentLightboxIndex = lightboxItems.findIndex(
+        item => item.src === image && item.alt === alt
+    );
 
-    /*
-     * Collect every image currently
-     * available on the page.
-     */
+    // If not found, create one.
+    if (currentLightboxIndex < 0) {
 
-    const buttons =
-        Array.from(
-            document.querySelectorAll(
-                ".about-image-button[data-lightbox-image]"
-            )
-        );
-
-
-    lightboxItems =
-        buttons.map(
-            button => ({
-
-                src:
-                    button.getAttribute(
-                        "data-lightbox-image"
-                    ),
-
-                alt:
-                    button.getAttribute(
-                        "data-lightbox-alt"
-                    ) || ""
-
-            })
-        );
-
-
-    /*
-     * Find clicked image.
-     */
-
-    currentLightboxIndex =
-        lightboxItems.findIndex(
-            item =>
-                item.src === image &&
-                item.alt === alt
-        );
-
-
-    /*
-     * If not found, create one.
-     */
-
-    if (
-        currentLightboxIndex < 0
-    ) {
-
-        lightboxItems = [
-
-            {
-                src: image,
-                alt: alt
-            }
-
-        ];
+        lightboxItems = [{ src: image, alt: alt }];
 
         currentLightboxIndex = 0;
 
     }
 
+    showLightboxImage(currentLightboxIndex);
 
-    showLightboxImage(
-        currentLightboxIndex
-    );
+    lightbox.classList.add("is-open");
 
+    lightbox.setAttribute("aria-hidden", "false");
 
-    lightbox.classList.add(
-        "is-open"
-    );
+    document.body.classList.add("about-lightbox-open");
 
-
-    lightbox.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-
-    document.body.classList.add(
-        "about-lightbox-open"
-    );
-
-
-    /*
-     * Focus close button AFTER opening.
-     */
-
-    const close =
-        document.getElementById(
-            "about-lightbox-close"
-        );
-
+    // Focus the close button AFTER opening.
+    const close = document.getElementById("about-lightbox-close");
 
     if (close) {
-
-        requestAnimationFrame(
-            () => {
-
-                close.focus();
-
-            }
-        );
-
+        requestAnimationFrame(() => {
+            close.focus();
+        });
     }
 
 }
 
+function showLightboxImage(index) {
 
-/* =========================================================
-   SHOW LIGHTBOX IMAGE
-   ========================================================= */
-
-function showLightboxImage(
-    index
-) {
-
-    if (
-        lightboxItems.length === 0
-    ) {
-
+    if (lightboxItems.length === 0) {
         return;
-
     }
 
-
-    /*
-     * Circular navigation.
-     */
-
-    if (
-        index < 0
-    ) {
-
-        index =
-            lightboxItems.length - 1;
-
+    // Circular navigation.
+    if (index < 0) {
+        index = lightboxItems.length - 1;
     }
 
-
-    if (
-        index >= lightboxItems.length
-    ) {
-
+    if (index >= lightboxItems.length) {
         index = 0;
-
     }
 
+    currentLightboxIndex = index;
 
-    currentLightboxIndex =
-        index;
+    const item = lightboxItems[currentLightboxIndex];
 
-
-    const item =
-        lightboxItems[
-            currentLightboxIndex
-        ];
-
-
-    const image =
-        document.getElementById(
-            "about-lightbox-image"
-        );
-
-
-    const caption =
-        document.getElementById(
-            "about-lightbox-caption"
-        );
-
-
-    const previous =
-        document.getElementById(
-            "about-lightbox-prev"
-        );
-
-
-    const next =
-        document.getElementById(
-            "about-lightbox-next"
-        );
-
+    const image = document.getElementById("about-lightbox-image");
+    const caption = document.getElementById("about-lightbox-caption");
+    const previous = document.getElementById("about-lightbox-prev");
+    const next = document.getElementById("about-lightbox-next");
 
     if (image) {
-
-        image.src =
-            item.src;
-
-
-        image.alt =
-            item.alt || "";
-
+        image.src = item.src;
+        image.alt = item.alt || "";
     }
-
 
     if (caption) {
-
-        caption.textContent =
-            item.alt || "";
-
+        caption.textContent = item.alt || "";
     }
 
-
-    const multiple =
-        lightboxItems.length > 1;
-
+    const multiple = lightboxItems.length > 1;
 
     if (previous) {
-
-        previous.hidden =
-            !multiple;
-
+        previous.hidden = !multiple;
     }
 
-
     if (next) {
-
-        next.hidden =
-            !multiple;
-
+        next.hidden = !multiple;
     }
 
 }
-
-
-/* =========================================================
-   CLOSE LIGHTBOX
-   ========================================================= */
 
 function closeLightbox() {
 
-    const lightbox =
-        document.getElementById(
-            "about-lightbox"
-        );
-
+    const lightbox = document.getElementById("about-lightbox");
 
     if (!lightbox) {
-
         return;
-
     }
 
-
-    /*
-     * Remove focus BEFORE aria-hidden=true.
-     *
-     * This prevents the Chrome warning:
-     *
-     * "Blocked aria-hidden on an element because
-     * its descendant retained focus."
-     */
-
-    if (
-        lightbox.contains(
-            document.activeElement
-        )
-    ) {
-
+    // Remove focus BEFORE aria-hidden=true, to avoid the Chrome
+    // warning about a hidden element retaining focus.
+    if (lightbox.contains(document.activeElement)) {
         document.activeElement.blur();
-
     }
 
+    lightbox.classList.remove("is-open");
 
-    lightbox.classList.remove(
-        "is-open"
-    );
+    lightbox.setAttribute("aria-hidden", "true");
 
+    document.body.classList.remove("about-lightbox-open");
 
-    lightbox.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
-    document.body.classList.remove(
-        "about-lightbox-open"
-    );
-
-
-    const image =
-        document.getElementById(
-            "about-lightbox-image"
-        );
-
-
-    const caption =
-        document.getElementById(
-            "about-lightbox-caption"
-        );
-
+    const image = document.getElementById("about-lightbox-image");
+    const caption = document.getElementById("about-lightbox-caption");
 
     if (image) {
-
-        image.removeAttribute(
-            "src"
-        );
-
-
+        image.removeAttribute("src");
         image.alt = "";
-
     }
-
 
     if (caption) {
-
         caption.textContent = "";
-
     }
-
 
     lightboxItems = [];
 
     currentLightboxIndex = 0;
 
+    // Return focus to the image button that opened the lightbox.
+    if (lastFocusedElement && document.contains(lastFocusedElement)) {
 
-    /*
-     * Return focus to the image button
-     * that opened the lightbox.
-     */
+        requestAnimationFrame(() => {
 
-    if (
-        lastFocusedElement &&
-        document.contains(
-            lastFocusedElement
-        )
-    ) {
-
-        requestAnimationFrame(
-            () => {
-
-                try {
-
-                    lastFocusedElement.focus();
-
-                }
-
-                catch (_) {}
-
+            try {
+                lastFocusedElement.focus();
             }
-        );
+
+            catch (_) {}
+
+        });
 
     }
 
-
-    lastFocusedElement =
-        null;
+    lastFocusedElement = null;
 
 }
 
@@ -4549,10 +2740,7 @@ function closeLightbox() {
    ERROR BOX
    ========================================================= */
 
-function errorBox(
-    message,
-    error
-) {
+function errorBox(message, error) {
 
     return `
 
@@ -4563,16 +2751,11 @@ function errorBox(
             </h3>
 
             <p>
-
                 ${
-                    error &&
-                    error.message
-                        ? escapeHTML(
-                            error.message
-                        )
+                    error && error.message
+                        ? escapeHTML(error.message)
                         : "Please try again later."
                 }
-
             </p>
 
         </div>
@@ -4590,19 +2773,11 @@ document.addEventListener(
     "error",
     event => {
 
-        const target =
-            event.target;
+        const target = event.target;
 
+        if (target && target.tagName === "IMG") {
 
-        if (
-            target &&
-            target.tagName === "IMG"
-        ) {
-
-            console.warn(
-                "ROY BARI: Image failed:",
-                target.src
-            );
+            console.warn("ROY BARI: Image failed:", target.src);
 
         }
 
@@ -4616,17 +2791,8 @@ document.addEventListener(
    ========================================================= */
 
 window.royBariAbout = {
-
-    getGoogleDriveFileId:
-        getDriveFileId,
-
-    getImageUrl:
-        getImageUrl,
-
-    getLargeImageUrl:
-        getLargeImageUrl,
-
-    closeLightbox:
-        closeLightbox
-
+    getGoogleDriveFileId: getDriveFileId,
+    getImageUrl: getImageUrl,
+    getLargeImageUrl: getLargeImageUrl,
+    closeLightbox: closeLightbox
 };
