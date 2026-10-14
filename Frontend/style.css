@@ -6282,6 +6282,9 @@ body.about-lightbox-open {
     background: #27292a;
 }
 
+
+
+
 @keyframes countdownAudioAppear {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }

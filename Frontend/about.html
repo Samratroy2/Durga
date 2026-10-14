@@ -20,6 +20,32 @@
          ===================================================== -->
 
     <style>
+        
+        /* Current priests: responsive two-card layout */
+        .priest-current-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 28px;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .priest-current-card {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .priest-current-card img {
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .priest-current-grid {
+                grid-template-columns: 1fr;
+                gap: 22px;
+            }
+        }
 
         /* =====================================================
            IMAGE BUTTON

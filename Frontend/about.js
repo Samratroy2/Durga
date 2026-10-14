@@ -610,7 +610,7 @@ async function loadPriests() {
 
         priests.sort(sortByOrder);
 
-        renderCurrentPriest();
+        renderCurrentPriests();
         renderPriestGallery();
 
     }
@@ -634,31 +634,98 @@ async function loadPriests() {
 
 }
 
-function getCurrentPriest() {
-    return getCurrentRecord(priests);
+function getCurrentPriests() {
+    return priests
+        .filter(priest =>
+            priest.current === true ||
+            priest.isCurrent === true ||
+            priest.status === "current"
+        )
+        .sort(sortByOrder)
+        .slice(0, 2);
 }
 
-function renderCurrentPriest() {
 
-    renderCurrentPerson(
-        getCurrentPriest(),
-        {
-            featureId: "priest-feature",
-            nameId: "current-priest-name",
-            descriptionId: "current-priest-description",
-            locationId: "current-priest-location",
-            defaultName: "Current Priest",
-            label: "Current Priest",
-            emptyDescription:
-                "Current priest information has not been added yet.",
-            filledFallback:
-                "Information about the current priest has not been added yet.",
-            emptyFeatureText:
-                "Current priest information will appear here."
-        }
-    );
+function renderCurrentPriests() {
+    const feature = document.getElementById("priest-feature");
 
+    if (!feature) {
+        console.error('ROY BARI: #priest-feature not found.');
+        return;
+    }
+
+    const currentPriests = getCurrentPriests();
+
+    if (currentPriests.length === 0) {
+        feature.innerHTML = `
+            <div class="card">
+                <p class="lead">
+                    Current priest information will appear here.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    feature.innerHTML = `
+        <div class="priest-current-grid">
+            ${currentPriests.map(priest => {
+                const name =
+                    firstValue(priest, ["name", "title"]) ||
+                    "Current Priest";
+
+                const description =
+                    firstValue(priest, ["description", "bio", "story"]);
+
+                const location =
+                    firstValue(priest, ["location", "place"]);
+
+                const role =
+                    firstValue(priest, ["role"]);
+
+                const image =
+                    firstValue(priest, IMAGE_FIELDS);
+
+                const imageHTML = image
+                    ? createImageButtonHTML(image, name, "archive-image")
+                    : "";
+
+                return `
+                    <article class="card maker-feature-card priest-current-card">
+                        ${imageHTML}
+
+                        <div class="maker-feature-content">
+                            <div class="small-caps">
+                                Current Priest
+                            </div>
+
+                            <h3>${escapeHTML(name)}</h3>
+
+                            ${role ? `
+                                <div class="small-caps">
+                                    ${escapeHTML(role)}
+                                </div>
+                            ` : ""}
+
+                            ${description ? `
+                                <p>${escapeHTML(description)}</p>
+                            ` : ""}
+
+                            ${location ? `
+                                <p class="small-caps">
+                                    ${escapeHTML(location)}
+                                </p>
+                            ` : ""}
+                        </div>
+                    </article>
+                `;
+            }).join("")}
+        </div>
+    `;
+
+    initializeImageButtons(feature);
 }
+
 
 function renderPriestGallery() {
 
